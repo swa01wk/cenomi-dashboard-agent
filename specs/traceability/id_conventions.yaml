@@ -1,0 +1,226 @@
+# Identifier conventions — Cenomi Dashboard Intelligence Agent POC
+#
+# NORMATIVE. Machine-read by `make specs-check` (M0-T10) and `make trace-report`.
+# Prose explanation: docs/architecture/ARCHITECTURE.md §12 (Traceability).
+#
+# Rule 1: identifiers that already exist in the approved references are PRESERVED
+#         exactly as written (family `origin: existing`). This file only adds a
+#         pattern so tools can recognise them, plus an optional qualified form
+#         for places where a bare ID would be ambiguous.
+# Rule 2: new families (`origin: new`) are introduced only where the references
+#         have no identifier for the concept.
+# Rule 3: an ID is never reused for a different thing, even after it is retired.
+# Rule 4: patterns are Python `re` / ECMAScript compatible and anchored.
+
+schema: cenomi.id_conventions.v1
+spec_set_version_ref: specs/engineering/spec_set.yaml
+
+families:
+
+  # ---------------------------------------------------------------- requirements
+  - id: product_requirement
+    origin: existing
+    source: docs/reference/planning-history/PLANNING_ASSESSMENT_v0.3.md §2; docs/reference/final-design-gate/04_TRACEABILITY.md
+    description: Product requirements traced from the PRD and TA (v0.3 matrix, 70 rows).
+    pattern: '^(PAR-(A(0[1-9]|1[0-2])|T0[1-8]|X0[1-3])|MET-0[1-7]|DATA-0[1-8]|AI-(0[1-9]|1[0-2])|L3(-[A-Z0-9]+)?|L4-(CTX|XKPI|INV|DQ|BIZ|UX|REUSE|CLAR)|L5-P[12]|GUI-0[1-6]|AGUI-0[1-4]|SEC-0[1-7]|NFR-0[1-4]|EVAL-0[1-6]|DEL-0[12])$'
+    examples: [PAR-A06, MET-04, DATA-07, AI-10, L4-CLAR, L5-P2, GUI-02, AGUI-04, SEC-06, NFR-01, EVAL-02, DEL-01]
+    notes: Grouped rows in the GD traceability tab (for example "MET-02/03", "SEC-01–03") cite each member ID individually in new documents.
+
+  - id: prd_journey
+    origin: existing
+    source: PRD §9 ("PRD 1" … "PRD 6"); TA §14 ("TA 1" … "TA 7")
+    description: PRD core journeys and TA acceptance demonstrations, in the qualified form used by new documents.
+    pattern: '^(PRD-J[1-6]|TA-D[1-7])$'
+    examples: [PRD-J3, TA-D7]
+    notes: 'In the GD traceability tab "PRD 3" is written PRD-J3 and "TA 3" is TA-D3.'
+
+  - id: spec_requirement
+    origin: new
+    description: A normative statement inside an engineering specification. Written in bold at the start of the statement, for example **ARCH-R014**.
+    pattern: '^(PSPEC|ARCH|DEVENV|DBSCH|SYNDATA|AGENTARCH|AGUIINT|PROACT|EVALPLAN|DBASE|DREG|DSYS|GENUI|APIC|TOOLS|KPICAT|AGENTSMD|RMAP)-R[0-9]{3}$'
+    document_codes:
+      PSPEC: docs/product/PRODUCT_SPEC.md
+      ARCH: docs/architecture/ARCHITECTURE.md
+      DEVENV: docs/architecture/DEVELOPMENT_ENVIRONMENT.md
+      DBSCH: docs/architecture/DATABASE_SCHEMA.md
+      SYNDATA: docs/architecture/SYNTHETIC_DATA_STRATEGY.md
+      AGENTARCH: docs/architecture/AGENT_ARCHITECTURE.md
+      AGUIINT: docs/architecture/AGUI_INTEGRATION.md
+      PROACT: docs/architecture/PROACTIVE_INTELLIGENCE.md
+      EVALPLAN: docs/architecture/EVALUATION_PLAN.md
+      DBASE: docs/design/DESIGN_BASELINE.md
+      DREG: docs/design/DECISION_REGISTER.md
+      DSYS: docs/design/DESIGN_SYSTEM.md
+      GENUI: docs/design/GENERATIVE_UI.md
+      APIC: docs/contracts/API_CONTRACTS.md
+      TOOLS: docs/contracts/AGENT_TOOLS.md
+      KPICAT: docs/contracts/KPI_CATALOG.md
+      AGENTSMD: AGENTS.md
+      RMAP: plans/ROADMAP.md
+    examples: [ARCH-R014, DEVENV-R012, PSPEC-R003]
+    notes: Codes deliberately avoid the product-requirement prefixes (PAR, MET, DATA, AI, GUI, AGUI, SEC, NFR, EVAL, DEL). Numbers are never reused within a document; a withdrawn statement keeps its number with "(withdrawn)".
+
+  # ---------------------------------------------------------------- delivery
+  - id: task_card
+    origin: existing
+    source: plans/proposed/engineering-specification-plan/06_M0_AUTHORING_PLAN.md (M0-T01 … M0-T10)
+    description: A feature / task card. The feature ID IS the task-card ID; there is no separate feature numbering.
+    pattern: '^M[0-6]-T[0-9]{2}$'
+    examples: [M0-T03, M2-T07]
+
+  - id: acceptance_test
+    origin: new
+    description: One acceptance test belonging to a task card. Tests carry this ID in a pytest marker, or as the leading "[ID]" of a Vitest/Playwright test title.
+    pattern: '^AT-M[0-6]-T[0-9]{2}-[0-9]{2}$'
+    examples: [AT-M0-T03-02]
+
+  - id: gate_check
+    origin: new
+    description: One check in a milestone exit gate (plans/ROADMAP.md §7 and the milestone plan).
+    pattern: '^GATE-M[0-6]-[0-9]{2}$'
+    examples: [GATE-M0-04]
+
+  - id: branch
+    origin: new
+    description: Git branch name. Feature work names its card; specification work names its milestone.
+    pattern: '^((feat|fix|test|chore|spike)/m[0-6]-t[0-9]{2}-[a-z0-9]+(-[a-z0-9]+)*|docs/m[0-6]-[a-z0-9]+(-[a-z0-9]+)*|docs/[a-z0-9]+(-[a-z0-9]+)*|fix/def-[0-9]{3,4}-[a-z0-9]+(-[a-z0-9]+)*)$'
+    examples: [feat/m0-t03-backend-skeleton, spike/m0-t09-agui-spike, docs/m0-foundation-specs, fix/def-0007-scope-empty-500]
+
+  - id: change_request
+    origin: existing
+    source: plans/STATUS.md § Change requests; ESP tab 12
+    pattern: '^CR-[0-9]{3}$'
+    examples: [CR-001]
+
+  - id: defect
+    origin: new
+    description: A defect, recorded as a GitHub issue whose title starts with the ID and which carries one triage label (DEVELOPMENT_ENVIRONMENT.md §9).
+    pattern: '^DEF-[0-9]{4}$'
+    examples: [DEF-0007]
+
+  # ---------------------------------------------------------------- tests and evaluation
+  - id: kpi_contract_test
+    origin: new
+    description: Metric contract (golden) test case. metric_id follows the KPI catalogue naming (dotted lower snake case).
+    pattern: '^KPI-[a-z][a-z0-9_]*(\.[a-z0-9_]+)+-[0-9]{2}$'
+    examples: [KPI-approvals.pending_by_delay-03]
+
+  - id: agent_eval_case
+    origin: existing
+    source: ESP tab 10 (example S-AI02-003)
+    description: Slice (S) or benchmark (B) analytical case; category is the requirement ID without the hyphen.
+    pattern: '^[SB]-[A-Z0-9]+-[0-9]{3}$'
+    examples: [S-AI02-003, B-L4XKPI-014]
+
+  - id: e2e_journey
+    origin: existing
+    source: DX4 (J1–J10), DX6 (K1–K12), ESP tab 2 (E2E-S1–S3)
+    description: End-to-end journeys. Bare J/K IDs are used inside DX4/DX6 contexts; the qualified form DX4-J1 / DX6-K3 is used where ambiguity is possible.
+    pattern: '^((DX4-)?J([1-9]|10)|(DX6-)?K([1-9]|1[0-2])|E2E-S[1-3])$'
+    examples: [J9, DX4-J9, DX6-K11, E2E-S2]
+
+  - id: e2e_journey_new
+    origin: new
+    description: E2E suites with no design ID — DX5 lab scenarios, one parity journey per dashboard card, and platform journeys (shell, navigation, responsive).
+    pattern: '^E2E-(DX5-(CAT|VAL|CONT|VIEWAS)|CARD-[a-zA-Z]+|TCARD-[a-zA-Z]+|SHELL-[0-9]{2}|NAV-[0-9]{2}|RESP-[0-9]{2})$'
+    examples: [E2E-DX5-VIEWAS, E2E-CARD-pendingApprovals, E2E-TCARD-actionRequired, E2E-SHELL-01]
+    notes: CARD uses the V2 admin card id (PRD §4.1); TCARD uses the tenant card group id fixed in PRODUCT_SPEC §5.2.
+
+  - id: golden_scenario
+    origin: existing
+    source: DX6-Scenarios
+    pattern: '^(S[1-9]|N([1-9]|1[01]))$'
+    examples: [S1, N9]
+    notes: S6 is retired (became N9) and must not be reused.
+
+  - id: golden_invariant
+    origin: existing
+    source: GD KPI tab
+    pattern: '^GI-(0[1-9]|1[0-6])$'
+
+  - id: reconciliation_discrepancy
+    origin: existing
+    source: GD KPI tab
+    pattern: '^C([1-9]|1[0-9]|2[01])$'
+
+  - id: detector
+    origin: existing
+    source: DX6-Contract (detectors-1.1)
+    pattern: '^D([1-35-8]|4[ab])$'
+    examples: [D2, D4b]
+
+  - id: runner_test
+    origin: existing
+    source: DX6-Contract runner protocol (DXD-86)
+    description: Runner protocol tests. Written "runner test R1" or RUN-R1 in prose so they are never confused with risks R-01…R-14.
+    pattern: '^(RUN-)?R([1-9]|1[0-3])$'
+
+  - id: insight
+    origin: existing
+    source: DX6 replay (reference-models/dx6/insights.json)
+    pattern: '^(INS-[0-9]{3}C?|T-[0-9]{3})$'
+    examples: [INS-107, INS-105C, T-202]
+
+  # ---------------------------------------------------------------- decisions, issues, risks
+  - id: decision_g0
+    origin: existing
+    pattern: '^DR-0(0[1-9]|[1-3][0-9]|4[0-7])b?$'
+    examples: [DR-018b, DR-036]
+  - id: decision_design
+    origin: existing
+    pattern: '^DXD-(0[1-9]|[1-8][0-9]|9[0-3])$'
+  - id: gate_question
+    origin: existing
+    pattern: '^GDQ-(0[1-9]|1[0-2])$'
+  - id: engineering_decision
+    origin: existing
+    source: ESP tab 7 (ED-01 … ED-11); restoration assessment (D-01)
+    pattern: '^(ED-(0[1-9]|1[0-9])|D-0[1-9])$'
+    notes: D-01 (snapshot schema) is unrelated to detectors D1–D8; always write it with the hyphen and leading zero.
+  - id: adr
+    origin: existing
+    pattern: '^ADR-[0-9]{4}$'
+  - id: open_issue
+    origin: existing
+    pattern: '^OI-(0[1-9]|1[0-5])$'
+  - id: risk
+    origin: existing
+    pattern: '^R-(0[1-9]|1[0-9])$'
+  - id: open_question
+    origin: new
+    description: A non-blocking open question raised inside a specification; listed in plans/STATUS.md with an owner.
+    pattern: '^OQ-[A-Z]+-[0-9]{2}$'
+    examples: [OQ-ARCH-01]
+
+  # ---------------------------------------------------------------- engineering-plan identifiers (added by PR-M0)
+  - id: universal_gate
+    origin: new
+    description: Universal milestone exit-gate criteria (plans/ROADMAP.md §7.1).
+    pattern: '^UG-(0[1-9]|1[0-9]|20)$'
+    examples: [UG-17]
+  - id: roadmap_amendment
+    origin: new
+    description: Amendments to the proposed ESP recorded in plans/ROADMAP.md §2.
+    pattern: '^A-[0-9]{2}$'
+    examples: [A-07]
+    notes: Distinct from spike items A1–A14, which have no hyphen.
+  - id: spike_item
+    origin: existing
+    source: DX4-AGUI assumptions A1–A8; extended by ARCHITECTURE.md §8.4 (A9–A14, L1)
+    pattern: '^(A([1-9]|1[0-4])|L1)$'
+  - id: deep_link
+    origin: new
+    description: Deep-link contracts (ARCHITECTURE.md §6.8).
+    pattern: '^DL-[0-9]{2}$'
+  - id: compatibility_assumption
+    origin: new
+    description: Runtime compatibility assumptions and their verifying tests (ADR-0003 §5).
+    pattern: '^CA-[0-9]{2}$'
+  - id: db_guard
+    origin: new
+    description: Database safety guards (ARCHITECTURE.md §7.3).
+    pattern: '^DG-[1-9]$'
+  - id: restoration_gap
+    origin: existing
+    source: Project Restoration and Engineering Readiness Assessment (22 Oct 2026)
+    pattern: '^G-[1-9]$'

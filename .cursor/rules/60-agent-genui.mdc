@@ -1,0 +1,18 @@
+---
+description: Agent runtime, AG-UI, generative UI and insights (dormant until M3/M4/M6 cards exist)
+globs: backend/src/cenomi/agent/**,backend/src/cenomi/agui/**,backend/src/cenomi/presentation/**,backend/src/cenomi/insights/**,apps/web/src/agui/**,apps/web/src/genui/**
+alwaysApply: false
+---
+
+# Agent, AG-UI and GenUI rules
+
+Source: `docs/architecture/ARCHITECTURE.md` §8; AGENT_ARCHITECTURE (PR-M3); AGUI_INTEGRATION and GENERATIVE_UI (PR-M4); PROACTIVE_INTELLIGENCE (PR-M6).
+
+- These modules are built only from M3/M4/M6 task cards. In M0 they contain only `__init__.py` and a README.
+- The model never computes a number. Every narrative number is a fact token filled by the server and checked by the verifier (DR-031).
+- Model output never becomes SQL, arithmetic, HTML, URLs or executable code (SEC-05).
+- Tools call the metric executor only. No tool contains SQL.
+- AG-UI tool events carry sanitized summaries (metric ID, filters, row count, resultRef); never rows or SQL. Reasoning events are never forwarded.
+- GenUI renders only registry kinds from validated results (`resultRef`). An invalid payload falls back to the deterministic table. No model-written code or markup.
+- Detectors are deterministic, share the metric executor, and record versioned thresholds in evidence.
+- AccessScope is re-checked on every read, resume, import, deep link and delivery.

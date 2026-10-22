@@ -1,0 +1,20 @@
+---
+description: Project governance for every change — scope freeze, task cards, precedence, stop-and-report
+alwaysApply: true
+---
+
+# Governance (always on)
+
+Source: `AGENTS.md`; ADR-0001, ADR-0015; `plans/ROADMAP.md`.
+
+- Implement only an approved task card `M<n>-T<nn>` from `plans/M<n>_*.md`, and only when `plans/STATUS.md` shows the owner authorized that milestone's build. Otherwise stop and report.
+- Read the card's 20 fields, then every spec section and contract it cites, before writing code.
+- Touch only the paths in the card's field 13 (file ownership). If the work needs any other path, stop and report — never widen the card. (Checked: PR template section 5, review.)
+- The baseline is frozen (DX1–DX6, Final Design Gate 22 Oct 2026). Never add a feature, screen, metric, agent capability or dependency the card does not name.
+- Precedence: owner's instruction > DECISION_REGISTER and ADRs > PRD > TA > API Reference > specs > code. On any conflict, stop and report; do not resolve it.
+- Never edit `docs/reference/**`, `docs/design/baseline/**`, `docs/handoff/**` or `plans/proposed/**`. (Checked: `make specs-check` SHA-256 verification.)
+- Never edit specifications (`docs/**`, `specs/**`, `plans/**`) in an implementation PR. Specifications change only in `docs/m<n>-…` PRs.
+- One card per branch and PR; branch `feat|fix|test|chore/m<n>-t<nn>-<slug>`. (Checked: `ci/static` branch-name check.)
+- Never merge, never push to `main`, never force-push a shared branch, never change repository settings.
+- A card is done only when every `AT-…` of its field 15 is an automated passing test that carries that ID. (Checked: `make trace-report`.)
+- Fill all 15 PR template sections; paste `make check` output.

@@ -1,0 +1,612 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cenomi.local/engineering/engineering.schema.json",
+  "title": "Cenomi engineering metadata",
+  "description": "Validates specs/engineering/make_targets.yaml, ci_checks.yaml, spec_set.yaml, specs/traceability/id_conventions.yaml and specs/contracts/error_codes.v1.yaml. Used by make specs-check (M0-T10). This is engineering metadata, not a runtime contract: it is never passed to codegen, so the ADR-0004 subset does not apply to it.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/makeTargets"
+    },
+    {
+      "$ref": "#/$defs/ciChecks"
+    },
+    {
+      "$ref": "#/$defs/specSet"
+    },
+    {
+      "$ref": "#/$defs/idConventions"
+    },
+    {
+      "$ref": "#/$defs/errorCodes"
+    }
+  ],
+  "$defs": {
+    "milestone": {
+      "type": "string",
+      "enum": [
+        "M0",
+        "M1",
+        "M2",
+        "M3",
+        "M4",
+        "M5",
+        "M6"
+      ]
+    },
+    "makeArg": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "default",
+        "description"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]*$"
+        },
+        "default": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 3
+        }
+      }
+    },
+    "makeTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "group",
+        "active_from",
+        "destructive",
+        "summary",
+        "prerequisites",
+        "args",
+        "behaviour",
+        "failure",
+        "in_check",
+        "ci_jobs"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "group": {
+          "type": "string",
+          "enum": [
+            "environment",
+            "database",
+            "synthetic_data",
+            "backend",
+            "frontend",
+            "agent",
+            "contracts_and_integration",
+            "verification",
+            "full_validation"
+          ]
+        },
+        "active_from": {
+          "$ref": "#/$defs/milestone"
+        },
+        "destructive": {
+          "type": "boolean"
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 200
+        },
+        "prerequisites": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/makeArg"
+          }
+        },
+        "behaviour": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "failure": {
+          "type": "string"
+        },
+        "safety": {
+          "type": "string"
+        },
+        "in_check": {
+          "type": "boolean"
+        },
+        "check_args": {
+          "type": "string"
+        },
+        "ci_jobs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reason_until_active": {
+          "type": "string"
+        }
+      }
+    },
+    "makeTargets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "spec",
+        "groups",
+        "targets"
+      ],
+      "properties": {
+        "schema": {
+          "const": "cenomi.make_targets.v1"
+        },
+        "spec": {
+          "type": "string"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/makeTarget"
+          }
+        }
+      }
+    },
+    "ciJob": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "purpose",
+        "runs_when",
+        "needs",
+        "targets",
+        "timeout_minutes",
+        "make_ci",
+        "blocking"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^ci/[a-z][a-z0-9-]*$"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "runs_when": {
+          "type": "string"
+        },
+        "needs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^ci/[a-z][a-z0-9-]*$"
+          }
+        },
+        "services": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "postgres": {
+              "type": "string"
+            }
+          }
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          }
+        },
+        "extra_steps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "env": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "CENOMI_ENV": {
+              "type": "string"
+            },
+            "DB": {
+              "type": "string"
+            },
+            "CONFIRM": {
+              "type": "string"
+            },
+            "LLM_MODE": {
+              "type": "string"
+            }
+          }
+        },
+        "artifacts_on_failure": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "artifacts_always": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "report": {
+          "type": "string"
+        },
+        "timeout_minutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60
+        },
+        "make_ci": {
+          "type": "boolean"
+        },
+        "blocking": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string",
+              "pattern": "^from M[0-6]$"
+            }
+          ]
+        }
+      }
+    },
+    "ciChecks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "spec",
+        "runner",
+        "required_checks",
+        "path_categories",
+        "triggers",
+        "jobs",
+        "other_workflows"
+      ],
+      "properties": {
+        "schema": {
+          "const": "cenomi.ci_checks.v1"
+        },
+        "spec": {
+          "type": "string"
+        },
+        "runner": {
+          "type": "string"
+        },
+        "default_permissions": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "contents": {
+              "const": "read"
+            }
+          }
+        },
+        "action_pinning": {
+          "type": "string"
+        },
+        "setup_action": {
+          "type": "string"
+        },
+        "required_checks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "path_categories": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "triggers": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "pull_request": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "types": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "branches": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "push": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "branches": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "workflow_call": {
+              "type": "boolean"
+            }
+          }
+        },
+        "concurrency": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "group": {
+              "type": "string"
+            },
+            "cancel_in_progress_on_pull_request": {
+              "type": "boolean"
+            },
+            "cancel_in_progress_on_main": {
+              "type": "boolean"
+            }
+          }
+        },
+        "jobs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/ciJob"
+          }
+        },
+        "other_workflows": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "artifact_retention_days": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "specSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "version",
+        "introduced_by",
+        "active_milestone",
+        "documents",
+        "contracts",
+        "engineering"
+      ],
+      "properties": {
+        "schema": {
+          "const": "cenomi.spec_set.v1"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "introduced_by": {
+          "type": "string"
+        },
+        "active_milestone": {
+          "$ref": "#/$defs/milestone"
+        },
+        "contract_freezes_in_this_set": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^CF-[0-6]$"
+          }
+        },
+        "documents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "contracts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "engineering": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "idFamily": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "origin",
+        "pattern"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "origin": {
+          "type": "string",
+          "enum": [
+            "existing",
+            "new"
+          ]
+        },
+        "source": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "pattern": {
+          "type": "string",
+          "pattern": "^\\^.*\\$$"
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notes": {
+          "type": "string"
+        },
+        "document_codes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "idConventions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "families"
+      ],
+      "properties": {
+        "schema": {
+          "const": "cenomi.id_conventions.v1"
+        },
+        "spec_set_version_ref": {
+          "type": "string"
+        },
+        "families": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/idFamily"
+          }
+        }
+      }
+    },
+    "errorCodes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "codes"
+      ],
+      "properties": {
+        "schema": {
+          "const": "cenomi.error_codes.v1"
+        },
+        "codes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "channel",
+              "http",
+              "retryable",
+              "status",
+              "milestone",
+              "meaning"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9_]{2,63}$"
+              },
+              "channel": {
+                "type": "string",
+                "enum": [
+                  "http",
+                  "tool_result",
+                  "agui_run_error"
+                ]
+              },
+              "http": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 400,
+                "maximum": 599
+              },
+              "retryable": {
+                "type": "boolean"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "active",
+                  "reserved"
+                ]
+              },
+              "milestone": {
+                "$ref": "#/$defs/milestone"
+              },
+              "meaning": {
+                "type": "string",
+                "minLength": 10
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cenomi.local/contracts/scope_decision.v1.schema.json",
+  "title": "ScopeDecision v1",
+  "description": "Result of AccessScope.authorize(principal, requestedScope) (ARCH-R079). Deny by default; an empty scope is never widened (DR-020, SEC-02); ALL only from an explicit grant (ARCH-R080). `effective` is present exactly when outcome is allow or narrowed. Defines the shared Scope type in $defs. Bootstrap contract, frozen by CF-0; the location-hierarchy resolution for cross-kind requests is added behind the same interface in M1 (ARCH-R081, ADR-0008).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["principalId", "outcome", "fingerprint", "reasons"],
+  "properties": {
+    "principalId": {"type": "string", "pattern": "^p_[a-z0-9_]{2,60}$"},
+    "outcome": {
+      "type": "string",
+      "enum": ["allow", "narrowed", "empty", "deny"],
+      "description": "allow: requested ⊆ grants (or no request: the full grant). narrowed: part of the request was outside the grants; effective is the non-empty intersection. empty: no grants, or empty intersection — the caller returns an empty result, never global data. deny: the principal lacks the permission for the resource (from M1)."
+    },
+    "requested": {"$ref": "#/$defs/scope", "description": "Absent when the caller made no scope request."},
+    "effective": {"$ref": "#/$defs/scope", "description": "Present only for allow and narrowed."},
+    "fingerprint": {
+      "type": "string",
+      "pattern": "^sfp_[0-9a-f]{32}$",
+      "description": "First 32 hex chars of SHA-256 over the canonical JSON (sorted keys, sorted arrays, no whitespace) of `effective`, or of {\"kind\":\"EMPTY\"} for empty and deny."
+    },
+    "reasons": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
+      "items": {
+        "type": "string",
+        "enum": ["requested_within_grant", "requested_outside_grant", "no_request_full_grant", "no_grants", "hierarchy_unresolved", "permission_missing"]
+      }
+    }
+  },
+  "$defs": {
+    "regionKey": {"type": "string", "pattern": "^[a-z][a-z0-9-]{1,40}$"},
+    "mallKey": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,60}$"},
+    "tenantKey": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,60}$"},
+    "leaseKey": {"type": "string", "pattern": "^[A-Z]{1,3}-[0-9]{3,8}$"},
+    "scope": {
+      "description": "An explicit access scope. Business keys are stable string keys, provisional until CF-1 (ARCH-R078).",
+      "oneOf": [
+        {
+          "type": "object", "additionalProperties": false, "required": ["kind"],
+          "properties": {"kind": {"const": "ALL"}}
+        },
+        {
+          "type": "object", "additionalProperties": false, "required": ["kind", "regionKeys"],
+          "properties": {"kind": {"const": "REGIONS"}, "regionKeys": {"type": "array", "minItems": 1, "maxItems": 3, "items": {"$ref": "#/$defs/regionKey"}}}
+        },
+        {
+          "type": "object", "additionalProperties": false, "required": ["kind", "mallKeys"],
+          "properties": {"kind": {"const": "MALLS"}, "mallKeys": {"type": "array", "minItems": 1, "maxItems": 50, "items": {"$ref": "#/$defs/mallKey"}}}
+        },
+        {
+          "type": "object", "additionalProperties": false, "required": ["kind", "tenantKeys"],
+          "properties": {"kind": {"const": "TENANT"}, "tenantKeys": {"type": "array", "minItems": 1, "maxItems": 10, "items": {"$ref": "#/$defs/tenantKey"}}}
+        },
+        {
+          "type": "object", "additionalProperties": false, "required": ["kind", "leaseKeys"],
+          "properties": {"kind": {"const": "TENANT_LEASES"}, "leaseKeys": {"type": "array", "minItems": 1, "maxItems": 100, "items": {"$ref": "#/$defs/leaseKey"}}}
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "principalId": "p_central_manager",
+      "outcome": "allow",
+      "fingerprint": "sfp_0f3a9c1d2b4e5f60718293a4b5c6d7e8",
+      "reasons": ["no_request_full_grant"],
+      "effective": {"kind": "REGIONS", "regionKeys": ["central"]}
+    },
+    {
+      "principalId": "p_central_manager",
+      "outcome": "empty",
+      "requested": {"kind": "REGIONS", "regionKeys": ["eastern"]},
+      "fingerprint": "sfp_9d1e2f3a4b5c6d7e8f90a1b2c3d4e5f6",
+      "reasons": ["requested_outside_grant"]
+    },
+    {
+      "principalId": "p_no_grants",
+      "outcome": "empty",
+      "fingerprint": "sfp_9d1e2f3a4b5c6d7e8f90a1b2c3d4e5f6",
+      "reasons": ["no_grants"]
+    },
+    {
+      "principalId": "p_portfolio_admin",
+      "outcome": "allow",
+      "requested": {"kind": "REGIONS", "regionKeys": ["central"]},
+      "effective": {"kind": "REGIONS", "regionKeys": ["central"]},
+      "fingerprint": "sfp_0f3a9c1d2b4e5f60718293a4b5c6d7e8",
+      "reasons": ["requested_within_grant"]
+    }
+  ]
+}

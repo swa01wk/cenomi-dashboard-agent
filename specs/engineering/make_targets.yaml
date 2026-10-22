@@ -1,0 +1,657 @@
+# Root Makefile target contract — NORMATIVE
+#
+# The root Makefile (built in M0-T01) must expose exactly these targets with this behaviour.
+# `make specs-check` (M0-T10) compares `make help` output with this file.
+# Prose and rationale: docs/architecture/DEVELOPMENT_ENVIRONMENT.md §5.
+#
+# Conventions for every target:
+#  - Arguments are Make variables: `make <target> VAR=value`. Booleans are 1/0. Confirmation is CONFIRM=yes.
+#  - Exit status: 0 success; 1 check or test failure; 2 refused by a safety guard or bad arguments;
+#    3 missing prerequisite (tool, service, file). Make propagates the first non-zero status.
+#  - A target whose subsystem does not exist yet (before `active_from`) prints
+#    "N/A: <target> becomes active in <milestone> — <reason>", appends that line to
+#    tests/reports/na.txt and exits 0. In gate mode (GATE=M<n>) `specs-check` fails if a target
+#    with active_from <= M<n> still reports N/A.
+#  - Targets call `uv run cenomi …`, `uv run pytest …`, `pnpm …`, `docker compose …` or scripts in
+#    scripts/. No target embeds application logic.
+#  - Destructive targets call the guards of ARCHITECTURE.md §7.3 (ARCH-R064) before doing anything.
+
+schema: cenomi.make_targets.v1
+spec: docs/architecture/DEVELOPMENT_ENVIRONMENT.md#5-makefile-contract
+
+groups:
+  - environment
+  - database
+  - synthetic_data
+  - backend
+  - frontend
+  - agent
+  - contracts_and_integration
+  - verification
+  - full_validation
+
+targets:
+
+  # ----------------------------------------------------------------- environment
+  - name: help
+    group: environment
+    active_from: M0
+    destructive: false
+    summary: List every target with its one-line summary, grouped as in this file.
+    prerequisites: [make]
+    args: []
+    behaviour:
+      - Prints groups and targets in the order of this file.
+    failure: Never fails.
+    in_check: false
+    ci_jobs: []
+
+  - name: doctor
+    group: environment
+    active_from: M0
+    destructive: false
+    summary: Verify the local toolchain and configuration against the pinned versions.
+    prerequisites: [make]
+    args: []
+    behaviour:
+      - Checks Python 3.12.x available to uv; uv present; Node.js 22.x; pnpm version equals package.json packageManager (via Corepack); Docker Engine and Compose v2; GNU Make >= 4.
+      - Checks uv.lock and pnpm-lock.yaml exist; .env exists (warns, does not fail, if absent); ports 3000, 8000, 5432 free or used by this project's containers.
+      - Prints a table of expected vs found.
+    failure: Exit 3 naming each mismatch.
+    in_check: false
+    ci_jobs: [ci/static]
+
+  - name: setup
+    group: environment
+    active_from: M0
+    destructive: false
+    summary: First-time setup — doctor, create .env from .env.example if absent, install dependencies.
+    prerequisites: [doctor]
+    args: []
+    behaviour:
+      - Runs doctor.
+      - Copies .env.example to .env only if .env does not exist; never overwrites.
+      - Runs install.
+    failure: Stops at the first failing step.
+    in_check: false
+    ci_jobs: []
+
+  - name: install
+    group: environment
+    active_from: M0
+    destructive: false
+    summary: Install locked dependencies for backend and web (no lockfile changes).
+    prerequisites: [uv, node, pnpm]
+    args:
+      - {name: BROWSERS, default: "1", description: "1 also installs the Playwright browsers pinned by the lockfile"}
+    behaviour:
+      - "uv sync --locked (backend workspace, including dev groups)."
+      - "pnpm install --frozen-lockfile (all workspace packages)."
+      - "If BROWSERS=1: pnpm exec playwright install --with-deps chromium."
+    failure: Exit 1 if a lockfile is out of date with its manifest; never rewrites a lockfile.
+    in_check: false
+    ci_jobs: [all]
+
+  - name: up
+    group: environment
+    active_from: M0
+    destructive: false
+    summary: Build and start db, api and web; bootstrap roles and migrate the dev database; wait until healthy.
+    prerequisites: [docker, .env]
+    args: []
+    behaviour:
+      - docker compose build; start db and wait for its health check.
+      - Run db-init (idempotent) and the migrate service (alembic upgrade head on cenomi_dev).
+      - "From M1: run seed with IF_EMPTY=1 so a fresh volume gets the canonical dataset; an already seeded database is left untouched."
+      - Start api and web; wait until GET /api/v1/health returns ok (timeout 120 s).
+      - Prints the shell URL http://localhost:3000.
+    failure: Exit 1 with the failing service's last 50 log lines.
+    in_check: false
+    ci_jobs: [ci/e2e]
+
+  - name: down
+    group: environment
+    active_from: M0
+    destructive: false
+    summary: Stop the stack. Data volumes are kept unless VOLUMES=1 CONFIRM=yes.
+    prerequisites: [docker]
+    args:
+      - {name: VOLUMES, default: "0", description: "1 also removes the database volume (destructive; requires CONFIRM=yes)"}
+      - {name: CONFIRM, default: "", description: "yes to confirm VOLUMES=1"}
+    behaviour:
+      - docker compose down.
+      - "With VOLUMES=1 and CONFIRM=yes: docker compose down --volumes."
+    failure: Exit 2 if VOLUMES=1 without CONFIRM=yes.
+    in_check: false
+    ci_jobs: [ci/e2e]
+
+  - name: logs
+    group: environment
+    active_from: M0
+    destructive: false
+    summary: Follow container logs (JSON lines for api).
+    prerequisites: [docker]
+    args:
+      - {name: SERVICE, default: "", description: "db, api or web; empty means all"}
+      - {name: FOLLOW, default: "1", description: "0 prints and exits (used by CI to collect logs)"}
+    behaviour:
+      - docker compose logs [--follow] [SERVICE].
+    failure: Exit 3 if the stack is not running.
+    in_check: false
+    ci_jobs: [ci/e2e]
+
+  - name: clean
+    group: environment
+    active_from: M0
+    destructive: false
+    summary: Remove local build outputs and caches. Never removes dependencies, data volumes, .env or committed files.
+    prerequisites: []
+    args: []
+    behaviour:
+      - "Removes apps/web/.next, packages/*/dist, .pytest_cache, .mypy_cache, .ruff_cache, coverage outputs and tests/reports/."
+    failure: Never fails on missing paths.
+    in_check: false
+    ci_jobs: []
+
+  # ----------------------------------------------------------------- database
+  - name: db-init
+    group: database
+    active_from: M0
+    destructive: false
+    summary: Create the four roles and the cenomi_dev / cenomi_test databases if missing (idempotent).
+    prerequisites: [running PostgreSQL, DATABASE_URL_ADMIN]
+    args:
+      - {name: DB, default: "dev", description: "dev or test — which database to ensure exists (both are created when absent)"}
+    behaviour:
+      - Runs infra/postgres/bootstrap/roles.sql through `uv run cenomi db init` as the PostgreSQL superuser of a local or CI database.
+      - Creates databases cenomi_dev and cenomi_test owned by cenomi_owner if absent; revokes PUBLIC privileges; grants CONNECT to the four roles (ADR-0006 §3).
+      - Changes nothing that already exists except role passwords, which it re-sets from the environment.
+    failure: Exit 2 if guards DG-1, DG-3 or DG-5 fail (ARCH-R064); exit 3 if the server is unreachable.
+    safety: Guards DG-1, DG-3, DG-5. Never run against a non-local host.
+    in_check: false
+    ci_jobs: [ci/backend, ci/database, ci/integration, ci/e2e]
+
+  - name: db-upgrade
+    group: database
+    active_from: M0
+    destructive: false
+    summary: Apply Alembic migrations to head as cenomi_owner.
+    prerequisites: [db-init]
+    args:
+      - {name: DB, default: "dev", description: "dev or test"}
+    behaviour:
+      - uv run alembic upgrade head against cenomi_<DB>.
+    failure: Exit 1 on any migration error; the transaction of the failing revision is rolled back.
+    safety: Guards DG-1, DG-2, DG-3. Non-destructive by rule (ARCH-R061); a revision that drops data must be called out in its PR.
+    in_check: false
+    ci_jobs: [ci/backend, ci/database, ci/integration, ci/e2e]
+
+  - name: db-current
+    group: database
+    active_from: M0
+    destructive: false
+    summary: Print the current Alembic revision and whether it is head.
+    prerequisites: [db-init]
+    args:
+      - {name: DB, default: "dev", description: "dev or test"}
+    behaviour:
+      - uv run alembic current --verbose; compares with the head revision.
+    failure: Exit 1 if not at head.
+    in_check: false
+    ci_jobs: [ci/database]
+
+  - name: db-check
+    group: database
+    active_from: M0
+    destructive: false
+    summary: Detect drift between tables.py metadata and the migrated database (alembic check) and verify roles and grants.
+    prerequisites: [db-upgrade]
+    args:
+      - {name: DB, default: "test", description: "dev or test"}
+    behaviour:
+      - uv run alembic check (fails if autogenerate would produce changes).
+      - uv run cenomi db verify-roles (the role_isolation and schemas_present checks of ARCH-R031).
+    failure: Exit 1 on drift or a grant mismatch.
+    in_check: false
+    ci_jobs: [ci/database]
+
+  - name: db-history
+    group: database
+    active_from: M0
+    destructive: false
+    summary: Print the migration history.
+    prerequisites: [uv]
+    args: []
+    behaviour:
+      - uv run alembic history --verbose.
+    failure: Never fails unless Alembic configuration is broken (exit 1).
+    in_check: false
+    ci_jobs: []
+
+  - name: db-downgrade
+    group: database
+    active_from: M0
+    destructive: true
+    summary: Downgrade to a named revision. Never run by `make check` or `make ci`.
+    prerequisites: [db-init]
+    args:
+      - {name: REV, default: "", description: "required — target revision id or 'base'"}
+      - {name: DB, default: "dev", description: "dev or test"}
+      - {name: CONFIRM, default: "", description: "must be yes"}
+    behaviour:
+      - uv run alembic downgrade REV against cenomi_<DB>.
+    failure: Exit 2 if REV is empty, CONFIRM is not yes, or a guard fails.
+    safety: Guards DG-1 to DG-5. Used by milestone-gate.yml on an ephemeral database only (ARCH-R060).
+    in_check: false
+    ci_jobs: []
+
+  # ----------------------------------------------------------------- synthetic data
+  - name: seed
+    group: synthetic_data
+    active_from: M1
+    destructive: false
+    summary: Generate the deterministic dataset, snapshots and seed hash into an empty, migrated database; then verify.
+    prerequisites: [db-upgrade]
+    args:
+      - {name: DB, default: "dev", description: "dev or test"}
+      - {name: SCOPE, default: "full", description: "full (3 regions, 25 malls) or slice (Central region and slice cohorts)"}
+      - {name: IF_EMPTY, default: "0", description: "1 exits 0 without changes when the database already holds a dataset"}
+    behaviour:
+      - uv run cenomi seed run --scope SCOPE as cenomi_seed; writes core, meta, snap, seed_meta in one run.
+      - Runs seed-verify.
+      - Prints dataset id, as_of and seed hash.
+    failure: "Exit 2 if the database already holds a dataset and IF_EMPTY=0 (use seed-reset); exit 1 if verification fails."
+    safety: Guards DG-1 to DG-3 and DG-5.
+    in_check: false
+    ci_jobs: []
+    reason_until_active: The schema and generator are specified in PR-M1.
+
+  - name: seed-reset
+    group: synthetic_data
+    active_from: M1
+    destructive: true
+    summary: Drop and recreate the target database, migrate, seed and verify.
+    prerequisites: [db-init]
+    args:
+      - {name: DB, default: "dev", description: "dev or test"}
+      - {name: SCOPE, default: "full", description: "full or slice"}
+      - {name: CONFIRM, default: "", description: "yes, or type the database name interactively"}
+    behaviour:
+      - Drops cenomi_<DB> (superuser), recreates it owned by cenomi_owner, runs db-upgrade, seed and seed-verify.
+      - Records the elapsed reset time in tests/reports/seed/reset_time.json (M1 acceptance).
+    failure: Exit 2 if a guard fails; exit 1 if any later step fails.
+    safety: Guards DG-1 to DG-5 (ARCH-R064). CI passes CONFIRM=yes with CENOMI_ENV=ci and DB=test only.
+    in_check: false
+    ci_jobs: [ci/database, ci/integration, ci/e2e]
+    reason_until_active: The schema and generator are specified in PR-M1.
+
+  - name: seed-verify
+    group: synthetic_data
+    active_from: M1
+    destructive: false
+    summary: Run golden invariants, canonical figures and snapshot reconciliation against a seeded database (read-only).
+    prerequisites: [seed]
+    args:
+      - {name: DB, default: "dev", description: "dev or test"}
+    behaviour:
+      - uv run cenomi seed verify — GI-01…GI-16, canonical figures from tests/fixtures/golden/canonical_figures.yaml, snapshot = parity at as_of, seed hash reproducibility record.
+      - Writes tests/reports/seed/verify.json and a JUnit file.
+    failure: Exit 1 listing each failed check.
+    in_check: false
+    ci_jobs: [ci/database]
+    reason_until_active: The schema and generator are specified in PR-M1.
+
+  # ----------------------------------------------------------------- backend
+  - name: backend-format
+    group: backend
+    active_from: M0
+    destructive: false
+    summary: Rewrite backend code formatting and import order (writes files).
+    prerequisites: [install]
+    args: []
+    behaviour:
+      - uv run ruff format backend scripts; uv run ruff check --select I --fix backend scripts.
+    failure: Exit 1 only if a file cannot be parsed.
+    in_check: false
+    ci_jobs: []
+
+  - name: backend-lint
+    group: backend
+    active_from: M0
+    destructive: false
+    summary: Static checks — ruff lint, ruff format check, import-linter module boundaries, SQL safety lint.
+    prerequisites: [install]
+    args: []
+    behaviour:
+      - uv run ruff check backend scripts; uv run ruff format --check backend scripts.
+      - uv run lint-imports (contracts in backend/.importlinter, ARCH-R006/R007).
+      - "uv run python scripts/lint/sql_safety.py (no f-string or concatenation into text(); from M2 also: no SQL outside analytics/queries, every query file has the scope fragment)."
+    failure: Exit 1 listing every violation.
+    in_check: true
+    ci_jobs: [ci/static]
+
+  - name: backend-typecheck
+    group: backend
+    active_from: M0
+    destructive: false
+    summary: mypy in strict mode over backend/src and scripts.
+    prerequisites: [install]
+    args: []
+    behaviour:
+      - uv run mypy --strict backend/src scripts.
+    failure: Exit 1 on any type error.
+    in_check: true
+    ci_jobs: [ci/static]
+
+  - name: backend-test
+    group: backend
+    active_from: M0
+    destructive: false
+    summary: Backend pytest suites — unit, and integration against cenomi_test.
+    prerequisites: [install, "for SUITE=integration|all: db-upgrade DB=test"]
+    args:
+      - {name: SUITE, default: "all", description: "unit (no database), integration, or all"}
+      - {name: K, default: "", description: "pytest -k expression"}
+    behaviour:
+      - "uv run pytest backend/tests/unit (SUITE=unit|all)."
+      - "uv run pytest backend/tests/integration -m 'not agent_live' (SUITE=integration|all) against cenomi_test."
+      - Writes JUnit to tests/reports/backend/junit-<suite>.xml and coverage to tests/reports/backend/coverage.xml.
+      - Quarantined tests are deselected here and run by ci/quarantine (ARCH-R088).
+    failure: Exit 1 on any failed test; exit 3 if SUITE needs the database and it is unreachable.
+    in_check: true
+    check_args: "SUITE=unit"
+    ci_jobs: [ci/backend]
+
+  # ----------------------------------------------------------------- frontend
+  - name: frontend-format
+    group: frontend
+    active_from: M0
+    destructive: false
+    summary: Rewrite web and package formatting with Prettier (writes files).
+    prerequisites: [install]
+    args: []
+    behaviour:
+      - pnpm -r exec prettier --write .
+    failure: Exit 1 only if a file cannot be parsed.
+    in_check: false
+    ci_jobs: []
+
+  - name: frontend-lint
+    group: frontend
+    active_from: M0
+    destructive: false
+    summary: ESLint (flat config, boundaries, no-danger) and Prettier check across apps and packages.
+    prerequisites: [install]
+    args: []
+    behaviour:
+      - pnpm -r lint (eslint --max-warnings 0); pnpm -r exec prettier --check .
+    failure: Exit 1 listing every violation.
+    in_check: true
+    ci_jobs: [ci/static]
+
+  - name: frontend-typecheck
+    group: frontend
+    active_from: M0
+    destructive: false
+    summary: TypeScript strict type check of every TS package (tsc --noEmit).
+    prerequisites: [install]
+    args: []
+    behaviour:
+      - pnpm -r typecheck.
+    failure: Exit 1 on any type error.
+    in_check: true
+    ci_jobs: [ci/static]
+
+  - name: frontend-test
+    group: frontend
+    active_from: M0
+    destructive: false
+    summary: Vitest unit and component tests for apps/web and packages.
+    prerequisites: [install]
+    args:
+      - {name: FILTER, default: "", description: "vitest name filter"}
+    behaviour:
+      - pnpm -r test (vitest run); JUnit to tests/reports/frontend/junit.xml; coverage report.
+    failure: Exit 1 on any failed test.
+    in_check: true
+    ci_jobs: [ci/frontend]
+
+  - name: frontend-build
+    group: frontend
+    active_from: M0
+    destructive: false
+    summary: Production build of apps/web (next build) and packages.
+    prerequisites: [install]
+    args: []
+    behaviour:
+      - pnpm -r build.
+    failure: Exit 1 on a build error.
+    in_check: false
+    ci_jobs: [ci/frontend]
+
+  # ----------------------------------------------------------------- agent
+  - name: agent-test-mock
+    group: agent
+    active_from: M3
+    destructive: false
+    summary: Agent runtime tests with the scripted mock model provider (no network, no recordings).
+    prerequisites: [install]
+    args: []
+    behaviour:
+      - uv run pytest -m agent_mock backend/tests; JUnit to tests/reports/agent/junit-mock.xml.
+    failure: Exit 1 on any failed test.
+    in_check: false
+    ci_jobs: [ci/agent]
+    reason_until_active: The agent runtime is specified in PR-M3.
+
+  - name: agent-test-replay
+    group: agent
+    active_from: M3
+    destructive: false
+    summary: Golden analytical cases on the replay provider against a seeded cenomi_test.
+    prerequisites: [install, seed-reset DB=test]
+    args:
+      - {name: SET, default: "slice", description: "slice (20 cases, from M3) or benchmark (>= 150 cases, from M5)"}
+    behaviour:
+      - uv run cenomi eval run --provider replay --set SET; a replay miss is a failure, never a live call.
+      - Writes tests/reports/agent/eval-<set>.json and JUnit.
+    failure: Exit 1 on any failed deterministic check.
+    in_check: false
+    ci_jobs: [ci/agent]
+    reason_until_active: The agent runtime and evaluation case schema are specified in PR-M3.
+
+  - name: agent-test-live
+    group: agent
+    active_from: M3
+    destructive: false
+    summary: Live-model evaluation with budgets. Never part of check or ci.
+    prerequisites: ["LLM_MODE=live", LIVE_EVAL_LLM_API_KEY, LIVE_EVAL_MAX_CASES, LIVE_EVAL_MAX_TOKENS, LIVE_EVAL_MAX_COST_USD]
+    args:
+      - {name: SET, default: "slice", description: "slice or benchmark"}
+    behaviour:
+      - Refuses unless all budget variables are set and CENOMI_ENV is dev or ci (ARCH-R089).
+      - Runs the harness with the live provider; stops before any budget is exceeded; records run metadata.
+    failure: "Exit 2 if a control is missing; exit 1 if the run cannot complete; quality results are reported, not pass/fail, until EVALUATION_PLAN sets thresholds (PR-M5)."
+    safety: Spends money. Separate credentials. Manual only.
+    in_check: false
+    ci_jobs: []
+    reason_until_active: The agent runtime is specified in PR-M3; model configuration (GDQ-12) is required.
+
+  # ----------------------------------------------------------------- contracts and integration
+  - name: codegen
+    group: contracts_and_integration
+    active_from: M0
+    destructive: false
+    summary: Regenerate every GENERATED artefact (writes files).
+    prerequisites: [install]
+    args: []
+    behaviour:
+      - Export JSON Schemas from cenomi.contracts for contracts already built (ADR-0004 §1).
+      - Generate packages/contracts-ts types and zod.
+      - "From M1/M2: KPI_CATALOG tables, schema reference, token CSS. From M0-T10: decision register render."
+    failure: Exit 1 if a generator fails; never edits non-generated files.
+    in_check: false
+    ci_jobs: []
+
+  - name: contracts-check
+    group: contracts_and_integration
+    active_from: M0
+    destructive: false
+    summary: Verify generated artefacts are current, schemas use the allowed subset, examples validate, and Pydantic exports equal the bootstrap schemas.
+    prerequisites: [install]
+    args: []
+    behaviour:
+      - Runs codegen into a temporary directory and diffs against the committed files.
+      - Validates every specs/contracts schema against the ADR-0004 subset and every example against its schema.
+      - Normalized comparison of each built Pydantic model with its schema file.
+      - Runs the TS/zod equivalence tests (CA-05).
+    failure: Exit 1 listing each stale or invalid file.
+    in_check: true
+    ci_jobs: [ci/contracts]
+
+  - name: specs-check
+    group: contracts_and_integration
+    active_from: M0
+    destructive: false
+    summary: Validate specifications and engineering metadata (structure, IDs, links, frozen references, make/CI parity).
+    prerequisites: [install]
+    args:
+      - {name: GATE, default: "", description: "M0…M6 enables gate mode checks for that milestone"}
+    behaviour:
+      - Validates specs/engineering/*.yaml and specs/traceability/id_conventions.yaml against specs/engineering/engineering.schema.json.
+      - Verifies docs/handoff/SHA256SUMS for docs/reference/** and docs/design/baseline/** (ADR-0002 §3).
+      - "Checks every ADR has the template headings and is indexed; every spec requirement ID is unique within its document; every ID used in docs/, plans/ and specs/ matches a family."
+      - "Checks every task card in plans/M*_*.md has the 20 fields and one delivery class (RMAP-R007)."
+      - Checks relative Markdown links resolve.
+      - Compares `make help` with make_targets.yaml and workflow job names with ci_checks.yaml.
+      - "Banned-term lint: \"overdue\" must not appear in backend/src, apps/web/src, packages/*/src, tests/fixtures, or specs/ outside specs/engineering/ (rule C4/C5/C7; specs/engineering/ is excluded because it defines the rule)."
+      - "In gate mode: no target with active_from <= GATE reports N/A; all gate checks of the milestone plan are listed in the gate report."
+    failure: Exit 1 listing each finding with file and line.
+    in_check: true
+    ci_jobs: [ci/specs]
+
+  - name: integration-test
+    group: contracts_and_integration
+    active_from: M0
+    destructive: false
+    summary: Cross-component tests — API contracts against the app and database, authorization boundaries, and (from M4) AG-UI event fixtures and tool execution.
+    prerequisites: [install, db-upgrade DB=test]
+    args: []
+    behaviour:
+      - uv run pytest tests/contract tests/security -m 'not agent_live' against cenomi_test with the app in-process (ASGI).
+      - "From M4: pnpm --filter web test:contract (event fixtures validated by the TS SDK)."
+      - JUnit to tests/reports/integration/.
+    failure: Exit 1 on any failed test.
+    in_check: false
+    ci_jobs: [ci/integration]
+
+  - name: e2e
+    group: contracts_and_integration
+    active_from: M0
+    destructive: false
+    summary: Playwright journeys with axe-core against the Compose stack (real PostgreSQL; replay model provider from M3).
+    prerequisites: [docker, install BROWSERS=1]
+    args:
+      - {name: GREP, default: "", description: "Playwright --grep (for example an AT or journey ID)"}
+      - {name: PROJECT, default: "", description: "desktop, tablet or phone; empty runs all three"}
+      - {name: KEEP_UP, default: "0", description: "1 leaves the stack running after the run"}
+    behaviour:
+      - Starts the stack with CENOMI_ENV=test against cenomi_test (seed-reset DB=test from M1), waits for health.
+      - pnpm exec playwright test; artefacts (trace, screenshots, video on failure, network log) to tests/reports/e2e/.
+      - Collects `make logs FOLLOW=0 SERVICE=api` into tests/reports/e2e/api-logs.jsonl.
+      - Stops the stack unless KEEP_UP=1.
+    failure: Exit 1 on any failed journey or serious/critical axe violation.
+    in_check: false
+    ci_jobs: [ci/e2e]
+
+  # ----------------------------------------------------------------- verification
+  - name: trace-report
+    group: verification
+    active_from: M0
+    destructive: false
+    summary: Build the requirement → test trace report from milestone plans and test reports.
+    prerequisites: [install]
+    args:
+      - {name: GATE, default: "", description: "M0…M6 fails when that milestone's AT IDs lack a passing test"}
+    behaviour:
+      - uv run python scripts/trace/report.py; writes tests/reports/trace/trace.json and trace.md (ARCH-R095).
+    failure: "Without GATE: exit 1 only for unknown or malformed IDs. With GATE: also for uncovered or failing AT IDs."
+    in_check: false
+    ci_jobs: [ci/specs, ci/summary]
+
+  - name: security-check
+    group: verification
+    active_from: M0
+    destructive: false
+    summary: Secret scan, dependency audit and licence report.
+    prerequisites: [install, gitleaks]
+    args: []
+    behaviour:
+      - gitleaks detect --redact (whole history in CI; working tree locally).
+      - uv run pip-audit (fails on known vulnerabilities with a fix available, severity high or critical).
+      - pnpm audit --audit-level high.
+      - Licence report for Python and Node dependencies; fails on GPL-family or AGPL without an accepting ADR (ADR-0003 §4).
+    failure: Exit 1 listing each finding (secret values are redacted).
+    in_check: false
+    ci_jobs: [ci/security]
+
+  - name: echarts-gate
+    group: verification
+    active_from: M0
+    destructive: false
+    summary: Run the DX3 gallery self-test on a local, version-pinned ECharts 5.6.0 (GDQ-06) and record the result.
+    prerequisites: [install BROWSERS=1]
+    args: []
+    behaviour:
+      - Serves docs/design/baseline/boards/ read-only with a static server.
+      - Playwright routes the board's cdnjs ECharts 5.6.0 URL to the locked node_modules/echarts@5.6.0/dist/echarts.min.js and verifies the served file's version string is 5.6.0.
+      - Clicks "Run self-test", waits for the result, writes tests/reports/echarts/result.json (rows, pass/fail/na counts, treemap metrics) and result.txt.
+    failure: "M0–M1: exit 0 and record the result (informational). From M2: exit 1 if any ECharts row fails and the DXD-23 fallback is not recorded for that chart (GDQ-06, DXD-21)."
+    in_check: false
+    ci_jobs: [ci/echarts-gate]
+
+  - name: replay
+    group: verification
+    active_from: M6
+    destructive: false
+    summary: Insight checkpoint replay to as_of and golden comparison.
+    prerequisites: [seed-reset DB=test]
+    args:
+      - {name: SET, default: "slice", description: "slice (D2, D8) or full (detectors-1.1)"}
+    behaviour:
+      - uv run cenomi insights replay --set SET; compares insights, versions and the replay hash with tests/fixtures/insights.
+    failure: Exit 1 on any difference.
+    in_check: false
+    ci_jobs: [ci/integration]
+    reason_until_active: Proactive intelligence is specified in PR-M6 (slice part built before M5 under DR-010).
+
+  # ----------------------------------------------------------------- full validation
+  - name: check
+    group: full_validation
+    active_from: M0
+    destructive: false
+    summary: Fast, non-destructive pre-PR validation. Needs no running database.
+    prerequisites: [install]
+    args: []
+    behaviour:
+      - "Runs, in order: backend-lint, backend-typecheck, frontend-lint, frontend-typecheck, contracts-check, specs-check, backend-test SUITE=unit, frontend-test."
+      - Stops at the first failure and prints which target failed.
+    failure: Exit status of the first failing target.
+    in_check: false
+    ci_jobs: []
+
+  - name: ci
+    group: full_validation
+    active_from: M0
+    destructive: false
+    summary: Stable CI entry point. Runs the targets of one CI job (JOB=…) or of every job, as declared in specs/engineering/ci_checks.yaml.
+    prerequisites: [install]
+    args:
+      - {name: JOB, default: "", description: "a job name from ci_checks.yaml without the ci/ prefix (for example backend); empty runs every job with make_ci: true in dependency order"}
+    behaviour:
+      - Reads ci_checks.yaml and runs the listed targets of the selected job(s).
+      - May recreate the test database cenomi_test only (seed-reset DB=test with CONFIRM=yes when CENOMI_ENV=ci or after interactive confirmation); never touches cenomi_dev.
+      - "Never runs db-downgrade, agent-test-live or any target with destructive: true other than seed-reset DB=test."
+    failure: Exit status of the first failing target; prints the job and target.
+    in_check: false
+    ci_jobs: [all]

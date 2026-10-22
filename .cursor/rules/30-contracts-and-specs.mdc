@@ -1,0 +1,16 @@
+---
+description: Contracts, generated files and machine-readable specs
+globs: specs/**,packages/contracts-ts/**,backend/src/cenomi/contracts/**,scripts/codegen/**
+alwaysApply: false
+---
+
+# Contract rules
+
+Source: ADR-0004; `docs/architecture/ARCHITECTURE.md` §11.
+
+- `specs/contracts/*.schema.json` use only the ADR-0004 JSON Schema subset, `additionalProperties: false` on every object, and at least one valid example. (Checked: `make contracts-check`, `make specs-check`.)
+- Once a contract's Pydantic model exists, the model is the source. Change the model, run `make codegen`, commit the regenerated schema and TS/zod. Never hand-edit a GENERATED file.
+- Wire format is camelCase JSON. Python attributes are snake_case with `alias_generator=to_camel`. Timestamps are RFC 3339 UTC. Calendar dates are Asia/Riyadh. Money is a decimal string with currency.
+- Breaking changes create a `v2` file under a CR. Additive optional fields and new registry codes go in the owning specification PR.
+- Error codes come only from `specs/contracts/error_codes.v1.yaml`.
+- Implementation PRs never change `specs/**` except GENERATED files produced by `make codegen`.
