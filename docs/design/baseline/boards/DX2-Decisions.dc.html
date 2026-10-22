@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DX2 design decision register</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-size:12px;font-weight:600;color:#4B4560;text-transform:uppercase;letter-spacing:.05em;padding:10px 12px;border-bottom:2px solid #E4E1EC}
+td{font-size:13px;line-height:19px;padding:10px 12px;border-bottom:1px solid #EEECF3;vertical-align:top}
+.ok{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#DDF3EF;color:#0F5048}
+.gate{display:flex;gap:24px;align-items:flex-start;background:#F4F1FC;border-radius:12px;padding:16px 20px}
+.gate b{font-size:15px}
+.gate p{margin:4px 0 0;font-size:13px;line-height:19px;color:#4B4560}
+.st{font-size:12px;color:#5E5873}
+code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#F4F3F7;padding:1px 5px;border-radius:4px}
+</style>
+</helmet>
+<div style="width: 1936px; box-sizing: border-box; padding: 56px 64px; background: #FFFFFF; font-family: 'Inter', system-ui, sans-serif; color: #1B1530; display: flex; flex-direction: column; gap: 20px">
+<div>
+<h1 style="margin: 0; font-family: 'Inter Tight', 'Inter', sans-serif; font-size: 28px">DX2 · Design decision register</h1>
+<p style="margin: 8px 0 0; font-size: 15px; color: #4B4560">Decisions from the project owner’s DX2 review, 22 Oct 2026. They extend DXD-01…09 and bind DX3–DX6, GENERATIVE_UI.md and PRODUCT_SPEC.md in M0. “Prototype” says what the DX2 boards already show; “Designed in” says where the rest is drawn.</p>
+</div>
+<div class="gate"><div style="flex: 1 1 0"><b>Gate DX2 · Approved</b><p>Approved in direction by the project owner, conditional on visual verification of the Admin dashboard. The verification ran on 22 Oct 2026: 64 of 64 browser checks passed, all 12 Admin cards render with data, and the stress tests finished with no errors (see the DX2 verification record board). The rendering defect in the exported PDF was a script syntax error and is fixed.</p></div><div style="flex: 0 0 360px"><b>Next stage</b><p>DX3 · Chart Parity Gallery: every V2 chart type in its proposed implementation, with tooltips, legends, selection, drilldown, keyboard and screen-reader access, responsive behaviour and an ECharts treemap fidelity test.</p></div></div>
+<table>
+<thead><tr><th style="width: 90px">ID</th><th style="width: 210px">Decision</th><th>What it means for the design</th><th style="width: 300px">Prototype</th><th style="width: 150px">Designed in</th><th style="width: 90px">Status</th></tr></thead>
+<tbody>
+<tr><td>DXD-10</td><td>Expanded cards</td><td>Keep the centred overlay for quick inspection. Every expanded card also offers <b>Open in workspace</b>, which moves the card into the analytical workspace with its filters, selection and active tab intact.</td><td>Overlay and the Open in workspace action on all 12 Admin cards.</td><td>DX4 workspace</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-11</td><td>Records vs Inspector</td><td>Dashboard drilldowns live in the card’s <b>Records</b> tab. The shared Inspector is reserved for evidence, definitions, calculation provenance and execution details. Both reuse the same table and dataset components.</td><td>Records tab drills to the selected point (e.g. 18 amendments, by mall).</td><td>DX4 inspector · GD components</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-12</td><td>Selection model</td><td>One active selection globally is the agent’s default context. Each card remembers its own last selection. The user can explicitly <b>pin</b> several selections for a cross-KPI comparison; unrelated selections are never combined automatically.</td><td>Single global selection. Per-card memory and pinning are not drawn yet.</td><td>DX4 context tray</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-13</td><td>Mall map</td><td>Out of the baseline. Keep the mall cards, available-unit counts, regions and actions.</td><td>Tenant opportunities card without the map.</td><td>—</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-14</td><td>Partial coverage everywhere</td><td>The same <b>Partial</b> label and a sentence naming what is missing (“covers 18 of 25 malls”) on dashboard charts and on agent-generated components. Coverage is a field of the result, not text the model writes.</td><td>Unit discrepancy card; States board, state 8.</td><td>DX3 charts · DX5 GenUI</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-15</td><td>Filters vs boundaries</td><td>Analytical filters are removable chips. Authorization boundaries (role access, lease restriction) and the frozen reference date sit in a separate <b>Boundaries</b> row with a lock icon. Neither the user nor the agent can remove or widen them in the panel.</td><td>Admin and Tenant agent panels.</td><td>DX4 · DX5</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-16</td><td>One state vocabulary</td><td>Cards and generative components share one set of states: <code>loading</code>, <code>zero</code> (shown as 0), <code>empty</code> (no match · before dataset · after reference date), <code>unavailable</code> (not in the dataset), <code>error</code> (reference and Retry), <code>outside_access</code>, <code>partial</code>, <code>undefined_ratio</code> (zero denominator: dash and “0 of 0”).</td><td>States board covers all eight on cards.</td><td>DX5 GenUI states</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-17</td><td>Context and scroll preservation</td><td>Opening or closing any overlay (expanded card, agent sheet, filter sheet, inspector) keeps page scroll, card filters, selection and active tab.</td><td>Verified for the expanded card: scroll and card position unchanged after close.</td><td>DX4 inspector</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-18</td><td>Chart and table share one dataset</td><td>Chart, Table and Records read the same authorized result for the card’s scope. A table may show finer rows (Other expanded) but its totals must reconcile with the chart.</td><td>Verified: heatmap 44 = 44; donut Other 199 = 97 + 74 + 28.</td><td>DX3 · GD</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-19</td><td>Phone navigation</td><td>Below 820 px the side rail becomes a bottom tab bar, matching the approved Responsive board.</td><td>Admin and Tenant boards.</td><td>—</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-20</td><td>Value labels on narrow charts</td><td>When direct value labels would collide, show the value on the selected mark and in the tooltip; the Table tab lists every value.</td><td>Reported sales below 520 px.</td><td>DX3 rule for all charts</td><td><span class="ok">Approved</span></td></tr>
+</tbody>
+</table>
+<p class="st">DXD-19 and DXD-20 came out of the verification run, not the review; they apply the approved Responsive board and accessibility rules and are listed so the register stays complete.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1936,"height":1140}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DX5 generative UI contract</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.w{width:1936px;box-sizing:border-box;padding:56px 64px;background:#fff;font-family:'Inter',system-ui,sans-serif;color:#1B1530;display:flex;flex-direction:column;gap:20px}
+h1{margin:0;font-family:'Inter Tight','Inter',sans-serif;font-size:28px}
+h2{margin:14px 0 0;font-size:19px}
+h3{margin:0 0 6px;font-size:15px}
+p{margin:0}
+.lead{margin-top:8px;font-size:15px;line-height:22px;color:#4B4560;max-width:1560px}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-size:12px;font-weight:600;color:#4B4560;text-transform:uppercase;letter-spacing:.05em;padding:9px 10px;border-bottom:2px solid #E4E1EC;vertical-align:bottom}
+td{font-size:13px;line-height:19px;padding:8px 10px;border-bottom:1px solid #EEECF3;vertical-align:top}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#F4F3F7;padding:1px 5px;border-radius:4px}
+pre{margin:0;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;line-height:16px;background:#1B1530;color:#E9E5F5;border-radius:10px;padding:14px 16px;white-space:pre}
+.ok{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#DDF3EF;color:#0F5048;white-space:nowrap}
+.rev{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#EFEAFB;color:#3B1F8C;white-space:nowrap}
+.sup{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#F4F3F7;color:#3A3550;border:1px dashed #A9A2BF;white-space:nowrap}
+.cond{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#FDF0E1;color:#8A4B08;white-space:nowrap}
+.vf{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#FFF4D6;color:#7A5300;white-space:nowrap}
+.gate{display:flex;gap:24px;background:#FFF8EB;border:1px solid #F6D9A8;border-radius:12px;padding:16px 20px}
+.gate b{font-size:15px}.gate p{margin:4px 0 0;font-size:13px;line-height:19px;color:#4B4560}
+.gate ul,.box ul,.box ol{margin:6px 0 0;padding-left:18px;font-size:13px;line-height:19px;color:#3A3550}
+.gate li,.box li{margin:2px 0}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+.box{border:1px solid #E4E1EC;border-radius:12px;padding:16px 18px}
+.note{font-size:12.5px;line-height:18px;color:#5E5873}
+.pass{color:#0F5048;font-weight:700}.fail{color:#B42318;font-weight:700}
+.seq{display:flex;flex-direction:column;gap:0;border-left:2px solid #CDBDF5;margin-left:6px;padding-left:14px}
+.seq div{font-size:12.5px;line-height:18px;padding:3px 0;position:relative}
+.seq div::before{content:"";position:absolute;left:-19px;top:9px;width:8px;height:8px;border-radius:50%;background:#6D28D9}
+.seq div.c::before{background:#1B1530}.seq div.s::before{background:#0F766E}
+.seq b{display:inline-block;min-width:62px;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:#4B4560}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.shots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+.shots figure{margin:0;display:flex;flex-direction:column;gap:6px}
+.shots img{width:100%;border:1px solid #E4E1EC;border-radius:10px;display:block}
+.shots figcaption{font-size:12.5px;color:#4B4560}
+.kpis{display:flex;gap:14px}
+.kpi{flex:1;background:#F4F1FC;border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;gap:2px}
+.kpi b{font-size:24px;color:#3B1F8C}.kpi span{font-size:13px;color:#4B4560}
+.q{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#FFF4D6;color:#7A5300;white-space:nowrap}
+.prop{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#EFEAFB;color:#3B1F8C;white-space:nowrap}
+
+</style>
+</helmet>
+<div class="w">
+<div><h1>DX5 · Generative UI contract</h1><p class="lead">Design contract for GENERATIVE_UI.md, AGUI_INTEGRATION.md and API_CONTRACTS.md, revised after the DX5 review. DX5 is approved; the refinements DXD-55…62 are folded in below. The interactive board demonstrates and tests every rule.</p></div>
+<div class="grid3"><div class="box"><h3>1 · The result is authoritative</h3><ul><li>Tools produce <code>analysis_result.v1</code>: rows, facts (raw and formatted), metric, filters, scope, dimensions, dataset, coverage.</li><li>Every derived fact carries a verified calculation record (DXD-55). Neither the LLM nor the renderer derives business values.</li><li>Components read values from the result, never from the payload.</li></ul></div>
+<div class="box"><h3>2 · The payload only chooses how</h3><ul><li><code>cenomi.presentation.v1</code> names a registered component, a resultRef, a title and encodings.</li><li>The agent picks among allowed representations through a bounded policy (DXD-51); the user can switch with View as.</li><li>No code, markup, links or values in the payload.</li></ul></div>
+<div class="box"><h3>3 · Checks before anything renders</h3><ul><li>Result checks: resolve, authorize against grants, verify calculations.</li><li>Presentation checks: schema, registry, grounding, envelope, limits, safety.</li><li>Only a presentation failure on a good result falls back to the table (DXD-57).</li></ul></div></div>
+<div class="two"><div><h2 style="margin-top: 0">cenomi.presentation.v1 · example</h2><pre>{
+ &quot;schema&quot;: &quot;cenomi.presentation.v1&quot;,
+ &quot;component&quot;: &quot;bar&quot;,
+ &quot;resultRef&quot;: &quot;res_8d5121cf&quot;,
+ &quot;title&quot;: &quot;Renewal amendments 4 wk+ by mall · Central&quot;,
+ &quot;subtitle&quot;: &quot;[[t]] in Central · [[r0]] at Rawdah Point Mall&quot;,
+ &quot;encoding&quot;: {
+  &quot;x&quot;: &quot;mall&quot;,
+  &quot;y&quot;: &quot;value&quot;,
+  &quot;sort&quot;: &quot;value_desc&quot;
+ },
+ &quot;envelope&quot;: {
+  &quot;cls&quot;: &quot;Observed&quot;,
+  &quot;scope&quot;: &quot;Access: all regions&quot;,
+  &quot;dataset&quot;: &quot;sd-2026.10.20-01&quot;,
+  &quot;coverage&quot;: &quot;Coverage: complete&quot;
+ },
+ &quot;interactions&quot;: {
+  &quot;select&quot;: true,
+  &quot;drilldown&quot;: &quot;records&quot;
+ }
+}</pre><h2>Calculation record · derived fact (DXD-55)</h2><pre>{
+ &quot;method&quot;: &quot;ratio&quot;,
+ &quot;formula&quot;: &quot;mismatched units ÷ units checked (reporting malls)&quot;,
+ &quot;operands&quot;: [
+  {
+   &quot;fact&quot;: &quot;mm&quot;,
+   &quot;label&quot;: &quot;mismatched units&quot;,
+   &quot;value&quot;: 33
+  },
+  {
+   &quot;fact&quot;: &quot;den&quot;,
+   &quot;label&quot;: &quot;units checked&quot;,
+   &quot;value&quot;: 1291
+  }
+ ],
+ &quot;periods&quot;: &quot;2026-09&quot;,
+ &quot;metric&quot;: &quot;unit_discrepancy.mismatch_rate v1&quot;,
+ &quot;evidence&quot;: [
+  &quot;q_d65e3f50&quot;
+ ],
+ &quot;status&quot;: &quot;verified&quot;,
+ &quot;verifier&quot;: &quot;derive v1 · deterministic · recomputed by the evidence verifier&quot;
+}</pre></div><div><h2 style="margin-top: 0">analysis_result.v1 · excerpt</h2><pre>{
+ &quot;schema&quot;: &quot;analysis_result.v1&quot;,
+ &quot;ref&quot;: &quot;res_8d5121cf&quot;,
+ &quot;metric&quot;: {
+  &quot;id&quot;: &quot;amendments.pending_by_age_band&quot;,
+  &quot;name&quot;: &quot;Pending amendments by age band&quot;,
+  &quot;unit&quot;: &quot;amendments&quot;,
+  &quot;kind&quot;: &quot;parity&quot;
+ },
+ &quot;cls&quot;: &quot;Observed&quot;,
+ &quot;grain&quot;: [&quot;mall&quot;],
+ &quot;shape&quot;: &quot;categorical&quot;,
+ &quot;filters&quot;: {
+  &quot;type&quot;: &quot;Renewal&quot;,
+  &quot;band&quot;: &quot;4 wk+&quot;,
+  &quot;region&quot;: &quot;Central&quot;,
+  &quot;year&quot;: 2026
+ },
+ &quot;scope&quot;: {
+  &quot;kind&quot;: &quot;regions&quot;,
+  &quot;label&quot;: &quot;Access: all regions&quot;
+ },
+ &quot;dataset&quot;: {
+  &quot;version&quot;: &quot;sd-2026.10.20-01&quot;,
+  &quot;asOf&quot;: &quot;2026-10-20&quot;
+ },
+ &quot;coverage&quot;: {
+  &quot;status&quot;: &quot;complete&quot;,
+  &quot;note&quot;: &quot;&quot;
+ },
+ &quot;rows&quot;: [
+  [&quot;Rawdah Point Mall&quot;, 9, &quot;fact r0&quot;],
+  [&quot;Sandstone Galleria&quot;, 6, &quot;fact r1&quot;],
+  [&quot;Qasr Plaza&quot;, 3, &quot;fact r2&quot;],
+  [&quot;… 7 more rows&quot;]
+ ],
+ &quot;total&quot;: {
+  &quot;value&quot;: 18,
+  &quot;fact&quot;: &quot;t&quot;
+ },
+ &quot;facts&quot;: {
+  &quot;t&quot;: &quot;18&quot;,
+  &quot;r0&quot;: &quot;9&quot;,
+  &quot;zero_n&quot;: &quot;7&quot;
+ }
+}</pre></div></div>
+<h2>Component registry and implementation priority (DXD-42, DXD-62)</h2>
+<table><thead><tr><th style="width: 100px">Kind</th><th style="width: 200px">Name</th><th style="width: 120px">Priority</th><th style="width: 300px">Result shapes</th><th style="width: 80px">Max rows</th><th>Responsive rule</th><th style="width: 230px">Indicative effort</th></tr></thead><tbody><tr><td><code>kpi</code></td><td>KPI card</td><td><span class="ok">Core</span></td><td>categorical, time, matrix, stages, hierarchy, scalar</td><td>—</td><td>Same at all sizes; sub-values wrap.</td><td>0.5 h</td></tr><tr><td><code>text</code></td><td>Text</td><td><span class="ok">Core</span></td><td>categorical, time, scalar</td><td>—</td><td>Labels stack above statements at ≤ 360 px.</td><td>1 h (with insight)</td></tr><tr><td><code>table</code></td><td>Table</td><td><span class="ok">Core</span></td><td>categorical, time, matrix, stages, hierarchy, multi</td><td>200</td><td>Horizontal scroll inside the component; never the page.</td><td>2 h (paging, fallback)</td></tr><tr><td><code>bar</code></td><td>Bar chart (ranked)</td><td><span class="ok">Core</span></td><td>categorical</td><td>30</td><td>Long labels truncate; the full label stays in the accessible name.</td><td>1 h (DX3 ECharts bar)</td></tr><tr><td><code>trend</code></td><td>Trend (line)</td><td><span class="ok">Core</span></td><td>time</td><td>60</td><td>Every other month label at ≤ 360 px; values strip hidden in the panel (values remain in point names and the table view).</td><td>1 h (DX3 ECharts line)</td></tr><tr><td><code>heatmap</code></td><td>Heatmap</td><td><span class="cond">Specialized</span></td><td>matrix</td><td>120</td><td>Column labels abbreviate at ≤ 360 px.</td><td>0.5 h (wrap DX3 heatmap)</td></tr><tr><td><code>funnel</code></td><td>Funnel</td><td><span class="cond">Specialized</span></td><td>stages</td><td>8</td><td>Bars left-align at ≤ 360 px.</td><td>0.5 h (wrap DX3 funnel)</td></tr><tr><td><code>treemap</code></td><td>Treemap</td><td><span class="cond">Specialized</span></td><td>hierarchy</td><td>60</td><td>Below 400 px becomes a ranked list (same keys).</td><td>1 h (wrap DX3 treemap + ranked list)</td></tr><tr><td><code>compare</code></td><td>Comparison table</td><td><span class="cond">Specialized</span></td><td>multi</td><td>30</td><td>Rows become stacked cards at ≤ 360 px; “Leader” stays as text.</td><td>0.5 h (table preset)</td></tr><tr><td><code>insight</code></td><td>Insight panel</td><td><span class="ok">Core</span></td><td>categorical, time, scalar</td><td>—</td><td>Labels stack at ≤ 360 px.</td><td>with text</td></tr><tr><td><code>notice</code></td><td>Warning / partial notice</td><td><span class="ok">Core</span></td><td>any (attached to a result)</td><td>—</td><td>Wraps.</td><td>0.5 h (with unavailable)</td></tr><tr><td><code>unavailable</code></td><td>Unavailable card</td><td><span class="ok">Core</span></td><td>any (attached to a result)</td><td>—</td><td>Wraps.</td><td>with notice</td></tr><tr><td><code>evidence</code></td><td>Evidence block</td><td><span class="ok">Core</span></td><td>any (attached to a result)</td><td>—</td><td>Fewer facts listed in compact sizes; all in the inspector.</td><td>1 h</td></tr><tr><td><code>method</code></td><td>Method card</td><td><span class="cond">Specialized</span></td><td>any (attached to a result)</td><td>—</td><td>Wraps.</td><td>0.5 h (static layout)</td></tr><tr><td><code>records</code></td><td>Drilldown records</td><td><span class="ok">Core</span></td><td>records</td><td>50</td><td>Horizontal scroll; ≤ 50 rows, then “Show all in records”.</td><td>1 h (reuse dashboard drilldown)</td></tr></tbody></table>
+<p class="note">All fifteen stay in the registry. Core kinds are built first; specialized kinds wrap the DX3 dashboard ECharts primitives or are simple layouts. Until a specialized kind exists, a payload naming it renders through the deterministic table, so no data, evidence or selection is lost. Efforts are indicative for Cursor-assisted work and are finalised in the M4 plan.</p>
+<div class="two"><div><h2 style="margin-top: 0">Validation pipeline (DXD-47, amended by DXD-57)</h2><table><thead><tr><th style="width: 260px">Step</th><th>Checks</th></tr></thead><tbody><tr><td>R1 · Result resolves</td><td>resultRef names a validated result of this run (or a stored one being resumed).</td></tr><tr><td>R2 · Authorization (grants vs scope, dimensions, records)</td><td>The viewer’s current grants cover every region, mall and lease in the result scope and dimensions, and every drilldown record. Re-run on resume. Never a label comparison.</td></tr><tr><td>R3 · Calculations verified</td><td>Every derived fact has a verified calculation record; the verifier recomputes it from its operands.</td></tr><tr><td>P1 · Schema</td><td>cenomi.presentation.v1; required fields; no unknown fields (a payload cannot carry its own values, data or rows).</td></tr><tr><td>P2 · Registry</td><td>Component is in the closed registry and can show this result’s shape; encodings name real dimensions.</td></tr><tr><td>P3 · Grounding</td><td>Text uses fact tokens only; every token is a fact of the result.</td></tr><tr><td>P4 · Envelope</td><td>Any envelope field present equals the result’s envelope (class, dataset, coverage, scope).</td></tr><tr><td>P5 · Limits</td><td>Rows per component, title length, payload ≤ 64 KB.</td></tr><tr><td>P6 · Safety</td><td>No markup, script, links or forbidden keys in any string.</td></tr></tbody></table></div><div><h2 style="margin-top: 0">Failure classes and what the user sees</h2><table><thead><tr><th style="width: 150px">Class</th><th style="width: 200px">When</th><th>Shows</th><th style="width: 100px">Sample</th></tr></thead><tbody><tr><td><b>None</b></td><td>All checks pass.</td><td>Render.</td><td>—</td></tr><tr><td><b>Partial data</b></td><td>Coverage is partial (not a failure).</td><td>Render with “Coverage: partial — …”, “No report” cells and a Partial notice.</td><td>V2</td></tr><tr><td><b>Stale data</b></td><td>Result was generated with an older dataset version (stored answers).</td><td>Render exactly as generated with a Stale label and Re-run with current data (DXD-33).</td><td>S1</td></tr><tr><td><b>Presentation failure</b></td><td>The payload fails P1–P6 but the result resolves, is authorized and verified.</td><td>Deterministic table from the result: its title, envelope, coverage, formatting, row limit and paging. Rejected payload logged.</td><td>I1–I5, I7–I9, F1</td></tr><tr><td><b>Calculation failure</b></td><td>A derived value has no verified calculation, or does not recompute.</td><td>Error card naming the failure. No values, no table fallback. The analytics step can be re-run.</td><td>C1</td></tr><tr><td><b>Authorization failure</b></td><td>The viewer’s current grants do not cover the result or its records.</td><td>Withheld. No values, labels, counts or out-of-grant entity names.</td><td>I6, A2, A3</td></tr><tr><td><b>Unknown result / unreadable payload</b></td><td>resultRef does not resolve, or the payload is not valid JSON.</td><td>Withheld. Nothing is guessed.</td><td>I10</td></tr></tbody></table></div></div>
+<div class="two"><div><h2 style="margin-top: 0">Authorization by grants (DXD-56)</h2><div class="box"><ul><li>Viewers carry grants: regions (admin all, regional manager Central), or leases (tenant T-31206, lease-level results only).</li><li>Each result carries its access scope: level, regions, malls, leases. Records are checked one by one on drilldown.</li><li>A result partly outside grants is withheld, never filtered by the renderer: a narrower question is a new query.</li><li>Stored results are revalidated on resume; error messages never name out-of-grant entities.</li></ul></div><table><thead><tr><th>Result</th><th style="width: 220px">Scope</th><th style="width: 110px">Portfolio admin</th><th style="width: 120px">Central manager</th><th style="width: 90px">Tenant</th></tr></thead><tbody><tr><td>Renewal amendments waiting 4 weeks or more · Central</td><td>region · Central</td><td><span class="pass">allowed</span></td><td><span class="pass">allowed</span></td><td><span class="fail">withheld</span></td></tr><tr><td>Unit mismatch rate · Central malls · September 2026</td><td>region · Central</td><td><span class="pass">allowed</span></td><td><span class="pass">allowed</span></td><td><span class="fail">withheld</span></td></tr><tr><td>Reported sales · lease T-31206 · January to September 2026</td><td>lease · Central</td><td><span class="pass">allowed</span></td><td><span class="pass">allowed</span></td><td><span class="pass">allowed</span></td></tr><tr><td>Pending amendments by type and age band · Central</td><td>region · Central</td><td><span class="pass">allowed</span></td><td><span class="pass">allowed</span></td><td><span class="fail">withheld</span></td></tr><tr><td>Leasing funnel · portfolio · 2026</td><td>portfolio · Central, Eastern, Western</td><td><span class="pass">allowed</span></td><td><span class="fail">withheld</span></td><td><span class="fail">withheld</span></td></tr><tr><td>Service requests by category and type · portfolio · 2026</td><td>portfolio · Central, Eastern, Western</td><td><span class="pass">allowed</span></td><td><span class="fail">withheld</span></td><td><span class="fail">withheld</span></td></tr><tr><td>Central malls · four KPIs side by side · no combined score</td><td>region · Central</td><td><span class="pass">allowed</span></td><td><span class="pass">allowed</span></td><td><span class="fail">withheld</span></td></tr><tr><td>Mismatched units by mall · portfolio · September 2026</td><td>portfolio · Central, Eastern, Western</td><td><span class="pass">allowed</span></td><td><span class="fail">withheld</span></td><td><span class="fail">withheld</span></td></tr></tbody></table></div>
+<div><h2 style="margin-top: 0">Representation policy (DXD-51)</h2><table><thead><tr><th style="width: 60px">Rule</th><th style="width: 150px">Input</th><th>Effect</th></tr></thead><tbody><tr><td><b>P1</b></td><td>Registry</td><td>Keep only kinds that can show the result’s shape; drop Text without verified statements.</td></tr><tr><td><b>P2</b></td><td>Intent</td><td>Order by the user’s intent: ranking → bar, headline → card, trend → line, exact values → table, composition → treemap, concentration → heatmap, conversion → funnel.</td></tr><tr><td><b>P3</b></td><td>Data and dimensions</td><td>Fewer than three time points removes the line; more rows than the width limit keeps the bar as a disclosed top-N with the table holding every row.</td></tr><tr><td><b>P4</b></td><td>Display space</td><td>Treemap below 400 px → ranked list; a heatmap with more than four columns at ≤ 360 px → table first.</td></tr><tr><td><b>P5</b></td><td>Accessibility</td><td>A screen-reader preference puts the table first; charts stay under View as. Every kind has text values, names and states regardless.</td></tr><tr><td><b>P6</b></td><td>Budget</td><td>Panel 3, workspace 6 generated components; extra supporting information through Open in workspace and the inspector (DXD-54).</td></tr></tbody></table><h2>Policy outcomes in the prototype</h2><table><thead><tr><th style="width: 90px">Intent</th><th>Result</th><th style="width: 110px">Size</th><th style="width: 140px">Primary</th><th style="width: 170px">View as</th><th style="width: 200px">Composition</th></tr></thead><tbody><tr><td>ranking</td><td>Renewal amendments waiting 4 weeks or more · Central</td><td>workspace</td><td><b>Bar chart (ranked)</b></td><td>Table → KPI card → Text</td><td>KPI card → Bar chart (ranked) (primary) → Evidence block</td></tr><tr><td>headline</td><td>Renewal amendments waiting 4 weeks or more · Central</td><td>panel</td><td><b>KPI card</b></td><td>Text → Table → Bar chart (ranked)</td><td>KPI card (primary) → Evidence block</td></tr><tr><td>ranking</td><td>Renewal amendments waiting 4 weeks or more · Central</td><td>workspace · screen reader</td><td><b>Table</b></td><td>Bar chart (ranked) → KPI card → Text</td><td>KPI card → Table (primary) → Evidence block</td></tr><tr><td>ranking</td><td>Mismatched units by mall · portfolio · September 2026</td><td>panel</td><td><b>Bar chart (ranked)</b></td><td>Table → KPI card → Text</td><td>Partial notice → KPI card → Bar chart (ranked) (primary)</td></tr><tr><td>trend</td><td>Reported sales · lease T-31206 · January to September 2026</td><td>phone</td><td><b>Trend (line)</b></td><td>Table → KPI card → Text</td><td>KPI card → Trend (line) (primary) → Evidence block</td></tr><tr><td>composition</td><td>Service requests by category and type · portfolio · 2026</td><td>phone</td><td><b>Treemap</b></td><td>Table → KPI card</td><td>KPI card → Treemap (primary) → Evidence block</td></tr><tr><td>concentration</td><td>Pending amendments by type and age band · Central</td><td>workspace</td><td><b>Heatmap</b></td><td>Table → KPI card</td><td>KPI card → Heatmap (primary) → Evidence block</td></tr><tr><td>conversion</td><td>Leasing funnel · portfolio · 2026</td><td>panel</td><td><b>Funnel</b></td><td>Table → KPI card</td><td>KPI card → Funnel (primary) → Evidence block</td></tr></tbody></table></div></div>
+<div class="two"><div><h2 style="margin-top: 0">Subsets, pages and samples are always disclosed (DXD-59)</h2><table><thead><tr><th style="width: 110px">Kind</th><th style="width: 260px">When</th><th>Disclosure</th></tr></thead><tbody><tr><td><b>Complete</b></td><td>Every row of the result is shown.</td><td>No line; declaration kind “complete”.</td></tr><tr><td><b>Top-N</b></td><td>A chart at its width limit (bar: workspace 15, panel 10, canvas/phone 8).</td><td>“Subset · top 10 of 25 malls by highest value. The other 15 are in the table view; totals cover all rows.”</td></tr><tr><td><b>Page</b></td><td>A table over its page size (workspace 25, panel 10, canvas/phone 8).</td><td>“Page 1 of 3 · rows 1–10 of 25. Totals cover all rows.” with Previous / Next.</td></tr><tr><td><b>Sample</b></td><td>Records drilldowns that return a sample.</td><td>“Showing 8 of 18 records, oldest first.”</td></tr><tr><td><b>Aggregate</b></td><td>Only when the result itself carries an aggregate row with a verified calculation.</td><td>Row labelled “Other N malls” with its calculation in Evidence. The renderer never aggregates.</td></tr></tbody></table><p class="note" style="margin-top: 6px">Each chart and table declares <code>data-subset</code>: kind, keys shown, total rows and order. The invariance check verifies the declaration against the result.</p></div>
+<div><h2 style="margin-top: 0">Continuity (DXD-60)</h2><table><thead><tr><th style="width: 220px">Action</th><th>Guarantee</th></tr></thead><tbody><tr><td><b>Switch representation (View as)</b></td><td>Same componentId, resultRef and selection key; envelope identical; selection shown on marks or as a selection note on kinds without marks.</td></tr><tr><td><b>Move panel ↔ workspace</b></td><td>Component instance moves with its id, selection and envelope; layout changes per size class only.</td></tr><tr><td><b>Expand</b></td><td>Dialog over the page with the same instance; Escape returns focus; nothing re-queried.</td></tr><tr><td><b>Resume a thread</b></td><td>Rehydrate {componentId, resultRef, selection} and re-run R1–R3 with current grants. If authorization fails the component is withheld and the stored selection is not restored.</td></tr><tr><td><b>Fallback</b></td><td>Keeps componentId and selection keys; marks become table rows.</td></tr></tbody></table></div></div>
+<div class="two"><div><h2 style="margin-top: 0">State vocabulary (DXD-45)</h2><table><thead><tr><th style="width: 120px">State</th><th style="width: 200px">Means</th><th>Shows</th><th style="width: 180px">Source in the prototype</th></tr></thead><tbody><tr><td><b>Default</b></td><td>The validated result.</td><td>All values printed; envelope.</td><td>Result rows</td></tr><tr><td><b>Partial</b></td><td>Some rows or periods are missing from the result.</td><td>“No report” / “Not loaded” in place of the value (hatched, never a zero bar); Partial chip; envelope says “Coverage: partial — …”.</td><td>Real (mismatch rate) or labelled fixture</td></tr><tr><td><b>Zero</b></td><td>The value exists and is 0.</td><td>Prints 0; empty bar track; no hatch.</td><td>Real (Mirage Commons)</td></tr><tr><td><b>Empty</b></td><td>No records match the filters.</td><td>No numbers; explains that empty is not zero; suggests widening within access.</td><td>Any result</td></tr><tr><td><b>Undefined ratio</b></td><td>Denominator is 0.</td><td>“Not defined”, never 0% or 100%; reason in the card.</td><td>Labelled fixture</td></tr><tr><td><b>Loading</b></td><td>Tool running; nothing validated yet.</td><td>Skeleton lines; role=status; no values.</td><td>—</td></tr><tr><td><b>Error</b></td><td>Tool failed after retry.</td><td>Error card with request ref and Retry this step (adds answer v2, DXD-37).</td><td>—</td></tr><tr><td><b>Unavailable</b></td><td>The concept or total cannot be computed.</td><td>“—”, the reason, and what is available instead; envelope class Unavailable.</td><td>Real (Central-wide rate) or concept</td></tr></tbody></table></div><div><h2 style="margin-top: 0">Formatting (DXD-44)</h2><table><thead><tr><th style="width: 140px">Value</th><th>Rule</th></tr></thead><tbody><tr><td><b>Counts</b></td><td>1,291 · thousands separator; no decimals.</td></tr><tr><td><b>Rates</b></td><td>2.6% · one decimal; computed from counts in the result (num and den kept as facts).</td></tr><tr><td><b>Money</b></td><td>SAR 2,424,000 · currency code first; no abbreviation in values (axis labels may say “K” only as text, never as a value).</td></tr><tr><td><b>Dates</b></td><td>20 Oct 2026 in text; 2026-09 in filters.</td></tr><tr><td><b>Missing</b></td><td>“No report” (source did not report), “Not loaded” (tool did not return it), “—” (unavailable total).</td></tr><tr><td><b>Zero vs empty</b></td><td>0 is a value; empty means no records; both are distinct from missing.</td></tr><tr><td><b>Undefined</b></td><td>“Not defined” when a denominator is 0.</td></tr></tbody></table></div></div>
+<h2>Validator lab · the nineteen sample payloads</h2>
+<table><thead><tr><th style="width: 60px">ID</th><th style="width: 300px">Case</th><th style="width: 180px">Viewer</th><th>Failing checks</th><th style="width: 190px">Class</th><th style="width: 150px">Outcome</th></tr></thead><tbody><tr><td>V1</td><td>Valid · ranked bar</td><td>Portfolio admin</td><td>—</td><td>No failure</td><td><span class="ok">Rendered</span></td></tr><tr><td>V2</td><td>Valid · KPI card, partial</td><td>Portfolio admin</td><td>—</td><td>Partial data</td><td><span class="ok">Rendered</span></td></tr><tr><td>V3</td><td>Valid · tenant trend</td><td>Tenant</td><td>—</td><td>No failure</td><td><span class="ok">Rendered</span></td></tr><tr><td>I1</td><td>Unknown component</td><td>Portfolio admin</td><td>registry:unknown_component</td><td>Presentation failure</td><td><span class="cond">Fallback table</span></td></tr><tr><td>I2</td><td>Line chart on a categorical grain</td><td>Portfolio admin</td><td>registry:shape_mismatch</td><td>Presentation failure</td><td><span class="cond">Fallback table</span></td></tr><tr><td>I3</td><td>Literal number in the title</td><td>Portfolio admin</td><td>grounding:literal_number</td><td>Presentation failure</td><td><span class="cond">Fallback table</span></td></tr><tr><td>I4</td><td>Payload carries its own numbers</td><td>Portfolio admin</td><td>schema:unknown_field</td><td>Presentation failure</td><td><span class="cond">Fallback table</span></td></tr><tr><td>I5</td><td>Hides partial coverage</td><td>Portfolio admin</td><td>envelope:envelope_mismatch</td><td>Presentation failure</td><td><span class="cond">Fallback table</span></td></tr><tr><td>I6</td><td>Outside the viewer’s access</td><td>Tenant</td><td>authorization:not_authorized</td><td>Authorization failure</td><td><span class="sup">Withheld</span></td></tr><tr><td>I7</td><td>Markup in a label</td><td>Portfolio admin</td><td>safety:unsafe_string, grounding:literal_number</td><td>Presentation failure</td><td><span class="cond">Fallback table</span></td></tr><tr><td>I8</td><td>Token that is not a fact</td><td>Portfolio admin</td><td>grounding:unknown_fact</td><td>Presentation failure</td><td><span class="cond">Fallback table</span></td></tr><tr><td>I9</td><td>Over the row limit</td><td>Portfolio admin</td><td>limits:max_rows</td><td>Presentation failure</td><td><span class="cond">Fallback table</span></td></tr><tr><td>I10</td><td>Unknown or expired result</td><td>Portfolio admin</td><td>resolve:result_not_found</td><td>Unknown or expired result</td><td><span class="sup">Withheld</span></td></tr><tr><td>A1</td><td>Regional manager · Central result</td><td>Central manager</td><td>—</td><td>No failure</td><td><span class="ok">Rendered</span></td></tr><tr><td>A2</td><td>Regional manager · portfolio result</td><td>Central manager</td><td>authorization:not_authorized</td><td>Authorization failure</td><td><span class="sup">Withheld</span></td></tr><tr><td>A3</td><td>Resumed after access narrowed</td><td>Central manager · resumed</td><td>authorization:not_authorized</td><td>Authorization failure</td><td><span class="sup">Withheld</span></td></tr><tr><td>C1</td><td>Calculation not verified</td><td>Portfolio admin</td><td>calculation:calculation_unverified</td><td>Calculation failure</td><td><span class="fail">Calculation error</span></td></tr><tr><td>S1</td><td>Stale stored answer</td><td>Portfolio admin · resumed</td><td>—</td><td>Stale data</td><td><span class="ok">Rendered</span></td></tr><tr><td>F1</td><td>Invalid payload on a 25-row partial result</td><td>Portfolio admin</td><td>registry:shape_mismatch</td><td>Presentation failure</td><td><span class="cond">Fallback table</span></td></tr></tbody></table>
+<p class="note">Design artefact for review. Charts in the DX5 board are HTML stand-ins; production uses the DX3 ECharts primitives, validated against the pinned ECharts runtime at the Design Gate (DXD-61). Not production code. Synthetic data as of 20 Oct 2026.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1936,"height":5760}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

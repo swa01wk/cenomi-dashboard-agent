@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DX5 design decision register</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.w{width:1936px;box-sizing:border-box;padding:56px 64px;background:#fff;font-family:'Inter',system-ui,sans-serif;color:#1B1530;display:flex;flex-direction:column;gap:20px}
+h1{margin:0;font-family:'Inter Tight','Inter',sans-serif;font-size:28px}
+h2{margin:14px 0 0;font-size:19px}
+h3{margin:0 0 6px;font-size:15px}
+p{margin:0}
+.lead{margin-top:8px;font-size:15px;line-height:22px;color:#4B4560;max-width:1560px}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-size:12px;font-weight:600;color:#4B4560;text-transform:uppercase;letter-spacing:.05em;padding:9px 10px;border-bottom:2px solid #E4E1EC;vertical-align:bottom}
+td{font-size:13px;line-height:19px;padding:8px 10px;border-bottom:1px solid #EEECF3;vertical-align:top}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#F4F3F7;padding:1px 5px;border-radius:4px}
+pre{margin:0;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;line-height:16px;background:#1B1530;color:#E9E5F5;border-radius:10px;padding:14px 16px;white-space:pre}
+.ok{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#DDF3EF;color:#0F5048;white-space:nowrap}
+.rev{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#EFEAFB;color:#3B1F8C;white-space:nowrap}
+.sup{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#F4F3F7;color:#3A3550;border:1px dashed #A9A2BF;white-space:nowrap}
+.cond{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#FDF0E1;color:#8A4B08;white-space:nowrap}
+.vf{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#FFF4D6;color:#7A5300;white-space:nowrap}
+.gate{display:flex;gap:24px;background:#FFF8EB;border:1px solid #F6D9A8;border-radius:12px;padding:16px 20px}
+.gate b{font-size:15px}.gate p{margin:4px 0 0;font-size:13px;line-height:19px;color:#4B4560}
+.gate ul,.box ul,.box ol{margin:6px 0 0;padding-left:18px;font-size:13px;line-height:19px;color:#3A3550}
+.gate li,.box li{margin:2px 0}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+.box{border:1px solid #E4E1EC;border-radius:12px;padding:16px 18px}
+.note{font-size:12.5px;line-height:18px;color:#5E5873}
+.pass{color:#0F5048;font-weight:700}.fail{color:#B42318;font-weight:700}
+.seq{display:flex;flex-direction:column;gap:0;border-left:2px solid #CDBDF5;margin-left:6px;padding-left:14px}
+.seq div{font-size:12.5px;line-height:18px;padding:3px 0;position:relative}
+.seq div::before{content:"";position:absolute;left:-19px;top:9px;width:8px;height:8px;border-radius:50%;background:#6D28D9}
+.seq div.c::before{background:#1B1530}.seq div.s::before{background:#0F766E}
+.seq b{display:inline-block;min-width:62px;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:#4B4560}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.shots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+.shots figure{margin:0;display:flex;flex-direction:column;gap:6px}
+.shots img{width:100%;border:1px solid #E4E1EC;border-radius:10px;display:block}
+.shots figcaption{font-size:12.5px;color:#4B4560}
+.kpis{display:flex;gap:14px}
+.kpi{flex:1;background:#F4F1FC;border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;gap:2px}
+.kpi b{font-size:24px;color:#3B1F8C}.kpi span{font-size:13px;color:#4B4560}
+.q{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#FFF4D6;color:#7A5300;white-space:nowrap}
+.prop{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#EFEAFB;color:#3B1F8C;white-space:nowrap}
+
+</style>
+</helmet>
+<div class="w">
+<div><h1>DX5 · Design decision register</h1><p class="lead">Decisions from the project owner’s DX5 review, 22 Oct 2026. They extend DXD-01…40 and bind GENERATIVE_UI.md, AGUI_INTEGRATION.md, API_CONTRACTS.md, AGENT_TOOLS.md and the M4 plan.</p></div>
+<div class="gate"><div style="flex: 1 1 0"><b>Gate DX5 · Approved with refinements · refinements completed</b><p>DXQ-08…11 are recorded as DXD-51…54 (all Option A). The review clarifications are recorded as DXD-55…62 and built into the prototype and contracts. DXD-41…50 stand, with DXD-47 amended by DXD-57. Nothing in the GitHub repository was modified.</p></div><div style="flex: 0 0 720px"><b>Carried to the final Design Gate</b><ul><li>DXD-61: run the GenUI charts on the pinned Apache ECharts 5.6.0 runtime (rendering, accessible names, keyboard, selection, resize, subset lines) — HTML stand-ins are not evidence.</li><li>DX3 conditions remain: real ECharts self-test, treemap thresholds, axe-core and screen-reader pass.</li><li>Confirm the indicative GenUI effort inside the five-day plan in M4.</li></ul></div></div>
+<table><thead><tr><th style="width: 86px">ID</th><th style="width: 300px">Decision</th><th>Rule</th><th style="width: 170px">Status</th></tr></thead><tbody><tr><td><b>DXD-41</b></td><td><b>The result is authoritative</b></td><td>Generated components render values only from the validated result named by resultRef; payload text uses fact tokens only.</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-42</b></td><td><b>Closed component registry</b></td><td>Fifteen approved kinds; no model-generated code; new kinds through design review.</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-43</b></td><td><b>Representation alternates</b></td><td>View as switches representation without modifying or re-querying the result.</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-44</b></td><td><b>One formatting module</b></td><td>Counts, rates, SAR, missing, zero and undefined formatted once, for every representation.</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-45</b></td><td><b>State vocabulary</b></td><td>Default, partial, zero, empty, undefined ratio, loading, error, unavailable; never conflated.</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-46</b></td><td><b>Size classes</b></td><td>Workspace 760, panel 420, canvas 360, phone 358, expanded 1000; per-kind responsive rules.</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-47</b></td><td><b>Validation and fallback</b></td><td>Server-side validation with client-side defensive re-validation. Amended by DXD-57: the deterministic table only for presentation failures on a resolved, authorized, verified result.</td><td><span class="rev">Approved · amended</span></td></tr><tr><td><b>DXD-48</b></td><td><b>Envelope per component</b></td><td>Every component prints the evidence envelope; a payload envelope that disagrees is rejected.</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-49</b></td><td><b>Drilldown and selection</b></td><td>Marks are buttons with names, aria-pressed and “Selected” text; arrows, Enter, Escape; selection_ref.v1 into the investigation; records from the same population.</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-50</b></td><td><b>Fixtures are labelled</b></td><td>Design-only state fixtures are labelled; production never renders fixtures.</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-51</b></td><td><b>Bounded representation policy (DXQ-08 A)</b></td><td>The agent selects among allowed representations using intent, result shape, dimensions, accessibility preference and display space (rules P1–P6); the user switches with View as.</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-52</b></td><td><b>Deterministic table fallback (DXQ-09 A)</b></td><td>An invalid presentation payload falls back to a table from the verified, authorized result.</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-53</b></td><td><b>Treemap below 400 px (DXQ-10 A)</b></td><td>Becomes a ranked list with the same keys and selection.</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-54</b></td><td><b>Component budget (DXQ-11 A)</b></td><td>At most three generated components in the docked panel and six in the workspace; further supporting information through Open in workspace and the inspector.</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-55</b></td><td><b>Verified calculations</b></td><td>Every derived value originates from a verified calculation recording method, operands, comparison periods, metric definition and evidence references. The verifier recomputes it. Neither the LLM nor the renderer derives business KPI values; the renderer computes only geometry.</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-56</b></td><td><b>Authorization by grants</b></td><td>Validate the viewer’s current grants against the result scope, dimension values and records; never compare labels. Revalidate stored and resumed results. Withhold rather than filter a partly-authorized result; never name out-of-grant entities.</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-57</b></td><td><b>Failure taxonomy</b></td><td>Presentation, calculation, authorization, unknown result, stale and partial are distinct classes with distinct outcomes. Only presentation failures with valid, authorized results use the table fallback.</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-58</b></td><td><b>Fallback preserves boundaries</b></td><td>The fallback keeps row limits and paging, evidence, partial coverage, formatting and authorization.</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-59</b></td><td><b>Subset disclosure</b></td><td>Any subset, top-N, page, sample or aggregate is declared and disclosed in text; the renderer never aggregates.</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-60</b></td><td><b>Continuity</b></td><td>Envelope and selection semantics are preserved across View as, panel ↔ workspace moves, expansion and resume (resume re-runs authorization).</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-61</b></td><td><b>ECharts at the Design Gate</b></td><td>Final Design Gate validates the GenUI charts on the pinned Apache ECharts runtime (5.6.0) — rendering, names, keyboard, selection, resize, subset disclosure — not on HTML stand-ins.</td><td><span class="ok">Approved</span></td></tr><tr><td><b>DXD-62</b></td><td><b>Implementation priority</b></td><td>Registry keeps 15 kinds; ten core kinds first, five specialized kinds wrap DX3 primitives or simple layouts; unbuilt kinds render through the table fallback.</td><td><span class="ok">Approved</span></td></tr></tbody></table>
+<h2>Generative UI share of the five-day POC (indicative)</h2>
+<table><thead><tr><th>Work</th><th style="width: 140px">Priority</th><th style="width: 100px">Effort</th></tr></thead><tbody><tr><td>Shared renderer shell: registry lookup, envelope, formatter, validator (client re-validation), fallback table with paging</td><td><span class="ok">Core</span></td><td>4 h</td></tr><tr><td>Core kinds: KPI, text + insight, table, bar, trend, notice + unavailable, evidence, records</td><td><span class="ok">Core</span></td><td>8 h</td></tr><tr><td>Specialized kinds: comparison (table preset), heatmap, funnel, treemap + ranked list, method card</td><td><span class="cond">Specialized</span></td><td>3 h</td></tr><tr><td>Selection, View as, panel ↔ workspace moves, expand, resume revalidation</td><td><span class="ok">Core</span></td><td>2 h</td></tr><tr><td>Tests: invariance, validator samples, continuity, authorization matrix, a11y smoke</td><td><span class="ok">Core</span></td><td>3 h</td></tr></tbody></table>
+<p class="note">About 20 hours in total, more than one development day. The minimal shippable path is the shell, the core kinds and selection (about 14 hours), which fits day 4 with the AG-UI wiring if the dashboard ECharts primitives from M2 are reused. Specialized kinds (about 3 hours) are the first scope to defer, because the table fallback keeps their data, evidence and selection usable. The M4 plan fixes the final allocation.</p>
+<p class="note">Design artefact for review. Not production code. Synthetic data as of 20 Oct 2026.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1936,"height":1730}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

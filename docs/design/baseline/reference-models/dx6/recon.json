@@ -1,0 +1,1452 @@
+{
+ "checks": [
+  {
+   "id": "GI-03",
+   "name": "Approvals 1m+ series reconstructed from records \u00b7 Rawdah Point Mall",
+   "ok": true,
+   "detail": {
+    "declared": [
+     15,
+     16,
+     17,
+     18,
+     20,
+     21,
+     22,
+     24,
+     27,
+     29,
+     32,
+     35,
+     39,
+     41
+    ],
+    "from_records": [
+     15,
+     16,
+     17,
+     18,
+     20,
+     21,
+     22,
+     24,
+     27,
+     29,
+     32,
+     35,
+     39,
+     41
+    ]
+   }
+  },
+  {
+   "id": "GI-01",
+   "name": "Approvals snapshot by type and band equals the DX2 card \u00b7 Rawdah Point Mall",
+   "ok": true,
+   "detail": {
+    "proposal": [
+     4,
+     3,
+     2,
+     4,
+     19
+    ],
+    "contract": [
+     3,
+     2,
+     1,
+     2,
+     15
+    ],
+    "lease": [
+     3,
+     2,
+     2,
+     2,
+     7
+    ]
+   }
+  },
+  {
+   "id": "GI-02",
+   "name": "Approvals series ends on the snapshot \u00b7 Rawdah Point Mall",
+   "ok": true,
+   "detail": {
+    "last": 41,
+    "snapshot": 41
+   }
+  },
+  {
+   "id": "GI-03",
+   "name": "Approvals 1m+ series reconstructed from records \u00b7 Sandstone Galleria",
+   "ok": true,
+   "detail": {
+    "declared": [
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     5,
+     4,
+     4,
+     5,
+     4,
+     4,
+     4
+    ],
+    "from_records": [
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     5,
+     4,
+     4,
+     5,
+     4,
+     4,
+     4
+    ]
+   }
+  },
+  {
+   "id": "GI-01",
+   "name": "Approvals snapshot by type and band equals the DX2 card \u00b7 Sandstone Galleria",
+   "ok": true,
+   "detail": {
+    "proposal": [
+     1,
+     1,
+     1,
+     1,
+     2
+    ],
+    "contract": [
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "lease": [
+     1,
+     1,
+     0,
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "GI-02",
+   "name": "Approvals series ends on the snapshot \u00b7 Sandstone Galleria",
+   "ok": true,
+   "detail": {
+    "last": 4,
+    "snapshot": 4
+   }
+  },
+  {
+   "id": "GI-03",
+   "name": "Approvals 1m+ series reconstructed from records \u00b7 Qasr Plaza",
+   "ok": true,
+   "detail": {
+    "declared": [
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     9,
+     8,
+     7,
+     5,
+     4,
+     3,
+     2
+    ],
+    "from_records": [
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     9,
+     8,
+     7,
+     5,
+     4,
+     3,
+     2
+    ]
+   }
+  },
+  {
+   "id": "GI-01",
+   "name": "Approvals snapshot by type and band equals the DX2 card \u00b7 Qasr Plaza",
+   "ok": true,
+   "detail": {
+    "proposal": [
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "contract": [
+     1,
+     0,
+     0,
+     0,
+     1
+    ],
+    "lease": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "GI-02",
+   "name": "Approvals series ends on the snapshot \u00b7 Qasr Plaza",
+   "ok": true,
+   "detail": {
+    "last": 2,
+    "snapshot": 2
+   }
+  },
+  {
+   "id": "GI-03",
+   "name": "Approvals 1m+ series reconstructed from records \u00b7 Najd Gate Mall",
+   "ok": true,
+   "detail": {
+    "declared": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     4,
+     3,
+     4,
+     4,
+     3,
+     4,
+     4,
+     4,
+     4
+    ],
+    "from_records": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     4,
+     3,
+     4,
+     4,
+     3,
+     4,
+     4,
+     4,
+     4
+    ]
+   }
+  },
+  {
+   "id": "GI-01",
+   "name": "Approvals snapshot by type and band equals the DX2 card \u00b7 Najd Gate Mall",
+   "ok": true,
+   "detail": {
+    "proposal": [
+     1,
+     1,
+     1,
+     1,
+     2
+    ],
+    "contract": [
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "lease": [
+     0,
+     0,
+     0,
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "GI-02",
+   "name": "Approvals series ends on the snapshot \u00b7 Najd Gate Mall",
+   "ok": true,
+   "detail": {
+    "last": 4,
+    "snapshot": 4
+   }
+  },
+  {
+   "id": "GI-03",
+   "name": "Approvals 1m+ series reconstructed from records \u00b7 Wadi Crescent Centre",
+   "ok": true,
+   "detail": {
+    "declared": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     2,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "from_records": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     2,
+     3,
+     3,
+     3,
+     3,
+     3
+    ]
+   }
+  },
+  {
+   "id": "GI-01",
+   "name": "Approvals snapshot by type and band equals the DX2 card \u00b7 Wadi Crescent Centre",
+   "ok": true,
+   "detail": {
+    "proposal": [
+     1,
+     1,
+     1,
+     1,
+     2
+    ],
+    "contract": [
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "lease": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "GI-02",
+   "name": "Approvals series ends on the snapshot \u00b7 Wadi Crescent Centre",
+   "ok": true,
+   "detail": {
+    "last": 3,
+    "snapshot": 3
+   }
+  },
+  {
+   "id": "GI-03",
+   "name": "Approvals 1m+ series reconstructed from records \u00b7 Falcon Square",
+   "ok": true,
+   "detail": {
+    "declared": [
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "from_records": [
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2
+    ]
+   }
+  },
+  {
+   "id": "GI-01",
+   "name": "Approvals snapshot by type and band equals the DX2 card \u00b7 Falcon Square",
+   "ok": true,
+   "detail": {
+    "proposal": [
+     1,
+     1,
+     1,
+     0,
+     1
+    ],
+    "contract": [
+     0,
+     0,
+     0,
+     0,
+     1
+    ],
+    "lease": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "GI-02",
+   "name": "Approvals series ends on the snapshot \u00b7 Falcon Square",
+   "ok": true,
+   "detail": {
+    "last": 2,
+    "snapshot": 2
+   }
+  },
+  {
+   "id": "GI-03",
+   "name": "Approvals 1m+ series reconstructed from records \u00b7 Oasis Row",
+   "ok": true,
+   "detail": {
+    "declared": [
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "from_records": [
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2
+    ]
+   }
+  },
+  {
+   "id": "GI-01",
+   "name": "Approvals snapshot by type and band equals the DX2 card \u00b7 Oasis Row",
+   "ok": true,
+   "detail": {
+    "proposal": [
+     1,
+     0,
+     0,
+     0,
+     1
+    ],
+    "contract": [
+     0,
+     0,
+     0,
+     0,
+     1
+    ],
+    "lease": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "GI-02",
+   "name": "Approvals series ends on the snapshot \u00b7 Oasis Row",
+   "ok": true,
+   "detail": {
+    "last": 2,
+    "snapshot": 2
+   }
+  },
+  {
+   "id": "GI-03",
+   "name": "Approvals 1m+ series reconstructed from records \u00b7 Cedar Park Mall",
+   "ok": true,
+   "detail": {
+    "declared": [
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     1,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "from_records": [
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     1,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2
+    ]
+   }
+  },
+  {
+   "id": "GI-01",
+   "name": "Approvals snapshot by type and band equals the DX2 card \u00b7 Cedar Park Mall",
+   "ok": true,
+   "detail": {
+    "proposal": [
+     1,
+     1,
+     0,
+     0,
+     1
+    ],
+    "contract": [
+     0,
+     0,
+     0,
+     0,
+     1
+    ],
+    "lease": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "GI-02",
+   "name": "Approvals series ends on the snapshot \u00b7 Cedar Park Mall",
+   "ok": true,
+   "detail": {
+    "last": 2,
+    "snapshot": 2
+   }
+  },
+  {
+   "id": "GI-03",
+   "name": "Approvals 1m+ series reconstructed from records \u00b7 Amber Heights",
+   "ok": true,
+   "detail": {
+    "declared": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "from_records": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ]
+   }
+  },
+  {
+   "id": "GI-01",
+   "name": "Approvals snapshot by type and band equals the DX2 card \u00b7 Amber Heights",
+   "ok": true,
+   "detail": {
+    "proposal": [
+     1,
+     0,
+     0,
+     0,
+     1
+    ],
+    "contract": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "lease": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "GI-02",
+   "name": "Approvals series ends on the snapshot \u00b7 Amber Heights",
+   "ok": true,
+   "detail": {
+    "last": 1,
+    "snapshot": 1
+   }
+  },
+  {
+   "id": "GI-03",
+   "name": "Approvals 1m+ series reconstructed from records \u00b7 Mirage Commons",
+   "ok": true,
+   "detail": {
+    "declared": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "from_records": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ]
+   }
+  },
+  {
+   "id": "GI-01",
+   "name": "Approvals snapshot by type and band equals the DX2 card \u00b7 Mirage Commons",
+   "ok": true,
+   "detail": {
+    "proposal": [
+     0,
+     0,
+     0,
+     0,
+     1
+    ],
+    "contract": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "lease": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "GI-02",
+   "name": "Approvals series ends on the snapshot \u00b7 Mirage Commons",
+   "ok": true,
+   "detail": {
+    "last": 1,
+    "snapshot": 1
+   }
+  },
+  {
+   "id": "GI-05",
+   "name": "Central 1m+ = \u03a3 malls at every checkpoint; 62 on 20 Oct, 61 on 13 Oct",
+   "ok": true,
+   "detail": {
+    "central": [
+     36,
+     38,
+     40,
+     42,
+     45,
+     48,
+     49,
+     52,
+     53,
+     54,
+     57,
+     58,
+     61,
+     62
+    ]
+   }
+  },
+  {
+   "id": "GI-01",
+   "name": "Rawdah Point all pending on 20 Oct = 71 (32 proposals \u00b7 23 contracts \u00b7 16 leases); 1m+ = 41 (19 \u00b7 15 \u00b7 7)",
+   "ok": true,
+   "detail": {}
+  },
+  {
+   "id": "GI-03",
+   "name": "Renewal 4 wk+ series reconstructed from records (visible DX4 records fixed) \u00b7 Rawdah Point Mall",
+   "ok": true,
+   "detail": {
+    "declared": [
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     5,
+     6,
+     7,
+     7,
+     8,
+     9
+    ],
+    "explained_by_pending_records": [
+     2,
+     2,
+     3,
+     3,
+     3,
+     3,
+     3,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     9
+    ],
+    "resolved_cohort_needed": [
+     2,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1,
+     0,
+     1,
+     2,
+     3,
+     3,
+     4,
+     0
+    ],
+    "resolved_items": 6
+   }
+  },
+  {
+   "id": "GI-02",
+   "name": "Renewal 4 wk+ series ends on the snapshot \u00b7 Rawdah Point Mall",
+   "ok": true,
+   "detail": {
+    "last": 9,
+    "snapshot": 9
+   }
+  },
+  {
+   "id": "GI-03",
+   "name": "Renewal 4 wk+ series reconstructed from records (visible DX4 records fixed) \u00b7 Sandstone Galleria",
+   "ok": true,
+   "detail": {
+    "declared": [
+     8,
+     8,
+     8,
+     8,
+     8,
+     8,
+     8,
+     8,
+     7,
+     7,
+     6,
+     6,
+     6,
+     6
+    ],
+    "explained_by_pending_records": [
+     1,
+     1,
+     1,
+     1,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     3,
+     3,
+     3,
+     6
+    ],
+    "resolved_cohort_needed": [
+     7,
+     7,
+     7,
+     7,
+     6,
+     6,
+     6,
+     6,
+     5,
+     5,
+     3,
+     3,
+     3,
+     0
+    ],
+    "resolved_items": 7
+   }
+  },
+  {
+   "id": "GI-02",
+   "name": "Renewal 4 wk+ series ends on the snapshot \u00b7 Sandstone Galleria",
+   "ok": true,
+   "detail": {
+    "last": 6,
+    "snapshot": 6
+   }
+  },
+  {
+   "id": "GI-03",
+   "name": "Renewal 4 wk+ series reconstructed from records (visible DX4 records fixed) \u00b7 Qasr Plaza",
+   "ok": true,
+   "detail": {
+    "declared": [
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "explained_by_pending_records": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     3
+    ],
+    "resolved_cohort_needed": [
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     3,
+     3,
+     3,
+     3,
+     0
+    ],
+    "resolved_items": 4
+   }
+  },
+  {
+   "id": "GI-02",
+   "name": "Renewal 4 wk+ series ends on the snapshot \u00b7 Qasr Plaza",
+   "ok": true,
+   "detail": {
+    "last": 3,
+    "snapshot": 3
+   }
+  },
+  {
+   "id": "GI-05",
+   "name": "Central amendments 4 wk+ (all types) = \u03a3 renewals + 7 others; 25 on 20 Oct",
+   "ok": true,
+   "detail": {
+    "central": [
+     23,
+     23,
+     23,
+     23,
+     23,
+     23,
+     23,
+     23,
+     23,
+     23,
+     23,
+     23,
+     24,
+     25
+    ]
+   }
+  },
+  {
+   "id": "GI-02",
+   "name": "Vacancy series ends on the snapshot \u00b7 Mirage Commons",
+   "ok": true,
+   "detail": {
+    "last": 58,
+    "snapshot": 58
+   }
+  },
+  {
+   "id": "GI-02",
+   "name": "Vacancy series ends on the snapshot \u00b7 Sandstone Galleria",
+   "ok": true,
+   "detail": {
+    "last": 54,
+    "snapshot": 54
+   }
+  },
+  {
+   "id": "GI-02",
+   "name": "Vacancy series ends on the snapshot \u00b7 Oasis Row",
+   "ok": true,
+   "detail": {
+    "last": 41,
+    "snapshot": 41
+   }
+  },
+  {
+   "id": "GI-02",
+   "name": "Vacancy series ends on the snapshot \u00b7 Wadi Crescent Centre",
+   "ok": true,
+   "detail": {
+    "last": 49,
+    "snapshot": 49
+   }
+  },
+  {
+   "id": "GI-15",
+   "name": "Central vacant units = \u03a3 malls = 408 of 3,420 on 20 Oct",
+   "ok": true,
+   "detail": {}
+  },
+  {
+   "id": "GI-02",
+   "name": "Gulf Gate September report = 11 mismatched of 142 (DX2 card)",
+   "ok": true,
+   "detail": {
+    "mall": "Gulf Gate Mall",
+    "total": 142,
+    "mm": 11,
+    "pending": 3
+   }
+  },
+  {
+   "id": "GI-16",
+   "name": "September coverage: 18 reported + 7 missing = 25 malls",
+   "ok": true,
+   "detail": {}
+  },
+  {
+   "id": "GI-11",
+   "name": "September reports are ingested 19 Oct 18:30: invisible to the 13 Oct checkpoint, visible from the 19 Oct event run",
+   "ok": true,
+   "detail": {
+    "ingested_at": "2026-10-19T18:30:00"
+   }
+  },
+  {
+   "id": "GI-02",
+   "name": "Tenant T-31206 2026 sales equal the DX2 tenant card",
+   "ok": true,
+   "detail": {}
+  },
+  {
+   "id": "GI-10",
+   "name": "Prior-year baseline exists for T-31206 (2024 and 2025 in the dataset, DR-004)",
+   "ok": true,
+   "detail": {
+    "2025_jan_sep": [
+     250700,
+     232900,
+     290300,
+     258100,
+     247800,
+     274000,
+     241800,
+     233900,
+     224900
+    ],
+    "yoy_sep": 0.0751,
+    "jun_sep_2025": -0.1792,
+    "jun_sep_2026": -0.1792
+   }
+  },
+  {
+   "id": "GI-09",
+   "name": "Tenant-audience facts use lease T-31206 only: SR in Action required = 0 for the lease (2 is the company-wide count)",
+   "ok": true,
+   "detail": {
+    "lease": 0,
+    "company": 2,
+    "lease_actions": [
+     "Lighting layout",
+     "Shopfront details \u2014 re-upload"
+    ]
+   }
+  },
+  {
+   "id": "GI-06",
+   "name": "Share facts use one checkpoint for numerator and denominator; Rawdah 41/71 = 57.7%",
+   "ok": true,
+   "detail": {
+    "central_median_share": 0.45,
+    "malls_with_fewer_than_10_pending": [
+     "Qasr Plaza",
+     "Falcon Square",
+     "Oasis Row",
+     "Cedar Park Mall",
+     "Amber Heights",
+     "Mirage Commons"
+    ]
+   }
+  }
+ ],
+ "passed": 51,
+ "total": 51,
+ "discrepancies": [
+  {
+   "id": "C1",
+   "where": "DX1 shell insight i1",
+   "claim": "\u201c41 of 71 pending items are older than 31 days\u201d dated to the 30 Sep checkpoint",
+   "finding": "41 of 71 is the 20 Oct snapshot. On 29 Sep the series is 32.",
+   "resolution": "DX1 shell insights are superseded by the DX6 canonical insights; the DX1 board now shows INS-107 values with their dates.",
+   "status": "Fixed"
+  },
+  {
+   "id": "C2",
+   "where": "DX1 shell insight i1",
+   "claim": "\u201crose from 22% to 58% between the 31 Jul and 30 Sep checkpoints\u201d (a share)",
+   "finding": "DX6 uses a count (22 on 1 Sep). 22% and 22 are different measures on different dates; the earlier share has no source.",
+   "resolution": "Insights report the count; the share is reported only at the checkpoint where both parts exist (57.7% on 20 Oct).",
+   "status": "Fixed"
+  },
+  {
+   "id": "C3",
+   "where": "DX1 shell insight i1",
+   "claim": "\u201cCentral median 19%\u201d",
+   "finding": "Recomputed median share of pending approvals waiting 31+ days across Central malls: 45.0%. 6 malls have fewer than 10 pending items (Mirage Commons: 1 of 1 = 100%).",
+   "resolution": "Statement withdrawn. Shares need a minimum denominator of 10 (detector configuration).",
+   "status": "Fixed"
+  },
+  {
+   "id": "C4",
+   "where": "DX1 shell, DX6 text",
+   "claim": "\u201colder than 31 days\u201d and \u201capprovals over a month\u201d",
+   "finding": "V2 band is \u2265 31 days (\u201c1 month plus delay\u201d); \u201colder than 31 days\u201d would mean \u2265 32.",
+   "resolution": "Canonical label: \u201cwaiting 31+ days (1m+)\u201d. Contracts and leases count from their last change, proposals from creation.",
+   "status": "Fixed"
+  },
+  {
+   "id": "C5",
+   "where": "DX5 sample I3, review language",
+   "claim": "\u201coverdue approvals\u201d, \u201c12 overdue renewals\u201d",
+   "finding": "No SLA exists in the dataset; DX2 caveat: age bands are not SLA breaches. Canonical Rawdah renewals in 4 wk+: 9.",
+   "resolution": "\u201cOverdue\u201d is banned in generated text (verifier word list). I3 stays a rejection test; its number is deliberately ungrounded and labelled so.",
+   "status": "Fixed"
+  },
+  {
+   "id": "C6",
+   "where": "DX6 history",
+   "claim": "Weekly \u201capprovals over a month\u201d history",
+   "finding": "V2 computes approvals live against NOW(); there is no history in REF. A history is a new as-of metric.",
+   "resolution": "New metrics approvals.pending_by_delay.asof v1 and amendments.pending_by_age_band.asof v1 (kind: new), computed from seeded status history. At the as-of date they must equal the parity metrics (GI-01).",
+   "status": "Needs KPI-catalog approval (M0)"
+  },
+  {
+   "id": "C7",
+   "where": "DX6 text",
+   "claim": "\u201cwaiting\u201d",
+   "finding": "Contracts and leases age from pms_last_modified_at: any change resets the age.",
+   "resolution": "Insight definitions and limitations say so; cohorts in the seed do not modify 1m+ contracts unless a scenario requires it.",
+   "status": "Fixed"
+  },
+  {
+   "id": "C8",
+   "where": "INS-090",
+   "claim": "Generated by D2 with a level threshold of 8 after three increases; resolved \u201c5 on 22 Sep\u201d",
+   "finding": "D2 needs \u2265 4 increases in 6 changes and a net change \u2265 5. The series is 7 on 22 Sep (5 is 29 Sep).",
+   "resolution": "Regenerated by the replay: fires on 1 Sep (3 \u2192 9 since 21 Jul), clears on 22 Sep (8, then 7).",
+   "status": "Fixed"
+  },
+  {
+   "id": "C9",
+   "where": "INS-101",
+   "claim": "D1 concentration first generated 13 Oct",
+   "finding": "Replaying the declared history, D1 already holds on 15 Sep (27 of 53, 50.9%).",
+   "resolution": "Regenerated: INS-101 opens on 1 Sep (D2), D1 joins on 15 Sep, merged into INS-107 on 20 Oct.",
+   "status": "Fixed"
+  },
+  {
+   "id": "C10",
+   "where": "INS-103",
+   "claim": "D3 improvement first generated 20 Oct",
+   "finding": "Replay: D3 holds on 6 Oct (4 against a window maximum of 9).",
+   "resolution": "Regenerated: generated 6 Oct, updated silently on 13 and 20 Oct.",
+   "status": "Fixed"
+  },
+  {
+   "id": "C11",
+   "where": "Renewals history",
+   "claim": "Rawdah renewals 4 wk+ 4 \u2192 9",
+   "finding": "The visible DX4 records fix the ages of the pending renewals; the series needs 6 renewals that were 4 wk+ and were resolved in the window (2026-07-31 to 2026-10-16).",
+   "resolution": "Recorded as a required seed cohort (golden scenario manifest). Without it D6 cannot fire.",
+   "status": "Fixed (seed requirement)"
+  },
+  {
+   "id": "C12",
+   "where": "INS-108 / T-201, thread answer",
+   "claim": "\u201cNo prior-year data\u201d; \u201cSales for 2025 are not in the dataset\u201d",
+   "finding": "DX2 tenant board and DR-004 include 2024\u20132025. September is +7.5% against September 2025; June\u2192September fell 17.9% in 2025 and 17.9% in 2026.",
+   "resolution": "D7 uses the prior year when \u2265 13 months exist. Result: not generated, seasonal pattern (N9). S6 expected outcome corrected \u2014 needs your confirmation.",
+   "status": "Fixed \u00b7 decision GDQ"
+  },
+  {
+   "id": "C13",
+   "where": "T-202 and tenant dashboard card",
+   "claim": "\u201c2 service requests are waiting for your action\u201d for lease T-31206",
+   "finding": "The 2 are company-wide (Rawdah 1, Gulf Gate 1). Lease T-31206 (Sandstone Galleria) has 0.",
+   "resolution": "D8 counts lease-scoped action items: 2 fit-out drawings to upload (Lighting layout since 12 Oct; Shopfront details re-upload since 17 Oct).",
+   "status": "Fixed"
+  },
+  {
+   "id": "C14",
+   "where": "INS-104 hypothesis",
+   "claim": "\u201cthe dataset holds no lease-expiry schedule\u201d",
+   "finding": "Lease end dates exist (expiring-leases KPI, DX2).",
+   "resolution": "Hypothesis kept as a hypothesis with a checkable question: which Mirage Commons leases ended since April without renewal.",
+   "status": "Fixed"
+  },
+  {
+   "id": "C15",
+   "where": "INS-104",
+   "claim": "Created 20 Sep by run_m_2026-10-20",
+   "finding": "Creation and run disagree.",
+   "resolution": "Version 1 from run_m_2026-09-20; version 2 from run_m_2026-10-20.",
+   "status": "Fixed"
+  },
+  {
+   "id": "C16",
+   "where": "INS-107 limitation",
+   "claim": "\u201cno earlier history in the POC\u201d",
+   "finding": "DR-004: transactional history from 2024-01-01.",
+   "resolution": "Limitation states the detector window (7 weekly checkpoints) instead.",
+   "status": "Fixed"
+  },
+  {
+   "id": "C17",
+   "where": "DR-005 vs DX6",
+   "claim": "Month-end checkpoints (DR-005 example) vs weekly + monthly-on-the-20th + events",
+   "finding": "Different calendars.",
+   "resolution": "DXQ-12 A: weekly Tuesday checkpoints, monthly on the as-of day for stock metrics, calendar months for monthly reports, plus data-load and status-change events. DR-005 note updated.",
+   "status": "Fixed"
+  },
+  {
+   "id": "C18",
+   "where": "DX6 detectors",
+   "claim": "Coverage thresholds 90% (D5) and 80% (regional evaluation) unnamed",
+   "finding": "Two different purposes.",
+   "resolution": "Config keys coverage.alert_below = 0.90 and coverage.min_for_regional_eval = 0.80.",
+   "status": "Fixed"
+  },
+  {
+   "id": "C19",
+   "where": "DX6 contract D4",
+   "claim": "\u201cdouble the trailing average; robust z \u2265 3\u201d (and/or unclear)",
+   "finding": "Two tests with different meanings.",
+   "resolution": "D4a temporal and D4b cross-sectional, each stated in the evidence.",
+   "status": "Fixed"
+  },
+  {
+   "id": "C20",
+   "where": "DX6 contract D6",
+   "claim": "\u201cboth fire D2-type rules\u201d",
+   "finding": "Renewals had a flat week (7 \u2192 7); strict D2 would not fire.",
+   "resolution": "Formal D2: \u2265 4 increases in the last 6 changes, no decrease, net change \u2265 minimum.",
+   "status": "Fixed"
+  },
+  {
+   "id": "C21",
+   "where": "DX2 approvals drill-down",
+   "claim": "Records with random ages (31\u2013140) and random mall labels",
+   "finding": "A fixture, not the seeded population. The reconstructed cohort needs, for example, 15 Rawdah items aged \u2265 122 days.",
+   "resolution": "Drill-down records come from the seed in M2 (DXD-49); the prototype fixture stays labelled (DXD-50).",
+   "status": "Carried to M1/M2"
+  }
+ ],
+ "cohorts": {
+  "approvals": {
+   "Rawdah Point Mall": {
+    "pending": 71,
+    "resolved_in_window": 0,
+    "oldest_days": 150,
+    "pending_aged_122_plus": 15
+   },
+   "Sandstone Galleria": {
+    "pending": 14,
+    "resolved_in_window": 2,
+    "oldest_days": 128,
+    "pending_aged_122_plus": 4
+   },
+   "Qasr Plaza": {
+    "pending": 7,
+    "resolved_in_window": 7,
+    "oldest_days": 124,
+    "pending_aged_122_plus": 2
+   },
+   "Najd Gate Mall": {
+    "pending": 12,
+    "resolved_in_window": 2,
+    "oldest_days": 126,
+    "pending_aged_122_plus": 3
+   },
+   "Wadi Crescent Centre": {
+    "pending": 11,
+    "resolved_in_window": 1,
+    "oldest_days": 124,
+    "pending_aged_122_plus": 2
+   },
+   "Falcon Square": {
+    "pending": 5,
+    "resolved_in_window": 0,
+    "oldest_days": 124,
+    "pending_aged_122_plus": 2
+   },
+   "Oasis Row": {
+    "pending": 3,
+    "resolved_in_window": 0,
+    "oldest_days": 124,
+    "pending_aged_122_plus": 2
+   },
+   "Cedar Park Mall": {
+    "pending": 4,
+    "resolved_in_window": 1,
+    "oldest_days": 122,
+    "pending_aged_122_plus": 1
+   },
+   "Amber Heights": {
+    "pending": 2,
+    "resolved_in_window": 0,
+    "oldest_days": 122,
+    "pending_aged_122_plus": 1
+   },
+   "Mirage Commons": {
+    "pending": 1,
+    "resolved_in_window": 0,
+    "oldest_days": 122,
+    "pending_aged_122_plus": 1
+   }
+  },
+  "renewals_rawdah": {
+   "resolved": 6,
+   "resolved_between": [
+    "2026-07-31",
+    "2026-10-16"
+   ]
+  },
+  "renewals": {
+   "Rawdah Point Mall": {
+    "resolved_in_window": 6
+   },
+   "Sandstone Galleria": {
+    "resolved_in_window": 7
+   },
+   "Qasr Plaza": {
+    "resolved_in_window": 4
+   }
+  }
+ },
+ "canonical": {
+  "rawdah_pending_total": 71,
+  "rawdah_1mplus": 41,
+  "rawdah_by_type_1mplus": [
+   19,
+   15,
+   7
+  ],
+  "central_1mplus": 62,
+  "central_pending_total": 130,
+  "rawdah_share": 0.5774647887323944,
+  "central_median_share": 0.45,
+  "tenant_yoy_sep": 0.07514450867052024,
+  "tenant_jun_sep_2025": -0.1791970802919708,
+  "tenant_jun_sep_2026": -0.17922606924643583,
+  "weeks": [
+   "21 Jul",
+   "28 Jul",
+   "4 Aug",
+   "11 Aug",
+   "18 Aug",
+   "25 Aug",
+   "1 Sep",
+   "8 Sep",
+   "15 Sep",
+   "22 Sep",
+   "29 Sep",
+   "6 Oct",
+   "13 Oct",
+   "20 Oct"
+  ],
+  "central_1mplus_series": [
+   36,
+   38,
+   40,
+   42,
+   45,
+   48,
+   49,
+   52,
+   53,
+   54,
+   57,
+   58,
+   61,
+   62
+  ],
+  "central_am4_series": [
+   23,
+   23,
+   23,
+   23,
+   23,
+   23,
+   23,
+   23,
+   23,
+   23,
+   23,
+   23,
+   24,
+   25
+  ]
+ }
+}

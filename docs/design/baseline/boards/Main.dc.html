@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>App shell prototype</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;color:#1B1530;background:#F6F5F9;font-feature-settings:'tnum' 1}
+a{color:#5B21B6}a:hover{color:#3B0F8C}
+button{font-family:inherit}
+.btn{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 12px;border-radius:8px;border:1px solid #D9D4E6;background:#fff;color:#1B1530;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
+.btn:hover{background:#F3F0FA}
+.btn-primary{background:#5B21B6;border-color:#5B21B6;color:#fff}
+.btn-primary:hover{background:#4C1D95;color:#fff}
+.btn-ghost{border-color:transparent;background:transparent}
+.icon-btn{width:32px;padding:0;justify-content:center}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:26px;padding:0 10px;border-radius:999px;background:#EFEAFB;color:#3B1E7A;font-size:12px;font-weight:500;border:1px solid #DCD2F5}
+.chip-f{background:#fff;color:#4B4560;border-color:#D9D4E6}
+.chip-sel{background:#5B21B6;color:#fff;border-color:#5B21B6}
+.chip-x{border:0;background:transparent;color:inherit;cursor:pointer;padding:0;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center}
+.card{background:#fff;border:1px solid #E4E1EC;border-radius:12px;display:flex;flex-direction:column;min-width:0}
+.card-h{display:flex;align-items:flex-start;gap:8px;padding:14px 12px 10px 16px}
+.card-t{font-size:15px;font-weight:600;margin:0;line-height:22px}
+.filters{font-size:12px;color:#5E5873;margin-top:2px}
+.ph{margin:0 16px 16px;border:1px dashed #CFC8E0;border-radius:8px;background:#FAF9FC;display:flex;align-items:center;justify-content:center;text-align:center;color:#5E5873;font-size:12px;padding:12px;line-height:18px}
+.grid12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+@media (max-width:1100px){.grid12>.card{grid-column:span 12 !important;grid-row:auto !important}}
+.rail-a{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;border-radius:10px;color:#CFC6E6;font-size:11px;font-weight:500;text-decoration:none;border:0;background:transparent;cursor:pointer;width:64px}
+.rail-a:hover{background:#2C2346;color:#fff}
+.rail-on{background:#3A2D63;color:#fff}
+.syn{display:inline-flex;align-items:center;gap:8px;min-height:26px;padding:0 10px;border-radius:6px;background:#FFF4D6;border:1px solid #E9C46A;color:#6B4200;font-size:11px;font-weight:700;letter-spacing:.04em}
+.stmt{display:inline-flex;align-items:center;min-height:20px;padding:0 8px;border-radius:5px;font-size:11px;font-weight:700;letter-spacing:.02em;flex:0 0 auto}
+.s-obs{background:#E6EEFB;color:#1E3A8A}
+.s-der{background:#DDF3EF;color:#0F5048}
+.s-hyp{background:#FEF3C7;color:#7C3A06;border:1px dashed #C2850C}
+.s-rec{background:#EDE7FB;color:#4C1D95}
+.s-una{background:#EEECEF;color:#3F3B46}
+.msg-user{align-self:flex-end;max-width:85%;background:#1B1530;color:#fff;border-radius:12px 12px 4px 12px;padding:10px 12px;font-size:14px;line-height:20px}
+.msg-agent{display:flex;flex-direction:column;gap:10px;background:#fff;border:1px solid #E4E1EC;border-radius:12px;padding:12px;font-size:14px;line-height:20px}
+.runline{display:flex;align-items:center;gap:8px;border:0;background:#F4F2F8;border-radius:8px;padding:6px 10px;font-size:12px;color:#4B4560;cursor:pointer;text-align:left}
+.stmt-row{display:flex;gap:8px;align-items:flex-start;margin:0}
+.tab{border:0;border-bottom:2px solid transparent;background:transparent;padding:10px 4px;font-size:13px;font-weight:500;color:#5E5873;cursor:pointer}
+.tab-on{border-bottom-color:#5B21B6;color:#1B1530;font-weight:600}
+.hcell{border:0;border-radius:4px;height:30px;font-size:12px;font-weight:600;cursor:pointer}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{text-align:left;color:#5E5873;font-weight:600;padding:8px;border-bottom:1px solid #E4E1EC}
+.tbl td{padding:8px;border-bottom:1px solid #F0EEF4}
+.sev{display:inline-flex;min-height:20px;align-items:center;padding:0 8px;border-radius:5px;font-size:11px;font-weight:700}
+.sev-h{background:#FDE2E1;color:#8E1B16}
+.sev-m{background:#FEF3C7;color:#7C3A06}
+.sev-l{background:#E6EEFB;color:#1E3A8A}
+.ins-row{display:flex;flex-direction:column;gap:6px;text-align:left;border:1px solid #E4E1EC;background:#fff;border-radius:10px;padding:12px;cursor:pointer;font-size:13px}
+.ins-on{border-color:#5B21B6;box-shadow:0 0 0 1px #5B21B6}
+</style>
+</helmet>
+<div style="position: relative; min-height: 100vh; display: flex; flex-direction: column; background: #F6F5F9">
+<header style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; min-height: 56px; padding: 8px 16px; background: #FFFFFF; border-bottom: 1px solid #E4E1EC">
+<div style="display: flex; align-items: baseline; gap: 8px">
+<span style="font-family: 'Inter Tight', 'Inter', sans-serif; font-weight: 700; font-size: 17px; letter-spacing: -0.01em">Cenomi Dashboard Agent</span>
+<span style="font-size: 11px; font-weight: 600; color: #5E5873">POC</span>
+</div>
+<span class="syn" title="All records are synthetic. Data version sd-2026.10.20-01">SYNTHETIC DATA · AS OF 20 OCT 2026</span>
+<button class="btn" onClick="{{openAsk}}" style="flex: 1 1 260px; max-width: 460px; justify-content: flex-start; color: #5E5873; font-weight: 400" aria-label="Ask the agent">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5B21B6" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>
+<span>Ask about {{scopeLabel}}…</span>
+<span style="margin-left: auto; font-size: 11px; border: 1px solid #D9D4E6; border-radius: 4px; padding: 0 5px">/</span>
+</button>
+<div style="display: flex; align-items: center; gap: 8px; margin-left: auto">
+<sc-if value="{{isAdmin}}" hint-placeholder-val="{{true}}">
+<button class="btn icon-btn" onClick="{{toggleBell}}" aria-label="Notifications" style="position: relative">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8"></path><path d="M10 21h4"></path></svg>
+<sc-if value="{{hasNew}}" hint-placeholder-val="{{true}}"><span style="position: absolute; top: -6px; right: -6px; min-width: 18px; height: 18px; border-radius: 9px; background: #B42318; color: #fff; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">{{newCount}}</span></sc-if>
+</button>
+</sc-if>
+<div role="group" aria-label="Demo persona" style="display: flex; border: 1px solid #D9D4E6; border-radius: 8px; overflow: hidden">
+<button class="btn btn-ghost" onClick="{{toAdmin}}" style="border-radius: 0; background: {{adminBg}}; color: {{adminFg}}">Portfolio admin</button>
+<button class="btn btn-ghost" onClick="{{toTenant}}" style="border-radius: 0; background: {{tenantBg}}; color: {{tenantFg}}">Tenant · Lumen Retail Co.</button>
+</div>
+</div>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; flex: 1 1 auto; align-items: stretch">
+<nav aria-label="Primary" style="flex: 0 0 76px; background: #1B1530; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 0">
+<sc-for list="{{rail}}" as="r" hint-placeholder-count="3">
+<button class="{{r.cls}}" onClick="{{r.go}}" aria-label="{{r.label}}">
+<sc-if value="{{r.isDash}}" hint-placeholder-val="{{true}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg></sc-if>
+<sc-if value="{{r.isWork}}" hint-placeholder-val="{{false}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M9 4v16"></path><path d="M13 9h5M13 13h5"></path></svg></sc-if>
+<sc-if value="{{r.isIns}}" hint-placeholder-val="{{false}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"></path></svg></sc-if>
+<span>{{r.label}}</span>
+</button>
+</sc-for>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; padding: 20px 24px 40px">
+
+<sc-if value="{{onDash}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 16px">
+<div>
+<h1 style="margin: 0; font-family: 'Inter Tight', 'Inter', sans-serif; font-size: 24px; font-weight: 700">{{dashTitle}}</h1>
+<div style="font-size: 13px; color: #5E5873; margin-top: 4px">{{dashScope}}</div>
+</div>
+<div style="margin-left: auto; font-size: 12px; color: #5E5873">Each card keeps its own filters (V2 parity)</div>
+</div>
+<div class="grid12">
+<sc-for list="{{cards}}" as="c" hint-placeholder-count="6">
+<section class="card" aria-label="{{c.title}}" style="grid-column: span {{c.span}}; grid-row: span {{c.rows}}; box-shadow: {{c.ring}}">
+<div class="card-h">
+<div style="flex: 1 1 auto; min-width: 0">
+<h2 class="card-t">{{c.title}}</h2>
+<div class="filters">{{c.filters}}</div>
+<sc-if value="{{c.changed}}" hint-placeholder-val="{{false}}"><div style="margin-top: 6px"><span class="chip">Filter changed after your confirmation</span></div></sc-if>
+</div>
+<button class="btn btn-ghost icon-btn" onClick="{{c.ask}}" aria-label="Ask the agent about {{c.title}}">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5B21B6" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>
+</button>
+<button class="btn btn-ghost icon-btn" onClick="{{c.expand}}" aria-label="Expand {{c.title}}">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg>
+</button>
+</div>
+<sc-if value="{{c.heat}}" hint-placeholder-val="{{false}}">
+<div style="padding: 0 16px 16px">
+<div style="display: grid; grid-template-columns: 64px repeat(4, minmax(0, 1fr)); gap: 4px; align-items: center">
+<span></span>
+<sc-for list="{{heatCols}}" as="hc" hint-placeholder-count="4"><span style="font-size: 11px; color: #5E5873; text-align: center">{{hc}}</span></sc-for>
+<sc-for list="{{heat}}" as="hr" hint-placeholder-count="5">
+<span style="font-size: 11px; color: #5E5873">{{hr.band}}</span>
+<sc-for list="{{hr.cells}}" as="cell" hint-placeholder-count="4">
+<button class="hcell" onClick="{{cell.pick}}" aria-label="{{cell.aria}}" aria-pressed="{{cell.pressed}}" style="background: {{cell.bg}}; color: {{cell.fg}}; outline: {{cell.ol}}; outline-offset: 1px">{{cell.v}}</button>
+</sc-for>
+</sc-for>
+</div>
+<div style="font-size: 11px; color: #5E5873; margin-top: 8px">Click a cell to make it the agent's context. Full heatmap design in DX2/DX3.</div>
+</div>
+</sc-if>
+<sc-if value="{{c.plain}}" hint-placeholder-val="{{true}}">
+<div class="ph" style="min-height: {{c.h}}px">{{c.kind}}</div>
+</sc-if>
+</section>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{onWork}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start">
+<aside aria-label="Investigation history" style="flex: 0 0 220px; display: flex; flex-direction: column; gap: 8px">
+<div style="font-size: 12px; font-weight: 600; color: #5E5873; text-transform: uppercase; letter-spacing: .06em">History</div>
+<button class="btn btn-primary" onClick="{{newThread}}">New investigation</button>
+<sc-for list="{{threads}}" as="t" hint-placeholder-count="3">
+<button class="btn" style="justify-content: flex-start; white-space: normal; text-align: left; padding: 8px 10px; background: {{t.bg}}">{{t.title}}</button>
+</sc-for>
+</aside>
+<section style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<h1 style="margin: 0; font-family: 'Inter Tight', 'Inter', sans-serif; font-size: 22px">{{workTitle}}</h1>
+<a href="#" onClick="{{toDash}}" style="margin-left: auto; font-size: 13px">Back to dashboard — filters and context kept</a>
+</div>
+<div style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{ctx}}" as="x" hint-placeholder-count="4"><span class="{{x.cls}}">{{x.label}}</span></sc-for>
+</div>
+<sc-if value="{{hasMsgs}}" hint-placeholder-val="{{true}}">
+<sc-for list="{{msgs}}" as="m" hint-placeholder-count="2">
+<sc-if value="{{m.user}}" hint-placeholder-val="{{true}}"><div class="msg-user">{{m.text}}</div></sc-if>
+<sc-if value="{{m.agent}}" hint-placeholder-val="{{false}}">
+<div class="msg-agent">
+<button class="runline" onClick="{{toggleSteps}}" aria-expanded="{{showSteps}}">{{m.run}}</button>
+<sc-if value="{{showSteps}}" hint-placeholder-val="{{false}}"><ol style="margin: 0; padding-left: 20px; font-size: 12px; color: #4B4560; line-height: 18px"><sc-for list="{{m.steps}}" as="s"><li>{{s}}</li></sc-for></ol></sc-if>
+<sc-for list="{{m.stmts}}" as="st" hint-placeholder-count="3"><p class="stmt-row"><span class="stmt {{st.cls}}">{{st.label}}</span><span>{{st.text}}</span></p></sc-for>
+<sc-if value="{{m.note}}" hint-placeholder-val="{{false}}"><p style="margin: 0; color: #5E5873">{{m.noteText}}</p></sc-if>
+<div style="display: flex; gap: 6px; flex-wrap: wrap">
+<button class="btn" onClick="{{openEvidence}}">Evidence · 1 metric</button>
+<button class="btn" onClick="{{openRecords}}">Records</button>
+</div>
+</div>
+</sc-if>
+</sc-for>
+</sc-if>
+<sc-if value="{{noMsgs}}" hint-placeholder-val="{{false}}"><div class="ph" style="margin: 0; min-height: 160px">Start an investigation — or open one from the dashboard, the agent panel or an insight.</div></sc-if>
+</section>
+<aside aria-label="Pinned results" style="flex: 0 1 360px; min-width: 280px; display: flex; flex-direction: column; gap: 12px">
+<div style="font-size: 12px; font-weight: 600; color: #5E5873; text-transform: uppercase; letter-spacing: .06em">Canvas — pinned results</div>
+<sc-for list="{{pins}}" as="p" hint-placeholder-count="3"><div class="card"><div class="card-h"><h2 class="card-t" style="font-size: 14px">{{p.title}}</h2></div><div class="ph" style="min-height: {{p.h}}px">{{p.kind}}</div></div></sc-for>
+</aside>
+</div>
+</sc-if>
+
+<sc-if value="{{onIns}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<h1 style="margin: 0; font-family: 'Inter Tight', 'Inter', sans-serif; font-size: 24px">Insights</h1>
+<span class="syn">SYNTHETIC HISTORICAL REPLAY — NOT LIVE MONITORING</span>
+</div>
+<div style="background: #fff; border: 1px solid #E4E1EC; border-radius: 12px; padding: 12px 16px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 12px; color: #4B4560">
+<span style="font-weight: 600; color: #1B1530">Replay checkpoints</span>
+<sc-for list="{{checkpoints}}" as="k" hint-placeholder-count="6"><span style="padding: 4px 8px; border-radius: 6px; background: {{k.bg}}; color: {{k.fg}}; font-weight: {{k.w}}">{{k.label}}</span></sc-for>
+<span style="margin-left: auto">Reference date 20 Oct 2026 · nothing is computed after it</span>
+</div>
+<div role="tablist" aria-label="Insight status" style="display: flex; gap: 20px; border-bottom: 1px solid #E4E1EC">
+<sc-for list="{{insTabs}}" as="tb" hint-placeholder-count="4"><button role="tab" aria-selected="{{tb.on}}" class="{{tb.cls}}" onClick="{{tb.go}}">{{tb.label}}</button></sc-for>
+</div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start">
+<div style="flex: 1 1 340px; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+<sc-for list="{{insList}}" as="i" hint-placeholder-count="3">
+<button class="{{i.cls}}" onClick="{{i.pick}}">
+<span style="display: flex; gap: 8px; align-items: center"><span class="sev {{i.sevCls}}">{{i.sev}}</span><span style="color: #5E5873; font-size: 12px">{{i.when}}</span></span>
+<span style="font-weight: 600; font-size: 14px">{{i.title}}</span>
+</button>
+</sc-for>
+<sc-if value="{{insEmpty}}" hint-placeholder-val="{{false}}"><div class="ph" style="margin: 0; min-height: 80px">Nothing here.</div></sc-if>
+</div>
+<sc-if value="{{hasInsSel}}" hint-placeholder-val="{{true}}">
+<article class="card" style="flex: 2 1 480px; padding: 16px 18px; gap: 12px; min-width: 0">
+<div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap"><span class="sev {{sel.sevCls}}">{{sel.sev}}</span><span style="font-size: 12px; color: #5E5873">{{sel.when}} · status: {{sel.status}}</span></div>
+<h2 style="margin: 0; font-size: 18px">{{sel.title}}</h2>
+<p class="stmt-row"><span class="stmt s-obs">OBSERVED</span><span>{{sel.what}}</span></p>
+<div style="display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 6px 12px; font-size: 13px">
+<span style="color: #5E5873">Metric</span><span>{{sel.metric}}</span>
+<span style="color: #5E5873">Where</span><span>{{sel.where}}</span>
+<span style="color: #5E5873">Evidence</span><span>{{sel.evidence}}</span>
+<span style="color: #5E5873">Suggested next step</span><span>{{sel.next}}</span>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<button class="btn btn-primary" onClick="{{investigate}}">Investigate</button>
+<button class="btn" onClick="{{ack}}">Acknowledge</button>
+<button class="btn" onClick="{{dismiss}}">Dismiss</button>
+<button class="btn" onClick="{{resolve}}">Mark resolved</button>
+</div>
+<div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 13px; color: #4B4560; border-top: 1px solid #F0EEF4; padding-top: 10px">
+<span>Was this useful?</span>
+<button class="btn" onClick="{{fbUp}}" aria-pressed="{{sel.up}}">Useful</button>
+<button class="btn" onClick="{{fbDown}}" aria-pressed="{{sel.down}}">Not useful</button>
+<span>{{sel.fbMsg}}</span>
+</div>
+</article>
+</sc-if>
+</div>
+</div>
+</sc-if>
+</main>
+
+<sc-if value="{{panel}}" hint-placeholder-val="{{false}}">
+<aside aria-label="Agent panel" style="flex: 0 0 400px; max-width: 100%; background: #FFFFFF; border-left: 1px solid #E4E1EC; display: flex; flex-direction: column; min-height: 600px">
+<div style="display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid #E4E1EC">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5B21B6" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>
+<span style="font-weight: 600">Agent</span>
+<button class="btn btn-ghost" onClick="{{toWork}}" style="margin-left: auto">Open in workspace</button>
+<button class="btn btn-ghost icon-btn" onClick="{{closePanel}}" aria-label="Close agent panel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+<div style="padding: 10px 14px; border-bottom: 1px solid #F0EEF4; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 11px; font-weight: 600; color: #5E5873; text-transform: uppercase; letter-spacing: .06em">Context the agent will use</div>
+<div style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{ctx}}" as="x" hint-placeholder-count="4">
+<span class="{{x.cls}}">{{x.label}}<sc-if value="{{x.removable}}" hint-placeholder-val="{{false}}"><button class="chip-x" onClick="{{x.remove}}" aria-label="Remove {{x.label}} from context"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></sc-if></span>
+</sc-for>
+</div>
+</div>
+<div style="flex: 1 1 auto; overflow: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; background: #FAF9FC">
+<sc-for list="{{msgs}}" as="m" hint-placeholder-count="2">
+<sc-if value="{{m.user}}" hint-placeholder-val="{{true}}"><div class="msg-user">{{m.text}}</div></sc-if>
+<sc-if value="{{m.agent}}" hint-placeholder-val="{{false}}">
+<div class="msg-agent">
+<button class="runline" onClick="{{toggleSteps}}" aria-expanded="{{showSteps}}">{{m.run}}</button>
+<sc-if value="{{showSteps}}" hint-placeholder-val="{{false}}"><ol style="margin: 0; padding-left: 20px; font-size: 12px; color: #4B4560; line-height: 18px"><sc-for list="{{m.steps}}" as="s"><li>{{s}}</li></sc-for></ol></sc-if>
+<sc-for list="{{m.stmts}}" as="st" hint-placeholder-count="3"><p class="stmt-row"><span class="stmt {{st.cls}}">{{st.label}}</span><span>{{st.text}}</span></p></sc-for>
+<sc-if value="{{m.rank}}" hint-placeholder-val="{{false}}">
+<div style="border: 1px solid #E4E1EC; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 12px; font-weight: 600">Renewal amendments 28+ days old · Central · by mall</div>
+<sc-for list="{{rankRows}}" as="rr" hint-placeholder-count="3">
+<div style="display: grid; grid-template-columns: 130px minmax(0, 1fr) 24px; gap: 8px; align-items: center; font-size: 12px"><span>{{rr.mall}}</span><span style="height: 10px; border-radius: 3px; background: #8B5CF6; width: {{rr.pct}}"></span><span style="text-align: right; font-weight: 600">{{rr.v}}</span></div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{m.note}}" hint-placeholder-val="{{false}}"><p style="margin: 0; color: #5E5873">{{m.noteText}}</p></sc-if>
+<div style="display: flex; gap: 6px; flex-wrap: wrap">
+<button class="btn" onClick="{{openEvidence}}">Evidence · 1 metric</button>
+<button class="btn" onClick="{{openRecords}}">Records</button>
+</div>
+</div>
+</sc-if>
+</sc-for>
+<sc-if value="{{propPending}}" hint-placeholder-val="{{false}}">
+<div style="border: 1px solid #C9B8F2; background: #F5F1FE; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px; font-size: 13px">
+<div style="font-weight: 600">Suggested dashboard change</div>
+<div>Set <b>Pending approvals</b> to <b>Central · All malls</b> so it matches this question? Nothing changes until you confirm.</div>
+<div style="display: flex; gap: 8px"><button class="btn btn-primary" onClick="{{confirmProp}}">Apply filter</button><button class="btn" onClick="{{dismissProp}}">Dismiss</button></div>
+</div>
+</sc-if>
+<sc-if value="{{propApplied}}" hint-placeholder-val="{{false}}"><div style="font-size: 12px; color: #3B1E7A; background: #EFEAFB; border-radius: 8px; padding: 8px 10px">Applied: Pending approvals now shows Central · All malls. <button class="btn btn-ghost" onClick="{{undoProp}}" style="min-height: 24px; padding: 0 6px">Undo</button></div></sc-if>
+<sc-if value="{{propDismissed}}" hint-placeholder-val="{{false}}"><div style="font-size: 12px; color: #5E5873">Suggestion dismissed — the dashboard is unchanged.</div></sc-if>
+<sc-if value="{{showSuggest}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 12px; color: #5E5873">Suggested questions</div>
+<sc-for list="{{suggest}}" as="q" hint-placeholder-count="3"><button class="btn" onClick="{{q.ask}}" style="justify-content: flex-start; white-space: normal; text-align: left; padding: 8px 10px">{{q.text}}</button></sc-for>
+</div>
+</sc-if>
+</div>
+<div style="padding: 12px 14px; border-top: 1px solid #E4E1EC; display: flex; gap: 8px">
+<label for="ask-input" style="position: absolute; left: -9999px">Ask a question</label>
+<input id="ask-input" placeholder="Ask a follow-up…" style="flex: 1 1 auto; min-height: 36px; border: 1px solid #D9D4E6; border-radius: 8px; padding: 0 10px; font: inherit; font-size: 14px">
+<button class="btn btn-primary" aria-label="Send">Send</button>
+</div>
+</aside>
+</sc-if>
+</div>
+
+<sc-if value="{{bell}}" hint-placeholder-val="{{false}}">
+<div role="dialog" aria-label="Notifications" style="position: absolute; top: 52px; right: 300px; width: 360px; max-width: calc(100% - 32px); background: #fff; border: 1px solid #E4E1EC; border-radius: 12px; box-shadow: 0 12px 32px rgba(27,21,48,.16); z-index: 40; padding: 12px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: center"><span style="font-weight: 600">Insights</span><span style="margin-left: auto; font-size: 11px; color: #6B4200; font-weight: 700">SYNTHETIC REPLAY</span></div>
+<sc-for list="{{bellItems}}" as="b" hint-placeholder-count="3"><button class="ins-row" onClick="{{b.open}}"><span style="display: flex; gap: 8px; align-items: center"><span class="sev {{b.sevCls}}">{{b.sev}}</span><span style="font-size: 12px; color: #5E5873">{{b.when}}</span></span><span style="font-weight: 600">{{b.title}}</span></button></sc-for>
+<button class="btn" onClick="{{toIns}}">Open insight inbox</button>
+</div>
+</sc-if>
+
+<sc-if value="{{hasFocus}}" hint-placeholder-val="{{false}}">
+<div style="position: absolute; inset: 0; background: rgba(27,21,48,.35); z-index: 30; display: flex; justify-content: center; align-items: flex-start; padding: 72px 16px">
+<div role="dialog" aria-label="{{focusCard.title}} expanded" style="width: 960px; max-width: 100%; background: #fff; border-radius: 14px; box-shadow: 0 24px 64px rgba(27,21,48,.28); display: flex; flex-direction: column">
+<div style="display: flex; align-items: flex-start; gap: 12px; padding: 16px 18px 0; flex-wrap: wrap">
+<div><h2 style="margin: 0; font-size: 20px">{{focusCard.title}}</h2><div class="filters">{{focusCard.filters}}</div></div>
+<button class="btn btn-primary" onClick="{{askFocus}}" style="margin-left: auto">Ask about this card</button>
+<button class="btn icon-btn" onClick="{{closeFocus}}" aria-label="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+<div role="tablist" aria-label="Card views" style="display: flex; gap: 20px; padding: 0 18px; border-bottom: 1px solid #E4E1EC">
+<sc-for list="{{focusTabs}}" as="ft" hint-placeholder-count="4"><button role="tab" aria-selected="{{ft.on}}" class="{{ft.cls}}" onClick="{{ft.go}}">{{ft.label}}</button></sc-for>
+</div>
+<div class="ph" style="margin: 16px 18px 18px; min-height: 320px">{{focusBody}}</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{hasInsp}}" hint-placeholder-val="{{false}}">
+<aside aria-label="Inspector" style="position: absolute; top: 56px; right: 0; bottom: 0; width: 460px; max-width: 100%; background: #fff; border-left: 1px solid #E4E1EC; box-shadow: -16px 0 40px rgba(27,21,48,.12); z-index: 35; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; padding: 12px 16px"><span style="font-weight: 600">Inspector</span><span style="margin-left: 8px; font-size: 12px; color: #5E5873">Renewal × 4 wk+ · Central · 2026</span><button class="btn btn-ghost icon-btn" onClick="{{closeInsp}}" aria-label="Close inspector" style="margin-left: auto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+<div role="tablist" aria-label="Inspector views" style="display: flex; gap: 18px; padding: 0 16px; border-bottom: 1px solid #E4E1EC">
+<sc-for list="{{inspTabs}}" as="it" hint-placeholder-count="4"><button role="tab" aria-selected="{{it.on}}" class="{{it.cls}}" onClick="{{it.go}}">{{it.label}}</button></sc-for>
+</div>
+<div style="padding: 14px 16px; overflow: auto; font-size: 13px; line-height: 19px; display: flex; flex-direction: column; gap: 12px">
+<sc-if value="{{inspEvidence}}" hint-placeholder-val="{{true}}">
+<div style="display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 8px 12px">
+<span style="color: #5E5873">Metric</span><span><b>Pending amendments by age band</b><br>amendments.pending_by_age_band · v1 · parity</span>
+<span style="color: #5E5873">Scope</span><span>Region Central · created in 2026 (Asia/Riyadh) · status Ready or In process · your access: all Central malls</span>
+<span style="color: #5E5873">Reference date</span><span>20 Oct 2026 · synthetic data version sd-2026.10.20-01</span>
+<span style="color: #5E5873">Calculation</span><span>Age = reference date − amendment created date. Band “4 wk+” = 28 days or more.</span>
+<span style="color: #5E5873">Result</span><span>18 of 44 pending amendments (40.9%) · dataset ds_7f3a</span>
+<span style="color: #5E5873">Breakdown</span><span>Same population broken down by mall: Rawdah Point Mall 9 · Sandstone Galleria 6 · Qasr Plaza 3</span>
+<span style="color: #5E5873">Coverage</span><span>Complete for 2026 · 0 rows missing a created date</span>
+</div>
+</sc-if>
+<sc-if value="{{inspDefinition}}" hint-placeholder-val="{{false}}">
+<p style="margin: 0"><b>Pending amendments</b> counts lease amendments with status Ready or In process, grouped by how long ago they were created.</p>
+<p class="stmt-row"><span class="stmt s-una">CAVEAT</span><span>Age bands are not SLA breaches.</span></p>
+<p class="stmt-row"><span class="stmt s-una">CAVEAT</span><span>Amendments dated in the future fall into “4 wk+”. This reproduces the original dashboard and is listed as a known limitation.</span></p>
+</sc-if>
+<sc-if value="{{inspRecords}}" hint-placeholder-val="{{false}}">
+<div style="overflow-x: auto"><table class="tbl"><thead><tr><th>Amendment</th><th>Mall</th><th>Lease</th><th>Created</th><th>Age (days)</th><th>Status</th></tr></thead>
+<tbody><sc-for list="{{records}}" as="rc" hint-placeholder-count="6"><tr><td>{{rc.id}}</td><td>{{rc.mall}}</td><td>{{rc.lease}}</td><td>{{rc.created}}</td><td>{{rc.age}}</td><td>{{rc.status}}</td></tr></sc-for></tbody></table></div>
+<div style="font-size: 12px; color: #5E5873">Showing 6 of 18 · same population as the heatmap cell · select a row to ask about it</div>
+</sc-if>
+<sc-if value="{{inspExec}}" hint-placeholder-val="{{false}}">
+<ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px"><sc-for list="{{execSteps}}" as="es"><li>{{es}}</li></sc-for></ol>
+<div style="font-size: 12px; color: #5E5873">4 of 8 allowed steps · 1.8 s · no data written. Only verified steps are shown, not the model's private reasoning.</div>
+</sc-if>
+</div>
+</aside>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { persona: 'admin', screen: 'dashboard', panel: false, ctxCard: null, sel: null, asked: null, insp: null, focus: null, focusTab: 'Chart', bell: false, proposal: 'none', steps: false, insTab: 'new', insSel: 'i1', status: { i1: 'new', i2: 'new', i3: 'new', i4: 'new' }, fb: {} };
+  }
+  adminCards() {
+    return [
+      { id: 'properties', title: 'Portfolio properties', span: 12, rows: 1, filters: 'No card filters', kind: 'Stat tiles (properties, units, occupied, vacant, GLA) + unit occupancy meter', h: 96 },
+      { id: 'actionRequired', title: 'Action required', span: 4, rows: 2, filters: 'No card filters', kind: 'Unread action-required notifications (list)', h: 340 },
+      { id: 'salesFunnel', title: 'Sales funnel', span: 8, rows: 1, filters: '2026 · All months · All regions · All malls', kind: 'Four-stage flow — lease requests → leads → proposals → contracts, with signed / unsigned splits', h: 130 },
+      { id: 'kpis', title: 'Leasing and sales KPIs', span: 8, rows: 1, filters: 'No card filters', kind: '3 stat tiles — expiring leases · active leases · pending sales submissions', h: 92 },
+      { id: 'leaseRequests', title: 'Lease requests', span: 4, rows: 1, filters: '2026', kind: 'Donut — by unit type / by registration source', h: 210 },
+      { id: 'documentStatus', title: 'Drawing document status', span: 8, rows: 1, filters: '2026 · All regions · Architectural', kind: 'Stacked columns A / B / C / D by mall · chart ↔ table', h: 210 },
+      { id: 'fitoutHandover', title: 'Fit-out and handover', span: 7, rows: 1, filters: '2026 · All months · All regions · All malls', kind: '4 inspection progress rings + pending-handover callout', h: 190 },
+      { id: 'fitoutDrawings', title: 'Fit-out drawings', span: 5, rows: 1, filters: '2026 · All months · All regions · All malls', kind: 'Horizontal stacked bars by discipline — submitted · pending · approved', h: 190 },
+      { id: 'pendingApprovals', title: 'Pending approvals', span: 6, rows: 1, filters: 'All regions · All malls', kind: 'Half gauges — proposals · contracts · leases, share older than one month', h: 196 },
+      { id: 'pendingAmendments', title: 'Pending amendments', span: 6, rows: 1, filters: '2026 · All months · Central · All malls', kind: 'heatmap', h: 0, heat: true },
+      { id: 'serviceRequests', title: 'Service requests', span: 7, rows: 1, filters: '2026 · All months · All regions · All malls', kind: 'Treemap by category + work-permit strip', h: 210 },
+      { id: 'unitDiscrepancy', title: 'Unit discrepancy', span: 5, rows: 1, filters: '2026 · Sep · Mall-wise', kind: 'Diverging bars — mismatch ◂ ▸ match', h: 210 }
+    ];
+  }
+  tenantCards() {
+    return [
+      { id: 'tTiles', title: 'Overview', span: 8, rows: 1, filters: 'All my leases', kind: '7 tiles — leases · pending documents · service requests · sales submissions · lease requests · profile · payments (unavailable)', h: 150 },
+      { id: 'tAction', title: 'Action required', span: 4, rows: 1, filters: 'No card filters', kind: 'Unread action-required notifications (list)', h: 150 },
+      { id: 'tSales', title: 'Reported sales', span: 7, rows: 1, filters: '2026 · All leases', kind: 'Monthly columns — submitted + approved, SAR', h: 220 },
+      { id: 'tSR', title: 'Service requests', span: 5, rows: 1, filters: 'All my malls · By status', kind: 'Donut by status ↔ treemap by category', h: 220 },
+      { id: 'tDocs', title: 'Documents to upload', span: 5, rows: 1, filters: 'No card filters', kind: 'Grouped list with deep links', h: 150 },
+      { id: 'tAnn', title: 'Announcements and events', span: 7, rows: 1, filters: 'No card filters', kind: 'Merged feed — today · upcoming · announcements', h: 150 },
+      { id: 'tOpp', title: 'Leasing opportunities', span: 12, rows: 1, filters: 'No card filters', kind: 'Mall grid with available units and enquiry links', h: 120 }
+    ];
+  }
+  suggestionsFor(id, hasSel) {
+    if (id === 'pendingAmendments' && hasSel) return ['Why is this so high?', 'Show these amendments as records', 'How does this compare with 2025?'];
+    if (id === 'pendingAmendments') return ['Where are the longest delays?', 'Which amendment type is growing?', 'Explain the age bands'];
+    if (id && id.charAt(0) === 't') return ['What do I need to do next?', 'Which month had the lowest reported sales?', 'Show my open service requests'];
+    if (id) return ['Explain this card', 'Which mall needs attention here?', 'Show the trend over the last 6 months'];
+    return ['Which mall has the highest pending approval backlog?', 'Where are service requests accumulating?', 'What changed since last month?'];
+  }
+  insights() {
+    /* Superseded DX1 placeholders replaced by the DX6 canonical insights (reconciliation C1–C4, DX6 v2). */
+    return {
+      i1: { sev: 'P1', sevCls: 'sev-h', when: 'Weekly checkpoint 20 Oct 2026', title: 'Rawdah Point Mall · approval and renewal backlogs are both rising', what: '41 approvals have waited 31+ days on 20 Oct, up from 24 on 8 Sep; renewal amendments in the 4 wk+ band rose from 4 to 9 over the same weeks.', metric: 'Pending approvals waiting 31+ days (1m+ band) and pending renewal amendments 4 wk+ · as-of history (new metrics)', where: 'Rawdah Point Mall · Central', evidence: '41 of 71 pending at Rawdah Point (19 proposals, 15 contracts, 7 leases); 66.1% of Central’s 62. INS-107.', next: 'Break the 41 items down by approval type and age.' },
+      i2: { sev: 'P2', sevCls: 'sev-m', when: 'Event · 19 Oct 2026', title: 'Seven malls have not filed September unit-discrepancy reports', what: '18 of 25 malls reported (72%); Oasis Row has missed two months in a row.', metric: 'Data coverage · unit discrepancy reports', where: 'All regions', evidence: 'Reports ingested by 19 Oct 18:30. INS-105 (Central instance INS-105C for the regional manager).', next: 'List the missing malls and their last report.' },
+      i3: { sev: 'P2', sevCls: 'sev-m', when: 'Monthly checkpoint 20 Oct 2026', title: 'Mirage Commons · vacancy has risen every month since May', what: '58 of 299 units vacant (19.4%), up from 48 (16.1%) in May.', metric: 'Vacant units on the 20th of each month (as-of history, new metric)', where: 'Mirage Commons · Central', evidence: 'Monthly snapshots April–October. INS-104 (updated silently on 20 Oct).', next: 'Check which leases ended since April and whether any were renewed.' },
+      i4: { sev: 'Watch', sevCls: 'sev-l', when: 'Event · 19 Oct 2026', title: 'Gulf Gate Mall · September unit mismatches jumped', what: '11 mismatched units of 142 (7.7%) against a June–August average of 2.4%; 2.9% across the 18 malls that reported.', metric: 'Unit mismatch rate (derived from Unit discrepancy)', where: 'Gulf Gate Mall · Eastern', evidence: 'One month only, so confidence is Low (Watch). INS-106.', next: 'Open the mismatched units and their reasons.' }
+    };
+  }
+  renderVals() {
+    const s = this.state;
+    const set = (o) => () => this.setState(o);
+    const isAdmin = s.persona === 'admin';
+    const canned = s.ctxCard === 'pendingAmendments' && s.sel && s.sel.type === 'Renewal' && s.sel.band === '4 wk+' && s.asked === 'Why is this so high?';
+    const baseCards = isAdmin ? this.adminCards() : this.tenantCards();
+    const applied = s.proposal === 'applied';
+    const cards = baseCards.map((c) => {
+      const changed = applied && c.id === 'pendingApprovals';
+      return Object.assign({}, c, {
+        filters: changed ? 'Central · All malls' : c.filters,
+        changed: changed,
+        ring: changed ? '0 0 0 2px #5B21B6' : 'none',
+        plain: !c.heat,
+        heat: !!c.heat,
+        ask: () => this.setState({ panel: true, ctxCard: c.id, sel: c.id === 'pendingAmendments' ? s.sel : null, asked: null, proposal: 'none', steps: false }),
+        expand: () => this.setState({ focus: c.id, focusTab: 'Chart' })
+      });
+    });
+    const types = ['Expansion', 'HoldOver', 'Renewal', 'Termination'];
+    const vals = { '4 wk+': [1, 2, 18, 4], '4 wk': [0, 1, 3, 1], '3 wk': [1, 0, 2, 2], '2 wk': [2, 1, 1, 1], '1 wk': [1, 0, 2, 1] };
+    const shade = (v) => v >= 10 ? ['#4C1D95', '#FFFFFF'] : v >= 3 ? ['#9F84E6', '#1B1530'] : v >= 1 ? ['#D9CDF6', '#1B1530'] : ['#F1EFF5', '#5E5873'];
+    const heat = Object.keys(vals).map((band) => ({
+      band: band,
+      cells: vals[band].map((v, i) => {
+        const on = s.sel && s.sel.type === types[i] && s.sel.band === band;
+        const sh = shade(v);
+        return { v: v, bg: sh[0], fg: sh[1], ol: on ? '2px solid #F59E0B' : 'none', pressed: on ? 'true' : 'false', aria: types[i] + ', ' + band + ': ' + v + ' amendments',
+          pick: () => this.setState({ panel: true, ctxCard: 'pendingAmendments', sel: { type: types[i], band: band, v: v }, asked: null, proposal: 'none', steps: false }) };
+      })
+    }));
+    const card = baseCards.find((c) => c.id === s.ctxCard);
+    const ctx = [{ label: isAdmin ? 'Admin dashboard' : 'Tenant dashboard · Lumen Retail Co.', cls: 'chip chip-f', removable: false }];
+    if (card) {
+      ctx.push({ label: card.title, cls: 'chip', removable: true, remove: set({ ctxCard: null, sel: null, asked: null, proposal: 'none' }) });
+      card.filters.split(' · ').filter((f) => f !== 'No card filters').forEach((f) => ctx.push({ label: f, cls: 'chip chip-f', removable: false }));
+    }
+    if (s.sel) ctx.push({ label: 'Selected: ' + s.sel.type + ' × ' + s.sel.band + ' (' + s.sel.v + ')', cls: 'chip chip-sel', removable: true, remove: set({ sel: null, asked: null, proposal: 'none' }) });
+    const msgs = [];
+    if (s.asked) {
+      msgs.push({ user: true, agent: false, text: s.asked });
+      if (canned) {
+        msgs.push({ user: false, agent: true, run: (s.steps ? 'Hide steps' : 'Checked 1 metric · 2 queries · 1.8 s — show steps'), steps: this.execSteps(), rank: true, note: false,
+          stmts: [
+            { cls: 's-obs', label: 'OBSERVED', text: '18 renewal amendments in Central are 28 or more days old — the largest cell on this heatmap.' },
+            { cls: 's-der', label: 'DERIVED', text: 'That is 40.9% of Central’s 44 pending amendments created in 2026.' },
+            { cls: 's-obs', label: 'OBSERVED', text: '15 of the 18 are at two malls: Rawdah Point Mall (9) and Sandstone Galleria (6).' },
+            { cls: 's-hyp', label: 'HYPOTHESIS', text: 'Renewals at these two malls may share a slow review step. The dataset holds no approver workload, so this cannot be confirmed.' },
+            { cls: 's-rec', label: 'RECOMMENDATION', text: 'Start with the 9 Rawdah Point Mall renewals — open the records to see each one’s age.' }
+          ] });
+      } else {
+        msgs.push({ user: false, agent: true, run: 'Answer layout designed in DX4–DX5', steps: [], rank: false, stmts: [], note: true, noteText: 'In the build, this question runs against this card’s metric with the context shown above. Try the Pending amendments heatmap: select “Renewal × 4 wk+” and ask “Why is this so high?”.' });
+      }
+    }
+    const sug = this.suggestionsFor(s.ctxCard, !!s.sel).map((t) => ({ text: t, ask: () => this.setState({ asked: t, steps: false, proposal: (s.ctxCard === 'pendingAmendments' && s.sel && s.sel.type === 'Renewal' && s.sel.band === '4 wk+' && t === 'Why is this so high?') ? 'pending' : 'none' }) }));
+    const rail = [{ id: 'dashboard', label: 'Dashboard' }, { id: 'workspace', label: 'Workspace' }].concat(isAdmin ? [{ id: 'insights', label: 'Insights' }] : []).map((r) => ({
+      label: r.label, isDash: r.id === 'dashboard', isWork: r.id === 'workspace', isIns: r.id === 'insights',
+      cls: 'rail-a' + (s.screen === r.id ? ' rail-on' : ''), go: set({ screen: r.id, bell: false })
+    }));
+    const ins = this.insights();
+    const tabsDef = [['new', 'New'], ['acknowledged', 'Acknowledged'], ['dismissed', 'Dismissed'], ['resolved', 'Resolved']];
+    const countOf = (st) => Object.keys(s.status).filter((k) => s.status[k] === st).length;
+    const insTabs = tabsDef.map((t) => ({ label: t[1] + ' (' + countOf(t[0]) + ')', on: s.insTab === t[0] ? 'true' : 'false', cls: 'tab' + (s.insTab === t[0] ? ' tab-on' : ''), go: set({ insTab: t[0] }) }));
+    const insList = Object.keys(ins).filter((k) => s.status[k] === s.insTab).map((k) => Object.assign({}, ins[k], { cls: 'ins-row' + (s.insSel === k ? ' ins-on' : ''), pick: set({ insSel: k }) }));
+    const selIns = ins[s.insSel];
+    const fbv = s.fb[s.insSel];
+    const sel = Object.assign({}, selIns, { status: s.status[s.insSel], up: fbv === 'up' ? 'true' : 'false', down: fbv === 'down' ? 'true' : 'false', fbMsg: fbv ? 'Thanks — feedback adjusts ranking and suppression only.' : '' });
+    const move = (to) => () => this.setState({ status: Object.assign({}, s.status, { [s.insSel]: to }) });
+    const newKeys = Object.keys(ins).filter((k) => s.status[k] === 'new');
+    const bellItems = newKeys.slice(0, 3).map((k) => Object.assign({}, ins[k], { open: set({ screen: 'insights', insTab: 'new', insSel: k, bell: false }) }));
+    const cps = ['31 Mar 2025', '30 Jun 2025', '30 Sep 2025', '31 Dec 2025', '31 Mar 2026', '30 Jun 2026', '31 Jul 2026', '31 Aug 2026', '30 Sep 2026'];
+    const checkpoints = cps.map((c, i) => ({ label: c, bg: i === cps.length - 1 ? '#5B21B6' : '#F4F2F8', fg: i === cps.length - 1 ? '#FFFFFF' : '#4B4560', w: i === cps.length - 1 ? '700' : '500' }));
+    const focusCard = baseCards.find((c) => c.id === s.focus) || { title: '', filters: '', kind: '' };
+    const focusTabs = ['Chart', 'Table', 'Records', 'Definition'].map((t) => ({ label: t, on: s.focusTab === t ? 'true' : 'false', cls: 'tab' + (s.focusTab === t ? ' tab-on' : ''), go: set({ focusTab: t }) }));
+    const focusBody = s.focusTab === 'Chart' ? 'Large chart: ' + (focusCard.kind === 'heatmap' ? 'amendment type × delay-week heatmap' : focusCard.kind) : s.focusTab === 'Table' ? 'The same numbers as an accessible, sortable table' : s.focusTab === 'Records' ? 'Supporting records for the current selection — same population as the chart' : 'Business definition, formula, time basis, filters, caveats and parity notes';
+    const inspTabs = [['evidence', 'Evidence'], ['definition', 'Definition'], ['records', 'Records'], ['exec', 'Execution']].map((t) => ({ label: t[1], on: s.insp === t[0] ? 'true' : 'false', cls: 'tab' + (s.insp === t[0] ? ' tab-on' : ''), go: set({ insp: t[0] }) }));
+    const pins = canned ? [{ title: 'Ranked list · Renewal 28+ days by mall', kind: 'Pinned from the answer — interactive bars', h: 120 }, { title: 'Heatmap · Central 2026', kind: 'Same metric as the dashboard card', h: 140 }, { title: 'Records · 18 amendments', kind: 'Table — select a row to add it to context', h: 120 }] : [{ title: 'Nothing pinned yet', kind: 'Generated charts and tables can be pinned here', h: 120 }];
+    return {
+      isAdmin: isAdmin,
+      scopeLabel: isAdmin ? 'your portfolio' : 'your leases',
+      adminBg: isAdmin ? '#1B1530' : '#FFFFFF', adminFg: isAdmin ? '#FFFFFF' : '#1B1530',
+      tenantBg: isAdmin ? '#FFFFFF' : '#1B1530', tenantFg: isAdmin ? '#1B1530' : '#FFFFFF',
+      toAdmin: set({ persona: 'admin', screen: 'dashboard', panel: false, ctxCard: null, sel: null, asked: null, proposal: 'none', insp: null, bell: false }),
+      toTenant: set({ persona: 'tenant', screen: 'dashboard', panel: false, ctxCard: null, sel: null, asked: null, proposal: 'none', insp: null, bell: false }),
+      hasNew: newKeys.length > 0, newCount: newKeys.length,
+      toggleBell: set({ bell: !s.bell }), bell: s.bell && isAdmin, bellItems: bellItems,
+      openAsk: set({ panel: true }),
+      rail: rail,
+      onDash: s.screen === 'dashboard', onWork: s.screen === 'workspace', onIns: s.screen === 'insights' && isAdmin,
+      dashTitle: isAdmin ? 'Portfolio overview' : 'Hi Maha — Lumen Retail Co.',
+      dashScope: isAdmin ? 'Portfolio admin · all 3 regions · 25 malls (synthetic)' : 'Tenant · 3 leases · 5 units · 2 brands (synthetic)',
+      cards: cards, heat: heat, heatCols: types,
+      panel: s.panel, closePanel: set({ panel: false }), toWork: set({ screen: 'workspace', panel: false }),
+      ctx: ctx, msgs: msgs, hasMsgs: msgs.length > 0, noMsgs: msgs.length === 0,
+      showSteps: s.steps, toggleSteps: set({ steps: !s.steps }),
+      rankRows: [{ mall: 'Rawdah Point Mall', v: 9, pct: '100%' }, { mall: 'Sandstone Galleria', v: 6, pct: '67%' }, { mall: 'Qasr Plaza', v: 3, pct: '33%' }],
+      showSuggest: msgs.length === 0, suggest: sug,
+      propPending: canned && s.proposal === 'pending', propApplied: canned && applied, propDismissed: canned && s.proposal === 'dismissed',
+      confirmProp: set({ proposal: 'applied' }), dismissProp: set({ proposal: 'dismissed' }), undoProp: set({ proposal: 'pending' }),
+      openEvidence: set({ insp: 'evidence' }), openRecords: set({ insp: 'records' }), closeInsp: set({ insp: null }),
+      hasInsp: !!s.insp, inspTabs: inspTabs, inspEvidence: s.insp === 'evidence', inspDefinition: s.insp === 'definition', inspRecords: s.insp === 'records', inspExec: s.insp === 'exec',
+      records: [
+        { id: 'AMD-24118', mall: 'Rawdah Point Mall', lease: 'T-30512', created: '14 Jun 2026', age: 128, status: 'Ready' },
+        { id: 'AMD-24133', mall: 'Rawdah Point Mall', lease: 'T-30877', created: '2 Jul 2026', age: 110, status: 'In process' },
+        { id: 'AMD-24190', mall: 'Sandstone Galleria', lease: 'T-31206', created: '21 Jul 2026', age: 91, status: 'Ready' },
+        { id: 'AMD-24207', mall: 'Rawdah Point Mall', lease: 'T-30940', created: '5 Aug 2026', age: 76, status: 'Ready' },
+        { id: 'AMD-24251', mall: 'Sandstone Galleria', lease: 'T-31388', created: '28 Aug 2026', age: 53, status: 'In process' },
+        { id: 'AMD-24302', mall: 'Qasr Plaza', lease: 'T-31455', created: '19 Sep 2026', age: 31, status: 'Ready' }
+      ],
+      execSteps: this.execSteps(),
+      hasFocus: !!s.focus, focusCard: focusCard, focusTabs: focusTabs, focusBody: focusBody, closeFocus: set({ focus: null }),
+      askFocus: () => this.setState({ focus: null, panel: true, ctxCard: s.focus, sel: null, asked: null, proposal: 'none' }),
+      threads: [{ title: canned ? 'Renewal ageing — Central' : 'Current investigation', bg: '#EFEAFB' }, { title: 'Approval backlog — Rawdah Point Mall', bg: '#FFFFFF' }, { title: 'Q3 reported sales by region', bg: '#FFFFFF' }],
+      newThread: set({ asked: null, ctxCard: null, sel: null, proposal: 'none' }),
+      workTitle: canned ? 'Renewal ageing — Central' : 'Investigation',
+      toDash: set({ screen: 'dashboard' }), pins: pins,
+      checkpoints: checkpoints, insTabs: insTabs, insList: insList, insEmpty: insList.length === 0,
+      hasInsSel: !!selIns, sel: sel,
+      investigate: () => this.setState({ screen: 'workspace', panel: false, ctxCard: 'pendingApprovals', sel: null, asked: 'Investigate: ' + selIns.title, proposal: 'none', status: Object.assign({}, s.status, { [s.insSel]: s.status[s.insSel] === 'new' ? 'acknowledged' : s.status[s.insSel] }) }),
+      ack: move('acknowledged'), dismiss: move('dismissed'), resolve: move('resolved'),
+      fbUp: () => this.setState({ fb: Object.assign({}, s.fb, { [s.insSel]: 'up' }) }),
+      fbDown: () => this.setState({ fb: Object.assign({}, s.fb, { [s.insSel]: 'down' }) }),
+      toIns: set({ screen: 'insights', bell: false })
+    };
+  }
+  execSteps() {
+    return [
+      'Understood the question using your selection: Pending amendments · Central · 2026 · Renewal × 4 wk+',
+      'Retrieved Pending amendments by age band — 44 pending amendments in scope, 18 in the selected cell',
+      'Computed the cell’s share of the total (18 ÷ 44 = 40.9%)',
+      'Broke the 18 down by mall using the same population'
+    ];
+  }
+}
+</script>
+</body>
+</html>

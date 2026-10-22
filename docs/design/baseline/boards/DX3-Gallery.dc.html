@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DX3 chart parity gallery</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F5FA}
+.g{width:1440px;box-sizing:border-box;padding:32px 40px 56px;background:#F6F5FA;font-family:'Inter',system-ui,sans-serif;color:#1B1530;display:flex;flex-direction:column;gap:16px}
+h1{margin:0;font-family:'Inter Tight','Inter',sans-serif;font-size:28px}
+h2{margin:0;font-size:17px}
+h3{margin:12px 0 4px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#5E5873}
+code{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;background:#F1EFF6;padding:1px 4px;border-radius:4px}
+.gh{display:flex;gap:24px;align-items:flex-start;justify-content:space-between}
+.lead{margin:6px 0 0;font-size:14px;line-height:21px;color:#4B4560;max-width:900px}
+.lead2{margin:4px 0 10px;font-size:13px;line-height:19px;color:#4B4560;max-width:1000px}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;background:#EFEAFB;color:#3B1F8C}
+.pill.ok{background:#DDF3EF;color:#0F5048}.pill.bad{background:#FDE8E8;color:#9B1C1C}
+.status{display:flex;flex-direction:column;gap:6px;align-items:flex-end;max-width:420px;text-align:right}
+.bar{display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid #E4E1EC;border-radius:12px;padding:10px 14px;position:sticky;top:0;z-index:20}
+.sg{display:inline-flex;border:1px solid #D9D4E6;border-radius:9px;overflow:hidden;background:#fff}
+.sgb{border:0;background:#fff;padding:6px 12px;font:500 12.5px 'Inter',system-ui,sans-serif;color:#4B4560;cursor:pointer;border-right:1px solid #E4E1EC}
+.sgb:last-child{border-right:0}.sg-on{background:#1B1530;color:#fff}
+.ctx{display:flex;gap:10px;align-items:center;font-size:13px;flex:1 1 300px;flex-wrap:wrap}
+.ctxl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#6D28D9;background:#F1ECFD;padding:3px 8px;border-radius:6px}
+.ctxc{font-size:11.5px;color:#5E5873;font-family:ui-monospace,Menlo,monospace}
+.asked{margin:0;font-size:13px;background:#1B1530;color:#fff;border-radius:10px;padding:10px 14px}
+.rule{margin:0;font-size:12.5px;color:#5E5873}
+.frame{display:flex;flex-direction:column;gap:16px;margin:0 auto;width:100%;box-sizing:border-box}
+.fr-tab{width:768px}.fr-phone{width:390px}
+.grp{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:#5E5873;margin:12px 0 -4px}
+.sp,.lab,.test{background:#fff;border:1px solid #E4E1EC;border-radius:14px;padding:18px 20px;box-sizing:border-box;min-width:0}
+.sph{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.no{flex:0 0 auto;display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#1B1530;color:#fff;font-size:12px;font-weight:700}
+.spt{flex:1 1 260px;min-width:0}
+.used{margin:2px 0 0;font-size:12.5px;color:#5E5873}
+.impl{font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:6px;background:#F1EFF6;color:#3A3550}
+.pv{font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:6px}
+.pv-ex{background:#DDF3EF;color:#0F5048}.pv-cl{background:#FDF0E1;color:#8A4B08}.pv-bd{background:#EFEAFB;color:#3B1F8C}
+.spb{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:24px;margin-top:14px}
+.fr-tab .spb,.fr-phone .spb{grid-template-columns:minmax(0,1fr)}
+.livebox{min-width:0;display:flex;flex-direction:column;gap:10px}
+.notes{font-size:12.5px;line-height:18px;color:#3A3550;border-left:1px solid #EEECF3;padding-left:18px;min-width:0}
+.fr-tab .notes,.fr-phone .notes{border-left:0;padding-left:0;border-top:1px solid #EEECF3;padding-top:8px}
+.notes ul{margin:0;padding-left:18px}.notes li{margin:2px 0}.notes p{margin:0}
+.cw{position:relative;border-radius:10px;outline:none}
+.cw:focus-visible{box-shadow:0 0 0 3px #7C3AED}
+.ec{width:100%}
+.ecov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:#5E5873;background:repeating-linear-gradient(45deg,#FAF9FC,#FAF9FC 10px,#F4F2F8 10px,#F4F2F8 20px);border-radius:10px;text-align:center;padding:12px}
+.ecov-f{color:#9B1C1C}
+.ctr{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none}
+.ctr b{font-size:26px;line-height:30px}.ctr span{font-size:11.5px;color:#5E5873;max-width:120px;text-align:center}
+.donutrow{display:grid;grid-template-columns:minmax(0,240px) minmax(0,1fr);gap:18px;align-items:center}
+.fr-phone .donutrow{grid-template-columns:minmax(0,1fr)}
+.lgs{display:flex;flex-direction:column;gap:4px;min-width:0}
+.lgs-s{flex-direction:row;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:#4B4560}
+.lgi{display:inline-flex;gap:6px;align-items:center}
+.lg{display:grid;grid-template-columns:12px minmax(0,1fr) auto auto;gap:8px;align-items:center;border:1px solid transparent;background:transparent;border-radius:7px;padding:5px 8px;font:13px 'Inter',system-ui,sans-serif;color:#1B1530;cursor:pointer;text-align:left}
+.lg:hover{background:#F6F4FA}.lg-active{border-color:#1B1530;background:#F6F4FA}.lg-kept{border:1px dashed #1B1530}
+.lg-off{cursor:default;color:#5E5873}
+.lgn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lgv{font-weight:600}.lgp{color:#5E5873;font-size:12px;min-width:44px;text-align:right}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;flex:0 0 auto;vertical-align:-1px}
+.note{margin:0;font-size:12px;color:#5E5873}
+.live{margin:0;display:flex;gap:8px;align-items:baseline;font-size:12px;color:#3A3550;min-height:18px}
+.livel{flex:0 0 auto;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#5E5873;background:#F1EFF6;padding:1px 6px;border-radius:4px}
+.selbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-radius:10px;padding:8px 10px;font-size:13px}
+.sb-a{background:#F1ECFD;border:1px solid #CDBDF5}.sb-k{background:#fff;border:1px dashed #A9A2BF}
+.sbr{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#6D28D9}
+.sb-k .sbr{color:#5E5873}
+.sbt{flex:1 1 160px;min-width:0}
+.sbx{display:flex;gap:6px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 12px;border-radius:8px;border:1px solid #D9D4E6;background:#fff;color:#1B1530;font:500 13px 'Inter',system-ui,sans-serif;cursor:pointer}
+.btn.sm{min-height:28px;font-size:12px;padding:0 10px}.btn.ghost{border-color:transparent}.btn.pri{background:#1B1530;color:#fff;border-color:#1B1530}
+.drill{border:1px solid #E4E1EC;border-radius:10px;padding:10px 12px;font-size:12.5px;background:#FBFAFD}
+.drill p{margin:4px 0}.drh{display:flex;justify-content:space-between;align-items:center}
+.drl{font-size:11px;font-weight:600;color:#5E5873;text-transform:uppercase;letter-spacing:.04em}
+.drill pre{margin:4px 0 0;font-size:11px;line-height:15px;background:#1B1530;color:#E9E5F5;border-radius:8px;padding:10px;overflow:auto;max-height:220px}
+.hb{cursor:pointer;font-family:'Inter',system-ui,sans-serif}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.fr-phone .tiles{grid-template-columns:minmax(0,1fr)}
+.tile{border:2px solid transparent;border-radius:12px;padding:12px 14px;text-align:left;display:flex;flex-direction:column;gap:2px;color:#1B1530}
+.t0{background:#F1ECFD}.t1{background:#E3F5F2}.t2{background:#FDF0E1}
+.tl{font-size:12.5px;font-weight:600}.tv{font-size:26px;font-weight:700}.ts{font-size:12px;color:#4B4560}
+.hb-active{border-color:#1B1530!important;box-shadow:0 0 0 1px #1B1530}.hb-kept{border-style:dashed!important;border-color:#1B1530!important}
+.meterh{display:flex;justify-content:space-between;font-size:12.5px;color:#4B4560}
+.meter,.strip{display:flex;height:14px;border-radius:7px;overflow:hidden;gap:2px}
+.mseg,.wseg{border:0;padding:0;height:100%;cursor:pointer;min-width:3px}
+.mseg.hb-active,.wseg.hb-active{outline:3px solid #1B1530;outline-offset:1px}.mseg.hb-kept,.wseg.hb-kept{outline:2px dashed #1B1530;outline-offset:1px}
+.wph{display:flex;justify-content:space-between;font-size:12.5px}
+.flow{display:flex;gap:6px;align-items:stretch}
+.fr-phone .flow{flex-direction:column}.fr-phone .chev{display:none}
+.stw{display:flex;align-items:center;gap:6px;flex:1 1 0;min-width:0}
+.stage{flex:1 1 0;min-width:0;border:2px solid transparent;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;text-align:left;align-self:stretch;color:#1B1530}
+.s0{background:#F3EEFD}.s1{background:#FDEEF2}.s2{background:#E3F5F2}.s3{background:#FDF0E1}
+.stl{font-size:12px;font-weight:600}.stv{font-size:22px;font-weight:700}
+.spl{font-size:11px;background:#fff;border:1px solid #E4E1EC;border-radius:6px;padding:1px 6px;align-self:flex-start}.sto{font-size:11px;color:#4B4560}
+.chev{color:#9A93AD;font-size:18px}
+.caps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.caps4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.fr-phone .caps4{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cap{border:1px solid transparent;background:transparent;border-radius:8px;padding:6px;display:flex;flex-direction:column;gap:2px;align-items:center;text-align:center;font-size:11.5px;color:#4B4560}
+.cap b{font-size:12px;color:#1B1530}.bands{font-size:11px}
+.cap.hb-active{border:1px solid #1B1530;background:#F6F4FA}.cap.hb-kept{border:1px dashed #1B1530}
+.band{display:flex;justify-content:space-between;align-items:center;background:#E3F5F2;border-radius:10px;padding:10px 14px;font-size:13px;color:#0F5048}
+.band b{font-size:18px}
+.partial{display:flex;gap:8px;align-items:center;font-size:12.5px;color:#3A3550;background:#FFF8EB;border:1px solid #F6D9A8;border-radius:8px;padding:6px 10px}
+.pb{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:#B45309;color:#fff;border-radius:4px;padding:1px 6px}
+.dsv-hide{display:none}
+.tblw{overflow:auto;border:1px solid #EEECF3;border-radius:10px}
+.tmax{max-height:420px}
+.tbl{border-collapse:collapse;width:100%;font-size:12.5px}
+.tbl th{text-align:left;font-size:11.5px;font-weight:600;color:#4B4560;padding:7px 10px;border-bottom:1px solid #E4E1EC;background:#FBFAFD;vertical-align:top}
+.tbl td{padding:6px 10px;border-bottom:1px solid #F1EFF6;vertical-align:top}
+.mt{margin-top:12px}
+.labctl{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:6px 0 12px}
+.labgrid{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}
+.labgrid figure{margin:0;min-width:0}.labgrid figcaption{font-size:12px;font-weight:600;color:#4B4560;margin-bottom:6px}
+.refbox{position:relative;height:300px;max-width:100%}
+.rt{position:absolute;box-sizing:border-box;border:1px solid #fff;padding:4px 6px;font-size:11px;line-height:14px;overflow:hidden;display:flex;flex-direction:column}
+.rt b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rt span{font-weight:600}
+.labec{position:relative;max-width:100%}
+.opts2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:12px;font-size:12.5px;line-height:18px}
+.fr-phone .opts2{grid-template-columns:minmax(0,1fr)}
+.opts2>div{background:#FBFAFD;border:1px solid #EEECF3;border-radius:10px;padding:10px 12px}.opts2 p{margin:4px 0 0}
+.a11y{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.fr-tab .a11y,.fr-phone .a11y{grid-template-columns:minmax(0,1fr)}
+.bl{margin:0;padding-left:18px;font-size:12.5px;line-height:18px}.bl li{margin:3px 0}
+.ok{color:#0F5048;font-weight:600}.warn{color:#9B1C1C;font-weight:600}
+.testh{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.testh p{margin:0;font-size:12.5px;color:#4B4560;flex:1 1 400px}
+.tsum{font-weight:600;margin:10px 0 6px}
+.tst-pass{color:#0F5048;font-weight:700}.tst-fail{color:#9B1C1C;font-weight:700}.tst-na{color:#5E5873;font-weight:700}
+.tout{font-size:11px;line-height:15px;background:#1B1530;color:#E9E5F5;border-radius:8px;padding:10px;max-height:200px;overflow:auto;user-select:all;white-space:pre-wrap}
+.livebox .sg,.labctl .sg{align-self:flex-start}
+
+</style>
+</helmet>
+<div class="g">
+<header class="gh"><div><h1>DX3 · Chart parity gallery</h1><p class="lead">Every V2 visual from the Admin and Tenant dashboards, rebuilt in its proposed implementation with the DX2 synthetic values. Each specimen states the V2 behaviour from the API reference, what this build does, how to drive it from the keyboard, and where it differs.</p></div>
+<div class="status"><sc-if value="{{ecReady}}"><span class="pill ok">ECharts {{ecVer}} · SVG renderer</span></sc-if><sc-if value="{{ecLoading}}"><span class="pill">Loading ECharts 5.6.0 from cdnjs…</span></sc-if><sc-if value="{{ecFailed}}"><span class="pill bad">ECharts did not load · {{ecMsg}} · HTML visuals and the reference treemap still work</span></sc-if><sc-if value="{{ecMock}}"><span class="pill bad">Test double, not ECharts</span></sc-if></div></header>
+<div class="bar"><div class="sg" role="group" aria-label="Frame width"><sc-for list="{{frameOpts}}" as="o"><button class="{{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.go}}">{{o.label}}</button></sc-for></div>
+<div class="ctx" role="status"><span class="ctxl">Agent context</span><sc-if value="{{ctxOn}}"><b>{{ctxTxt}}</b><span class="ctxc">{{ctxCard}}</span></sc-if><sc-if value="{{ctxNone}}"><span>Nothing selected. Select any mark, cell, tile or segment.</span></sc-if></div></div>
+<sc-if value="{{asked}}"><p class="asked">{{asked}}</p></sc-if>
+<p class="rule">One active selection drives the agent context; every card keeps its own last selection, drawn dashed (DXD-12). Pinning several selections is designed in DX4.</p><section class="test" aria-labelledby="h-test"><div class="testh"><h2 id="h-test">Self-test</h2><p>Runs in your browser against the loaded ECharts: rendering, data, aria, keyboard, tooltip, selection, treemap metrics and the 390 px frame. Copy the plain-text result back to Claude.</p><sc-if value="{{testIdle}}"><button class="btn pri" onClick="{{runTest}}">Run self-test</button></sc-if><sc-if value="{{testing}}"><span class="note">Running…</span></sc-if></div>
+<sc-if value="{{hasTest}}" hint-placeholder-val="{{false}}"><p class="tsum">{{testSum}}</p><div class="tblw tmax"><table class="tbl"><thead><tr><th scope="col">Result</th><th scope="col">Area</th><th scope="col">Check</th><th scope="col">Detail</th></tr></thead><tbody><sc-for list="{{testRows}}" as="r"><tr><td><span class="{{r.cls}}">{{r.st}}</span></td><td>{{r.area}}</td><td>{{r.name}}</td><td>{{r.detail}}</td></tr></sc-for></tbody></table></div><pre class="tout">{{testText}}</pre></sc-if></section><div class="{{frameCls}}" data-dx3-frame><h2 class="grp">Admin dashboard</h2><section class="sp" aria-labelledby="h-tiles">
+<div class="sph"><span class="no">1</span><div class="spt"><h2 id="h-tiles">Stat tiles</h2><p class="used">Portfolio properties · Leasing and sales KPIs · Tenant overview</p></div><span class="impl">HTML</span><span class="pv pv-ex">Parity · Exact</span></div>
+<div class="spb"><div class="livebox"><div class="tiles" data-dx3-html><sc-for list="{{h.tiles}}" as="x"><button class="{{x.cls}}" onClick="{{x.go}}" aria-pressed="{{x.pressed}}" aria-label="{{x.aria}}"><span class="tl">{{x.name}}</span><span class="tv">{{x.value}}</span><span class="ts">{{x.sub}}</span></button></sc-for></div><sc-if value="{{C.tiles.hasSel}}" hint-placeholder-val="{{false}}"><div class="{{C.tiles.selCls}}"><span class="sbr">{{C.tiles.selRole}}</span><b class="sbt">{{C.tiles.selTxt}}</b><span class="sbx"><button class="btn sm" onClick="{{C.tiles.ask}}">Ask about this</button><button class="btn sm" onClick="{{C.tiles.view}}">View records</button><button class="btn sm ghost" onClick="{{C.tiles.clear}}">Clear</button></span></div></sc-if><sc-if value="{{C.tiles.drillOn}}" hint-placeholder-val="{{false}}"><div class="drill"><div class="drh"><b>Records tab</b><button class="btn sm ghost" onClick="{{C.tiles.closeDrill}}">Close</button></div><p>{{C.tiles.drillTarget}}</p><p class="drv"><span class="drl">V2 drilldown</span> <code>{{C.tiles.drillV2}}</code></p><p class="drv"><span class="drl">Selection payload · selection_ref.v1</span></p><pre>{{C.tiles.drillJson}}</pre></div></sc-if><p class="live" aria-live="polite"><span class="livel">Screen reader</span><span>{{C.tiles.live}}</span></p></div>
+<div class="notes"><h3>V2 (API reference)</h3><ul><li>ui-kit <code>StatTile</code>; tinted backgrounds by role (violet, teal, orange; rose, violet, teal)</li><li>Tile links only when the user holds that tile’s permission</li></ul><h3>This build</h3><ul><li>Native buttons; selecting a tile opens its Records</li><li>A value that is not in the dataset shows a dash and “Unavailable”, never 0 (DXD-16)</li></ul><h3>Keyboard</h3><p>Tab between tiles; Enter selects.</p><h3>Differences</h3><p>None.</p></div></div>
+</section><section class="sp" aria-labelledby="h-meter">
+<div class="sph"><span class="no">2</span><div class="spt"><h2 id="h-meter">Occupancy meter</h2><p class="used">Portfolio properties</p></div><span class="impl">HTML</span><span class="pv pv-ex">Parity · Exact</span></div>
+<div class="spb"><div class="livebox"><div class="meterh"><span>Unit occupancy</span><span><b>87.4%</b> occupied · 12.6% vacant</span></div><div class="meter" data-dx3-html><sc-for list="{{h.meter}}" as="x"><button class="{{x.cls}}" style="width: {{x.w}}; background: {{x.color}}" onClick="{{x.go}}" aria-pressed="{{x.pressed}}" aria-label="{{x.aria}}" title="{{x.label}}"></button></sc-for></div><sc-if value="{{C.meter.hasSel}}" hint-placeholder-val="{{false}}"><div class="{{C.meter.selCls}}"><span class="sbr">{{C.meter.selRole}}</span><b class="sbt">{{C.meter.selTxt}}</b><span class="sbx"><button class="btn sm" onClick="{{C.meter.ask}}">Ask about this</button><button class="btn sm" onClick="{{C.meter.view}}">View records</button><button class="btn sm ghost" onClick="{{C.meter.clear}}">Clear</button></span></div></sc-if><sc-if value="{{C.meter.drillOn}}" hint-placeholder-val="{{false}}"><div class="drill"><div class="drh"><b>Records tab</b><button class="btn sm ghost" onClick="{{C.meter.closeDrill}}">Close</button></div><p>{{C.meter.drillTarget}}</p><p class="drv"><span class="drl">V2 drilldown</span> <code>{{C.meter.drillV2}}</code></p><p class="drv"><span class="drl">Selection payload · selection_ref.v1</span></p><pre>{{C.meter.drillJson}}</pre></div></sc-if><p class="live" aria-live="polite"><span class="livel">Screen reader</span><span>{{C.meter.live}}</span></p></div>
+<div class="notes"><h3>V2 (API reference)</h3><ul><li>Flex bar, occupied vs vacant, weighted by units</li><li>Percentages to one decimal</li></ul><h3>This build</h3><ul><li>Each segment is a button with its count and share</li><li>Tooltip text equals the accessible name</li></ul><h3>Keyboard</h3><p>Tab to a segment; Enter selects.</p><h3>Differences</h3><p>None.</p></div></div>
+</section><section class="sp" aria-labelledby="h-lr">
+<div class="sph"><span class="no">3</span><div class="spt"><h2 id="h-lr">Donut · top four + Other, with a view switch</h2><p class="used">Lease requests (Admin)</p></div><span class="impl">ECharts pie</span><span class="pv pv-ex">Parity · Exact</span></div>
+<div class="spb"><div class="livebox"><div class="sg" role="group" aria-label="View"><sc-for list="{{lrOpts}}" as="o"><button class="{{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.go}}">{{o.label}}</button></sc-for></div><div class="donutrow"><div class="{{C.lr.cw}}" data-dx3-cw="lr" tabindex="0" role="application" aria-roledescription="chart" aria-label="{{C.lr.aria}}"><div class="ec" data-dx3-ec="lr" style="height: 220px"></div><div class="ctr" aria-hidden="true"><b>{{lrTotal}}</b><span>{{lrCl}}</span></div><sc-if value="{{ecLoading}}"><div class="ecov"><span>Loading ECharts 5.6.0…</span></div></sc-if><sc-if value="{{ecFailed}}"><div class="ecov ecov-f"><span>ECharts did not load · {{ecMsg}}</span></div></sc-if></div><div class="lgs"><sc-for list="{{lrLeg}}" as="x"><button class="{{x.cls}}" onClick="{{x.go}}" aria-pressed="{{x.pressed}}" aria-label="{{x.aria}}" aria-disabled="{{x.dis}}"><span class="sw" style="background: {{x.color}}"></span><span class="lgn">{{x.name}}</span><span class="lgv">{{x.v}}</span><span class="lgp">{{x.pct}}</span></button></sc-for></div></div><p class="note">{{lrNote}}</p><sc-if value="{{C.lr.hasSel}}" hint-placeholder-val="{{false}}"><div class="{{C.lr.selCls}}"><span class="sbr">{{C.lr.selRole}}</span><b class="sbt">{{C.lr.selTxt}}</b><span class="sbx"><button class="btn sm" onClick="{{C.lr.ask}}">Ask about this</button><button class="btn sm" onClick="{{C.lr.view}}">View records</button><button class="btn sm ghost" onClick="{{C.lr.clear}}">Clear</button></span></div></sc-if><sc-if value="{{C.lr.drillOn}}" hint-placeholder-val="{{false}}"><div class="drill"><div class="drh"><b>Records tab</b><button class="btn sm ghost" onClick="{{C.lr.closeDrill}}">Close</button></div><p>{{C.lr.drillTarget}}</p><p class="drv"><span class="drl">V2 drilldown</span> <code>{{C.lr.drillV2}}</code></p><p class="drv"><span class="drl">Selection payload · selection_ref.v1</span></p><pre>{{C.lr.drillJson}}</pre></div></sc-if><p class="live" aria-live="polite"><span class="livel">Screen reader</span><span>{{C.lr.live}}</span></p></div>
+<div class="notes"><h3>V2 (API reference)</h3><ul><li>ui-kit <code>Donut</code> (in-house SVG) with a SegmentedControl: unit type / registration source</li><li><code>foldDonutSlices</code>: sort, keep four in <code>categorical4</code>, fold the rest into “Other” (ink-3), not clickable</li><li>Centre total; legend with count and share</li></ul><h3>This build</h3><ul><li><code>pie</code>, radius 60–84 %, white 2 px separators; no ECharts legend</li><li>Centre total and legend are HTML: crisp text, real buttons, no hidden-series toggling</li><li>Shares use the displayed total (the legacy divide-by-source bug is not carried over)</li></ul><h3>Keyboard</h3><p>Tab to the chart, then ← → (or ↑ ↓) move between values, Home / End jump, Enter selects, Escape clears. “Other” is announced as not selectable.</p><h3>Differences</h3><p>None visible. Legend clicks select a slice instead of hiding it (ECharts’ default), so the ring always equals the total.</p></div></div>
+</section><section class="sp" aria-labelledby="h-sf">
+<div class="sph"><span class="no">4</span><div class="spt"><h2 id="h-sf">Stage flow · four stages with signed / unsigned splits</h2><p class="used">Sales funnel</p></div><span class="impl">HTML (DR-008)</span><span class="pv pv-ex">Parity · Exact</span></div>
+<div class="spb"><div class="livebox"><div class="flow" data-dx3-html><sc-for list="{{h.stages}}" as="x"><div class="stw"><button class="{{x.cls}}" onClick="{{x.go}}" aria-pressed="{{x.pressed}}" aria-label="{{x.aria}}"><span class="stl">{{x.name}}</span><span class="stv">{{x.value}}</span><sc-if value="{{x.split}}"><span class="spl">Signed {{x.signed}}</span><span class="spl">Unsigned {{x.unsigned}}</span><span class="sto">{{x.other}}</span></sc-if></button><sc-if value="{{x.arrow}}"><span class="chev" aria-hidden="true">›</span></sc-if></div></sc-for></div><sc-if value="{{C.sf.hasSel}}" hint-placeholder-val="{{false}}"><div class="{{C.sf.selCls}}"><span class="sbr">{{C.sf.selRole}}</span><b class="sbt">{{C.sf.selTxt}}</b><span class="sbx"><button class="btn sm" onClick="{{C.sf.ask}}">Ask about this</button><button class="btn sm" onClick="{{C.sf.view}}">View records</button><button class="btn sm ghost" onClick="{{C.sf.clear}}">Clear</button></span></div></sc-if><sc-if value="{{C.sf.drillOn}}" hint-placeholder-val="{{false}}"><div class="drill"><div class="drh"><b>Records tab</b><button class="btn sm ghost" onClick="{{C.sf.closeDrill}}">Close</button></div><p>{{C.sf.drillTarget}}</p><p class="drv"><span class="drl">V2 drilldown</span> <code>{{C.sf.drillV2}}</code></p><p class="drv"><span class="drl">Selection payload · selection_ref.v1</span></p><pre>{{C.sf.drillJson}}</pre></div></sc-if><p class="live" aria-live="polite"><span class="livel">Screen reader</span><span>{{C.sf.live}}</span></p></div>
+<div class="notes"><h3>V2 (API reference)</h3><ul><li>ui-kit <code>StageFlow</code>: Lease requests → Leads → Proposals → Contracts</li><li>Tints violet, rose, teal, amber; splits on Proposals and Contracts</li></ul><h3>This build</h3><ul><li>Kept in HTML to preserve the V2 look; ECharts <code>funnel</code> is reserved for the GenUI funnel</li><li>“Other statuses” shown so signed + unsigned visibly differ from the total</li></ul><h3>Keyboard</h3><p>Tab between stages; Enter selects.</p><h3>Differences</h3><p>None.</p></div></div>
+</section><section class="sp" aria-labelledby="h-pa">
+<div class="sph"><span class="no">5</span><div class="spt"><h2 id="h-pa">Half gauges · one per approval type</h2><p class="used">Pending approvals</p></div><span class="impl">ECharts gauge</span><span class="pv pv-cl">Parity · Close</span></div>
+<div class="spb"><div class="livebox"><div class="{{C.pa.cw}}" data-dx3-cw="pa" tabindex="0" role="application" aria-roledescription="chart" aria-label="{{C.pa.aria}}"><div class="ec" data-dx3-ec="pa" style="height: 150px"></div><sc-if value="{{ecLoading}}"><div class="ecov"><span>Loading ECharts 5.6.0…</span></div></sc-if><sc-if value="{{ecFailed}}"><div class="ecov ecov-f"><span>ECharts did not load · {{ecMsg}}</span></div></sc-if></div><div class="caps"><sc-for list="{{pa}}" as="x"><button class="{{x.cls}}" onClick="{{x.go}}" aria-pressed="{{x.pressed}}" aria-label="{{x.aria}}"><b>{{x.name}}</b><span>{{x.cap}}</span><span class="bands">{{x.bands}}</span></button></sc-for></div><sc-if value="{{C.pa.hasSel}}" hint-placeholder-val="{{false}}"><div class="{{C.pa.selCls}}"><span class="sbr">{{C.pa.selRole}}</span><b class="sbt">{{C.pa.selTxt}}</b><span class="sbx"><button class="btn sm" onClick="{{C.pa.ask}}">Ask about this</button><button class="btn sm" onClick="{{C.pa.view}}">View records</button><button class="btn sm ghost" onClick="{{C.pa.clear}}">Clear</button></span></div></sc-if><sc-if value="{{C.pa.drillOn}}" hint-placeholder-val="{{false}}"><div class="drill"><div class="drh"><b>Records tab</b><button class="btn sm ghost" onClick="{{C.pa.closeDrill}}">Close</button></div><p>{{C.pa.drillTarget}}</p><p class="drv"><span class="drl">V2 drilldown</span> <code>{{C.pa.drillV2}}</code></p><p class="drv"><span class="drl">Selection payload · selection_ref.v1</span></p><pre>{{C.pa.drillJson}}</pre></div></sc-if><p class="live" aria-live="polite"><span class="livel">Screen reader</span><span>{{C.pa.live}}</span></p></div>
+<div class="notes"><h3>V2 (API reference)</h3><ul><li>ui-kit <code>HalfGauge</code> per type; value = “1 month plus” ÷ total of five bands</li><li>Caption “N within a week”; red banner when every non-empty type is ≥ 90 % older than a month</li></ul><h3>This build</h3><ul><li><code>gauge</code> 180°→0°, progress arc with round caps, no pointer or ticks</li><li>Captions and band counts in HTML so they are readable without hover</li></ul><h3>Keyboard</h3><p>Tab to the chart, then ← → (or ↑ ↓) move between values, Home / End jump, Enter selects, Escape clears.</p><h3>Differences</h3><p>Arc thickness and cap shape to be compared side by side with V2 at GD.</p></div></div>
+</section><section class="sp" aria-labelledby="h-am">
+<div class="sph"><span class="no">6</span><div class="spt"><h2 id="h-am">Heatmap · amendment type × delay week</h2><p class="used">Pending amendments</p></div><span class="impl">ECharts heatmap</span><span class="pv pv-ex">Parity · Exact</span></div>
+<div class="spb"><div class="livebox"><div class="{{C.am.cw}}" data-dx3-cw="am" tabindex="0" role="application" aria-roledescription="chart" aria-label="{{C.am.aria}}"><div class="ec" data-dx3-ec="am" style="height: 230px"></div><sc-if value="{{ecLoading}}"><div class="ecov"><span>Loading ECharts 5.6.0…</span></div></sc-if><sc-if value="{{ecFailed}}"><div class="ecov ecov-f"><span>ECharts did not load · {{ecMsg}}</span></div></sc-if></div><div class="lgs lgs-s"><span class="lgi"><span class="sw" style="background: #F4F2F8"></span>0</span><span class="lgi"><span class="sw" style="background: #EDE7FB"></span>Fewer</span><span class="lgi"><span class="sw" style="background: #CDBDF5"></span></span><span class="lgi"><span class="sw" style="background: #A68BEA"></span></span><span class="lgi"><span class="sw" style="background: #7C55D6"></span></span><span class="lgi"><span class="sw" style="background: #4C1D95"></span>More</span></div><sc-if value="{{C.am.hasSel}}" hint-placeholder-val="{{false}}"><div class="{{C.am.selCls}}"><span class="sbr">{{C.am.selRole}}</span><b class="sbt">{{C.am.selTxt}}</b><span class="sbx"><button class="btn sm" onClick="{{C.am.ask}}">Ask about this</button><button class="btn sm" onClick="{{C.am.view}}">View records</button><button class="btn sm ghost" onClick="{{C.am.clear}}">Clear</button></span></div></sc-if><sc-if value="{{C.am.drillOn}}" hint-placeholder-val="{{false}}"><div class="drill"><div class="drh"><b>Records tab</b><button class="btn sm ghost" onClick="{{C.am.closeDrill}}">Close</button></div><p>{{C.am.drillTarget}}</p><p class="drv"><span class="drl">V2 drilldown</span> <code>{{C.am.drillV2}}</code></p><p class="drv"><span class="drl">Selection payload · selection_ref.v1</span></p><pre>{{C.am.drillJson}}</pre></div></sc-if><p class="live" aria-live="polite"><span class="livel">Screen reader</span><span>{{C.am.live}}</span></p></div>
+<div class="notes"><h3>V2 (API reference)</h3><ul><li>ui-kit <code>Heatmap</code>; rows oldest first (4 wk+ … 1 wk); columns in API order</li><li>Fill <code>heatSequential5</code> by quantile of the non-zero values</li></ul><h3>This build</h3><ul><li><code>heatmap</code> on two category axes; quintile colours and label colours computed in the adapter (no visualMap), zero cells neutral</li><li>White 3 px gaps and rounded cells match the DX2 card</li></ul><h3>Keyboard</h3><p>Tab to the chart, then ← → move across types and ↑ ↓ across age bands; Home / End; Enter selects; Escape clears.</p><h3>Differences</h3><p>None.</p></div></div>
+</section><section class="sp sp-wide" aria-labelledby="h-sr">
+<div class="sph"><span class="no">7</span><div class="spt"><h2 id="h-sr">Treemap · grouped by category, with category legend</h2><p class="used">Service requests (Admin)</p></div><span class="impl">ECharts treemap</span><span class="pv pv-cl">Parity · Close · see lab</span></div>
+<div class="spb"><div class="livebox"><div class="{{C.sr.cw}}" data-dx3-cw="sr" tabindex="0" role="application" aria-roledescription="chart" aria-label="{{C.sr.aria}}"><div class="ec" data-dx3-ec="sr" style="height: 290px"></div><sc-if value="{{ecLoading}}"><div class="ecov"><span>Loading ECharts 5.6.0…</span></div></sc-if><sc-if value="{{ecFailed}}"><div class="ecov ecov-f"><span>ECharts did not load · {{ecMsg}}</span></div></sc-if></div><div class="lgs"><sc-for list="{{srLeg}}" as="x"><button class="{{x.cls}}" onClick="{{x.go}}" aria-pressed="{{x.pressed}}" aria-label="{{x.aria}}" aria-disabled="{{x.dis}}"><span class="sw" style="background: {{x.color}}"></span><span class="lgn">{{x.name}}</span><span class="lgv">{{x.v}}</span></button></sc-for></div><sc-if value="{{C.sr.hasSel}}" hint-placeholder-val="{{false}}"><div class="{{C.sr.selCls}}"><span class="sbr">{{C.sr.selRole}}</span><b class="sbt">{{C.sr.selTxt}}</b><span class="sbx"><button class="btn sm" onClick="{{C.sr.ask}}">Ask about this</button><button class="btn sm" onClick="{{C.sr.view}}">View records</button><button class="btn sm ghost" onClick="{{C.sr.clear}}">Clear</button></span></div></sc-if><sc-if value="{{C.sr.drillOn}}" hint-placeholder-val="{{false}}"><div class="drill"><div class="drh"><b>Records tab</b><button class="btn sm ghost" onClick="{{C.sr.closeDrill}}">Close</button></div><p>{{C.sr.drillTarget}}</p><p class="drv"><span class="drl">V2 drilldown</span> <code>{{C.sr.drillV2}}</code></p><p class="drv"><span class="drl">Selection payload · selection_ref.v1</span></p><pre>{{C.sr.drillJson}}</pre></div></sc-if><p class="live" aria-live="polite"><span class="livel">Screen reader</span><span>{{C.sr.live}}</span></p></div>
+<div class="notes"><h3>V2 (API reference)</h3><ul><li>ui-kit <code>Treemap</code>, squarified, <code>minShare 0.08</code>; groups Inquiry / Work permits / Complaints</li><li>Tile = approved + in process + rejected; colours by category, permits by family (amber sequential)</li><li>Legend shows category totals</li></ul><h3>This build</h3><ul><li><code>treemap</code> squarified (golden-ratio target), <code>nodeClick: false</code>, breadcrumb hidden, no roam; fixed category order, leaves largest-first</li><li>Labels by share of the category: name + value ≥ 17 %, value only ≥ 7 %, otherwise tooltip only</li><li>Category legend is HTML; selecting a category selects the whole group</li></ul><h3>Keyboard</h3><p>Tab to the chart, then ← → (or ↑ ↓) move between values, Home / End jump, Enter selects, Escape clears. Order: each category, then its tiles largest-first.</p><h3>Differences</h3><p>Tile positions come from ECharts’ squarify, not the in-house one; measured in the treemap lab below. <code>minShare</code> semantics are an open question (lab, option A or B).</p></div></div>
+</section><section class="sp" aria-labelledby="h-wp">
+<div class="sph"><span class="no">8</span><div class="spt"><h2 id="h-wp">Work-permit status strip</h2><p class="used">Service requests (Admin)</p></div><span class="impl">HTML</span><span class="pv pv-ex">Parity · Exact</span></div>
+<div class="spb"><div class="livebox"><div class="wph"><b>Work permits by status</b><span>{{wpTotal}} permits</span></div><div class="strip" data-dx3-html><sc-for list="{{h.wp}}" as="x"><button class="{{x.cls}}" style="width: {{x.w}}; background: {{x.color}}" onClick="{{x.go}}" aria-pressed="{{x.pressed}}" aria-label="{{x.aria}}" title="{{x.label}}"></button></sc-for></div><div class="lgs lgs-s"><sc-for list="{{h.wp}}" as="x"><span class="lgi"><span class="sw" style="background: {{x.color}}"></span>{{x.name}} <b>{{x.v}}</b></span></sc-for></div><sc-if value="{{C.wp.hasSel}}" hint-placeholder-val="{{false}}"><div class="{{C.wp.selCls}}"><span class="sbr">{{C.wp.selRole}}</span><b class="sbt">{{C.wp.selTxt}}</b><span class="sbx"><button class="btn sm" onClick="{{C.wp.ask}}">Ask about this</button><button class="btn sm" onClick="{{C.wp.view}}">View records</button><button class="btn sm ghost" onClick="{{C.wp.clear}}">Clear</button></span></div></sc-if><sc-if value="{{C.wp.drillOn}}" hint-placeholder-val="{{false}}"><div class="drill"><div class="drh"><b>Records tab</b><button class="btn sm ghost" onClick="{{C.wp.closeDrill}}">Close</button></div><p>{{C.wp.drillTarget}}</p><p class="drv"><span class="drl">V2 drilldown</span> <code>{{C.wp.drillV2}}</code></p><p class="drv"><span class="drl">Selection payload · selection_ref.v1</span></p><pre>{{C.wp.drillJson}}</pre></div></sc-if><p class="live" aria-live="polite"><span class="livel">Screen reader</span><span>{{C.wp.live}}</span></p></div>
+<div class="notes"><h3>V2 (API reference)</h3><ul><li>Strip under the treemap: permit statuses with counts</li></ul><h3>This build</h3><ul><li>100 % strip of buttons; legend with counts below</li></ul><h3>Keyboard</h3><p>Tab between segments; Enter selects.</p><h3>Differences</h3><p>None.</p></div></div>
+</section><section class="sp" aria-labelledby="h-fh">
+<div class="sph"><span class="no">9</span><div class="spt"><h2 id="h-fh">Progress rings × 4</h2><p class="used">Fit-out and handover</p></div><span class="impl">ECharts gauge (360°)</span><span class="pv pv-cl">Parity · Close</span></div>
+<div class="spb"><div class="livebox"><div class="{{C.fh.cw}}" data-dx3-cw="fh" tabindex="0" role="application" aria-roledescription="chart" aria-label="{{C.fh.aria}}"><div class="ec" data-dx3-ec="fh" style="height: 130px"></div><sc-if value="{{ecLoading}}"><div class="ecov"><span>Loading ECharts 5.6.0…</span></div></sc-if><sc-if value="{{ecFailed}}"><div class="ecov ecov-f"><span>ECharts did not load · {{ecMsg}}</span></div></sc-if></div><div class="caps caps4"><sc-for list="{{fh}}" as="x"><button class="{{x.cls}}" onClick="{{x.go}}" aria-pressed="{{x.pressed}}" aria-label="{{x.aria}}"><b>{{x.name}}</b><span>{{x.sub}}</span></button></sc-for></div><sc-if value="{{C.fh.hasSel}}" hint-placeholder-val="{{false}}"><div class="{{C.fh.selCls}}"><span class="sbr">{{C.fh.selRole}}</span><b class="sbt">{{C.fh.selTxt}}</b><span class="sbx"><button class="btn sm" onClick="{{C.fh.ask}}">Ask about this</button><button class="btn sm" onClick="{{C.fh.view}}">View records</button><button class="btn sm ghost" onClick="{{C.fh.clear}}">Clear</button></span></div></sc-if><sc-if value="{{C.fh.drillOn}}" hint-placeholder-val="{{false}}"><div class="drill"><div class="drh"><b>Records tab</b><button class="btn sm ghost" onClick="{{C.fh.closeDrill}}">Close</button></div><p>{{C.fh.drillTarget}}</p><p class="drv"><span class="drl">V2 drilldown</span> <code>{{C.fh.drillV2}}</code></p><p class="drv"><span class="drl">Selection payload · selection_ref.v1</span></p><pre>{{C.fh.drillJson}}</pre></div></sc-if><p class="live" aria-live="polite"><span class="livel">Screen reader</span><span>{{C.fh.live}}</span></p></div>
+<div class="notes"><h3>V2 (API reference)</h3><ul><li>ui-kit <code>ProgressRing</code>; colours <code>categorical4</code></li><li>share = reviewed ÷ (received + remaining + reviewed); null when the total is 0</li><li>Sub-text “{reviewed} of {total} reviewed”</li></ul><h3>This build</h3><ul><li><code>gauge</code> 90°→−270° with a progress arc; a null share draws no arc and shows a dash (undefined ratio, DXD-16)</li><li>Labels in HTML under each ring</li></ul><h3>Keyboard</h3><p>Tab to the chart, then ← → (or ↑ ↓) move between values, Home / End jump, Enter selects, Escape clears.</p><h3>Differences</h3><p>None expected; ring thickness checked at GD.</p></div></div>
+</section><section class="sp" aria-labelledby="h-fd">
+<div class="sph"><span class="no">10</span><div class="spt"><h2 id="h-fd">Horizontal stacked bars</h2><p class="used">Fit-out drawings</p></div><span class="impl">ECharts bar</span><span class="pv pv-ex">Parity · Exact</span></div>
+<div class="spb"><div class="livebox"><div class="{{C.fd.cw}}" data-dx3-cw="fd" tabindex="0" role="application" aria-roledescription="chart" aria-label="{{C.fd.aria}}"><div class="ec" data-dx3-ec="fd" style="height: 120px"></div><sc-if value="{{ecLoading}}"><div class="ecov"><span>Loading ECharts 5.6.0…</span></div></sc-if><sc-if value="{{ecFailed}}"><div class="ecov ecov-f"><span>ECharts did not load · {{ecMsg}}</span></div></sc-if></div><div class="lgs lgs-s"><span class="lgi"><span class="sw" style="background: #0284C7"></span>Submitted</span><span class="lgi"><span class="sw" style="background: #F59E0B"></span>Pending</span><span class="lgi"><span class="sw" style="background: #059669"></span>Approved</span></div><p class="note">“Approved” is the dashboard’s reviewed bucket: approved, rejected or completed.</p><sc-if value="{{C.fd.hasSel}}" hint-placeholder-val="{{false}}"><div class="{{C.fd.selCls}}"><span class="sbr">{{C.fd.selRole}}</span><b class="sbt">{{C.fd.selTxt}}</b><span class="sbx"><button class="btn sm" onClick="{{C.fd.ask}}">Ask about this</button><button class="btn sm" onClick="{{C.fd.view}}">View records</button><button class="btn sm ghost" onClick="{{C.fd.clear}}">Clear</button></span></div></sc-if><sc-if value="{{C.fd.drillOn}}" hint-placeholder-val="{{false}}"><div class="drill"><div class="drh"><b>Records tab</b><button class="btn sm ghost" onClick="{{C.fd.closeDrill}}">Close</button></div><p>{{C.fd.drillTarget}}</p><p class="drv"><span class="drl">V2 drilldown</span> <code>{{C.fd.drillV2}}</code></p><p class="drv"><span class="drl">Selection payload · selection_ref.v1</span></p><pre>{{C.fd.drillJson}}</pre></div></sc-if><p class="live" aria-live="polite"><span class="livel">Screen reader</span><span>{{C.fd.live}}</span></p></div>
+<div class="notes"><h3>V2 (API reference)</h3><ul><li>ui-kit <code>StackedBars</code>; rows Mechanical (MEP), Architectural, Electrical</li><li>Segments <code>pipeline3</code>: Submitted, Pending, Approved</li></ul><h3>This build</h3><ul><li>Stacked <code>bar</code>; totals as a right-hand category axis; inside labels only when a segment is ≥ 7 % of the largest row</li></ul><h3>Keyboard</h3><p>Tab to the chart, then ← → move across statuses and ↑ ↓ across disciplines; Enter selects.</p><h3>Differences</h3><p>None.</p></div></div>
+</section><section class="sp sp-wide" aria-labelledby="h-ds">
+<div class="sph"><span class="no">11</span><div class="spt"><h2 id="h-ds">Stacked columns by mall, with a table view</h2><p class="used">Drawing document status</p></div><span class="impl">ECharts bar</span><span class="pv pv-cl">Parity · Close</span></div>
+<div class="spb"><div class="livebox"><div class="sg" role="group" aria-label="View"><sc-for list="{{dsOpts}}" as="o"><button class="{{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.go}}">{{o.label}}</button></sc-for></div><div class="{{dsCls}}"><div class="{{C.ds.cw}}" data-dx3-cw="ds" tabindex="0" role="application" aria-roledescription="chart" aria-label="{{C.ds.aria}}"><div class="ec" data-dx3-ec="ds" style="height: 260px"></div><sc-if value="{{ecLoading}}"><div class="ecov"><span>Loading ECharts 5.6.0…</span></div></sc-if><sc-if value="{{ecFailed}}"><div class="ecov ecov-f"><span>ECharts did not load · {{ecMsg}}</span></div></sc-if></div></div><sc-if value="{{dsTable}}"><div class="tblw"><table class="tbl"><thead><tr><th scope="col">Mall</th><th scope="col">A</th><th scope="col">B</th><th scope="col">C</th><th scope="col">D</th><th scope="col">Total</th></tr></thead><tbody><sc-for list="{{dsRows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div></sc-if><div class="lgs lgs-s"><span class="lgi"><span class="sw" style="background: #059669"></span>A · approved</span><span class="lgi"><span class="sw" style="background: #8B5CF6"></span>B · approved with comments</span><span class="lgi"><span class="sw" style="background: #F59E0B"></span>C · change request</span><span class="lgi"><span class="sw" style="background: #DC2626"></span>D · rejected</span></div><p class="note">No drawings yet from 4 malls: Qasr Plaza, Cedar Park Mall, Pearl Bay Centre, Spice Route Mall.</p><sc-if value="{{C.ds.hasSel}}" hint-placeholder-val="{{false}}"><div class="{{C.ds.selCls}}"><span class="sbr">{{C.ds.selRole}}</span><b class="sbt">{{C.ds.selTxt}}</b><span class="sbx"><button class="btn sm" onClick="{{C.ds.ask}}">Ask about this</button><button class="btn sm" onClick="{{C.ds.view}}">View records</button><button class="btn sm ghost" onClick="{{C.ds.clear}}">Clear</button></span></div></sc-if><sc-if value="{{C.ds.drillOn}}" hint-placeholder-val="{{false}}"><div class="drill"><div class="drh"><b>Records tab</b><button class="btn sm ghost" onClick="{{C.ds.closeDrill}}">Close</button></div><p>{{C.ds.drillTarget}}</p><p class="drv"><span class="drl">V2 drilldown</span> <code>{{C.ds.drillV2}}</code></p><p class="drv"><span class="drl">Selection payload · selection_ref.v1</span></p><pre>{{C.ds.drillJson}}</pre></div></sc-if><p class="live" aria-live="polite"><span class="livel">Screen reader</span><span>{{C.ds.live}}</span></p></div>
+<div class="notes"><h3>V2 (API reference)</h3><ul><li>ui-kit <code>StackedColumns</code>, one column per mall, sorted by total; <code>outcome4</code> A–D</li><li>Malls without drawings listed in a footnote; <code>DataTable</code> alternative</li></ul><h3>This build</h3><ul><li>Stacked <code>bar</code>, rotated mall labels; below 640 px it shows 7 malls at a time and keyboard focus scrolls the window</li><li>Chart and Table read the same dataset (DXD-18)</li></ul><h3>Keyboard</h3><p>Tab to the chart, then ← → move across malls and ↑ ↓ across grades; Enter selects.</p><h3>Differences</h3><p>Label rotation and paging on narrow widths are additions; V2 squeezed all columns.</p></div></div>
+</section><section class="sp" aria-labelledby="h-ud">
+<div class="sph"><span class="no">12</span><div class="spt"><h2 id="h-ud">Diverging bars · one shared scale</h2><p class="used">Unit discrepancy</p></div><span class="impl">ECharts bar</span><span class="pv pv-ex">Parity · Exact</span></div>
+<div class="spb"><div class="livebox"><div class="partial"><span class="pb">Partial</span>No report this month from 7 of 25 malls. Totals cover the 18 that reported.</div><div class="{{C.ud.cw}}" data-dx3-cw="ud" tabindex="0" role="application" aria-roledescription="chart" aria-label="{{C.ud.aria}}"><div class="ec" data-dx3-ec="ud" style="height: 420px"></div><sc-if value="{{ecLoading}}"><div class="ecov"><span>Loading ECharts 5.6.0…</span></div></sc-if><sc-if value="{{ecFailed}}"><div class="ecov ecov-f"><span>ECharts did not load · {{ecMsg}}</span></div></sc-if></div><div class="lgs lgs-s"><span class="lgi"><span class="sw" style="background: #DC2626"></span>Mismatch</span><span class="lgi"><span class="sw" style="background: #8B5CF6"></span>Match</span></div><sc-if value="{{C.ud.hasSel}}" hint-placeholder-val="{{false}}"><div class="{{C.ud.selCls}}"><span class="sbr">{{C.ud.selRole}}</span><b class="sbt">{{C.ud.selTxt}}</b><span class="sbx"><button class="btn sm" onClick="{{C.ud.ask}}">Ask about this</button><button class="btn sm" onClick="{{C.ud.view}}">View records</button><button class="btn sm ghost" onClick="{{C.ud.clear}}">Clear</button></span></div></sc-if><sc-if value="{{C.ud.drillOn}}" hint-placeholder-val="{{false}}"><div class="drill"><div class="drh"><b>Records tab</b><button class="btn sm ghost" onClick="{{C.ud.closeDrill}}">Close</button></div><p>{{C.ud.drillTarget}}</p><p class="drv"><span class="drl">V2 drilldown</span> <code>{{C.ud.drillV2}}</code></p><p class="drv"><span class="drl">Selection payload · selection_ref.v1</span></p><pre>{{C.ud.drillJson}}</pre></div></sc-if><p class="live" aria-live="polite"><span class="livel">Screen reader</span><span>{{C.ud.live}}</span></p></div>
+<div class="notes"><h3>V2 (API reference)</h3><ul><li>ui-kit <code>DivergingBars</code>: mismatch grows left in <code>#DC2626</code>, match right in <code>#8B5CF6</code></li><li>Sorted by mismatch, then match; footnote for malls with no report</li></ul><h3>This build</h3><ul><li>Two stacked <code>bar</code> series, mismatch as negative values, absolute labels</li><li>Partial-coverage label beside the chart (DXD-14)</li></ul><h3>Keyboard</h3><p>Tab to the chart, then ↑ ↓ move across malls and ← → between mismatch and match; Enter selects.</p><h3>Differences</h3><p>None.</p></div></div>
+</section><h2 class="grp">Tenant dashboard</h2><section class="sp" aria-labelledby="h-ts">
+<div class="sph"><span class="no">13</span><div class="spt"><h2 id="h-ts">Monthly columns</h2><p class="used">Tenant · Reported sales</p></div><span class="impl">ECharts bar</span><span class="pv pv-ex">Parity · Exact</span></div>
+<div class="spb"><div class="livebox"><div class="{{C.ts.cw}}" data-dx3-cw="ts" tabindex="0" role="application" aria-roledescription="chart" aria-label="{{C.ts.aria}}"><div class="ec" data-dx3-ec="ts" style="height: 230px"></div><sc-if value="{{ecLoading}}"><div class="ecov"><span>Loading ECharts 5.6.0…</span></div></sc-if><sc-if value="{{ecFailed}}"><div class="ecov ecov-f"><span>ECharts did not load · {{ecMsg}}</span></div></sc-if></div><div class="band"><span>Reported sales · all 3 leases · 2026</span><b>{{tsTotal}}</b></div><sc-if value="{{C.ts.hasSel}}" hint-placeholder-val="{{false}}"><div class="{{C.ts.selCls}}"><span class="sbr">{{C.ts.selRole}}</span><b class="sbt">{{C.ts.selTxt}}</b><span class="sbx"><button class="btn sm" onClick="{{C.ts.ask}}">Ask about this</button><button class="btn sm" onClick="{{C.ts.view}}">View records</button><button class="btn sm ghost" onClick="{{C.ts.clear}}">Clear</button></span></div></sc-if><sc-if value="{{C.ts.drillOn}}" hint-placeholder-val="{{false}}"><div class="drill"><div class="drh"><b>Records tab</b><button class="btn sm ghost" onClick="{{C.ts.closeDrill}}">Close</button></div><p>{{C.ts.drillTarget}}</p><p class="drv"><span class="drl">V2 drilldown</span> <code>{{C.ts.drillV2}}</code></p><p class="drv"><span class="drl">Selection payload · selection_ref.v1</span></p><pre>{{C.ts.drillJson}}</pre></div></sc-if><p class="live" aria-live="polite"><span class="livel">Screen reader</span><span>{{C.ts.live}}</span></p></div>
+<div class="notes"><h3>V2 (API reference)</h3><ul><li>Columns by month, submitted + approved only, months with data only</li><li>Compact SAR labels; SAR total band</li></ul><h3>This build</h3><ul><li><code>bar</code> with <code>labelLayout.hideOverlap</code>; below 520 px the value shows only on the selected column (DXD-20)</li></ul><h3>Keyboard</h3><p>Tab to the chart, then ← → (or ↑ ↓) move between values, Home / End jump, Enter selects, Escape clears.</p><h3>Differences</h3><p>None.</p></div></div>
+</section><section class="sp" aria-labelledby="h-tsd">
+<div class="sph"><span class="no">14</span><div class="spt"><h2 id="h-tsd">Donut · status in a fixed order</h2><p class="used">Tenant · Service requests (by status)</p></div><span class="impl">ECharts pie</span><span class="pv pv-cl">Parity · Close</span></div>
+<div class="spb"><div class="livebox"><div class="donutrow"><div class="{{C.tsd.cw}}" data-dx3-cw="tsd" tabindex="0" role="application" aria-roledescription="chart" aria-label="{{C.tsd.aria}}"><div class="ec" data-dx3-ec="tsd" style="height: 220px"></div><div class="ctr" aria-hidden="true"><b>{{tsdTotal}}</b><span>{{tsdCl}}</span></div><sc-if value="{{ecLoading}}"><div class="ecov"><span>Loading ECharts 5.6.0…</span></div></sc-if><sc-if value="{{ecFailed}}"><div class="ecov ecov-f"><span>ECharts did not load · {{ecMsg}}</span></div></sc-if></div><div class="lgs"><sc-for list="{{tsdLeg}}" as="x"><button class="{{x.cls}}" onClick="{{x.go}}" aria-pressed="{{x.pressed}}" aria-label="{{x.aria}}" aria-disabled="{{x.dis}}"><span class="sw" style="background: {{x.color}}"></span><span class="lgn">{{x.name}}</span><span class="lgv">{{x.v}}</span></button></sc-for></div></div><sc-if value="{{C.tsd.hasSel}}" hint-placeholder-val="{{false}}"><div class="{{C.tsd.selCls}}"><span class="sbr">{{C.tsd.selRole}}</span><b class="sbt">{{C.tsd.selTxt}}</b><span class="sbx"><button class="btn sm" onClick="{{C.tsd.ask}}">Ask about this</button><button class="btn sm" onClick="{{C.tsd.view}}">View records</button><button class="btn sm ghost" onClick="{{C.tsd.clear}}">Clear</button></span></div></sc-if><sc-if value="{{C.tsd.drillOn}}" hint-placeholder-val="{{false}}"><div class="drill"><div class="drh"><b>Records tab</b><button class="btn sm ghost" onClick="{{C.tsd.closeDrill}}">Close</button></div><p>{{C.tsd.drillTarget}}</p><p class="drv"><span class="drl">V2 drilldown</span> <code>{{C.tsd.drillV2}}</code></p><p class="drv"><span class="drl">Selection payload · selection_ref.v1</span></p><pre>{{C.tsd.drillJson}}</pre></div></sc-if><p class="live" aria-live="polite"><span class="livel">Screen reader</span><span>{{C.tsd.live}}</span></p></div>
+<div class="notes"><h3>V2 (API reference)</h3><ul><li>ui-kit <code>Donut</code> size 236; fixed order SUBMITTED … EXPIRED with <code>STATUS_COLORS</code></li><li>Other statuses folded into “Other”, so the ring equals all rows</li></ul><h3>This build</h3><ul><li><code>pie</code>; legend in HTML with counts; centre total and open count</li></ul><h3>Keyboard</h3><p>Tab to the chart, then ← → (or ↑ ↓) move between values, Home / End jump, Enter selects, Escape clears.</p><h3>Differences</h3><p>“Other” uses #D4D0DE instead of #E5E7EB so the slice stays visible on white.</p></div></div>
+</section><section class="sp sp-wide" aria-labelledby="h-tst">
+<div class="sph"><span class="no">15</span><div class="spt"><h2 id="h-tst">Treemap · category groups, one tile per status</h2><p class="used">Tenant · Service requests (by category)</p></div><span class="impl">ECharts treemap</span><span class="pv pv-cl">Parity · Close · see lab</span></div>
+<div class="spb"><div class="livebox"><div class="{{C.tst.cw}}" data-dx3-cw="tst" tabindex="0" role="application" aria-roledescription="chart" aria-label="{{C.tst.aria}}"><div class="ec" data-dx3-ec="tst" style="height: 260px"></div><sc-if value="{{ecLoading}}"><div class="ecov"><span>Loading ECharts 5.6.0…</span></div></sc-if><sc-if value="{{ecFailed}}"><div class="ecov ecov-f"><span>ECharts did not load · {{ecMsg}}</span></div></sc-if></div><div class="lgs"><sc-for list="{{tstLeg}}" as="x"><button class="{{x.cls}}" onClick="{{x.go}}" aria-pressed="{{x.pressed}}" aria-label="{{x.aria}}" aria-disabled="{{x.dis}}"><span class="sw" style="background: {{x.color}}"></span><span class="lgn">{{x.name}}</span><span class="lgv">{{x.v}}</span></button></sc-for></div><sc-if value="{{C.tst.hasSel}}" hint-placeholder-val="{{false}}"><div class="{{C.tst.selCls}}"><span class="sbr">{{C.tst.selRole}}</span><b class="sbt">{{C.tst.selTxt}}</b><span class="sbx"><button class="btn sm" onClick="{{C.tst.ask}}">Ask about this</button><button class="btn sm" onClick="{{C.tst.view}}">View records</button><button class="btn sm ghost" onClick="{{C.tst.clear}}">Clear</button></span></div></sc-if><sc-if value="{{C.tst.drillOn}}" hint-placeholder-val="{{false}}"><div class="drill"><div class="drh"><b>Records tab</b><button class="btn sm ghost" onClick="{{C.tst.closeDrill}}">Close</button></div><p>{{C.tst.drillTarget}}</p><p class="drv"><span class="drl">V2 drilldown</span> <code>{{C.tst.drillV2}}</code></p><p class="drv"><span class="drl">Selection payload · selection_ref.v1</span></p><pre>{{C.tst.drillJson}}</pre></div></sc-if><p class="live" aria-live="polite"><span class="livel">Screen reader</span><span>{{C.tst.live}}</span></p></div>
+<div class="notes"><h3>V2 (API reference)</h3><ul><li>ui-kit <code>Treemap</code> (<code>minShare 0.08</code>); one group per category sorted by size; leaf per status coloured by status</li><li>Category/count strip underneath</li></ul><h3>This build</h3><ul><li>Same treemap primitive as the Admin card; category strip as HTML buttons</li></ul><h3>Keyboard</h3><p>Tab to the chart, then ← → (or ↑ ↓) move between values, Home / End jump, Enter selects, Escape clears.</p><h3>Differences</h3><p>As for the Admin treemap.</p></div></div>
+</section><section class="lab" aria-labelledby="h-lab"><div class="sph"><span class="no">L</span><div class="spt"><h2 id="h-lab">Treemap fidelity lab</h2><p class="used">The DR-007 condition: does ECharts’ treemap reproduce the V2 layout?</p></div></div>
+<p class="lead2">Same data, same size, side by side. Left: a squarified layout (Bruls et al.) standing in for the V2 ui-kit, whose source is not in the API reference. Right: the ECharts treemap with the gallery’s settings. Metrics are measured from each layout.</p>
+<div class="labctl"><div class="sg" role="group" aria-label="Width"><sc-for list="{{labWOpts}}" as="o"><button class="{{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.go}}">{{o.label}}</button></sc-for></div><div class="sg" role="group" aria-label="minShare interpretation"><sc-for list="{{labModeOpts}}" as="o"><button class="{{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.go}}">{{o.label}}</button></sc-for></div><button class="btn" onClick="{{labMeasure}}">Measure both layouts</button><span class="note">{{labTileN}} tiles · {{labNote}}</span></div>
+<div class="labgrid"><figure><figcaption>V2 reference · squarified</figcaption><div class="refbox" style="width: {{labW}}px" role="img" aria-label="Reference treemap layout"><sc-for list="{{refTiles}}" as="t"><div class="rt" style="left: {{t.l}}; top: {{t.t}}; width: {{t.w}}; height: {{t.h}}; background: {{t.bg}}; color: {{t.fg}}" title="{{t.title}}"><b>{{t.name}}</b><span>{{t.v}}</span></div></sc-for></div></figure>
+<figure><figcaption>ECharts 5.6.0 · treemap</figcaption><div class="labec" style="width: {{labW}}px"><div class="ec" data-dx3-ec="lab" style="height: 300px"></div><sc-if value="{{ecFailed}}"><div class="ecov ecov-f"><span>ECharts did not load · {{ecMsg}}</span></div></sc-if></div></figure></div>
+<div class="tblw mt"><table class="tbl"><thead><tr><th scope="col">Metric</th><th scope="col">V2 reference</th><th scope="col">ECharts</th><th scope="col">Pass rule</th></tr></thead><tbody><sc-for list="{{labRows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div>
+<div class="opts2"><div><b>Option A · label threshold</b><p>minShare only decides which tiles get labels. Every sub-category stays a tile and keeps its drilldown. Matches what DX2 shows.</p></div><div><b>Option B · fold small leaves</b><p>Leaves under 8 % of the whole treemap merge into one “Other” tile per category. Folding applies only when two or more leaves qualify. With this data, 8 of 13 sub-categories merge into two “Other” tiles, including all four complaint types, and lose their drilldown.</p></div></div>
+</section><section class="lab" aria-labelledby="h-a11y"><div class="sph"><span class="no">A</span><div class="spt"><h2 id="h-a11y">Accessibility model</h2><p class="used">The second DR-007 condition: keyboard and screen-reader access for every chart.</p></div></div>
+<div class="a11y"><div><h3>Keyboard</h3><div class="tblw"><table class="tbl"><tbody>
+<tr><th scope="row">Tab</th><td>One stop per chart, then the chart’s HTML controls (legend, captions, view switch). HTML visuals are native buttons.</td></tr>
+<tr><th scope="row">← → ↑ ↓</th><td>Move between values. Two-dimensional where the chart is: heatmap (type × age), stacked bars (discipline × status), document status (mall × grade), diverging bars (mall × side).</td></tr>
+<tr><th scope="row">Home · End</th><td>First or last value.</td></tr>
+<tr><th scope="row">Enter · Space</th><td>Select — the same code path as a mouse click, so the selection bar, agent context and Records target are identical.</td></tr>
+<tr><th scope="row">Escape</th><td>Clear the selection on this card and hide the tooltip.</td></tr>
+</tbody></table></div></div>
+<div><h3>Screen readers</h3><ul class="bl"><li>The chart container is <code>role="application"</code> with <code>aria-roledescription="chart"</code>, so arrow keys reach it in forms mode. Its label is the adapter’s data summary plus the key instructions.</li><li>ECharts’ <code>aria</code> option is on, with our summary as the description instead of the generic generated text.</li><li>Each move is announced through a polite live region: value, then position (“Renewal, 4 wk+: 18 amendments. 3 of 20.”). The gallery shows that text under each chart.</li><li>Focus shows the same tooltip as hover. Every chart keeps the Table tab from DX2 as the full non-visual alternative.</li><li>Trade-off: <code>role="application"</code> suppresses browse-mode reading inside the chart; the summary, live region and Table tab cover that.</li></ul></div></div>
+<h3 class="mt">Colour contrast of the V2 palette</h3><p class="lead2">Computed with the WCAG 2.2 formula. Text on a coloured mark needs 4.5:1; a mark needed to understand the chart needs 3:1 against the white card (1.4.11) unless the same information is also given as text.</p>
+<div class="tblw"><table class="tbl"><thead><tr><th scope="col">Token</th><th scope="col">Used for</th><th scope="col">White text</th><th scope="col">Dark text</th><th scope="col">Label colour</th><th scope="col">Mark vs white card</th></tr></thead><tbody><sc-for list="{{audit}}" as="a"><tr><td><span class="sw" style="background: {{a.hex}}"></span> {{a.name}} <code>{{a.hex}}</code></td><td>{{a.use}}</td><td>{{a.cw}}</td><td>{{a.cd}}</td><td>{{a.lbl}}</td><td><span class="{{a.ntCls}}">{{a.nt}}</span></td></tr></sc-for></tbody></table></div>
+<p class="note">Marks below 3:1 (teal, amber, light amber, ink-3) remain acceptable only because every value is also given as text: direct labels or legend counts, the tooltip, and the Table tab. Labels on marks pick white or dark text by measured contrast.</p>
+</section></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":8600}}'>
+const DX3_DATA = {"lr":{"unit":[["Store",612],["Kiosk",188],["Food Court",164],["Office",121],["Media",97],["Specialty",74],["Entertainment",28]],"total":1284,"source":[["Website",538],["Mobile App",291],["Leasing Team",247],["Walk-in",102],["Referral",64],["Broker",31]],"sourceNote":"11 requests without a registration source are not shown. Other = Referral, Broker."},"sf":[{"label":"Lease requests","value":1284,"signed":0,"unsigned":0,"other":0},{"label":"Leads","value":702,"signed":0,"unsigned":0,"other":0},{"label":"Proposals","value":418,"signed":236,"unsigned":151,"other":31},{"label":"Contracts","value":296,"signed":201,"unsigned":74,"other":21}],"pa":[{"type":"Proposals","bands":[25,18,14,15,45],"total":117},{"type":"Contracts","bands":[16,11,9,9,33],"total":78},{"type":"Leases","bands":[9,6,4,4,14],"total":37}],"am":{"cols":["Expansion","HoldOver","Renewal","Termination"],"rows":[{"band":"4 wk+","v":[1,2,18,4]},{"band":"4 wk","v":[0,1,3,1]},{"band":"3 wk","v":[1,0,2,2]},{"band":"2 wk","v":[2,1,1,1]},{"band":"1 wk","v":[1,0,2,1]}]},"sr":[{"name":"Inquiry","leaves":[{"name":"General","value":1067,"color":"#6D28D9","approved":812,"in_process":214,"rejected":41,"pending":96,"closed":388},{"name":"Leasing","value":506,"color":"#6D28D9","approved":356,"in_process":122,"rejected":28,"pending":40,"closed":190},{"name":"Billing","value":354,"color":"#6D28D9","approved":248,"in_process":87,"rejected":19,"pending":31,"closed":141}]},{"name":"Work permits","leaves":[{"name":"Construction","value":841,"color":"#92400E","approved":618,"in_process":171,"rejected":52,"pending":35,"closed":410},{"name":"Hot work","value":557,"color":"#92400E","approved":402,"in_process":118,"rejected":37,"pending":22,"closed":296},{"name":"After-hours operations","value":421,"color":"#FDE68A","approved":331,"in_process":64,"rejected":26,"pending":9,"closed":280},{"name":"Electrical maintenance","value":379,"color":"#F59E0B","approved":284,"in_process":76,"rejected":19,"pending":14,"closed":205},{"name":"Deliveries","value":278,"color":"#FDE68A","approved":226,"in_process":41,"rejected":11,"pending":6,"closed":198},{"name":"Plumbing maintenance","value":270,"color":"#F59E0B","approved":197,"in_process":58,"rejected":15,"pending":12,"closed":151}]},{"name":"Complaints","leaves":[{"name":"Cleanliness","value":322,"color":"#BE123C","approved":214,"in_process":96,"rejected":12,"pending":44,"closed":231},{"name":"Air conditioning","value":288,"color":"#BE123C","approved":176,"in_process":102,"rejected":10,"pending":38,"closed":133},{"name":"Parking","value":221,"color":"#BE123C","approved":141,"in_process":66,"rejected":14,"pending":27,"closed":120},{"name":"Noise","value":159,"color":"#BE123C","approved":97,"in_process":53,"rejected":9,"pending":21,"closed":88}]}],"fh":[{"label":"Pre-opening MEP","reviewed":74,"total":103,"color":"#8B5CF6"},{"label":"Pre-opening Arch.","reviewed":69,"total":103,"color":"#14B8A6"},{"label":"Open ceiling","reviewed":91,"total":111,"color":"#F59E0B"},{"label":"Close ceiling","reviewed":80,"total":103,"color":"#F43F5E"}],"ho":17,"fd":[{"label":"Mechanical","v":[48,19,112]},{"label":"Architectural","v":[61,27,134]},{"label":"Electrical","v":[37,12,88]}],"ds":[{"mall":"Gulf Gate Mall","short":"Gulf Gate","a":15,"b":6,"c":3,"d":1},{"mall":"Harbor Lights Mall","short":"Harbor Lights","a":14,"b":6,"c":3,"d":1},{"mall":"Rawdah Point Mall","short":"Rawdah Point","a":13,"b":6,"c":3,"d":1},{"mall":"Coral Point","short":"Coral","a":11,"b":5,"c":2,"d":1},{"mall":"Dune Harbour Mall","short":"Dune Harbour","a":11,"b":5,"c":2,"d":1},{"mall":"Seabreeze Plaza","short":"Seabreeze","a":11,"b":5,"c":2,"d":1},{"mall":"Tidewater Arcade","short":"Tidewater","a":11,"b":5,"c":2,"d":1},{"mall":"Coastline Galleria","short":"Coastline","a":11,"b":4,"c":2,"d":1},{"mall":"Lantern Quay","short":"Lantern","a":11,"b":4,"c":2,"d":1},{"mall":"Mangrove Mall","short":"Mangrove","a":11,"b":4,"c":2,"d":1},{"mall":"Minaret View","short":"Minaret","a":10,"b":4,"c":2,"d":1},{"mall":"Sandstone Galleria","short":"Sandstone","a":10,"b":4,"c":2,"d":1},{"mall":"Breeze Walk","short":"Breeze","a":9,"b":4,"c":2,"d":1},{"mall":"Marina Square West","short":"Marina Square West","a":9,"b":4,"c":2,"d":1},{"mall":"Najd Gate Mall","short":"Najd Gate","a":9,"b":4,"c":2,"d":1},{"mall":"Hijaz Crossing","short":"Hijaz","a":8,"b":3,"c":2,"d":1},{"mall":"Wadi Crescent Centre","short":"Wadi Crescent","a":8,"b":3,"c":2,"d":1},{"mall":"Amber Heights","short":"Amber","a":7,"b":3,"c":1,"d":0},{"mall":"Falcon Square","short":"Falcon","a":7,"b":3,"c":1,"d":0},{"mall":"Mirage Commons","short":"Mirage","a":7,"b":3,"c":1,"d":0},{"mall":"Oasis Row","short":"Oasis","a":7,"b":3,"c":1,"d":0}],"ud":[{"mall":"Gulf Gate Mall","mismatch":11,"match":128,"pending":3},{"mall":"Rawdah Point Mall","mismatch":6,"match":301,"pending":3},{"mall":"Harbor Lights Mall","mismatch":6,"match":205,"pending":3},{"mall":"Najd Gate Mall","mismatch":5,"match":183,"pending":2},{"mall":"Pearl Bay Centre","mismatch":5,"match":181,"pending":2},{"mall":"Sandstone Galleria","mismatch":5,"match":169,"pending":2},{"mall":"Tidewater Arcade","mismatch":5,"match":165,"pending":2},{"mall":"Cedar Park Mall","mismatch":5,"match":145,"pending":1},{"mall":"Coastline Galleria","mismatch":4,"match":161,"pending":1},{"mall":"Wadi Crescent Centre","mismatch":4,"match":159,"pending":1},{"mall":"Qasr Plaza","mismatch":4,"match":153,"pending":1},{"mall":"Spice Route Mall","mismatch":4,"match":152,"pending":2},{"mall":"Dune Harbour Mall","mismatch":4,"match":144,"pending":1},{"mall":"Falcon Square","mismatch":4,"match":136,"pending":2},{"mall":"Minaret View","mismatch":4,"match":136,"pending":1},{"mall":"Seabreeze Plaza","mismatch":4,"match":121,"pending":2},{"mall":"Breeze Walk","mismatch":4,"match":114,"pending":1},{"mall":"Coral Point","mismatch":3,"match":129,"pending":1}],"occ":{"occupied":7114,"vacant":1026},"ts":[{"m":"Jan","v":1284000},{"m":"Feb","v":1192500},{"m":"Mar","v":1486200},{"m":"Apr","v":1321400},{"m":"May","v":1268900},{"m":"Jun","v":1402700},{"m":"Jul","v":1238300},{"m":"Aug","v":1197600},{"m":"Sep","v":803100}],"tsr":{"status":[{"label":"Submitted","v":3,"color":"#0284C7"},{"label":"In process","v":4,"color":"#F59E0B"},{"label":"Action required","v":2,"color":"#F43F5E"},{"label":"Approved","v":27,"color":"#059669"},{"label":"Rejected","v":3,"color":"#DC2626"},{"label":"Expired","v":2,"color":"#6E6789"},{"label":"Other (closed, completed)","v":5,"color":"#D4D0DE"}],"cats":[{"name":"Work permits","leaves":[{"name":"Submitted","value":2,"color":"#0284C7"},{"name":"In process","value":2,"color":"#F59E0B"},{"name":"Approved","value":13,"color":"#059669"},{"name":"Rejected","value":1,"color":"#DC2626"},{"name":"Expired","value":1,"color":"#6E6789"}]},{"name":"Inquiries","leaves":[{"name":"In process","value":1,"color":"#F59E0B"},{"name":"Approved","value":7,"color":"#059669"},{"name":"Other (closed, completed)","value":3,"color":"#D4D0DE"}]},{"name":"Work requests","leaves":[{"name":"Submitted","value":1,"color":"#0284C7"},{"name":"Approved","value":4,"color":"#059669"},{"name":"Rejected","value":1,"color":"#DC2626"},{"name":"Other (closed, completed)","value":1,"color":"#D4D0DE"}]},{"name":"Complaints","leaves":[{"name":"In process","value":1,"color":"#F59E0B"},{"name":"Action required","value":2,"color":"#F43F5E"},{"name":"Approved","value":2,"color":"#059669"},{"name":"Other (closed, completed)","value":1,"color":"#D4D0DE"}]},{"name":"Lease amendments","leaves":[{"name":"Approved","value":1,"color":"#059669"},{"name":"Rejected","value":1,"color":"#DC2626"},{"name":"Expired","value":1,"color":"#6E6789"}]}]},"wp":[{"label":"Approved","v":2058,"color":"#059669"},{"label":"In process","v":528,"color":"#0284C7"},{"label":"Rejected","v":160,"color":"#DC2626"},{"label":"Pending","v":98,"color":"#F59E0B"},{"label":"Closed","v":1540,"color":"#9A93AD"}],"catColors":{"Inquiry":"#6D28D9","Work permits":"#B45309","Complaints":"#BE123C"}};
+/* DX3 chart parity gallery — logic. Design prototype only; not production code. */
+const ECH = { local: './vendor/echarts-5.6.0.min.js', url: 'https://cdnjs.cloudflare.com/ajax/libs/echarts/5.6.0/echarts.min.js', want: '5.6.0' };
+const TOK = {
+  ink: '#1B1530', ink2: '#4B4560', ink3: '#9A93AD', line: '#E4E1EC', grid: '#EEECF3', track: '#ECE8F5', neutral: '#E5E7EB',
+  cat4: ['#8B5CF6', '#14B8A6', '#F59E0B', '#F43F5E'], pipe3: ['#0284C7', '#F59E0B', '#059669'], out4: ['#059669', '#8B5CF6', '#F59E0B', '#DC2626'],
+  bin: ['#8B5CF6', '#DC2626'], heat5: [['#EDE7FB', '#1B1530'], ['#CDBDF5', '#1B1530'], ['#A68BEA', '#1B1530'], ['#7C55D6', '#FFFFFF'], ['#4C1D95', '#FFFFFF']],
+  zero: ['#F4F2F8', '#5E5873'], sales: '#14B8A6', gauge: '#7C3AED'
+};
+const n = (x) => Number(x).toLocaleString('en-US');
+const p1 = (x) => (Math.round(x * 1000) / 10).toFixed(1) + '%';
+const p0 = (x) => Math.round(x * 100) + '%';
+const sar = (x) => 'SAR ' + n(x);
+const compact = (x) => (x >= 1e6 ? (x / 1e6).toFixed(2) + 'M' : x >= 1e3 ? Math.round(x / 1e3) + 'K' : String(x));
+const lum = (hex) => { const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4))); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+const contrast = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+const onText = (bg) => (contrast(bg, '#FFFFFF') >= 4.5 ? '#FFFFFF' : TOK.ink);
+
+/* ---------- Squarified treemap (Bruls, Huizing, van Wijk 2000) — stand-in for the V2 ui-kit layout ---------- */
+function squarify(values, rect) {
+  const out = new Array(values.length);
+  const total = values.reduce((a, b) => a + b, 0);
+  if (!total || rect.w <= 0 || rect.h <= 0) return values.map(() => ({ x: rect.x, y: rect.y, w: 0, h: 0 }));
+  const scale = (rect.w * rect.h) / total;
+  const items = values.map((v, i) => ({ i, a: v * scale })).filter((x) => x.a > 0);
+  let r = { x: rect.x, y: rect.y, w: rect.w, h: rect.h };
+  const worst = (row, side) => { const s = row.reduce((a, b) => a + b.a, 0); let mx = 0, mn = Infinity; row.forEach((x) => { mx = Math.max(mx, x.a); mn = Math.min(mn, x.a); }); return Math.max((side * side * mx) / (s * s), (s * s) / (side * side * mn)); };
+  const place = (row) => {
+    const s = row.reduce((a, b) => a + b.a, 0);
+    if (r.w >= r.h) { const w = s / r.h; let y = r.y; row.forEach((x) => { const h = x.a / w; out[x.i] = { x: r.x, y, w, h }; y += h; }); r = { x: r.x + w, y: r.y, w: r.w - w, h: r.h }; }
+    else { const h = s / r.w; let x0 = r.x; row.forEach((x) => { const w = x.a / h; out[x.i] = { x: x0, y: r.y, w, h }; x0 += w; }); r = { x: r.x, y: r.y + h, w: r.w, h: r.h - h }; }
+  };
+  let row = [];
+  items.forEach((it) => {
+    const side = Math.min(r.w, r.h);
+    if (!row.length || worst(row.concat([it]), side) <= worst(row, side)) row.push(it); else { place(row); row = [it]; }
+  });
+  if (row.length) place(row);
+  values.forEach((v, i) => { if (!out[i]) out[i] = { x: rect.x, y: rect.y, w: 0, h: 0 }; });
+  return out;
+}
+/* Two-level layout with a gap between groups, matching the gallery's ECharts gap settings. */
+function nestedSquarify(groups, W, H, gap) {
+  const gr = squarify(groups.map((g) => g.total), { x: 0, y: 0, w: W, h: H });
+  return groups.map((g, gi) => {
+    const R = gr[gi]; const inner = { x: R.x + gap / 2, y: R.y + gap / 2, w: Math.max(0, R.w - gap), h: Math.max(0, R.h - gap) };
+    const lr = squarify(g.leaves.map((l) => l.value), inner);
+    return { rect: R, inner, leaves: lr };
+  });
+}
+/* Fidelity metrics: area proportionality (coefficient of variation of area ÷ value), aspect ratios, reading order. */
+function treemapMetrics(groups, layout) {
+  const ratios = [], aspects = []; let orderOK = 0, orderN = 0;
+  groups.forEach((g, gi) => {
+    const L = layout[gi]; if (!L) return;
+    const ia = L.leaves.reduce((a, r) => a + r.w * r.h, 0);
+    g.leaves.forEach((l, li) => { const r = L.leaves[li]; if (!r || !l.value) return; ratios.push((r.w * r.h) / ia / (l.value / g.total)); if (r.w > 0 && r.h > 0) aspects.push(Math.max(r.w / r.h, r.h / r.w)); });
+    const order = g.leaves.map((l, li) => ({ v: l.value, r: L.leaves[li] })).filter((x) => x.r && x.r.w > 0);
+    for (let i = 1; i < order.length; i++) { orderN++; const a = order[i - 1].r, b = order[i].r; if (a.y < b.y + 0.5 || a.x < b.x + 0.5) orderOK++; }
+  });
+  const mean = ratios.reduce((a, b) => a + b, 0) / (ratios.length || 1);
+  const cv = Math.sqrt(ratios.reduce((a, b) => a + (b - mean) * (b - mean), 0) / (ratios.length || 1)) / (mean || 1);
+  const am = aspects.reduce((a, b) => a + b, 0) / (aspects.length || 1);
+  return { cv, maxErr: ratios.reduce((m, x) => Math.max(m, Math.abs(x - 1)), 0), meanAspect: am, maxAspect: aspects.reduce((m, x) => Math.max(m, x), 0), order: orderN ? orderOK / orderN : 1, leaves: ratios.length };
+}
+
+/* ---------- Data adapters: one per V2 visual. Each returns items (the keyboard/selection/table model) and an ECharts option. ---------- */
+const foldTop4 = (list) => { const s = list.slice().sort((a, b) => b[1] - a[1]); const top = s.slice(0, 4).map((x, i) => ({ label: x[0], v: x[1], color: TOK.cat4[i], other: false })); const rest = s.slice(4); if (rest.length) top.push({ label: 'Other (' + rest.length + ')', v: rest.reduce((a, b) => a + b[1], 0), color: TOK.ink3, other: true, members: rest.map((x) => x[0]) }); return top; };
+const SEL_ACTIVE = { borderColor: TOK.ink, borderWidth: 3, borderType: 'solid' };
+const SEL_KEPT = { borderColor: TOK.ink, borderWidth: 2, borderType: 'dashed' };
+const selStyle = (st, key, base) => Object.assign({}, base, st.active === key ? SEL_ACTIVE : st.kept === key ? SEL_KEPT : {});
+const tipBox = { backgroundColor: '#1B1530', borderWidth: 0, padding: [8, 10], textStyle: { color: '#FFFFFF', fontSize: 12, lineHeight: 17 }, extraCssText: 'border-radius:8px;box-shadow:0 8px 24px rgba(27,21,48,.25);max-width:280px;white-space:normal' };
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const tipHtml = (t) => esc(t).replace(/\n/g, '<br>');
+const base = (summary, anim) => ({ animation: anim, animationDuration: 400, aria: { enabled: true, label: { description: summary }, decal: { show: false } }, textStyle: { fontFamily: 'Inter, system-ui, sans-serif', color: TOK.ink2 } });
+
+function buildSpecs(D, st, w, anim) {
+  const S = {};
+  const W = (id) => (w[id] || 600);
+  /* 3 · Lease requests donut */
+  {
+    const view = st.lrView || 'unit';
+    const list = view === 'unit' ? D.lr.unit : D.lr.source;
+    const sl = foldTop4(list); const tot = sl.reduce((a, b) => a + b.v, 0);
+    const items = sl.map((s, i) => ({ si: 0, di: i, key: view + ':' + s.label, label: s.label + ' · ' + n(s.v), text: s.label + ': ' + n(s.v) + ' lease requests, ' + p1(s.v / tot) + (s.other ? '. Includes ' + s.members.join(', ') + '. Not selectable, as in V2' : ''), tip: s.label + '\n' + n(s.v) + ' lease requests · ' + p1(s.v / tot) + (s.other ? '\n' + s.members.join(', ') : ''), selectable: !s.other, value: s.v, color: s.color, pct: p1(s.v / tot), drill: { target: 'Records · lead enquiries · ' + (view === 'unit' ? 'unit type' : 'registration source') + ' = ' + s.label + ' · 2026 · ' + n(s.v) + ' rows', v2: view === 'unit' ? '/dashboard/leaserequest?unit_type=' + s.label + '&year=2026' : 'GET lead-enquiries?source=' + s.label.toUpperCase().replace(/[ -]/g, '_') + '&year=2026 (list modal)', seriesKey: view === 'unit' ? 'unit_type' : 'registration_source', dimensionValue: s.label, metric: 'lease_requests.by_' + (view === 'unit' ? 'unit_type' : 'registration_source') } }));
+    const summary = 'Donut chart. Lease requests in 2026 by ' + (view === 'unit' ? 'unit type' : 'registration source') + ', total ' + n(tot) + ': ' + sl.map((s) => s.label + ' ' + n(s.v)).join(', ') + '.';
+    S.lr = { items, summary, total: tot, view, option: Object.assign(base(summary, anim), { tooltip: Object.assign({ trigger: 'item', confine: true, formatter: (p) => tipHtml(items[p.dataIndex].tip) }, tipBox), series: [{ type: 'pie', name: 'Lease requests', radius: ['60%', '84%'], center: ['50%', '50%'], selectedMode: false, avoidLabelOverlap: false, label: { show: false }, labelLine: { show: false }, emphasis: { scale: true, scaleSize: 5 }, data: sl.map((s, i) => ({ name: s.label, value: s.v, itemStyle: selStyle(st, items[i].key, { color: s.color, borderColor: '#FFFFFF', borderWidth: 2 }), emphasis: s.other ? { scale: false } : undefined })) }] }) };
+  }
+  /* 14 · Tenant service requests donut (fixed V2 status order) */
+  {
+    const sl = D.tsr.status; const tot = sl.reduce((a, b) => a + b.v, 0);
+    const items = sl.map((s, i) => ({ si: 0, di: i, key: 'tsr:' + s.label, label: s.label + ' · ' + n(s.v), text: s.label + ': ' + n(s.v) + ' service requests, ' + p1(s.v / tot), tip: s.label + '\n' + n(s.v) + ' requests · ' + p1(s.v / tot), selectable: true, value: s.v, color: s.color, pct: p1(s.v / tot), drill: { target: 'Records · service requests on your leases · status = ' + s.label + ' · ' + n(s.v) + ' rows', v2: '/dashboard/servicerequest (tenant)', seriesKey: 'status', dimensionValue: s.label, metric: 'tenant_service_requests.by_status' } }));
+    const summary = 'Donut chart. Service requests on your leases by status, total ' + tot + ': ' + sl.map((s) => s.label + ' ' + s.v).join(', ') + '.';
+    S.tsd = { items, summary, total: tot, option: Object.assign(base(summary, anim), { tooltip: Object.assign({ trigger: 'item', confine: true, formatter: (p) => tipHtml(items[p.dataIndex].tip) }, tipBox), series: [{ type: 'pie', name: 'Service requests', radius: ['60%', '84%'], selectedMode: false, label: { show: false }, labelLine: { show: false }, emphasis: { scale: true, scaleSize: 5 }, data: sl.map((s, i) => ({ name: s.label, value: s.v, itemStyle: selStyle(st, items[i].key, { color: s.color, borderColor: '#FFFFFF', borderWidth: 2 }) })) }] }) };
+  }
+  /* 5 · Pending approvals half gauges */
+  {
+    const items = D.pa.map((g, i) => { const old = g.bands[4], share = g.total ? old / g.total : null; return { si: i, di: 0, key: 'pa:' + g.type, label: g.type + ' · ' + n(g.total) + ' pending', text: g.type + ': ' + n(g.total) + ' pending, ' + (share === null ? 'nothing pending' : p0(share) + ' older than one month') + '. Bands 1 week ' + g.bands[0] + ', 2 weeks ' + g.bands[1] + ', 3 weeks ' + g.bands[2] + ', 1 month ' + g.bands[3] + ', over a month ' + g.bands[4], tip: g.type + ' · ' + n(g.total) + ' pending\n' + (share === null ? 'Nothing pending' : p0(share) + ' older than one month') + '\n1w ' + g.bands[0] + ' · 2w ' + g.bands[1] + ' · 3w ' + g.bands[2] + ' · 1m ' + g.bands[3] + ' · 1m+ ' + g.bands[4], selectable: true, value: share, pct: share === null ? '—' : p0(share), cap: g.bands[0] ? g.bands[0] + ' within a week' : g.total ? 'none within a week' : 'nothing pending', bands: g.bands, drill: { target: 'Records · pending ' + g.type.toLowerCase() + ' · all age bands · ' + n(g.total) + ' rows', v2: '/dashboard/pendingapprovals?section=' + g.type.toLowerCase().replace(/s$/, ''), seriesKey: 'approval_type', dimensionValue: g.type, metric: 'pending_approvals.share_over_one_month' } }; });
+    const summary = 'Three half gauges. Share of pending approvals older than one month: ' + items.map((x) => x.label + ', ' + x.pct).join('; ') + '.';
+    const cx = ['16.7%', '50%', '83.3%'];
+    S.pa = { items, summary, option: Object.assign(base(summary, anim), { tooltip: Object.assign({ trigger: 'item', confine: true, formatter: (p) => tipHtml(items[p.seriesIndex].tip) }, tipBox), series: items.map((it, i) => ({ type: 'gauge', name: D.pa[i].type, startAngle: 180, endAngle: 0, min: 0, max: 100, radius: '88%', center: [cx[i], '78%'], progress: { show: true, width: 14, roundCap: true, itemStyle: { color: TOK.gauge } }, axisLine: { roundCap: true, lineStyle: { width: 14, color: [[1, st.active === it.key || st.kept === it.key ? '#D9D2EA' : TOK.track]] } }, axisTick: { show: false }, splitLine: { show: false }, axisLabel: { show: false }, pointer: { show: false }, anchor: { show: false }, title: { show: false }, detail: { valueAnimation: anim, offsetCenter: [0, '-18%'], fontSize: 22, fontWeight: 700, color: TOK.ink, formatter: () => it.pct }, data: [{ value: it.value === null ? 0 : Math.round(it.value * 100), name: D.pa[i].type }] })) }) };
+  }
+  /* 9 · Fit-out rings */
+  {
+    const items = D.fh.map((r, i) => { const share = r.total ? r.reviewed / r.total : null; return { si: i, di: 0, key: 'fh:' + r.label, label: r.label + ' · ' + (share === null ? '—' : p0(share)), text: r.label + ': ' + r.reviewed + ' of ' + r.total + ' reviewed, ' + (r.total - r.reviewed) + ' remaining' + (share === null ? '. No requests, so no rate' : ', ' + p0(share)), tip: r.label + '\n' + r.reviewed + ' of ' + r.total + ' reviewed · ' + (r.total - r.reviewed) + ' remaining', selectable: true, value: share, pct: share === null ? '—' : p0(share), sub: r.reviewed + ' of ' + r.total + ' reviewed', color: r.color, drill: { target: 'Records · fit-out inspection requests · ' + r.label + ' · remaining ' + (r.total - r.reviewed) + ' rows', v2: 'FitoutRequestsPopup → ServiceRequestsListModal', seriesKey: 'inspection', dimensionValue: r.label, metric: 'fitout.inspection_review_rate' } }; });
+    const summary = 'Four progress rings. Share of fit-out inspection requests reviewed: ' + items.map((x) => x.label).join('; ') + '.';
+    const cx = ['12.5%', '37.5%', '62.5%', '87.5%'];
+    S.fh = { items, summary, option: Object.assign(base(summary, anim), { tooltip: Object.assign({ trigger: 'item', confine: true, formatter: (p) => tipHtml(items[p.seriesIndex].tip) }, tipBox), series: items.map((it, i) => ({ type: 'gauge', name: D.fh[i].label, startAngle: 90, endAngle: -270, min: 0, max: 100, radius: '80%', center: [cx[i], '50%'], progress: { show: it.value !== null, width: 10, roundCap: true, itemStyle: { color: it.color } }, axisLine: { lineStyle: { width: 10, color: [[1, st.active === it.key || st.kept === it.key ? '#D9D2EA' : TOK.track]] } }, axisTick: { show: false }, splitLine: { show: false }, axisLabel: { show: false }, pointer: { show: false }, anchor: { show: false }, title: { show: false }, detail: { valueAnimation: anim, offsetCenter: [0, 0], fontSize: 17, fontWeight: 700, color: TOK.ink, formatter: () => it.pct }, data: [{ value: it.value === null ? 0 : Math.round(it.value * 100), name: D.fh[i].label }] })) }) };
+  }
+  /* 6 · Pending amendments heatmap (rows oldest first; quintile shading of non-zero values) */
+  {
+    const cols = D.am.cols, rows = D.am.rows;
+    const nz = rows.flatMap((r) => r.v).filter((v) => v > 0).sort((a, b) => a - b);
+    const q = (v) => { if (!v) return -1; const idx = nz.indexOf(v); const rank = idx / Math.max(1, nz.length - 1); return Math.min(4, Math.floor(rank * 5)); };
+    const items = []; const data = [];
+    rows.forEach((r, ri) => r.v.forEach((v, ci) => { const k = q(v); const c = k < 0 ? TOK.zero : TOK.heat5[k]; const key = 'am:' + cols[ci] + '|' + r.band; items.push({ si: 0, di: items.length, row: ri, col: ci, key, label: cols[ci] + ' × ' + r.band + ' · ' + v, text: cols[ci] + ', ' + r.band + ': ' + v + ' amendment' + (v === 1 ? '' : 's'), tip: cols[ci] + ' · ' + r.band + '\n' + v + ' pending amendment' + (v === 1 ? '' : 's'), selectable: true, value: v, drill: { target: 'Records · lease amendments · type ' + cols[ci] + ' · age ' + r.band + ' · ' + v + ' rows', v2: '/dashboard/pendingamendments (View Details, no cell filter in V2)', seriesKey: 'amendment_type×delay_band', dimensionValue: cols[ci] + '|' + r.band, metric: 'pending_amendments.count' } }); data.push({ value: [ci, ri, v], itemStyle: selStyle(st, key, { color: c[0], borderColor: '#FFFFFF', borderWidth: 3, borderRadius: 4 }), label: { color: c[1] } }); }));
+    const summary = 'Heatmap. Pending lease amendments by type (columns: ' + cols.join(', ') + ') and age band (rows, oldest first). Largest: ' + items.slice().sort((a, b) => b.value - a.value)[0].label + '.';
+    S.am = { items, summary, grid: { rows: rows.length, cols: cols.length }, option: Object.assign(base(summary, anim), { tooltip: Object.assign({ trigger: 'item', confine: true, formatter: (p) => tipHtml(items[p.dataIndex].tip) }, tipBox), grid: { left: 52, right: 6, top: 26, bottom: 6 }, xAxis: { type: 'category', position: 'top', data: cols, axisTick: { show: false }, axisLine: { show: false }, axisLabel: { color: TOK.ink2, fontSize: 11 }, splitArea: { show: false } }, yAxis: { type: 'category', inverse: true, data: rows.map((r) => r.band), axisTick: { show: false }, axisLine: { show: false }, axisLabel: { color: TOK.ink2, fontSize: 11 } }, series: [{ type: 'heatmap', name: 'Pending amendments', data, label: { show: true, fontSize: 12, fontWeight: 600 }, emphasis: { itemStyle: { shadowBlur: 0, borderColor: TOK.ink, borderWidth: 2 } } }] }) };
+  }
+  /* 7 / 15 · Treemaps */
+  const tm = (id, groups, metric, summaryHead, drillFor) => {
+    const items = []; const data = [];
+    const all = groups.reduce((a, g) => a + g.total, 0);
+    groups.forEach((g) => {
+      const gkey = id + ':' + g.name;
+      const gi = { key: gkey, nodeId: g.name, label: g.name + ' · ' + n(g.total), text: g.name + ': ' + n(g.total) + ' in total', tip: g.name + '\n' + n(g.total) + ' in total', selectable: true, value: g.total, level: 0, drill: drillFor(g, null) };
+      items.push(gi);
+      const children = g.leaves.map((l) => {
+        const lkey = id + ':' + g.name + '::' + l.name; const share = g.total ? l.value / g.total : 0;
+        const it = { key: lkey, nodeId: g.name + '::' + l.name, label: g.name + ' › ' + l.name + ' · ' + n(l.value), text: g.name + ', ' + l.name + ': ' + n(l.value), tip: l.tip || (g.name + ' › ' + l.name + '\n' + n(l.value)), selectable: true, value: l.value, level: 1, share, drill: drillFor(g, l) };
+        items.push(it);
+        const fg = onText(l.color);
+        return { id: it.nodeId, name: l.name, value: l.value, itemStyle: selStyle(st, lkey, { color: l.color, borderColor: '#FFFFFF', borderWidth: 1 }), label: share >= 0.17 ? { show: true, color: fg, formatter: '{b}\n{c}' } : share >= 0.07 ? { show: true, color: fg, formatter: '{c}' } : { show: false } };
+      });
+      data.push({ id: g.name, name: g.name, value: g.total, itemStyle: selStyle(st, gkey, { borderColor: '#FFFFFF', borderWidth: 0, gapWidth: 2 }), children });
+    });
+    const summary = summaryHead + ' ' + groups.map((g) => g.name + ' ' + n(g.total) + ' (' + g.leaves.map((l) => l.name + ' ' + n(l.value)).join(', ') + ')').join('; ') + '.';
+    return { items, summary, total: all, groups, option: Object.assign(base(summary, anim), { tooltip: Object.assign({ trigger: 'item', confine: true, formatter: (p) => { const it = items.find((x) => x.nodeId === (p.data && p.data.id)); return it ? tipHtml(it.tip) : ''; } }, tipBox), series: [{ type: 'treemap', name: metric, roam: false, nodeClick: false, sort: false, breadcrumb: { show: false }, left: 0, right: 0, top: 0, bottom: 0, squareRatio: 0.5 * (1 + Math.sqrt(5)), visibleMin: 1, label: { show: true, position: 'insideTopLeft', fontSize: 11, fontWeight: 600, lineHeight: 15, overflow: 'truncate' }, upperLabel: { show: false }, itemStyle: { borderColor: '#FFFFFF', borderWidth: 0, gapWidth: 4 }, levels: [{ itemStyle: { borderWidth: 0, gapWidth: 4 } }, { itemStyle: { borderWidth: 0, gapWidth: 2 } }], emphasis: { itemStyle: { borderColor: TOK.ink, borderWidth: 2 } }, data }] }) };
+  };
+  {
+    const groups = D.sr.map((g) => ({ name: g.name, total: g.leaves.reduce((a, l) => a + l.value, 0), leaves: g.leaves.slice().sort((a, b) => b.value - a.value).map((l) => Object.assign({}, l, { tip: g.name + ' › ' + l.name + '\nApproved ' + n(l.approved) + ' · In process ' + n(l.in_process) + ' · Rejected ' + n(l.rejected) + '\nTile ' + n(l.value) + ' — not sized: pending ' + n(l.pending) + ', closed ' + n(l.closed) })) }));
+    S.sr = tm('sr', groups, 'Service requests', 'Treemap. Service requests by category and sub-category, tile size = approved + in process + rejected.', (g, l) => ({ target: 'Records · service requests · ' + g.name + (l ? ' › ' + l.name : '') + ' · status approved, in process, rejected · ' + n(l ? l.value : g.total) + ' rows', v2: 'ServiceRequestsListModal · service_category=' + g.name.toUpperCase().replace(/ /g, '_') + (l ? '&sub_category=' + l.name.toUpperCase().replace(/[ -]/g, '_') : ''), seriesKey: l ? 'sub_category' : 'service_category', dimensionValue: l ? g.name + '|' + l.name : g.name, metric: 'service_requests.sized_count' }));
+  }
+  {
+    const groups = D.tsr.cats.map((g) => ({ name: g.name, total: g.leaves.reduce((a, l) => a + l.value, 0), leaves: g.leaves.slice() })).sort((a, b) => b.total - a.total);
+    S.tst = tm('tst', groups, 'Service requests by category', 'Treemap. Service requests on your leases by category, one tile per status.', (g, l) => ({ target: 'Records · service requests on your leases · ' + g.name + (l ? ' · status ' + l.name : '') + ' · ' + n(l ? l.value : g.total) + ' rows', v2: '/dashboard/servicerequest (tenant, “All”)', seriesKey: l ? 'category|status' : 'category', dimensionValue: l ? g.name + '|' + l.name : g.name, metric: 'tenant_service_requests.by_category' }));
+  }
+  /* 10 · Fit-out drawings stacked horizontal bars */
+  {
+    const st3 = ['Submitted', 'Pending', 'Approved'];
+    const rows = D.fd; const items = [];
+    rows.forEach((r, ri) => st3.forEach((s, si) => items.push({ si, di: ri, row: ri, col: si, key: 'fd:' + r.label + '|' + s, label: r.label + ' · ' + s + ' · ' + r.v[si], text: r.label + ' drawings ' + s.toLowerCase() + ': ' + r.v[si] + ' of ' + (r.v[0] + r.v[1] + r.v[2]), tip: r.label + ' · ' + s + '\n' + r.v[si] + ' drawing requests', selectable: r.v[si] > 0, value: r.v[si], drill: { target: 'Records · fit-out drawing requests · ' + r.label + ' · ' + s.toLowerCase() + ' · ' + r.v[si] + ' rows', v2: 'FitoutRequestsPopup (segment click)', seriesKey: 'discipline|status', dimensionValue: r.label + '|' + s, metric: 'fitout.drawings_by_status' } })));
+    const totals = rows.map((r) => r.v[0] + r.v[1] + r.v[2]); const mx = Math.max.apply(null, totals);
+    const byKey = {}; items.forEach((it) => { byKey[it.si + ':' + it.di] = it; });
+    const summary = 'Horizontal stacked bars. Fit-out drawing requests by discipline: ' + rows.map((r, i) => r.label + ' ' + totals[i] + ' (submitted ' + r.v[0] + ', pending ' + r.v[1] + ', approved ' + r.v[2] + ')').join('; ') + '.';
+    S.fd = { items: rows.flatMap((r, ri) => st3.map((s, si) => byKey[si + ':' + ri])), summary, grid: { rows: rows.length, cols: 3 }, option: Object.assign(base(summary, anim), { tooltip: Object.assign({ trigger: 'item', confine: true, formatter: (p) => tipHtml(byKey[p.seriesIndex + ':' + p.dataIndex].tip) }, tipBox), grid: { left: 92, right: 40, top: 4, bottom: 4 }, xAxis: { type: 'value', show: false, max: mx }, yAxis: [{ type: 'category', inverse: true, data: rows.map((r) => r.label), axisTick: { show: false }, axisLine: { show: false }, axisLabel: { color: TOK.ink, fontSize: 12 } }, { type: 'category', inverse: true, position: 'right', data: totals.map(String), axisTick: { show: false }, axisLine: { show: false }, axisLabel: { color: TOK.ink, fontSize: 12, fontWeight: 600 } }], series: st3.map((s, si) => ({ type: 'bar', name: s, stack: 'fd', barWidth: 22, emphasis: { focus: 'none' }, label: { show: true, position: 'inside', fontSize: 11, fontWeight: 600, color: onText(TOK.pipe3[si]) }, data: rows.map((r, ri) => ({ value: r.v[si], itemStyle: selStyle(st, byKey[si + ':' + ri].key, { color: TOK.pipe3[si], borderColor: '#FFFFFF', borderWidth: 1 }), label: { show: r.v[si] / mx >= 0.07 } })) })) }) };
+  }
+  /* 11 · Drawing document status stacked columns (Architectural) */
+  {
+    const G = ['A', 'B', 'C', 'D']; const names = { A: 'A · approved', B: 'B · approved with comments', C: 'C · change request', D: 'D · rejected' };
+    const malls = D.ds; const items = []; const byKey = {};
+    malls.forEach((m, mi) => G.forEach((g, gi) => { const v = m[g.toLowerCase()]; const it = { si: gi, di: mi, row: gi, col: mi, key: 'ds:' + m.mall + '|' + g, label: m.mall + ' · grade ' + g + ' · ' + v, text: m.mall + ', grade ' + g + ': ' + v + ' document' + (v === 1 ? '' : 's') + ' of ' + (m.a + m.b + m.c + m.d), tip: m.mall + '\nA ' + m.a + ' · B ' + m.b + ' · C ' + m.c + ' · D ' + m.d + '\nTotal ' + (m.a + m.b + m.c + m.d) + ' graded documents', selectable: true, value: v, drill: { target: 'Records · drawing documents · ' + m.mall + ' · Architectural · by document type (grade ' + g + ' highlighted)', v2: 'DocumentTypeStatusModal · unique_property_id of ' + m.mall + ' · ARCHITECTURAL', seriesKey: 'mall|grade', dimensionValue: m.mall + '|' + g, metric: 'drawing_documents.by_grade' } }; byKey[gi + ':' + mi] = it; }));
+    // Navigation order: by mall (columns), grades bottom → top
+    malls.forEach((m, mi) => G.forEach((g, gi) => items.push(byKey[gi + ':' + mi])));
+    const narrow = W('ds') < 640; const win = 7;
+    const summary = 'Stacked column chart. Architectural drawing documents by latest grade for ' + malls.length + ' malls, highest total ' + malls[0].mall + ' (' + (malls[0].a + malls[0].b + malls[0].c + malls[0].d) + ').';
+    const opt = Object.assign(base(summary, anim), { tooltip: Object.assign({ trigger: 'item', confine: true, formatter: (p) => tipHtml(byKey[p.seriesIndex + ':' + p.dataIndex].tip) }, tipBox), grid: { left: 30, right: 8, top: 10, bottom: narrow ? 64 : 72 }, xAxis: { type: 'category', data: malls.map((m) => m.short), axisTick: { show: false }, axisLine: { lineStyle: { color: TOK.line } }, axisLabel: { interval: 0, rotate: narrow ? 40 : 55, fontSize: 10, color: TOK.ink2, width: 70, overflow: 'truncate' } }, yAxis: { type: 'value', splitLine: { lineStyle: { color: TOK.grid } }, axisLabel: { fontSize: 10, color: TOK.ink2 } }, series: G.map((g, gi) => ({ type: 'bar', name: names[g], stack: 'ds', barMaxWidth: 26, data: malls.map((m, mi) => ({ value: m[g.toLowerCase()], itemStyle: selStyle(st, byKey[gi + ':' + mi].key, { color: TOK.out4[gi], borderColor: '#FFFFFF', borderWidth: 1 }) })) })) });
+    if (narrow) opt.dataZoom = [{ type: 'inside', xAxisIndex: 0, startValue: st.dsWin || 0, endValue: (st.dsWin || 0) + win - 1, zoomLock: true, zoomOnMouseWheel: false, moveOnMouseWheel: true }, { type: 'slider', xAxisIndex: 0, height: 12, bottom: 2, startValue: st.dsWin || 0, endValue: (st.dsWin || 0) + win - 1, zoomLock: true, brushSelect: false, showDetail: false, handleSize: 0, fillerColor: 'rgba(124,58,237,.2)', borderColor: TOK.line }];
+    S.ds = { items, summary, grid: { rows: 4, cols: malls.length, colMajor: true }, narrow, win, option: opt, malls };
+  }
+  /* 12 · Unit discrepancy diverging bars (one shared scale) */
+  {
+    const rows = D.ud; const mxL = Math.max.apply(null, rows.map((r) => r.mismatch)), mxR = Math.max.apply(null, rows.map((r) => r.match));
+    const items = []; const byKey = {};
+    rows.forEach((r, ri) => [['Mismatch', r.mismatch, 0], ['Match', r.match, 1]].forEach(([s, v, si]) => { const it = { si, di: ri, row: ri, col: si, key: 'ud:' + r.mall + '|' + s, label: r.mall + ' · ' + s.toLowerCase() + ' ' + v, text: r.mall + ': ' + r.mismatch + ' mismatched, ' + r.match + ' matched units' + (r.pending ? ', ' + r.pending + ' pending' : ''), tip: r.mall + ' · Sep 2026\nMismatch ' + r.mismatch + ' · Match ' + r.match + (r.pending ? ' · Pending ' + r.pending : ''), selectable: true, value: v, drill: { target: 'Records · units in the latest Sep 2026 report · ' + r.mall + ' · ' + s.toLowerCase() + ' · ' + v + ' rows', v2: 'MismatchUnitsModal {year:2026, month:9, propertyGroupId}', seriesKey: 'mall|result', dimensionValue: r.mall + '|' + s, metric: 'unit_discrepancy.units' } }; items.push(it); byKey[si + ':' + ri] = it; }));
+    const lw = W('ud') < 520 ? 96 : 132;
+    const summary = 'Diverging bar chart, one shared scale. Unit discrepancy, September 2026, ' + rows.length + ' malls reporting: mismatches to the left, matches to the right. Most mismatches: ' + rows[0].mall + ' (' + rows[0].mismatch + ').';
+    S.ud = { items, summary, grid: { rows: rows.length, cols: 2 }, option: Object.assign(base(summary, anim), { tooltip: Object.assign({ trigger: 'item', confine: true, formatter: (p) => tipHtml(byKey[p.seriesIndex + ':' + p.dataIndex].tip) }, tipBox), grid: { left: lw + 26, right: 34, top: 4, bottom: 4 }, xAxis: { type: 'value', min: -mxL, max: mxR, show: false }, yAxis: { type: 'category', inverse: true, data: rows.map((r) => r.mall), axisTick: { show: false }, axisLine: { show: false }, axisLabel: { color: TOK.ink, fontSize: 11, width: lw, overflow: 'truncate', margin: 30 } }, series: [{ type: 'bar', name: 'Mismatch', stack: 'ud', barWidth: 12, label: { show: true, position: 'left', fontSize: 11, color: TOK.ink2, formatter: (p) => String(Math.abs(p.value)) }, data: rows.map((r, ri) => ({ value: -r.mismatch, itemStyle: selStyle(st, byKey['0:' + ri].key, { color: TOK.bin[1], borderRadius: [3, 0, 0, 3] }) })) }, { type: 'bar', name: 'Match', stack: 'ud', barWidth: 12, label: { show: true, position: 'right', fontSize: 11, color: TOK.ink2 }, data: rows.map((r, ri) => ({ value: r.match, itemStyle: selStyle(st, byKey['1:' + ri].key, { color: TOK.bin[0], borderRadius: [0, 3, 3, 0] }) })) }] }) };
+  }
+  /* 13 · Tenant reported sales columns */
+  {
+    const cols = D.ts; const top = Math.max.apply(null, cols.map((c) => c.v)); const narrow = W('ts') < 520;
+    const items = cols.map((c, i) => ({ si: 0, di: i, key: 'ts:' + c.m, label: c.m + ' 2026 · ' + sar(c.v), text: c.m + ' 2026: ' + sar(c.v), tip: c.m + ' 2026 · ' + sar(c.v), selectable: true, value: c.v, drill: { target: 'Records · sales submissions · ' + c.m + ' 2026 · submitted and approved', v2: '/dashboard/salesdata (tenant)', seriesKey: 'month', dimensionValue: '2026-' + String(i + 1).padStart(2, '0'), metric: 'tenant_sales.reported' } }));
+    const summary = 'Column chart. Reported sales by month in 2026, ' + cols[0].m + ' to ' + cols[cols.length - 1].m + ', total ' + sar(cols.reduce((a, b) => a + b.v, 0)) + '.';
+    S.ts = { items, summary, narrow, option: Object.assign(base(summary, anim), { tooltip: Object.assign({ trigger: 'item', confine: true, formatter: (p) => tipHtml(items[p.dataIndex].tip) }, tipBox), grid: { left: 44, right: 6, top: 20, bottom: 24 }, xAxis: { type: 'category', data: cols.map((c) => c.m), axisTick: { show: false }, axisLine: { lineStyle: { color: TOK.line } }, axisLabel: { interval: 0, fontSize: 11, color: TOK.ink2 } }, yAxis: { type: 'value', max: 1500000, splitNumber: 2, splitLine: { lineStyle: { color: TOK.grid } }, axisLabel: { fontSize: 10, color: TOK.ink2, formatter: (v) => compact(v) } }, series: [{ type: 'bar', name: 'Reported sales', barMaxWidth: 42, label: { show: true, position: 'top', fontSize: 10, fontWeight: 600, color: '#0F5048', formatter: (p) => compact(p.value) }, labelLayout: { hideOverlap: true }, data: cols.map((c, i) => ({ value: c.v, itemStyle: selStyle(st, items[i].key, { color: st.active === items[i].key || st.kept === items[i].key ? '#0F766E' : TOK.sales, borderRadius: [4, 4, 0, 0] }), label: { show: !narrow || st.active === items[i].key || st.kept === items[i].key } })) }] }) };
+  }
+  return S;
+}
+
+/* HTML specimens (no chart library): items for selection and keyboard via native buttons. */
+function htmlItems(D) {
+  const occ = D.occ; const tot = occ.occupied + occ.vacant;
+  return {
+    tiles: [['Properties', '25', '8,140 units'], ['Occupied units', '7,114', '1,412,600 sqm occupied GLA'], ['Vacant units', '1,026', '214,300 sqm vacant GLA']].map((t, i) => ({ key: 'tiles:' + t[0], label: t[0] + ' · ' + t[1], text: t[0] + ': ' + t[1] + ', ' + t[2], drill: { target: 'Records · malls · ' + t[0].toLowerCase(), v2: 'StatTile (no link on Properties)', seriesKey: 'tile', dimensionValue: t[0], metric: 'portfolio.' + ['properties', 'occupied_units', 'vacant_units'][i] }, t })),
+    meter: [['Occupied', occ.occupied, '#14B8A6'], ['Vacant', occ.vacant, '#F59E0B']].map((m) => ({ key: 'meter:' + m[0], label: m[0] + ' · ' + n(m[1]) + ' units · ' + p1(m[1] / tot), text: m[0] + ': ' + n(m[1]) + ' units, ' + p1(m[1] / tot), w: (m[1] / tot * 100) + '%', color: m[2], drill: { target: 'Records · units · ' + m[0].toLowerCase() + ' on 20 Oct 2026 · ' + n(m[1]) + ' rows', v2: 'occupancy meter (no drilldown in V2)', seriesKey: 'occupancy', dimensionValue: m[0], metric: 'portfolio.unit_occupancy' } })),
+    stages: D.sf.map((s) => ({ key: 'sf:' + s.label, label: s.label + ' · ' + n(s.value), text: s.label + ': ' + n(s.value), s, drill: { target: 'Records · ' + s.label.toLowerCase() + ' created in 2026 · ' + n(s.value) + ' rows', v2: '/dashboard/salesfunnel?year=2026&active_tab=' + ({ 'Lease requests': 'leaseRequest', Leads: 'leaseRequest&inquiry_status=LEAD_APPROVED', Proposals: 'proposal', Contracts: 'contract' })[s.label], seriesKey: 'stage', dimensionValue: s.label, metric: 'sales_funnel.stage_count' } })),
+    wp: D.wp.map((x) => { const t = D.wp.reduce((a, b) => a + b.v, 0); return { key: 'wp:' + x.label, label: 'Work permits · ' + x.label + ' · ' + n(x.v), text: 'Work permits ' + x.label.toLowerCase() + ': ' + n(x.v) + ', ' + p1(x.v / t), w: (x.v / t * 100) + '%', color: x.color, v: x.v, drill: { target: 'Records · work permits · status ' + x.label.toLowerCase() + ' · ' + n(x.v) + ' rows', v2: 'ServiceRequestsListModal (work permits)', seriesKey: 'status', dimensionValue: x.label, metric: 'work_permits.by_status' } }; })
+  };
+}
+
+const EC_IDS = ['lr', 'pa', 'am', 'sr', 'fh', 'fd', 'ds', 'ud', 'ts', 'tsd', 'tst', 'lab'];
+const COMP = { tiles: 'admin.properties.tiles', meter: 'admin.properties.occupancy_meter', lr: 'admin.leaseRequests.donut', sf: 'admin.salesFunnel.stageFlow', pa: 'admin.pendingApprovals.halfGauges', am: 'admin.pendingAmendments.heatmap', sr: 'admin.serviceRequests.treemap', wp: 'admin.serviceRequests.permitStrip', fh: 'admin.fitoutHandover.rings', fd: 'admin.fitoutDrawings.stackedBars', ds: 'admin.documentStatus.stackedColumns', ud: 'admin.unitDiscrepancy.divergingBars', ts: 'tenant.sales.columns', tsd: 'tenant.serviceRequests.donut', tst: 'tenant.serviceRequests.treemap' };
+const FILTERS = { lr: { year: 2026 }, sf: { year: 2026, month: 'All', region: 'All', mall: 'All' }, pa: { region: 'All', mall: 'All' }, am: { year: 2026, month: 'All', region: 'All', mall: 'All' }, sr: { year: 2026, month: 'All', region: 'All', mall: 'All' }, wp: { year: 2026, month: 'All', region: 'All', mall: 'All' }, fh: { year: 2026, month: 'All', region: 'All', mall: 'All' }, fd: { year: 2026, month: 'All', region: 'All', mall: 'All' }, ds: { year: 2026, region: 'All', discipline: 'ARCHITECTURAL' }, ud: { year: 2026, month: 'Sep' }, ts: { year: 2026, lease: 'All my leases' }, tsd: { mall: 'All my malls' }, tst: { mall: 'All my malls' }, tiles: {}, meter: {} };
+const SCOPE = (id) => (/^t/.test(id) && id !== 'tiles' ? 'tenant:company(3 leases)' : 'admin:all-regions');
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.D = this.props.data || (typeof DX3_DATA !== 'undefined' ? DX3_DATA : null);
+    this.state = { ec: 'loading', ecMsg: '', ecVer: '', frame: 'desk', active: null, kept: {}, nav: {}, live: {}, drill: {}, lrView: 'unit', dsView: 'chart', dsWin: 0, labW: 480, labMode: 'label', test: null, testing: false };
+    this.ch = {}; this.B = {}; this.w = {}; this.tidx = {}; this.fin = {};
+  }
+  componentDidMount() {
+    this.reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this.loadEC().then((ec) => { this.setState({ ec: 'ready', ecVer: ec.version }); setTimeout(() => this.mountAll(), 0); }).catch((e) => this.setState({ ec: 'failed', ecMsg: String(e && e.message || e) }));
+  }
+  componentWillUnmount() { Object.values(this.ch).forEach((c) => { try { c.dispose(); } catch (e) { /* ignore */ } }); if (this.ro) this.ro.disconnect(); }
+  loadEC() {
+    if (window.echarts) return Promise.resolve(window.echarts);
+    if (window.__dx3ec) return window.__dx3ec;
+    const tryOne = (src) => new Promise((res, rej) => {
+      const s = document.createElement('script'); s.src = src; s.async = true; if (/^https:/.test(src)) s.crossOrigin = 'anonymous';
+      const t = setTimeout(() => rej(new Error('timed out after 15 s')), 15000);
+      s.onload = () => { clearTimeout(t); window.echarts ? res(window.echarts) : rej(new Error('script loaded without an echarts global')); };
+      s.onerror = () => { clearTimeout(t); s.remove(); rej(new Error('blocked or offline (' + src.replace(/^https?:\/\//, '').split('/')[0] + ')')); };
+      document.head.appendChild(s);
+    });
+    window.__dx3ec = tryOne(ECH.local).catch(() => tryOne(ECH.url));
+    return window.__dx3ec;
+  }
+  el(id) { return document.querySelector('[data-dx3-ec="' + id + '"]'); }
+  wrap(id) { return document.querySelector('[data-dx3-cw="' + id + '"]'); }
+  stFor(id) { const A = this.state.active; return { active: A && A.spec === id ? A.key : null, kept: A && A.spec === id ? null : (this.state.kept[id] || null), lrView: this.state.lrView, dsWin: this.state.dsWin }; }
+  build(id) {
+    if (id === 'lab') return this.buildLab();
+    const all = buildSpecs(this.D, this.stFor(id), this.w, !this.reduce);
+    return all[id];
+  }
+  buildLab() {
+    const g = buildSpecs(this.D, { active: null, kept: null }, this.w, !this.reduce).sr;
+    const groups = this.labGroups();
+    const opt = JSON.parse(JSON.stringify(g.option, (k, v) => (typeof v === 'function' ? undefined : v)));
+    opt.tooltip = g.option.tooltip; opt.series[0].data = groups.map((gr) => ({ id: gr.name, name: gr.name, value: gr.total, itemStyle: { gapWidth: 2 }, children: gr.leaves.map((l) => ({ id: gr.name + '::' + l.name, name: l.name, value: l.value, itemStyle: { color: l.color }, label: { show: l.value / gr.total >= 0.07, color: onText(l.color), formatter: l.value / gr.total >= 0.17 ? '{b}\n{c}' : '{c}' } })) }));
+    return { items: g.items, summary: g.summary, option: opt };
+  }
+  labGroups() {
+    const fold = this.state.labMode === 'fold';
+    const all = this.D.sr.reduce((a, g) => a + g.leaves.reduce((x, l) => x + l.value, 0), 0);
+    return this.D.sr.map((g) => {
+      let leaves = g.leaves.slice().sort((a, b) => b.value - a.value);
+      if (fold) { const keep = leaves.filter((l) => l.value / all >= 0.08), rest = leaves.filter((l) => l.value / all < 0.08); if (rest.length >= 2) leaves = keep.concat([{ name: 'Other (' + rest.length + ')', value: rest.reduce((a, b) => a + b.value, 0), color: rest[0].color }]); }
+      return { name: g.name, total: leaves.reduce((a, l) => a + l.value, 0), leaves };
+    });
+  }
+  mountAll() {
+    const ec = window.echarts; if (!ec) return;
+    if (window.ResizeObserver && !this.ro) this.ro = new ResizeObserver((ents) => ents.forEach((e) => { const id = e.target.getAttribute('data-dx3-ec'); if (id) this.onResize(id); }));
+    EC_IDS.forEach((id) => {
+      const el = this.el(id); if (!el || this.ch[id]) return;
+      try {
+        this.w[id] = el.clientWidth;
+        const ch = ec.init(el, null, { renderer: 'svg' }); this.ch[id] = ch; this.fin[id] = false;
+        ch.on('finished', () => { this.fin[id] = true; });
+        const B = this.build(id); this.B[id] = B; ch.setOption(B.option, { notMerge: true });
+        if (id !== 'lab') ch.on('click', (p) => { const i = this.idxFromParams(id, p); if (i >= 0) { this.setNav(id, i, false); this.pick(id, i); } });
+        if (this.ro) this.ro.observe(el);
+        this.attachKeys(id);
+        if (id === 'sr' || id === 'tst' || id === 'lab') this.resolveTree(id);
+      } catch (e) { this.setState({ ['err_' + id]: String(e && e.message || e) }); }
+    });
+  }
+  onResize(id) {
+    const el = this.el(id), ch = this.ch[id]; if (!el || !ch) return;
+    const w = el.clientWidth; const was = this.w[id]; this.w[id] = w; ch.resize();
+    if (['ds', 'ud', 'ts'].indexOf(id) >= 0 && (was < 640) !== (w < 640) || (id === 'ts' || id === 'ud') && (was < 520) !== (w < 520)) this.refresh(id, true);
+  }
+  refresh(id, hard) { const ch = this.ch[id]; if (!ch) return; const B = this.build(id); this.B[id] = B; ch.setOption(B.option, { notMerge: !!hard }); if (id === 'sr' || id === 'tst' || id === 'lab') this.resolveTree(id); }
+  resolveTree(id) {
+    const map = {}; let ok = false;
+    try { const data = this.ch[id].getModel().getSeriesByIndex(0).getData(); for (let i = 0; i < data.count(); i++) { const nid = data.getId(i); if (nid != null) { map[nid] = i; ok = true; } } } catch (e) { ok = false; }
+    if (!ok) { let i = 1; (this.B[id].option.series[0].data || []).forEach((g) => { map[g.id] = i++; (g.children || []).forEach((c) => { map[c.id] = i++; }); }); }
+    this.tidx[id] = map;
+  }
+  addr(id, it) { if (it.nodeId !== undefined) return { si: 0, di: (this.tidx[id] || {})[it.nodeId] }; return { si: it.si, di: it.di }; }
+  idxFromParams(id, p) { const B = this.B[id]; if (!B) return -1; if (B.items[0] && B.items[0].nodeId !== undefined) return B.items.findIndex((x) => p.data && x.nodeId === p.data.id); return B.items.findIndex((x) => x.si === p.seriesIndex && x.di === p.dataIndex); }
+  attachKeys(id) {
+    const w = this.wrap(id); if (!w || w.__dx3) return; w.__dx3 = true;
+    w.addEventListener('keydown', (e) => this.onKey(id, e));
+    w.addEventListener('focus', () => { const cur = this.state.nav[id]; this.setNav(id, cur === undefined ? this.firstIdx(id) : cur, true); });
+    w.addEventListener('blur', () => { const ch = this.ch[id]; if (ch) { ch.dispatchAction({ type: 'downplay' }); ch.dispatchAction({ type: 'hideTip' }); } });
+  }
+  firstIdx(id) { const A = this.state.active, k = A && A.spec === id ? A.key : this.state.kept[id]; const B = this.B[id]; const i = k && B ? B.items.findIndex((x) => x.key === k) : -1; return i >= 0 ? i : 0; }
+  onKey(id, e) {
+    const B = this.B[id]; if (!B) return; const N = B.items.length; let i = this.state.nav[id]; if (i === undefined) i = 0;
+    const G = B.grid; let j = i; const k = e.key;
+    if (G && !G.colMajor) { const r = Math.floor(i / G.cols), c = i % G.cols; if (k === 'ArrowRight') j = r * G.cols + Math.min(G.cols - 1, c + 1); else if (k === 'ArrowLeft') j = r * G.cols + Math.max(0, c - 1); else if (k === 'ArrowDown') j = Math.min(G.rows - 1, r + 1) * G.cols + c; else if (k === 'ArrowUp') j = Math.max(0, r - 1) * G.cols + c; }
+    else if (G && G.colMajor) { const c = Math.floor(i / G.rows), r = i % G.rows; if (k === 'ArrowRight') j = Math.min(G.cols - 1, c + 1) * G.rows + r; else if (k === 'ArrowLeft') j = Math.max(0, c - 1) * G.rows + r; else if (k === 'ArrowUp') j = c * G.rows + Math.min(G.rows - 1, r + 1); else if (k === 'ArrowDown') j = c * G.rows + Math.max(0, r - 1); }
+    else { if (k === 'ArrowRight' || k === 'ArrowDown') j = Math.min(N - 1, i + 1); else if (k === 'ArrowLeft' || k === 'ArrowUp') j = Math.max(0, i - 1); }
+    if (k === 'Home') j = 0; if (k === 'End') j = N - 1;
+    if (j !== i || k === 'Home' || k === 'End') { e.preventDefault(); this.setNav(id, j, true); return; }
+    if (k === 'Enter' || k === ' ') { e.preventDefault(); this.pick(id, i); return; }
+    if (k === 'Escape') { e.preventDefault(); this.clearSel(id); const ch = this.ch[id]; if (ch) ch.dispatchAction({ type: 'hideTip' }); }
+    if (/^[0-9]$/.test(k) || /^Arrow/.test(k)) e.preventDefault();
+  }
+  setNav(id, i, announce) {
+    const B = this.B[id], ch = this.ch[id]; if (!B || !B.items[i]) return; const it = B.items[i];
+    if (id === 'ds' && B.narrow) { const c = Math.floor(i / 4); let s = this.state.dsWin; if (c < s) s = c; if (c > s + B.win - 1) s = c - B.win + 1; if (s !== this.state.dsWin) { this.state.dsWin = s; if (ch) ch.dispatchAction({ type: 'dataZoom', dataZoomIndex: 0, startValue: s, endValue: s + B.win - 1 }); } }
+    if (ch) { const a = this.addr(id, it); ch.dispatchAction({ type: 'downplay' }); if (a.di !== undefined) { ch.dispatchAction({ type: 'highlight', seriesIndex: a.si, dataIndex: a.di }); ch.dispatchAction({ type: 'showTip', seriesIndex: a.si, dataIndex: a.di }); } }
+    const nav = Object.assign({}, this.state.nav, { [id]: i }); const live = Object.assign({}, this.state.live);
+    if (announce) live[id] = it.text + (it.selectable ? '' : '') + '. ' + (i + 1) + ' of ' + B.items.length + '.';
+    this.setState({ nav, live });
+  }
+  pick(id, i) {
+    const B = this.B[id] || this.H(id); const it = B.items[i]; if (!it) return;
+    const live = Object.assign({}, this.state.live);
+    if (!it.selectable) { live[id] = it.label + ' cannot be selected (V2 rule).'; this.setState({ live }); return; }
+    const A = this.state.active; const kept = Object.assign({}, this.state.kept);
+    let active;
+    if (A && A.spec === id && A.key === it.key) { active = null; kept[id] = null; live[id] = 'Selection cleared.'; }
+    else { if (A && A.spec !== id) kept[A.spec] = A.key; active = { spec: id, key: it.key, label: it.label, idx: i }; kept[id] = it.key; live[id] = 'Selected ' + it.label + '. This is now the agent context.'; }
+    const prev = A && A.spec; this.state.active = active; this.state.kept = kept;
+    const drill = Object.assign({}, this.state.drill); if (!active || active.spec !== id) delete drill[id];
+    this.setState({ active, kept, live, drill });
+    [id, prev].filter((x, k, a) => x && a.indexOf(x) === k && this.ch[x]).forEach((x) => this.refresh(x, false));
+  }
+  clearSel(id) { const A = this.state.active; const kept = Object.assign({}, this.state.kept, { [id]: null }); const active = A && A.spec === id ? null : A; this.state.active = active; this.state.kept = kept; const drill = Object.assign({}, this.state.drill); delete drill[id]; this.setState({ active, kept, drill, live: Object.assign({}, this.state.live, { [id]: 'Selection cleared.' }) }); if (this.ch[id]) this.refresh(id, false); }
+  H(id) { const h = htmlItems(this.D); const m = { tiles: h.tiles, meter: h.meter, sf: h.stages, wp: h.wp }; return { items: (m[id] || []).map((x) => Object.assign({ selectable: true }, x)) }; }
+  itemOf(id, key) { const B = this.B[id] || this.H(id); return B.items.find((x) => x.key === key); }
+  payload(id, it) {
+    const UNIT = { tiles: 'count', meter: 'units', lr: 'lease requests', sf: 'records', pa: 'share', am: 'amendments', sr: 'service requests', wp: 'work permits', fh: 'share', fd: 'drawing requests', ds: 'documents', ud: 'units', ts: 'SAR', tsd: 'service requests', tst: 'service requests' };
+    const keys = String(it.drill.seriesKey).split(/[|×]/), vals = String(it.drill.dimensionValue).split('|');
+    const filters = FILTERS[id] || {}; const scope = SCOPE(id);
+    const h = (str) => { let x = 2166136261; for (let i = 0; i < str.length; i++) { x ^= str.charCodeAt(i); x = Math.imul(x, 16777619); } return (x >>> 0).toString(16).padStart(8, '0'); };
+    return { schema: 'selection_ref.v1', selectionId: 'sel_' + h(COMP[id] + it.key), surface: 'dashboard', componentId: COMP[id], metric: { id: it.drill.metric, version: 'v1', kind: 'parity' }, grain: keys.join(' × '), dimensions: keys.map((k, i) => ({ name: k, value: vals[i] !== undefined ? vals[i] : vals[0] })), value: { number: it.value === undefined ? null : it.value, unit: UNIT[id] || 'count' }, filters, scope: { kind: /^tenant/.test(scope) ? 'tenant_company' : 'regions', label: /^tenant/.test(scope) ? 'Access: Lumen Retail Co. · 3 leases' : 'Access: all regions' }, dataset: { version: 'sd-2026.10.20-01', asOf: '2026-10-20', resultRef: 'res_' + h(it.drill.metric + JSON.stringify(filters) + scope), validated: true }, role: 'active' };
+  }
+  openDrill(id) { const A = this.state.active; const key = A && A.spec === id ? A.key : this.state.kept[id]; const it = key && this.itemOf(id, key); if (!it) return; this.setState({ drill: Object.assign({}, this.state.drill, { [id]: { target: it.drill.target, v2: it.drill.v2, json: JSON.stringify(this.payload(id, it), null, 2) } }) }); }
+  askAbout(id) { const A = this.state.active; if (!A || A.spec !== id) { const key = this.state.kept[id]; const i = key ? (this.B[id] || this.H(id)).items.findIndex((x) => x.key === key) : -1; if (i >= 0) this.pick(id, i); } this.setState({ asked: id }); }
+  /* Read the rendered ECharts treemap layout back from the chart model (positions relative to each parent). */
+  ecTreeLayout(id, groups) {
+    try {
+      const data = this.ch[id].getModel().getSeriesByIndex(0).getData(); const tree = data.tree; const byId = {};
+      for (let i = 0; i < data.count(); i++) { const node = tree.getNodeByDataIndex(i); const L = node && node.getLayout && node.getLayout(); if (L) byId[data.getId(i)] = { x: L.x, y: L.y, w: L.width, h: L.height }; }
+      return groups.map((g) => ({ rect: byId[g.name], leaves: g.leaves.map((l) => byId[g.name + '::' + l.name]) }));
+    } catch (e) { return null; }
+  }
+  labCompare() {
+    const groups = this.labGroups(); const el = this.el('lab'); const W = el ? el.clientWidth : this.state.labW, H = 300;
+    const ref = treemapMetrics(groups, nestedSquarify(groups, W, H, 4));
+    const L = this.ch.lab ? this.ecTreeLayout('lab', groups) : null; const ecm = L && L.every((g) => g.rect && g.leaves.every(Boolean)) ? treemapMetrics(groups, L) : null;
+    this.setState({ labRef: ref, labEc: ecm, labEcErr: L ? (ecm ? '' : 'layout incomplete') : (this.ch.lab ? 'layout not readable from the model' : 'ECharts not loaded') });
+  }
+  wait(ms) { return new Promise((r) => setTimeout(r, ms)); }
+  key(el, k) { el.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true })); }
+  async runTest() {
+    if (this.state.testing) return; this.setState({ testing: true, test: null });
+    const R = []; const add = (area, name, ok, detail) => R.push({ area, name, status: ok === null ? 'n/a' : ok ? 'pass' : 'fail', detail: detail || '' });
+    const ec = window.echarts; const mock = !!(ec && /mock/i.test(ec.version || ''));
+    add('Library', 'ECharts loaded from cdnjs', !!ec, ec ? 'version ' + ec.version + (mock ? ' — MOCK: results below cover only the gallery’s own layer' : '') : this.state.ecMsg);
+    if (ec) add('Library', 'Pinned version 5.6.0', ec.version === ECH.want, ec.version);
+    const expected = { lr: 5, tsd: 7, pa: 3, fh: 4, am: 20, sr: 16, tst: 24, fd: 9, ds: 84, ud: 36, ts: 9 };
+    for (const id of Object.keys(expected)) {
+      const ch = this.ch[id], el = this.el(id), w = this.wrap(id), B = this.B[id];
+      if (!ch || !B) { add(id, 'Chart mounted', false, this.state['err_' + id] || 'not mounted'); continue; }
+      add(id, 'Rendered with the SVG renderer', !!(el.querySelector('svg')), this.fin[id] ? 'finished event received' : 'no finished event yet');
+      let cnt = 0; try { (ch.getOption().series || []).forEach((s) => { const walk = (d) => d.forEach((x) => { cnt++; if (x && x.children) walk(x.children); }); walk(s.data || []); }); } catch (e) { cnt = -1; }
+      add(id, 'Option data matches the adapter', cnt === expected[id] || (id === 'pa' || id === 'fh') && cnt === expected[id], cnt + ' data items, expected ' + expected[id]);
+      const aria = (el.getAttribute('aria-label') || '') + ' ' + Array.from(el.querySelectorAll('[aria-label]')).map((x) => x.getAttribute('aria-label')).join(' ');
+      add(id, 'ECharts aria description present', aria.indexOf(B.summary.slice(0, 24)) >= 0, aria.trim().slice(0, 90) || 'none');
+      add(id, 'Chart is one tab stop with a label', w && w.tabIndex === 0 && /arrow keys/i.test(w.getAttribute('aria-label') || ''), w ? w.getAttribute('role') : 'no wrapper');
+      w.focus(); await this.wait(60); this.key(w, 'Home'); await this.wait(40); this.key(w, 'ArrowRight'); await this.wait(80);
+      const idx = this.state.nav[id]; const expIdx = B.grid && B.grid.colMajor ? B.grid.rows : 1; const it = B.items[idx];
+      add(id, 'Arrow key moves to the next value', idx === expIdx, 'index ' + idx + ', expected ' + expIdx);
+      add(id, 'Live region announces the value', it && (this.state.live[id] || '').indexOf(it.text) === 0, (this.state.live[id] || '').slice(0, 80));
+      const tipEl = Array.from(el.querySelectorAll('div')).find((d) => d.style && String(d.style.zIndex) === '9999999');
+      const tipOk = tipEl && tipEl.style.display !== 'none' && it && tipEl.textContent.indexOf(it.tip.split('\n')[0].slice(0, 12)) >= 0;
+      add(id, 'Keyboard focus shows the same tooltip as hover', mock ? null : !!tipOk, tipEl ? tipEl.textContent.slice(0, 60) : 'tooltip element not found');
+      if (it && it.selectable) {
+        this.key(w, 'Enter'); await this.wait(80);
+        const A = this.state.active; add(id, 'Enter selects (same path as click)', A && A.key === it.key, A ? A.label : 'nothing selected');
+        let styled = false; try { const o = ch.getOption(); const find = (arr) => arr.some((x) => x && ((x.itemStyle && x.itemStyle.borderColor === TOK.ink && x.itemStyle.borderType === 'solid') || (x.children && find(x.children)) || (x.axisLine && JSON.stringify(x.axisLine).indexOf('#D9D2EA') >= 0))); styled = (o.series || []).some((s) => find(s.data || []) || (s.axisLine && JSON.stringify(s.axisLine).indexOf('#D9D2EA') >= 0)); } catch (e) { styled = false; }
+        add(id, 'Selected mark is drawn as selected', styled, styled ? 'selection style in option' : 'no selection style found');
+        this.key(w, 'Escape'); await this.wait(60); add(id, 'Escape clears the selection', !this.state.active || this.state.active.spec !== id, '');
+      }
+      w.blur();
+    }
+    this.labCompare(); await this.wait(50);
+    const ref = this.state.labRef, ecm = this.state.labEc;
+    add('treemap', 'Area proportional to value (ECharts)', ecm ? ecm.cv <= 0.05 : null, ecm ? 'CV ' + (ecm.cv * 100).toFixed(2) + '% · max error ' + (ecm.maxErr * 100).toFixed(1) + '%' : this.state.labEcErr);
+    add('treemap', 'Leaves read largest-first within each group', ecm ? ecm.order >= 0.9 : null, ecm ? Math.round(ecm.order * 100) + '% of adjacent pairs' : '');
+    add('treemap', 'Tile shapes close to the V2-reference squarify', ecm && ref ? ecm.meanAspect <= ref.meanAspect * 1.25 : null, ecm && ref ? 'mean aspect ' + ecm.meanAspect.toFixed(2) + ' vs ' + ref.meanAspect.toFixed(2) : '');
+    const legSum = this.D.sr.reduce((a, g) => a + g.leaves.reduce((x, l) => x + l.value, 0), 0); add('treemap', 'Category legend totals equal the tiles', legSum === (this.B.sr ? this.B.sr.total : -1), n(legSum));
+    const prevFrame = this.state.frame; this.setState({ frame: 'phone' }); await this.wait(700);
+    const fr = document.querySelector('[data-dx3-frame]'); const over = fr ? fr.scrollWidth > fr.clientWidth + 1 : true;
+    const fits = Object.keys(expected).filter((id) => this.ch[id] && this.el(id)).every((id) => this.ch[id].getWidth() <= this.el(id).clientWidth + 1);
+    add('responsive', '390 px frame: no horizontal overflow', !over, fr ? fr.scrollWidth + ' / ' + fr.clientWidth : 'frame missing');
+    add('responsive', '390 px frame: every chart resized to its container', Object.keys(this.ch).length ? fits : null, '');
+    add('responsive', 'Document status pages 7 malls at a time on narrow widths', this.B.ds ? !!this.B.ds.narrow && !!(this.ch.ds && (this.ch.ds.getOption().dataZoom || []).length) : null, '');
+    this.setState({ frame: prevFrame }); await this.wait(500);
+    const html = Array.from(document.querySelectorAll('[data-dx3-html] button')); add('html', 'HTML visuals are native buttons with names', html.length > 0 && html.every((b) => (b.getAttribute('aria-label') || b.textContent).trim().length > 2), html.length + ' buttons');
+    const passN = R.filter((r) => r.status === 'pass').length, failN = R.filter((r) => r.status === 'fail').length;
+    const text = 'DX3 self-test · ' + new Date().toISOString() + ' · ' + navigator.userAgent + '\n' + R.map((r) => '[' + r.status.toUpperCase() + '] ' + r.area + ' · ' + r.name + (r.detail ? ' — ' + r.detail : '')).join('\n');
+    this.setState({ testing: false, active: null, kept: {}, drill: {}, test: { rows: R, pass: passN, fail: failN, na: R.length - passN - failN, text } });
+    Object.keys(this.ch).forEach((id) => this.refresh(id, false));
+  }
+  renderVals() {
+    const s = this.state, D = this.D; const A = s.active;
+    const B = (id) => this.B[id] || (EC_IDS.indexOf(id) >= 0 ? buildSpecs(D, this.stFor(id), this.w, false)[id] : this.H(id));
+    const selOf = (id, key) => (A && A.spec === id && A.key === key ? 'active' : !(A && A.spec === id) && s.kept[id] === key ? 'kept' : '');
+    const card = (id) => {
+      const key = A && A.spec === id ? A.key : s.kept[id]; const it = key ? (B(id).items || []).find((x) => x.key === key) : null; const isA = !!(A && A.spec === id);
+      const dr = s.drill[id];
+      return { hasSel: !!it, noSel: !it, selTxt: it ? it.label : '', selRole: isA ? 'Agent context' : 'Kept on this card', selCls: 'selbar ' + (isA ? 'sb-a' : 'sb-k'), live: s.live[id] || '', ask: () => this.askAbout(id), view: () => this.openDrill(id), clear: () => this.clearSel(id), drillOn: !!dr, drillTarget: dr ? dr.target : '', drillV2: dr ? dr.v2 : '', drillJson: dr ? dr.json : '', closeDrill: () => { const d = Object.assign({}, s.drill); delete d[id]; this.setState({ drill: d }); }, err: s['err_' + id] || '', hasErr: !!s['err_' + id], cw: 'cw' + (s.ec === 'ready' ? '' : ' cw-off'), aria: (B(id).summary || '') + ' Press the arrow keys to move between values, Enter to select, Escape to clear.' };
+    };
+    const C = {}; ['tiles', 'meter', 'lr', 'sf', 'pa', 'am', 'sr', 'wp', 'fh', 'fd', 'ds', 'ud', 'ts', 'tsd', 'tst'].forEach((id) => { C[id] = card(id); });
+    const btn = (id, it, i, extra, bc) => { const sc = selOf(id, it.key); return Object.assign({ label: it.label, dis: it.selectable === false ? 'true' : 'false', aria: it.text + (it.selectable === false ? '. Not selectable.' : ''), cls: (bc ? bc + ' ' : '') + 'hb' + (sc ? ' hb-' + sc : ''), pressed: sc ? 'true' : 'false', go: () => this.pick(id, i) }, extra || {}); };
+    const H = this.H.bind(this);
+    /* legends */
+    const lr = B('lr'); const lrLeg = lr.items.map((it, i) => Object.assign(btn('lr', it, i), { name: it.label.split(' · ')[0], v: n(it.value), pct: it.pct, color: it.color, cls: 'lg' + (selOf('lr', it.key) ? ' lg-' + selOf('lr', it.key) : '') + (it.selectable ? '' : ' lg-off'), hover: () => this.hl('lr', i), out: () => this.hl('lr', -1) }));
+    const tsd = B('tsd'); const tsdLeg = tsd.items.map((it, i) => Object.assign(btn('tsd', it, i), { name: it.label.split(' · ')[0], v: n(it.value), pct: it.pct, color: it.color, cls: 'lg' + (selOf('tsd', it.key) ? ' lg-' + selOf('tsd', it.key) : ''), hover: () => this.hl('tsd', i), out: () => this.hl('tsd', -1) }));
+    const catLeg = (id) => { const b = B(id); return b.items.map((it, i) => ({ it, i })).filter((x) => x.it.level === 0).map(({ it, i }) => { const g = b.groups.find((gg) => id + ':' + gg.name === it.key); const col = id === 'sr' ? D.catColors[g.name] : TOK.ink2; return Object.assign(btn(id, it, i), { name: g.name, v: n(g.total), color: col, cls: 'lg' + (selOf(id, it.key) ? ' lg-' + selOf(id, it.key) : ''), hover: () => this.hl(id, i), out: () => this.hl(id, -1) }); }); };
+    const pa = B('pa').items.map((it, i) => Object.assign(btn('pa', it, i, null, 'cap'), { name: it.label, pct: it.pct, cap: it.cap, bands: '1w ' + it.bands[0] + ' · 2w ' + it.bands[1] + ' · 3w ' + it.bands[2] + ' · 1m ' + it.bands[3] + ' · 1m+ ' + it.bands[4] }));
+    const fh = B('fh').items.map((it, i) => Object.assign(btn('fh', it, i, null, 'cap'), { name: it.label.split(' · ')[0], sub: it.sub }));
+    const h = { tiles: H('tiles').items.map((it, i) => Object.assign(btn('tiles', it, i, null, 'tile t' + i), { name: it.t[0], value: it.t[1], sub: it.t[2] })), meter: H('meter').items.map((it, i) => Object.assign(btn('meter', it, i, null, 'mseg'), { w: it.w, color: it.color })), stages: H('sf').items.map((it, i) => Object.assign(btn('sf', it, i, null, 'stage s' + i), { name: it.s.label, value: n(it.s.value), split: it.s.signed > 0, signed: n(it.s.signed), unsigned: n(it.s.unsigned), other: it.s.other ? n(it.s.other) + ' in other statuses' : '', arrow: i < 3 })), wp: H('wp').items.map((it, i) => Object.assign(btn('wp', it, i, null, 'wseg'), { w: it.w, name: it.label.split(' · ')[1], v: n(it.v), color: it.color })) };
+    const ds = B('ds'); const dsRows = (ds.malls || D.ds).map((m) => [m.mall, m.a, m.b, m.c, m.d, m.a + m.b + m.c + m.d]);
+    /* treemap lab: V2-reference tiles drawn in HTML */
+    const groups = this.labGroups(); const LW = s.labW, LH = 300; const ref = nestedSquarify(groups, LW, LH, 4);
+    const refTiles = []; groups.forEach((g, gi) => g.leaves.forEach((l, li) => { const r = ref[gi].leaves[li]; const sh = l.value / g.total; refTiles.push({ l: (r.x / LW * 100) + '%', t: (r.y / LH * 100) + '%', w: (r.w / LW * 100) + '%', h: (r.h / LH * 100) + '%', bg: l.color, fg: onText(l.color), name: sh >= 0.17 ? l.name : '', v: sh >= 0.07 ? n(l.value) : '', title: g.name + ' › ' + l.name + ' · ' + n(l.value) }); }));
+    const rm = s.labRef, em = s.labEc; const f2 = (x) => (x === undefined || x === null ? '—' : x.toFixed(2)), fp = (x) => (x === undefined || x === null ? '—' : (x * 100).toFixed(2) + '%');
+    const labRows = [['Area ÷ value, coefficient of variation', fp(rm && rm.cv), fp(em && em.cv), '≤ 5%'], ['Largest area error on one tile', fp(rm && rm.maxErr), fp(em && em.maxErr), 'reported'], ['Mean tile aspect ratio', f2(rm && rm.meanAspect), f2(em && em.meanAspect), 'ECharts ≤ 1.25 × reference'], ['Worst tile aspect ratio', f2(rm && rm.maxAspect), f2(em && em.maxAspect), 'reported'], ['Largest-first reading order', rm ? Math.round(rm.order * 100) + '%' : '—', em ? Math.round(em.order * 100) + '%' : '—', '≥ 90%'], ['Leaves drawn', rm ? String(rm.leaves) : '—', em ? String(em.leaves) : '—', 'equal']];
+    /* contrast audit of the V2 palette tokens */
+    const PAL = [['categorical4[0] violet', '#8B5CF6', 'Donut slice 1, ring 1, Match bars'], ['categorical4[1] teal', '#14B8A6', 'Donut slice 2, ring 2, occupancy, sales'], ['categorical4[2] amber', '#F59E0B', 'Donut slice 3, ring 3, Pending segments'], ['categorical4[3] rose', '#F43F5E', 'Donut slice 4, ring 4'], ['pipeline3[0] sky', '#0284C7', 'Submitted segments'], ['pipeline3[2] green', '#059669', 'Approved segments, grade A'], ['outcome4[3] red', '#DC2626', 'Grade D, Mismatch bars'], ['amberSequential3 light', '#FDE68A', 'Operations permit tiles'], ['ink-3 (Other)', '#9A93AD', 'Other slice, Closed permits'], ['DX2 treemap Inquiry', '#6D28D9', 'Inquiry tiles (darkened)'], ['DX2 treemap Complaints', '#BE123C', 'Complaint tiles (darkened)']];
+    const audit = PAL.map(([name, hex, use]) => { const cw = contrast(hex, '#FFFFFF'), cd = contrast(hex, TOK.ink); const lbl = cw >= 4.5 ? 'White text' : cd >= 4.5 ? 'Dark text' : 'Neither'; return { name, hex, use, cw: cw.toFixed(2) + ':1', cd: cd.toFixed(2) + ':1', nt: cw >= 3 ? 'Meets 3:1' : 'Below 3:1', ntCls: cw >= 3 ? 'ok' : 'warn', lbl }; });
+    const t = s.test;
+    return {
+      ecReady: s.ec === 'ready', ecLoading: s.ec === 'loading', ecFailed: s.ec === 'failed', ecVer: s.ecVer, ecMsg: s.ecMsg, ecMock: /mock/i.test(s.ecVer || ''),
+      frameOpts: [['desk', 'Desktop'], ['tab', 'Tablet · 768'], ['phone', 'Phone · 390']].map(([k, l]) => ({ label: l, cls: 'sgb' + (s.frame === k ? ' sg-on' : ''), on: s.frame === k ? 'true' : 'false', go: () => this.setState({ frame: k }) })),
+      frameCls: 'frame fr-' + s.frame,
+      ctxOn: !!A, ctxNone: !A, ctxTxt: A ? A.label : '', ctxCard: A ? COMP[A.spec] : '', asked: s.asked && A ? 'Ask about this → the agent panel opens with “' + A.label + '” as its scope (agent panel designed in DX4).' : '',
+      C, h, lrLeg, tsdLeg, srLeg: catLeg('sr'), tstLeg: catLeg('tst'), pa, fh,
+      lrTotal: n(lr.total), lrCl: 'lease requests in 2026', lrNote: lr.view === 'unit' ? 'Other = Media, Specialty, Entertainment. Other is not clickable (V2).' : D.lr.sourceNote,
+      lrOpts: [['unit', 'By unit type'], ['source', 'By source']].map(([k, l]) => ({ label: l, cls: 'sgb' + (s.lrView === k ? ' sg-on' : ''), on: s.lrView === k ? 'true' : 'false', go: () => { this.state.lrView = k; this.setState({ lrView: k }); this.refresh('lr', true); } })),
+      tsdTotal: String(tsd.total), tsdCl: 'requests · 9 open',
+      dsChart: s.dsView === 'chart', dsTable: s.dsView === 'table', dsCls: s.dsView === 'chart' ? 'dsv' : 'dsv dsv-hide',
+      dsOpts: [['chart', 'Chart'], ['table', 'Table']].map(([k, l]) => ({ label: l, cls: 'sgb' + (s.dsView === k ? ' sg-on' : ''), on: s.dsView === k ? 'true' : 'false', go: () => { this.setState({ dsView: k }); if (k === 'chart') setTimeout(() => { if (this.ch.ds) this.ch.ds.resize(); }, 30); } })),
+      dsRows, wpTotal: n(D.wp.reduce((a, b) => a + b.v, 0)),
+      tsTotal: sar(D.ts.reduce((a, b) => a + b.v, 0)),
+      labWOpts: [760, 480, 326].map((x) => ({ label: x + ' px', cls: 'sgb' + (s.labW === x ? ' sg-on' : ''), on: s.labW === x ? 'true' : 'false', go: () => { this.setState({ labW: x, labEc: null, labRef: null }); setTimeout(() => { if (this.ch.lab) { this.ch.lab.resize(); this.refresh('lab', true); } }, 60); } })),
+      labModeOpts: [['label', 'A · label threshold'], ['fold', 'B · fold small leaves']].map(([k, l]) => ({ label: l, cls: 'sgb' + (s.labMode === k ? ' sg-on' : ''), on: s.labMode === k ? 'true' : 'false', go: () => { this.state.labMode = k; this.setState({ labMode: k, labEc: null, labRef: null }); setTimeout(() => this.refresh('lab', true), 30); } })),
+      labW: String(LW), refTiles, labRows, labMeasure: () => this.labCompare(), labNote: s.labEcErr || '', labTileN: String(groups.reduce((a, g) => a + g.leaves.length, 0)),
+      audit,
+      runTest: () => this.runTest(), testing: s.testing, testIdle: !s.testing, hasTest: !!t, testRows: t ? t.rows.map((r) => ({ area: r.area, name: r.name, detail: r.detail, st: r.status.toUpperCase(), cls: 'tst-' + r.status.replace('/', '') })) : [], testSum: t ? t.pass + ' passed · ' + t.fail + ' failed · ' + t.na + ' not applicable' : '', testText: t ? t.text : ''
+    };
+  }
+  hl(id, i) { const ch = this.ch[id]; if (!ch) return; ch.dispatchAction({ type: 'downplay' }); if (i < 0) return; const it = this.B[id].items[i]; const a = this.addr(id, it); if (a.di !== undefined) ch.dispatchAction({ type: 'highlight', seriesIndex: a.si, dataIndex: a.di }); }
+}
+
+</script>
+</body>
+</html>

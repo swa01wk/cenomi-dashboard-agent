@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DX4 interaction specification</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.w{width:1936px;box-sizing:border-box;padding:56px 64px;background:#fff;font-family:'Inter',system-ui,sans-serif;color:#1B1530;display:flex;flex-direction:column;gap:20px}
+h1{margin:0;font-family:'Inter Tight','Inter',sans-serif;font-size:28px}
+h2{margin:10px 0 0;font-size:19px}
+h3{margin:0 0 6px;font-size:15px}
+p{margin:0}
+.lead{margin-top:8px;font-size:15px;line-height:22px;color:#4B4560;max-width:1500px}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-size:12px;font-weight:600;color:#4B4560;text-transform:uppercase;letter-spacing:.05em;padding:9px 10px;border-bottom:2px solid #E4E1EC;vertical-align:bottom}
+td{font-size:13px;line-height:19px;padding:8px 10px;border-bottom:1px solid #EEECF3;vertical-align:top}
+code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#F4F3F7;padding:1px 5px;border-radius:4px}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.box{border:1px solid #E4E1EC;border-radius:12px;padding:16px 18px}
+.box ol,.box ul{margin:0;padding-left:20px;font-size:13px;line-height:20px}
+.box li{margin:3px 0}
+.note{font-size:12.5px;color:#5E5873}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;white-space:nowrap}
+.q{background:#FFF4D6;color:#7A5300}
+</style>
+</helmet>
+<div class="w">
+<div><h1>DX4 · Interaction specification</h1><p class="lead">The rules behind the workspace prototype, written to carry into AGENT_ARCHITECTURE.md, AGUI_INTEGRATION.md and GENERATIVE_UI.md in M0. Terms follow the G0 decisions (DR-016, DR-017, DR-031, DR-032) and DXD-01…40. Revised after the DX4 review: thread-local selections (DXD-32), composite only on request (DXD-31), immutable history (DXD-33), evidence envelope (DXD-36), versioned recovery (DXD-37). Event contracts are on DX4-AGUI.</p></div>
+<div class="cols">
+<div class="box"><h3>Surfaces</h3><ul><li><b>Docked panel</b> (420 px, dashboard): quick questions about a card or selection. Answers are compact; steps collapse to one summary line with Execution. Open in workspace keeps the thread, selection and filters.</li><li><b>Workspace</b>: history · thread · context and canvas. Steps are expanded while a run is live and collapse when it completes.</li><li><b>Inspector</b> (overlay, 480 px): Evidence, Definition, Records, Execution, opened from any answer, statement or component. Closing returns to the same place.</li><li>Tablet: history and context become drawers. Phone: one column; the panel and the inspector open full screen.</li></ul></div>
+<div class="box"><h3>Order inside an answer</h3><ol><li>Header: run state while live, outcome when complete (supported, derived, partial, related only, unavailable, needs input), and the summary (tool nodes, iterations, time, model calls).</li><li>Activity: iterations, then nodes with tool, sanitised arguments, result summary, attempts.</li><li>Statements with text labels: Observed, Derived, Hypothesis (dashed), Recommendation, Unavailable. Each has Evidence.</li><li>Caveats from the metric definitions.</li><li>Components: notices first (partial, unavailable, error, outside access), then KPI cards, then charts and tables.</li><li>Proposed dashboard change, clarification options, suggested follow-ups.</li></ol></div>
+<div class="box"><h3>What the agent receives</h3><ol><li>This investigation’s active selection (<code>selection_ref.v1</code>), shown in the composer as “Context sent” with its source.</li><li>This investigation’s pinned selections, only when pinned.</li><li>This investigation’s analytical scope chips (removable; removing one widens the question only up to the access scope).</li><li>The thread’s analytical state: focus entities, metrics, dataset refs, decisions.</li></ol><p class="note" style="margin-top: 8px">Never sent: kept selections, the dashboard’s own selection unless imported, other investigations unless explicitly imported, raw rows. Boundaries (access scope, reference date) are applied on the server; the client cannot remove or widen them. Every selection is re-validated (dataset version, scope) on send and on resume.</p></div>
+</div>
+
+<h2>Lifecycle, what the user sees, and the AG-UI events</h2>
+<table>
+<thead><tr><th style="width: 230px">State (DR-032)</th><th style="width: 200px">Label in the UI</th><th>What the UI shows</th><th style="width: 470px">AG-UI events (DR-017)</th></tr></thead>
+<tbody>
+<tr><td><code>RECEIVED</code> → <code>CONTEXT_RESOLVED</code></td><td>Received · Context resolved</td><td>The user message with its context chips. The access scope is noted in Execution.</td><td><code>RUN_STARTED</code>, <code>STEP_STARTED</code>, <code>STATE_SNAPSHOT</code></td></tr>
+<tr><td><code>PLANNED</code> → <code>PLAN_VALIDATED</code></td><td>Planning · Plan checked</td><td>Queued plan nodes appear. The fast path (direct metric, frontend tool) skips the model.</td><td><code>ACTIVITY_SNAPSHOT</code> (ANALYSIS_PLAN), <code>STEP_FINISHED</code></td></tr>
+<tr><td><code>EXECUTED</code></td><td>Running tools · n of m done</td><td>Nodes move through Queued → Running → Done, Retrying, Failed or Blocked. Parallel branches start together.</td><td><code>TOOL_CALL_START/ARGS/END/RESULT</code>, <code>ACTIVITY_DELTA</code></td></tr>
+<tr><td><code>EXECUTED</code> → <code>PLANNED</code></td><td>Planning · Re-plan</td><td>A second iteration appears with its reason (“Three malls have no discrepancy report…”). At most one re-plan.</td><td><code>ACTIVITY_DELTA</code></td></tr>
+<tr><td><code>FACTS_EXTRACTED</code> · <code>SYNTHESIZED</code> · <code>EVIDENCE_VERIFIED</code></td><td>Facts extracted · Writing · Evidence verified</td><td>Counts of facts and of numbers checked. Statements stream only after verification.</td><td><code>STATE_DELTA</code>, <code>TEXT_MESSAGE_START/CONTENT/END</code></td></tr>
+<tr><td><code>COMPOSED</code> → <code>COMPLETE</code></td><td>Outcome</td><td>Components render from validated payloads; the outcome chip replaces the state; steps collapse.</td><td><code>CUSTOM</code> <code>cenomi.presentation.v1</code>, <code>RUN_FINISHED</code></td></tr>
+<tr><td><code>CLARIFICATION_REQUIRED</code></td><td>Needs your input</td><td>An explanation and option buttons; choosing one starts a new run.</td><td><code>CUSTOM</code> (choice), <code>RUN_FINISHED</code></td></tr>
+<tr><td><code>ERROR</code></td><td>Error</td><td>Typed error with a request reference; earlier output stays visible. A failed node offers Retry this step, which creates answer v2 (J6).</td><td><code>RUN_ERROR</code></td></tr>
+<tr><td><code>CANCELLED</code></td><td>Stopped</td><td>Stop aborts the stream and calls the idempotent cancel endpoint. Completed tool results stay in Execution; no partial narrative. Run again starts a new run (J9).</td><td><code>RUN_ERROR</code> (code CANCELLED)</td></tr>
+<tr><td>Any state · stream interrupted</td><td>Reconnecting · Recovered</td><td>A strip shows the last event received, then the replayed range. Duplicates are ignored by (runId, seq). The run continues on the server (J9).</td><td>Replay from the run ledger (our endpoint, not part of AG-UI)</td></tr>
+</tbody>
+</table>
+<p class="note">Reasoning events are not forwarded. Tool arguments are sanitised summaries; rows and SQL never reach the client. The prototype shows the event log in Inspector → Execution so the mapping can be reviewed.</p>
+
+<h2>Errors, gaps and boundaries</h2>
+<table>
+<thead><tr><th style="width: 260px">Situation</th><th>Behaviour</th><th style="width: 200px">Statement label</th><th style="width: 160px">Outcome</th><th style="width: 90px">Journey</th></tr></thead>
+<tbody>
+<tr><td>Tool timeout</td><td>One automatic retry, shown as Retrying with the attempt and reason.</td><td>—</td><td>unchanged</td><td>J2</td></tr>
+<tr><td>Tool fails after retry</td><td>Node Failed. Answer v1 uses what loaded and says what is missing. Retry this step re-runs only that node as a new run and adds answer v2 (“revises v1”); v1 stays exactly as generated and is marked superseded.</td><td>Unavailable</td><td>partial → v2 supported</td><td>J6</td></tr>
+<tr><td>Connection lost mid-run</td><td>Reconnect with backoff; replay missed events after the last seq; drop duplicates. Nothing is re-executed.</td><td>—</td><td>unchanged</td><td>J9</td></tr>
+<tr><td>User presses Stop</td><td>Run cancelled; tool results kept; no partial narrative; Run again uses a new request id.</td><td>—</td><td>stopped</td><td>J9</td></tr>
+<tr><td>Plan over budget (more than 8 tool nodes)</td><td>The validator rejects the plan; the agent offers smaller scopes instead of truncating silently.</td><td>Recommendation</td><td>needs input</td><td>J6</td></tr>
+<tr><td>Partial coverage</td><td>A Partial notice names what is missing. An observed total is labelled “observed subset” with its coverage (18 of 25 malls); the full total is an Unavailable card, never extrapolated. Every statement and visual inherits “Coverage: partial”.</td><td>Unavailable for the missing total</td><td>partial</td><td>J2, J4</td></tr>
+<tr><td>Concept not in the dataset</td><td><code>check_concept_availability</code>; no number and no estimate. Related facts only with a “not a proxy” caveat.</td><td>Unavailable, then Observed</td><td>related only</td><td>J5</td></tr>
+<tr><td>Outside the access scope</td><td>The node is Blocked before any query. An Outside your access notice explains the boundary; in-scope data follows.</td><td>Unavailable</td><td>related only</td><td>J8</td></tr>
+<tr><td>Verifier rejects a draft</td><td>One retry, then a deterministic template answer (DR-031). Shown in Execution; not demonstrated in a journey.</td><td>as drafted</td><td>unchanged</td><td>—</td></tr>
+<tr><td>Free text the prototype cannot answer</td><td>A clearly marked prototype note. The product would run the normal lifecycle.</td><td>—</td><td>—</td><td>any</td></tr>
+</tbody>
+</table>
+
+<div class="cols">
+<div class="box"><h3>Selection semantics (DXD-25…28, DXD-32)</h3><ul><li>Same visual states and <code>selection_ref.v1</code> on dashboard cards, the panel, the workspace and generated components.</li><li>The dashboard keeps its own selection state. Each investigation keeps its own active, kept and pinned selections.</li><li>A selection crosses into an investigation only by explicit import (Ask about this, or Import a selection…), labelled with its source and visible in the composer before sending.</li><li>Active: solid outline, “Selected” text and aria-pressed. Kept: dashed outline. Pinned: dark chip and “Pinned”. Never colour alone.</li><li>Imports and resumes are re-checked against the current access scope; mismatches are refused.</li></ul></div>
+<div class="box"><h3>History and resume (DXD-33)</h3><ul><li>One thread per investigation: title, time, question count, dataset version, outcome.</li><li>Resume shows answers, pins and canvas exactly as generated, with the dataset version. Nothing is refreshed silently.</li><li>Re-run with current data is always an explicit action and creates a new run; stored answers never change.</li><li>Investigations of another role are never listed, opened or importable.</li></ul></div>
+<div class="box"><h3>Grounding</h3><ul><li>Statements reference facts as tokens; the server fills values from tool results (DR-031).</li><li>In the prototype, 71 of 71 statements and component texts pass an automated check: no digit outside a fact token except dates, IDs and band names.</li><li>Every fact traces to a metric, filters and result reference shown in Evidence.</li><li>Derived values (shares, ranks) come from <code>derive</code>, with the formula shown.</li></ul></div>
+</div>
+
+<h2>Decisions recorded at the DX4 review</h2>
+<table><thead><tr><th style="width: 80px">ID</th><th style="width: 320px">Question</th><th>Decision</th><th style="width: 260px">Recorded as</th></tr></thead><tbody>
+<tr><td><span class="tag" style="background:#E7F5EC;color:#14532D">DXQ-05</span></td><td>Composite rankings across KPIs</td><td>Option C: composite only on explicit request, with weighting, normalisation, missing-data treatment and limitations disclosed. Default: multi-KPI table, KPI leaders, magnitude, severity and a transparent order.</td><td>DXD-31</td></tr>
+<tr><td><span class="tag" style="background:#E7F5EC;color:#14532D">DXQ-06</span></td><td>Active selection when switching threads</td><td>Option C: analytical selections are local to each investigation; dashboard selection kept separately; cross-thread use only by explicit, labelled import. Supersedes DXD-29 for analytical context.</td><td>DXD-32</td></tr>
+<tr><td><span class="tag" style="background:#E7F5EC;color:#14532D">DXQ-07</span></td><td>Resuming after the dataset changes</td><td>Option A: preserve answers exactly as generated, show the dataset version, offer an explicit re-run; never refresh silently.</td><td>DXD-33</td></tr>
+</tbody></table>
+<p class="note">Design artefact for review. Not production code. Synthetic data as of 20 Oct 2026.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1936,"height":2230}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

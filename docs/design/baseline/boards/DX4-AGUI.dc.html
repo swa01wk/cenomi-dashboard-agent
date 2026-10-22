@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DX4 AG-UI handoff</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.w{width:1936px;box-sizing:border-box;padding:56px 64px;background:#fff;font-family:'Inter',system-ui,sans-serif;color:#1B1530;display:flex;flex-direction:column;gap:20px}
+h1{margin:0;font-family:'Inter Tight','Inter',sans-serif;font-size:28px}
+h2{margin:14px 0 0;font-size:19px}
+h3{margin:0 0 6px;font-size:15px}
+p{margin:0}
+.lead{margin-top:8px;font-size:15px;line-height:22px;color:#4B4560;max-width:1560px}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-size:12px;font-weight:600;color:#4B4560;text-transform:uppercase;letter-spacing:.05em;padding:9px 10px;border-bottom:2px solid #E4E1EC;vertical-align:bottom}
+td{font-size:13px;line-height:19px;padding:8px 10px;border-bottom:1px solid #EEECF3;vertical-align:top}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#F4F3F7;padding:1px 5px;border-radius:4px}
+pre{margin:0;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;line-height:16px;background:#1B1530;color:#E9E5F5;border-radius:10px;padding:14px 16px;white-space:pre}
+.ok{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#DDF3EF;color:#0F5048;white-space:nowrap}
+.rev{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#EFEAFB;color:#3B1F8C;white-space:nowrap}
+.sup{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#F4F3F7;color:#3A3550;border:1px dashed #A9A2BF;white-space:nowrap}
+.cond{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#FDF0E1;color:#8A4B08;white-space:nowrap}
+.vf{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#FFF4D6;color:#7A5300;white-space:nowrap}
+.gate{display:flex;gap:24px;background:#FFF8EB;border:1px solid #F6D9A8;border-radius:12px;padding:16px 20px}
+.gate b{font-size:15px}.gate p{margin:4px 0 0;font-size:13px;line-height:19px;color:#4B4560}
+.gate ul,.box ul,.box ol{margin:6px 0 0;padding-left:18px;font-size:13px;line-height:19px;color:#3A3550}
+.gate li,.box li{margin:2px 0}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+.box{border:1px solid #E4E1EC;border-radius:12px;padding:16px 18px}
+.note{font-size:12.5px;line-height:18px;color:#5E5873}
+.pass{color:#0F5048;font-weight:700}.fail{color:#B42318;font-weight:700}
+.seq{display:flex;flex-direction:column;gap:0;border-left:2px solid #CDBDF5;margin-left:6px;padding-left:14px}
+.seq div{font-size:12.5px;line-height:18px;padding:3px 0;position:relative}
+.seq div::before{content:"";position:absolute;left:-19px;top:9px;width:8px;height:8px;border-radius:50%;background:#6D28D9}
+.seq div.c::before{background:#1B1530}.seq div.s::before{background:#0F766E}
+.seq b{display:inline-block;min-width:62px;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:#4B4560}
+
+</style>
+</helmet>
+<div class="w">
+<div><h1>DX4 · AG-UI handoff contracts</h1><p class="lead">Design contracts for AGUI_INTEGRATION.md and API_CONTRACTS.md (DXD-40). They fix how the client reduces AG-UI events into state, how runs are identified, and how cancellation, interruption, reconnection, retry and idempotency behave. The DX4 workspace prototype follows these rules; its Execution tab shows the event log with sequence numbers.</p></div>
+<div class="cols"><div class="box"><h3>Run identity</h3><ul><li><code>threadId</code>: one investigation. Owns selections, pins, scope and runs (DXD-32).</li><li><code>runId</code>: one execution, server-assigned.</li><li><code>requestId</code>: client UUID per user submit; the idempotency key for POST /runs.</li><li><code>seq</code>: server-assigned, strictly increasing within a run; persisted with every event in <code>agent.run_events</code>.</li><li><code>version</code> and <code>revises</code>: answer lineage within a thread (DXD-37).</li></ul></div>
+<div class="box"><h3>Rules the client keeps</h3><ul><li>Reduce only by (runId, seq); drop seq ≤ lastSeq.</li><li>Never rewrite a finished run; new information is a new run.</li><li>Statements render only after EVIDENCE_VERIFIED; numbers arrive filled from fact tokens.</li><li>Presentation payloads are validated before render; invalid → fallback.</li><li>Only sanitised arguments and summaries reach the client; never rows or SQL.</li></ul></div>
+<div class="box"><h3>Retry kinds</h3><ul><li><b>Automatic tool retry</b>: inside the run, one retry for timeouts; shown as Retrying with the attempt.</li><li><b>Retry this step</b>: user action on a failed node; new run with <code>retryOf</code>; answer v2.</li><li><b>Run again</b>: after Stop or error; new run, new requestId.</li><li><b>Re-run with current data</b>: explicit, from history; new run; stored answers unchanged (DXD-33).</li><li><b>Resubmit</b> (double-click, network): same requestId; same run.</li></ul></div></div>
+<h2>Event → client state</h2>
+<table><thead><tr><th style="width: 290px">AG-UI event</th><th style="width: 330px">Payload used</th><th>Client state change</th><th style="width: 330px">UI</th></tr></thead><tbody><tr><td><code>RUN_STARTED</code></td><td>threadId, runId, seq</td><td>Create <code>runs[runId]</code> {threadId, requestId, version, revises, phase RECEIVED, lastSeq}. Bind to the pending user message by requestId.</td><td>Agent header with “Received”.</td></tr><tr><td><code>STEP_STARTED / STEP_FINISHED</code></td><td>stepName = lifecycle state (DR-032)</td><td>Set <code>phase</code>. Ignore a transition not permitted from the current phase (log it).</td><td>Phase chip; Execution lifecycle row.</td></tr><tr><td><code>STATE_SNAPSHOT</code></td><td>run state (scope, context sent, budgets)</td><td>Replace <code>runs[runId].state</code>.</td><td>Execution · Run identity and context.</td></tr><tr><td><code>STATE_DELTA</code></td><td>JSON Patch (RFC 6902)</td><td>Apply to <code>runs[runId].state</code>; on patch failure request a snapshot.</td><td>Counters (facts, numbers checked).</td></tr><tr><td><code>ACTIVITY_SNAPSHOT / DELTA</code></td><td>activityType ANALYSIS_PLAN: iterations, nodes, statuses, re-plan reason</td><td>Replace or patch <code>runs[runId].plan</code>.</td><td>Activity: iterations and nodes (Queued, Running, Done, Retrying, Failed, Blocked).</td></tr><tr><td><code>TOOL_CALL_START / ARGS / END</code></td><td>toolCallId, toolCallName, sanitised args</td><td>Upsert <code>nodes[toolCallId]</code>; args only as the sanitised summary.</td><td>Node row with tool and arguments.</td></tr><tr><td><code>TOOL_CALL_RESULT</code></td><td>toolCallId, summary, rows, resultRef, error?</td><td>Set node result, attempts, status; never store rows.</td><td>Result line; attempt lines; Failed notice.</td></tr><tr><td><code>TEXT_MESSAGE_START / CONTENT / END</code></td><td>messageId, delta (only after EVIDENCE_VERIFIED)</td><td>Append to <code>stmts</code>; numbers arrive already filled from fact tokens.</td><td>Statements stream with labels and envelopes.</td></tr><tr><td><code>CUSTOM cenomi.presentation.v1</code></td><td>component payload + envelope</td><td>Validate against the schema. Valid → <code>comps.push</code>; invalid → fallback text or table, log validation error.</td><td>Generated component or fallback.</td></tr><tr><td><code>TOOL_CALL_* (frontend tool)</code></td><td>propose_dashboard_filters: proposalId, card, filters</td><td>Create <code>proposals[proposalId]</code> pending. On confirm, send the tool result once.</td><td>Proposal card with Apply, Dismiss, Undo.</td></tr><tr><td><code>RUN_FINISHED</code></td><td>outcome</td><td>Set outcome, <code>done</code>; collapse activity; mark thread outcome.</td><td>Outcome chip; follow-ups; live-region announcement.</td></tr><tr><td><code>RUN_ERROR</code></td><td>code (CANCELLED, BUDGET, TOOL, VERIFIER, INTERNAL), message, requestRef</td><td>Set phase ERROR or CANCELLED; keep completed results; no partial narrative.</td><td>Error notice or “Stopped” card with Run again.</td></tr><tr><td><code>Reasoning events</code></td><td>—</td><td>Not forwarded by the server; the client ignores any that arrive.</td><td>Nothing.</td></tr></tbody></table>
+<h2>Interruption, reconnection and cancellation</h2>
+<div class="two"><div class="box"><h3>Interruption and reconnection (J9)</h3><div class="seq">
+<div><b>Server</b> RUN_STARTED · seq 1 … TOOL_CALL_START · seq 15</div>
+<div class="c"><b>Client</b> Stream ends without RUN_FINISHED. lastSeq = 15. Strip: “Connection lost after event #15. Reconnecting (attempt 1 of 5)”.</div>
+<div><b>Server</b> The run continues; events 16–18 are written to the ledger.</div>
+<div class="c"><b>Client</b> GET /runs/{runId}/events?after=15 (backoff 1 s).</div>
+<div><b>Server</b> Replays 16–18 from the ledger. Events 14 and 15 also arrive again from the transport buffer.</div>
+<div class="s"><b>Client</b> Drops seq 14 and 15; applies 16–18. Strip: “Recovered · events #16–#18 replayed; 2 duplicates ignored by (runId, seq)”.</div>
+</div></div>
+<div class="box"><h3>Cancellation (J9)</h3><div class="seq">
+<div class="c"><b>Client</b> User presses Stop. Abort the stream; POST /runs/{runId}/cancel.</div>
+<div><b>Server</b> Cancels pending tool calls and the model call; keeps completed tool results; writes RUN_ERROR code CANCELLED.</div>
+<div class="s"><b>Client</b> Phase CANCELLED, outcome Stopped. No partial narrative. Completed nodes stay in Execution. Run again offered.</div>
+<div class="c"><b>Client</b> Run again → POST /runs with a new requestId (same question and context snapshot).</div>
+<div><b>Server</b> New runId. The stopped run remains in the thread.</div>
+</div></div></div>
+<div class="two"><div><h2 style="margin-top: 0">Idempotency</h2><table><thead><tr><th style="width: 170px">Operation</th><th style="width: 210px">Key</th><th>Server</th><th style="width: 260px">Client</th></tr></thead><tbody><tr><td>Submit a question</td><td><code>requestId</code> (client UUID per submit)</td><td>POST /runs with the same requestId returns the existing runId; no second run.</td><td>Double-click or network retry shows one run.</td></tr><tr><td>Receive an event</td><td><code>(runId, seq)</code></td><td>seq is assigned by the server, strictly increasing per run, persisted in <code>agent.run_events</code>.</td><td>Drop any event with seq ≤ lastSeq.</td></tr><tr><td>Stop</td><td><code>runId</code></td><td>POST /runs/{id}/cancel is idempotent; a finished run returns its final state.</td><td>Abort the stream first; repeated Stop is harmless.</td></tr><tr><td>Reconnect</td><td><code>runId, lastSeq</code></td><td>GET /runs/{id}/events?after=lastSeq replays from the ledger, then live; if the ledger expired, a STATE_SNAPSHOT plus final events.</td><td>Backoff 1, 2, 4, 8, 16 s (5 attempts), then “Couldn’t reconnect” with Reload run.</td></tr><tr><td>Retry a failed node</td><td><code>retryOf {runId, nodeId}</code> + new requestId</td><td>New run; only that node executes; version = previous + 1; revises = previous runId.</td><td>Adds answer v2; v1 unchanged.</td></tr><tr><td>Run again after Stop</td><td>new <code>requestId</code></td><td>New run from the same question and context.</td><td>Stopped run stays in the thread.</td></tr><tr><td>Apply a proposal</td><td><code>proposalId</code> / <code>toolCallId</code></td><td>Tool result accepted once; repeats ignored.</td><td>Apply is disabled after the first click; Undo is a separate client action.</td></tr><tr><td>Choose a clarification option</td><td><code>choiceId</code> + new requestId</td><td>Starts a new run; repeats with the same requestId return it.</td><td>Selected option shows aria-pressed.</td></tr></tbody></table></div><div><h2 style="margin-top: 0">Client state shape (illustrative)</h2><pre>{
+  &quot;threads&quot;: { &quot;t6&quot;: { &quot;persona&quot;: &quot;admin&quot;, &quot;dsv&quot;: &quot;sd-2026.10.20-01&quot;,
+    &quot;sel&quot;: { &quot;active&quot;: &quot;selection_ref.v1 | null&quot;, &quot;kept&quot;: {}, &quot;pins&quot;: [] },
+    &quot;scope&quot;: [&quot;Region: Central&quot;], &quot;runs&quot;: [&quot;r9_31&quot;, &quot;r9b_40&quot;] } },
+  &quot;runs&quot;: { &quot;r9_31&quot;: {
+    &quot;threadId&quot;: &quot;t6&quot;, &quot;requestId&quot;: &quot;req_7f3a…&quot;, &quot;version&quot;: 1, &quot;revises&quot;: null,
+    &quot;phase&quot;: &quot;CANCELLED&quot;, &quot;outcome&quot;: &quot;cancelled&quot;, &quot;lastSeq&quot;: 22,
+    &quot;conn&quot;: &quot;replayed&quot;, &quot;plan&quot;: { &quot;iterations&quot;: [ … ] },
+    &quot;nodes&quot;: { &quot;&lt;toolCallId&gt;&quot;: { &quot;status&quot;: &quot;done&quot;, &quot;summary&quot;: &quot;…&quot;, &quot;resultRef&quot;: &quot;…&quot; } },
+    &quot;stmts&quot;: [], &quot;comps&quot;: [], &quot;proposals&quot;: {} } }
+}</pre></div></div>
+<h2>Assumptions to verify against the pinned AG-UI SDK in M0</h2>
+<table><thead><tr><th style="width: 70px">ID</th><th>Assumption</th><th style="width: 520px">If it does not hold</th></tr></thead><tbody><tr><td><span class="vf">A1</span></td><td>Event types and names as listed (RUN_*, STEP_*, STATE_*, TOOL_CALL_*, TEXT_MESSAGE_*, CUSTOM) exist in the pinned AG-UI SDK.</td><td>Map to the nearest event; keep the reducer table as the contract.</td></tr><tr><td><span class="vf">A2</span></td><td>ACTIVITY_SNAPSHOT / ACTIVITY_DELTA are available for the plan.</td><td>Carry the plan in STATE_* under <code>state.plan</code>.</td></tr><tr><td><span class="vf">A3</span></td><td>TOOL_CALL_RESULT is emitted for backend tools.</td><td>Send results as STATE_DELTA on <code>state.nodes</code>.</td></tr><tr><td><span class="vf">A4</span></td><td>Resume and replay are not part of AG-UI; they are our endpoint backed by <code>agent.run_events</code>.</td><td>Already assumed. Confirm no SDK feature conflicts.</td></tr><tr><td><span class="vf">A5</span></td><td>The transport (SSE) can carry a per-event id; we put seq in the payload regardless.</td><td>Seq in payload only.</td></tr><tr><td><span class="vf">A6</span></td><td>CUSTOM payload size is adequate for presentation payloads (target ≤ 64 KB; tables ≤ 200 rows).</td><td>Send a reference and fetch the payload by resultRef.</td></tr><tr><td><span class="vf">A7</span></td><td>Events within a run arrive in order on one stream.</td><td>Reorder by seq in a small buffer before reducing.</td></tr><tr><td><span class="vf">A8</span></td><td>Frontend tool calls can wait for user confirmation without timing out the run.</td><td>End the run with the proposal; the confirmation starts a new run.</td></tr></tbody></table>
+<div class="box"><h3>Tests M4 must include</h3><ul><li>Reducer: every event type in the table, including unknown or out-of-order lifecycle transitions.</li><li>Dedupe: replayed events with seq ≤ lastSeq do not change state.</li><li>Cancel: abort plus cancel call; CANCELLED keeps tool results; no statements shown.</li><li>Reconnect: drop the stream mid-run; replay restores the same final state as an uninterrupted run.</li><li>Retry: node retry produces v2 with revises; v1 is byte-identical before and after.</li><li>Idempotent submit: the same requestId twice yields one run.</li><li>Proposal: Apply twice sends one tool result.</li><li>Presentation: invalid CUSTOM payload renders the fallback and logs a validation error.</li></ul></div>
+<p class="note">Design artefact for review. Endpoint paths are proposals for API_CONTRACTS.md. Not production code.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1936,"height":2840}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

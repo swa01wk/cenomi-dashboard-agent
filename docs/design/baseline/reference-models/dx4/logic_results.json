@@ -1,0 +1,167 @@
+{
+ "grounding": [
+  71,
+  71
+ ],
+ "checks": [
+  {
+   "name": "J2 default answer must not contain a composite score",
+   "ok": true
+  },
+  {
+   "name": "J2 default answer shows the multi-KPI comparison",
+   "ok": true
+  },
+  {
+   "name": "Composite on request carries a method disclosure",
+   "ok": true
+  },
+  {
+   "name": "Composite disclosure mentions weight",
+   "ok": true
+  },
+  {
+   "name": "Composite disclosure mentions normali",
+   "ok": true
+  },
+  {
+   "name": "Composite disclosure mentions missing",
+   "ok": true
+  },
+  {
+   "name": "Composite disclosure mentions limit",
+   "ok": true
+  },
+  {
+   "name": "Composite answer is classified as derived",
+   "ok": true
+  },
+  {
+   "name": "J2 leaves an active selection in t1",
+   "ok": true
+  },
+  {
+   "name": "Switching thread does not carry t1 active selection",
+   "ok": true
+  },
+  {
+   "name": "Switching thread does not carry t1 pins",
+   "ok": true
+  },
+  {
+   "name": "Composer shows no selection after switching thread",
+   "ok": true
+  },
+  {
+   "name": "Importables are listed with a source",
+   "ok": true
+  },
+  {
+   "name": "Explicit import is labelled with its source",
+   "ok": true
+  },
+  {
+   "name": "Import does not move the selection out of the source thread",
+   "ok": true
+  },
+  {
+   "name": "Switched to tenant",
+   "ok": true
+  },
+  {
+   "name": "Tenant sees no admin selections to import",
+   "ok": true
+  },
+  {
+   "name": "Tenant has nothing importable from admin threads",
+   "ok": true
+  },
+  {
+   "name": "Tenant cannot open an admin investigation",
+   "ok": true
+  },
+  {
+   "name": "Tenant history lists no admin investigations",
+   "ok": true
+  },
+  {
+   "name": "Admin-scoped selection cannot be imported as tenant",
+   "ok": true
+  },
+  {
+   "name": "Tenant-scoped selection cannot be imported as admin",
+   "ok": true
+  },
+  {
+   "name": "Resume drops a stored selection whose scope no longer matches access",
+   "ok": true
+  },
+  {
+   "name": "Scope chip removed",
+   "ok": true
+  },
+  {
+   "name": "Boundaries unchanged after removing scope",
+   "ok": true
+  },
+  {
+   "name": "Boundaries cannot be removed via unscope",
+   "ok": true
+  },
+  {
+   "name": "J1 leaves a dashboard selection",
+   "ok": true
+  },
+  {
+   "name": "Retry leaves version 1 exactly as generated",
+   "ok": true
+  },
+  {
+   "name": "Retry creates version 2 that revises version 1",
+   "ok": true
+  },
+  {
+   "name": "v1 stays partial; v2 is supported",
+   "ok": true
+  },
+  {
+   "name": "Version labels distinguish v1 and v2",
+   "ok": true
+  },
+  {
+   "name": "v2 has its own run id",
+   "ok": true
+  },
+  {
+   "name": "Interrupted run is reconnected and replayed",
+   "ok": true
+  },
+  {
+   "name": "Cancelled run shows no partial narrative",
+   "ok": true
+  },
+  {
+   "name": "Cancelled run keeps completed tool results",
+   "ok": true
+  },
+  {
+   "name": "Run again uses a new run id and request id",
+   "ok": true
+  },
+  {
+   "name": "Event seq is strictly increasing within a run",
+   "ok": true
+  },
+  {
+   "name": "J4 statements inherit partial coverage",
+   "ok": true
+  },
+  {
+   "name": "J4 components inherit partial coverage",
+   "ok": true
+  }
+ ],
+ "envelopes": 172,
+ "total": 211,
+ "bad": 0
+}

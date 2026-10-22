@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DX6 golden scenarios</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.w{width:1936px;box-sizing:border-box;padding:56px 64px;background:#fff;font-family:'Inter',system-ui,sans-serif;color:#1B1530;display:flex;flex-direction:column;gap:20px}
+h1{margin:0;font-family:'Inter Tight','Inter',sans-serif;font-size:28px}
+h2{margin:14px 0 0;font-size:19px}
+h3{margin:0 0 6px;font-size:15px}
+p{margin:0}
+.lead{margin-top:8px;font-size:15px;line-height:22px;color:#4B4560;max-width:1560px}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-size:12px;font-weight:600;color:#4B4560;text-transform:uppercase;letter-spacing:.05em;padding:9px 10px;border-bottom:2px solid #E4E1EC;vertical-align:bottom}
+td{font-size:13px;line-height:19px;padding:8px 10px;border-bottom:1px solid #EEECF3;vertical-align:top}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#F4F3F7;padding:1px 5px;border-radius:4px}
+pre{margin:0;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;line-height:16px;background:#1B1530;color:#E9E5F5;border-radius:10px;padding:14px 16px;white-space:pre}
+.ok{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#DDF3EF;color:#0F5048;white-space:nowrap}
+.rev{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#EFEAFB;color:#3B1F8C;white-space:nowrap}
+.sup{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#F4F3F7;color:#3A3550;border:1px dashed #A9A2BF;white-space:nowrap}
+.cond{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#FDF0E1;color:#8A4B08;white-space:nowrap}
+.vf{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#FFF4D6;color:#7A5300;white-space:nowrap}
+.gate{display:flex;gap:24px;background:#FFF8EB;border:1px solid #F6D9A8;border-radius:12px;padding:16px 20px}
+.gate b{font-size:15px}.gate p{margin:4px 0 0;font-size:13px;line-height:19px;color:#4B4560}
+.gate ul,.box ul,.box ol{margin:6px 0 0;padding-left:18px;font-size:13px;line-height:19px;color:#3A3550}
+.gate li,.box li{margin:2px 0}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+.box{border:1px solid #E4E1EC;border-radius:12px;padding:16px 18px}
+.note{font-size:12.5px;line-height:18px;color:#5E5873}
+.pass{color:#0F5048;font-weight:700}.fail{color:#B42318;font-weight:700}
+.seq{display:flex;flex-direction:column;gap:0;border-left:2px solid #CDBDF5;margin-left:6px;padding-left:14px}
+.seq div{font-size:12.5px;line-height:18px;padding:3px 0;position:relative}
+.seq div::before{content:"";position:absolute;left:-19px;top:9px;width:8px;height:8px;border-radius:50%;background:#6D28D9}
+.seq div.c::before{background:#1B1530}.seq div.s::before{background:#0F766E}
+.seq b{display:inline-block;min-width:62px;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:#4B4560}
+
+.flow{display:flex;gap:8px;align-items:stretch;flex-wrap:wrap}
+.fb{flex:1 1 0;min-width:150px;border:1px solid #CDBDF5;background:#F6F4FA;border-radius:10px;padding:8px 10px;font-size:12.5px;line-height:17px;position:relative}
+.fb b{display:block;font-size:12.5px;margin-bottom:2px}
+.fa{align-self:center;color:#6D28D9;font-weight:700}
+.mx3{display:grid;grid-template-columns:110px repeat(3,90px);gap:4px;font-size:12px;align-items:center}
+.mx3 span{text-align:center;padding:8px 0;border-radius:6px;font-weight:700}
+.p1{background:#B42318;color:#fff}.p2{background:#8A4B08;color:#fff}.p3{background:#3A3550;color:#fff}.mh{color:#4B4560;font-weight:600!important}
+.spk{display:flex;align-items:flex-end;gap:2px;height:46px}
+.spk i{display:block;width:14px;background:#CDBDF5;border-radius:2px 2px 0 0}
+.spk i.l{background:#6D28D9}
+.svals{font-size:10.5px;color:#4B4560;margin-top:2px}
+.shots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+.shots figure{margin:0;display:flex;flex-direction:column;gap:6px}
+.shots img{width:100%;border:1px solid #E4E1EC;border-radius:10px;display:block}
+.shots figcaption{font-size:12.5px;color:#4B4560}
+.kpis{display:flex;gap:14px}
+.kpi{flex:1;background:#F4F1FC;border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;gap:2px}
+.kpi b{font-size:24px;color:#3B1F8C}.kpi span{font-size:13px;color:#4B4560}
+pre{white-space:pre-wrap;word-break:break-word}
+.prop{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#EFEAFB;color:#3B1F8C;white-space:nowrap}
+.q{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#FFF4D6;color:#7A5300;white-space:nowrap}
+
+.ok2{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#DDF3EF;color:#0F5048;white-space:nowrap}
+.amd{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#EFEAFB;color:#3B1F8C;white-space:nowrap}
+.new{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#E0F2FE;color:#075985;white-space:nowrap}
+.dec2{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#FFF4D6;color:#7A5300;white-space:nowrap}
+.mono{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+td.c{text-align:center}
+
+</style>
+</helmet>
+<div class="w">
+<div><h1>DX6 · Golden scenarios and expected outcomes (v2)</h1><p class="lead">Generated by the detector replay (detectors-1.1) at every checkpoint against sd-2026.10.20-01; each scenario is reproducible from record cohorts (Refinements board). EVALUATION_PLAN.md treats them as golden: each S-case must produce its insight with the stated versions, band and audiences; each N-case must produce no notification and log the stated decision. Replay hash 82fde5250960761d.</p></div>
+<div class="gate"><div style="flex: 1 1 0"><b>S6 corrected — needs your confirmation</b><p>S6 (lease T-31206 sales, Watch) relied on “no prior-year data”. The dataset holds 2024–2025 (DX2 tenant board, DR-004): September is +7.5% against September 2025, and June→September fell 17.9% in both years. Correct behaviour is no insight (now N9, seasonal). The tenant journey keeps S7 (lease-scoped action needed). Own-lease Watch (DXD-79) stays a capability, verified with a labelled micro-fixture unless you prefer a seeded scenario (GD decision).</p></div><div style="flex: 0 0 520px"><b>S7 corrected</b><p>T-202 previously counted 2 service requests in Action required. Those are company-wide (Rawdah Point 1, Gulf Gate 1); lease T-31206 has none. T-202 now counts the lease’s 2 fit-out drawings to upload.</p></div></div>
+<h2>Generated insights (S-cases) · * = notified version</h2>
+<table><thead><tr><th style="width: 56px">Case</th><th style="width: 80px">Insight</th><th style="width: 160px">Kind</th><th style="width: 250px">Title (latest version)</th><th style="width: 260px">What it tests</th><th style="width: 110px">Band · confidence</th><th style="width: 160px">Versions</th><th style="width: 110px">Audiences</th><th>Series</th></tr></thead><tbody><tr><td><b>S1</b></td><td>INS-107</td><td>Risk · cross-KPI cluster</td><td>Rawdah Point Mall · approval and renewal backlogs are both rising</td><td>Two metrics meet D2 on one mall at one checkpoint; D1 concentration 66.1%; INS-101 merged.</td><td>P1 · High</td><td>P1*</td><td>admin, central</td><td><div class="spk"><i style="height: 24.7px"></i><i style="height: 26.9px"></i><i style="height: 30.3px"></i><i style="height: 32.5px"></i><i style="height: 35.9px"></i><i style="height: 39.3px"></i><i style="height: 43.8px"></i><i style="height: 46.0px" class="l"></i></div><p class="svals">Approvals waiting 31+ days: 22 · 24 · 27 · 29 · 32 · 35 · 39 · 41</p></td></tr><tr><td><b>S2</b></td><td>INS-104</td><td>Risk · deterioration (monthly)</td><td>Mirage Commons · vacancy has risen every month since May</td><td>Vacancy up every month; version 2 updated silently (+3.6% &lt; 10%).</td><td>P2 · High</td><td>P2* → P2</td><td>admin, central</td><td><div class="spk"><i style="height: 37.3px"></i><i style="height: 38.1px"></i><i style="height: 39.7px"></i><i style="height: 40.4px"></i><i style="height: 42.0px"></i><i style="height: 44.4px"></i><i style="height: 46.0px" class="l"></i></div><p class="svals">Vacant units (20th of the month): 47 · 48 · 50 · 51 · 53 · 56 · 58</p></td></tr><tr><td><b>S3</b></td><td>INS-105</td><td>Data quality · late data</td><td>Seven malls have not filed September unit-discrepancy reports</td><td>18 of 25 malls reported; Central instance INS-105C computed within Central.</td><td>P2 · High</td><td>P2*</td><td>admin</td><td>—</td></tr><tr><td><b>S4</b></td><td>INS-106</td><td>Ambiguous · Watch</td><td>Gulf Gate Mall · September unit mismatches jumped</td><td>One-month jump (D4a 3.3×, D4b z 15.9); could be an audit-method change. Promotion rule shown.</td><td>Watch · Low</td><td>Watch</td><td>admin</td><td><div class="spk"><i style="height: 12.7px"></i><i style="height: 16.8px"></i><i style="height: 12.5px"></i><i style="height: 46.0px" class="l"></i></div><p class="svals">Mismatch rate: 2.1% · 2.8% · 2.1% · 7.7%</p></td></tr><tr><td><b>S5</b></td><td>INS-103</td><td>Positive</td><td>Qasr Plaza · approvals waiting 31+ days are down to 2 from 9</td><td>D3 fires on 6 Oct (4 vs a maximum of 9); updates silently to 2.</td><td>P3 · High</td><td>P3* → P3 → P3</td><td>admin, central</td><td><div class="spk"><i style="height: 46.0px"></i><i style="height: 46.0px"></i><i style="height: 40.9px"></i><i style="height: 35.8px"></i><i style="height: 25.6px"></i><i style="height: 20.4px"></i><i style="height: 15.3px"></i><i style="height: 10.2px" class="l"></i></div><p class="svals">Approvals waiting 31+ days: 9 · 9 · 8 · 7 · 5 · 4 · 3 · 2</p></td></tr><tr><td><b>S7</b></td><td>T-202</td><td>Action needed · tenant</td><td>2 fit-out drawings are waiting for your upload</td><td>Two lease-scoped drawings; P3 → P2 when the oldest passes 7 days (band rise notifies).</td><td>P2 · High</td><td>P3* → P3* → P2*</td><td>tenant</td><td>—</td></tr><tr><td><b>S8</b></td><td>INS-090</td><td>Lifecycle · auto-resolve</td><td>Qasr Plaza · approvals waiting 31+ days rising</td><td>D2 fires 1 Sep (3 → 9); clears 22 Sep (8, then 7).</td><td>P3 · High</td><td>P3* → P3</td><td>admin, central</td><td>—</td></tr><tr><td><b>S9</b></td><td>INS-101</td><td>Versions and band rise (new)</td><td>Rawdah Point Mall · approvals waiting 31+ days keep rising</td><td>Seven versions: P2 → P1 on 15 Sep; re-notified at +18.5% and +21.9%; merged 20 Oct.</td><td>P1 · High</td><td>P2* → P2 → P1* → P1 → P1* → P1 → P1*</td><td>admin, central</td><td><div class="spk"><i style="height: 25.9px"></i><i style="height: 28.3px"></i><i style="height: 31.8px"></i><i style="height: 34.2px"></i><i style="height: 37.7px"></i><i style="height: 41.3px"></i><i style="height: 46.0px" class="l"></i></div><p class="svals">Approvals waiting 31+ days: 22 · 24 · 27 · 29 · 32 · 35 · 39</p></td></tr></tbody></table>
+<h2>Decisions not to notify (N-cases)</h2>
+<table><thead><tr><th style="width: 56px">Case</th><th style="width: 140px">Run</th><th style="width: 190px">Detector</th><th style="width: 220px">Entity</th><th style="width: 120px">Audience</th><th style="width: 190px">Decision</th><th>Reason</th></tr></thead><tbody><tr><td><b>N1</b></td><td>w_2026-10-20</td><td>D1 · Concentration + D2</td><td>Rawdah Point Mall · approvals</td><td>admin, central</td><td>Merged</td><td>Open insight INS-101 covered this signal (39 → 41, +5.1% since its last notified version, below 10%). Merged into INS-107; no separate notification.</td></tr><tr><td><b>N2</b></td><td>w_2026-10-20</td><td>D2 · Sustained deterioration</td><td>Central · amendments 4 wk+ (all types)</td><td>admin, central</td><td>Not generated · not material</td><td>Rose from 23 to 25 over the window; 2 increases (needs 4); net change +2 (needs +5).</td></tr><tr><td><b>N3</b></td><td>m_2026-10-20</td><td>D2 · Sustained deterioration</td><td>Sandstone Galleria · vacancy</td><td>admin, central</td><td>Not generated · no sustained change</td><td>Vacancy 13.0% is high but shows no sustained change (2 increases, 1 decrease, +0.2 pts in five months). A stable high level is already visible on the dashboard.</td></tr><tr><td><b>N4</b></td><td>e_2026-10-19_ud</td><td>D4 · Anomaly (D4b)</td><td>Cedar Park Mall · mismatch rate</td><td>admin, central</td><td>Not generated · within normal range</td><td>Highest in Central (3.3%) but within the range of the 18 reporting malls: robust z 1.8 &lt; 3. No temporal jump against its own baseline.</td></tr><tr><td><b>N5</b></td><td>w_2026-10-20</td><td>D6 · Cross-KPI association (screen)</td><td>Central malls · vacancy vs approvals 31+ days</td><td>admin, central</td><td>Not generated · correlation only</td><td>Across 10 Central malls r = −0.41 (−0.35 without Rawdah Point). Cross-entity associations are never published as insights in detectors-1.1: no shared movement over time and no mechanism in the data.</td></tr><tr><td><b>N6</b></td><td>w_2026-10-20</td><td>D7 · Lease trend</td><td>Lease T-31206 vs other tenants</td><td>tenant</td><td>Not evaluated · isolation</td><td>Tenant-audience detectors use only the tenant’s own lease. Benchmarks against other tenants are never computed for a tenant audience.</td></tr><tr><td><b>N7</b></td><td>m_2026-10-20</td><td>D2 · Sustained deterioration</td><td>Mirage Commons · vacancy</td><td>admin, central</td><td>Updated silently</td><td>D2 holds (5 of 5 increases, +3.3 pts). Silent update: +3.6% since the last notified version (56 → 58), below 10%.</td></tr><tr><td><b>N8</b></td><td>e_2026-10-19_ud</td><td>D2 · Sustained deterioration</td><td>Eastern · mismatch rate</td><td>admin</td><td>Not concluded · coverage</td><td>Only 5 of 7 Eastern malls reported (71%), below the 80% needed to evaluate a regional trend. Re-evaluated when reports arrive.</td></tr><tr><td><b>N9</b></td><td>m_2026-10-20</td><td>D7 · Lease trend</td><td>Lease T-31206 · reported sales</td><td>admin, central, tenant</td><td>Not generated · seasonal pattern</td><td>Three monthly declines to SAR 241,800 (−11.4% against the January–August average), but +7.5% against the same month last year; June→September moved −17.9% in 2025 and −17.9% in 2026. The prior year shows the same movement, so this is not reported.</td></tr><tr><td><b>N10</b></td><td>e_2026-10-19_ud</td><td>D4 · Anomaly (D4b)</td><td>Breeze Walk · mismatch rate</td><td>admin</td><td>Not generated · within normal range</td><td>Highest in Western (3.4%) but within the range of the 18 reporting malls: robust z 2.0 &lt; 3. No temporal jump against its own baseline.</td></tr><tr><td><b>N11</b></td><td>w_2026-10-13</td><td>D2 · Sustained deterioration</td><td>Rawdah Point Mall · renewals 4 wk+</td><td>admin, central</td><td>Not generated · not yet sustained</td><td>Renewals 4 → 8: net change +4 (needs +5).</td></tr></tbody></table>
+<p class="note">N1–N8 keep their meaning from v1 (N3 is now “no sustained change”, N4 is the peer test). N9–N11 are new: the seasonal tenant decline, a second within-range mall, and a renewal signal that is not yet sustained a week before D6 fires.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1936,"height":1819}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

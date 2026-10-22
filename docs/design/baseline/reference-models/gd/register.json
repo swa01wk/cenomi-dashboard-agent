@@ -1,0 +1,1139 @@
+{
+ "rows": [
+  {
+   "id": "DR-001",
+   "title": "Parity policy",
+   "rule": "Reproduce business definitions and visual forms; never security defects; fix nondeterminism; quirks that change a number → parity metric + named corrected metric.",
+   "origin": "G0 register · G0",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DR-002",
+   "title": "Parity classification of REF findings",
+   "rule": "§3.4 rulings; soft-deleted fit-out rows only in parity cards, never in insights or recommendations.",
+   "origin": "G0 register · G0",
+   "cls": "R",
+   "note": "Per-metric confirmation in M0 KPI batches."
+  },
+  {
+   "id": "DR-003",
+   "title": "Frozen as_of per data version",
+   "rule": "One as_of used by seed, SQL, APIs, agent, insights and fixtures; NOW() banned in metric SQL.",
+   "origin": "G0 register · G0",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DR-004",
+   "title": "as_of value and data window",
+   "rule": "as_of 2026-10-20; transactional events 2024-01-01 → as_of.",
+   "origin": "G0 register · Proposed (M0)",
+   "cls": "D",
+   "note": "Batch approval. All designs already use these values."
+  },
+  {
+   "id": "DR-005",
+   "title": "Monitoring is synthetic historical replay",
+   "rule": "Detectors replayed at checkpoints ≤ as_of; never live monitoring.",
+   "origin": "G0 register · G0",
+   "cls": "R",
+   "note": "Calendar fixed by DXD-75 (weekly, monthly on the 20th, events)."
+  },
+  {
+   "id": "DR-006",
+   "title": "Time zones",
+   "rule": "Store UTC; bucket every calendar filter and age band in Asia/Riyadh.",
+   "origin": "G0 register · G0",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DR-007",
+   "title": "Apache ECharts for dashboard and GenUI charts",
+   "rule": "Conditional on faithful V2 reproduction, treemap fidelity and chart accessibility.",
+   "origin": "G0 register · G0 (conditional)",
+   "cls": "V",
+   "note": "Real-runtime validation still outstanding (DXD-21, DXD-61); fallback DXD-23."
+  },
+  {
+   "id": "DR-008",
+   "title": "Non-chart visuals as HTML",
+   "rule": "Stage flow approved; stat tiles, occupancy meter, permit strip, captions proposed.",
+   "origin": "G0 register · Partly proposed (GD)",
+   "cls": "D",
+   "note": "Batch approval: freeze the remaining HTML visuals at GD (built and verified in DX2/DX3)."
+  },
+  {
+   "id": "DR-009",
+   "title": "Level 5 in scope after the core agent",
+   "rule": "Insight discovery, monitoring, notifications, lifecycle and feedback.",
+   "origin": "G0 register · G0",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DR-010",
+   "title": "Sequencing M3c → M6 after M5",
+   "rule": "Core agent evaluated without Level 5; proactive work after.",
+   "origin": "G0 register · G0",
+   "cls": "R",
+   "note": "Five-day plan reorders delivery (see feasibility); the dependency stays."
+  },
+  {
+   "id": "DR-011",
+   "title": "In-app notifications only",
+   "rule": "Inbox, badge, per-user list; no email, SMS or push.",
+   "origin": "G0 register · G0",
+   "cls": "R",
+   "note": "Confirmed by DXD-77."
+  },
+  {
+   "id": "DR-012",
+   "title": "Meaning of feedback",
+   "rule": "Stored; drives deterministic re-ranking, suppression and evaluation reports.",
+   "origin": "G0 register · G0",
+   "cls": "D",
+   "note": "Conflicts with DXD-72 (logged for review only). Decision GDQ-05."
+  },
+  {
+   "id": "DR-013",
+   "title": "Read-only business data",
+   "rule": "Application state in separate schemas written by a separate DB role.",
+   "origin": "G0 register · G0",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DR-014",
+   "title": "Provider-agnostic LLM adapter",
+   "rule": "Model is configuration; structured output and tool calling required.",
+   "origin": "G0 register · G0",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DR-015",
+   "title": "Model roles and selection",
+   "rule": "planner / synthesizer / fast keys; benchmark two candidates.",
+   "origin": "G0 register · Open",
+   "cls": "D",
+   "note": "Provider and API key needed before agent work starts (GDQ-12)."
+  },
+  {
+   "id": "DR-016",
+   "title": "Plain @ag-ui/client",
+   "rule": "Own React hooks and the GenUI registry; no CopilotKit.",
+   "origin": "G0 register · G0",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DR-017",
+   "title": "AG-UI event mapping",
+   "rule": "CUSTOM cenomi.presentation.v1, ACTIVITY_* plan, sanitized TOOL_CALL_*, STATE_* context; no reasoning events.",
+   "origin": "G0 register · Proposed",
+   "cls": "V",
+   "note": "Design contract DXD-40; SDK assumptions verified against the pinned version (GDQ-11 spike)."
+  },
+  {
+   "id": "DR-018",
+   "title": "Synthetic sales_funnel_snapshot",
+   "rule": "Live card counts; snapshot divergence explained.",
+   "origin": "G0 register · Approved",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DR-018b",
+   "title": "No approvals filter-list snapshot table",
+   "rule": "Filter options from live data.",
+   "origin": "G0 register · Proposed (M0)",
+   "cls": "D",
+   "note": "Batch approval."
+  },
+  {
+   "id": "DR-019",
+   "title": "Simplified, backend-enforced roles and permissions",
+   "rule": "Final role list in M0.",
+   "origin": "G0 register · G0",
+   "cls": "R",
+   "note": "POC fixture roles used in design: portfolio admin, Central manager, tenant (one lease, company)."
+  },
+  {
+   "id": "DR-020",
+   "title": "Scope semantics",
+   "rule": "Explicit scope kinds; empty scope = empty result; card and endpoint share a permission; client can only narrow; refs bound to principal, scope, data version.",
+   "origin": "G0 register · Accepted",
+   "cls": "R",
+   "note": "Extended by DXD-38, DXD-56, DXD-85."
+  },
+  {
+   "id": "DR-021",
+   "title": "Row-level security not in baseline",
+   "rule": "Mandatory scope fragment + lint + read-only role.",
+   "origin": "G0 register · Proposed (M0)",
+   "cls": "D",
+   "note": "Batch approval."
+  },
+  {
+   "id": "DR-022",
+   "title": "Explicit lineage",
+   "rule": "enquiry → proposal → lease; unit → inspection → drawing → handover via fitout_projects.",
+   "origin": "G0 register · G0",
+   "cls": "R",
+   "note": "No designed journey uses it yet (PRD journey 3) — GDQ-09."
+  },
+  {
+   "id": "DR-023",
+   "title": "Lineage metrics labelled new",
+   "rule": "Cohort conversion, inspection → handover lag.",
+   "origin": "G0 register · Accepted (M0)",
+   "cls": "D",
+   "note": "Batch approval with the KPI catalog."
+  },
+  {
+   "id": "DR-024",
+   "title": "English-first UI",
+   "rule": "Arabic names stored for fidelity (proposed); no RTL.",
+   "origin": "G0 register · G0 / proposed",
+   "cls": "D",
+   "note": "English-first approved at G0; Arabic storage in the batch approval."
+  },
+  {
+   "id": "DR-025",
+   "title": "Agent proposes dashboard filter changes; user confirms",
+   "rule": "Frontend tool propose_dashboard_filters.",
+   "origin": "G0 register · G0",
+   "cls": "R",
+   "note": "Designed in DX4 J3."
+  },
+  {
+   "id": "DR-026",
+   "title": "Prospective-tenant journey",
+   "rule": "Stretch goal.",
+   "origin": "G0 register · Proposed (M5)",
+   "cls": "F",
+   "note": ""
+  },
+  {
+   "id": "DR-027",
+   "title": "Tech stack",
+   "rule": "Python 3.12, FastAPI, Pydantic v2, SQLAlchemy Core, psycopg 3, Alembic, uv; Node 22, pnpm, Next.js, TS, TanStack Query, zod; PostgreSQL 16; pytest, Vitest, Playwright; OpenTelemetry.",
+   "origin": "G0 register · Proposed (M0)",
+   "cls": "D",
+   "note": "Batch approval; versions pinned in M0."
+  },
+  {
+   "id": "DR-028",
+   "title": "Pydantic → JSON Schema → TS + zod",
+   "rule": "CI drift check.",
+   "origin": "G0 register · Proposed (M0)",
+   "cls": "D",
+   "note": "Batch approval."
+  },
+  {
+   "id": "DR-029",
+   "title": "Conversation and run state in PostgreSQL schema agent",
+   "rule": "No Redis.",
+   "origin": "G0 register · Proposed (M0)",
+   "cls": "D",
+   "note": "Batch approval. Insight tables in schema insights (DX6)."
+  },
+  {
+   "id": "DR-030",
+   "title": "Metric registry as YAML; SQL templates as files",
+   "rule": "Startup validation and scope lint.",
+   "origin": "G0 register · Proposed (M0)",
+   "cls": "D",
+   "note": "Batch approval."
+  },
+  {
+   "id": "DR-031",
+   "title": "Narrative numbers only from fact tokens",
+   "rule": "Verifier rejects other numbers; one retry; deterministic template.",
+   "origin": "G0 register · Accepted",
+   "cls": "R",
+   "note": "Designed DX4/DX5 (DXD-41, DXD-55) and DX6 (DXD-63)."
+  },
+  {
+   "id": "DR-032",
+   "title": "Lifecycle with bounded re-plan",
+   "rule": "plan → validate → DAG → ≤ 1 re-plan → facts → synthesis → verify → compose.",
+   "origin": "G0 register · Accepted",
+   "cls": "R",
+   "note": "Designed DX4 (J6 budget, J9 interruption)."
+  },
+  {
+   "id": "DR-033",
+   "title": "Two-tier fixtures",
+   "rule": "Micro hand-verified fixtures; process-based macro seed with property assertions.",
+   "origin": "G0 register · Accepted",
+   "cls": "R",
+   "note": "DX6 adds golden cohorts and invariants (DXD-81)."
+  },
+  {
+   "id": "DR-034",
+   "title": "Repository naming",
+   "rule": "Project-instruction docs/ and plans/ names; TA §11 code layout.",
+   "origin": "G0 register · G0",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DR-035",
+   "title": "Planning documents committed manually",
+   "rule": "Option A.",
+   "origin": "G0 register · G0",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DR-036",
+   "title": "Evaluation scoring",
+   "rule": "Deterministic checks; LLM judge for explanation quality; ≥ 20% human spot-check.",
+   "origin": "G0 register · Proposed (M5)",
+   "cls": "D",
+   "note": "Needed before the evaluation spec."
+  },
+  {
+   "id": "DR-037",
+   "title": "Local Docker Compose",
+   "rule": "No cloud deployment.",
+   "origin": "G0 register · Proposed (M0)",
+   "cls": "D",
+   "note": "Batch approval."
+  },
+  {
+   "id": "DR-038",
+   "title": "Optional technical spike",
+   "rule": "Throwaway AG-UI round trip and model latency.",
+   "origin": "G0 register · Open",
+   "cls": "D",
+   "note": "Recommended now (GDQ-11)."
+  },
+  {
+   "id": "DR-039",
+   "title": "Design references",
+   "rule": "Design from the API Reference.",
+   "origin": "G0 register · Resolved",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DR-040",
+   "title": "Brand treatment",
+   "rule": "Cenomi-inspired, fictional data, synthetic indicator, no brand assets.",
+   "origin": "G0 register · Approved",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DR-041",
+   "title": "Design before specifications",
+   "rule": "Gate GD before M0 specifications.",
+   "origin": "G0 register · G0",
+   "cls": "R",
+   "note": "This gate."
+  },
+  {
+   "id": "DR-042",
+   "title": "New and corrected metrics only via the KPI catalog",
+   "rule": "No silent scope expansion.",
+   "origin": "G0 register · Proposed (M0)",
+   "cls": "D",
+   "note": "Batch approval. Adds three as-of metrics (DXD-80)."
+  },
+  {
+   "id": "DR-043",
+   "title": "Scale and geography",
+   "rule": "3 regions, 25 fictional malls, PRD §8 targets.",
+   "origin": "G0 register · Proposed (M0)",
+   "cls": "D",
+   "note": "Batch approval; used by every design."
+  },
+  {
+   "id": "DR-044",
+   "title": "Units and numeric policy",
+   "rule": "SAR, m², 1-decimal %, integers, — with a reason.",
+   "origin": "G0 register · Proposed (M0)",
+   "cls": "D",
+   "note": "Batch approval; implemented by DXD-44."
+  },
+  {
+   "id": "DR-045",
+   "title": "Detector set and priority formula",
+   "rule": "Robust z, peer outlier, trend break, co-movement; impact × severity × confidence.",
+   "origin": "G0 register · Proposed",
+   "cls": "S",
+   "note": "Superseded by DXD-63, 64, 66, 89, 90."
+  },
+  {
+   "id": "DR-046",
+   "title": "Normalized fitout_drawing_documents",
+   "rule": "Not parsed from JSON.",
+   "origin": "G0 register · Proposed (M0)",
+   "cls": "D",
+   "note": "Batch approval."
+  },
+  {
+   "id": "DR-047",
+   "title": "Simplified location hierarchy",
+   "rule": "region → mall → property → unit; explicit property_groups.",
+   "origin": "G0 register · Proposed (M0)",
+   "cls": "D",
+   "note": "Batch approval."
+  },
+  {
+   "id": "DXD-01",
+   "title": "Visual direction",
+   "rule": "Ink and Violet is the primary design system. Night Operations may follow later as an optional dark theme; Warm Editorial is not pursued.",
+   "origin": "DX1",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-02",
+   "title": "Screen architecture",
+   "rule": "Four screens — Admin or Tenant dashboard, Analytical workspace, Insight inbox — plus the docked agent panel and four overlays: card focus, inspector, notifications, filter-change confirmation.",
+   "origin": "DX1",
+   "cls": "R",
+   "note": "Notifications overlay: GDQ-08 proposes the bell opens the inbox instead."
+  },
+  {
+   "id": "DXD-03",
+   "title": "Agent UX",
+   "rule": "Hybrid: docked agent panel for quick questions; expandable analytical workspace for multi-step investigations; contextual entry points on every card and data point.",
+   "origin": "DX1",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-04",
+   "title": "Shared inspector",
+   "rule": "One inspector with Evidence, Definition, Records and Execution tabs, used for dashboard metrics, generated components and proactive insights alike.",
+   "origin": "DX1",
+   "cls": "R",
+   "note": "Insight detail (DX6) must reuse the inspector’s evidence components (consolidation C-01)."
+  },
+  {
+   "id": "DXD-05",
+   "title": "Three kinds of context",
+   "rule": "Visibly separate (1) card-level dashboard filters, set on the card; (2) the agent's analytical query scope, which the user can narrow or widen in the panel without touching the dashboard; (3) proposed dashboard filter changes, which apply only after…",
+   "origin": "DX1",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-06",
+   "title": "State preservation",
+   "rule": "Moving between dashboard and workspace keeps the conversation, selected data points, card filters, pinned results and scroll position.",
+   "origin": "DX1",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-07",
+   "title": "Responsive behaviour",
+   "rule": "Desktop, tablet and mobile designs. Below desktop width the agent opens as an overlay (tablet) or full screen (mobile) instead of permanently narrowing charts.",
+   "origin": "DX1",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-08",
+   "title": "Statement labels",
+   "rule": "Every analytical statement carries a text label — Observed, Derived, Hypothesis, Recommendation, Unavailable. Colour supports the label and is never the only signal; hypotheses also use a dashed outline.",
+   "origin": "DX1",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-09",
+   "title": "Synthetic data",
+   "rule": "The reference date and the synthetic-data designation stay visible on every screen, and every card footer repeats \"As of 20 Oct 2026 · synthetic data\".",
+   "origin": "DX1",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-10",
+   "title": "Expanded cards",
+   "rule": "Keep the centred overlay for quick inspection. Every expanded card also offers Open in workspace , which moves the card into the analytical workspace with its filters, selection and active tab intact.",
+   "origin": "DX2",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-11",
+   "title": "Records vs Inspector",
+   "rule": "Dashboard drilldowns live in the card’s Records tab. The shared Inspector is reserved for evidence, definitions, calculation provenance and execution details. Both reuse the same table and dataset components.",
+   "origin": "DX2",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-12",
+   "title": "Selection model",
+   "rule": "One active selection globally is the agent’s default context. Each card remembers its own last selection. The user can explicitly pin several selections for a cross-KPI comparison; unrelated selections are never combined automatically.",
+   "origin": "DX2",
+   "cls": "S",
+   "note": "Superseded for analytical context by DXD-29 → DXD-32; per-card memory kept."
+  },
+  {
+   "id": "DXD-13",
+   "title": "Mall map",
+   "rule": "Out of the baseline. Keep the mall cards, available-unit counts, regions and actions.",
+   "origin": "DX2",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-14",
+   "title": "Partial coverage everywhere",
+   "rule": "The same Partial label and a sentence naming what is missing (“covers 18 of 25 malls”) on dashboard charts and on agent-generated components. Coverage is a field of the result, not text the model writes.",
+   "origin": "DX2",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-15",
+   "title": "Filters vs boundaries",
+   "rule": "Analytical filters are removable chips. Authorization boundaries (role access, lease restriction) and the frozen reference date sit in a separate Boundaries row with a lock icon. Neither the user nor the agent can remove or widen them in the panel.",
+   "origin": "DX2",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-16",
+   "title": "One state vocabulary",
+   "rule": "Cards and generative components share one set of states: loading , zero (shown as 0), empty (no match · before dataset · after reference date), unavailable (not in the dataset), error (reference and Retry), outside_access , partial , undefined_ratio (zero…",
+   "origin": "DX2",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-17",
+   "title": "Context and scroll preservation",
+   "rule": "Opening or closing any overlay (expanded card, agent sheet, filter sheet, inspector) keeps page scroll, card filters, selection and active tab.",
+   "origin": "DX2",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-18",
+   "title": "Chart and table share one dataset",
+   "rule": "Chart, Table and Records read the same authorized result for the card’s scope. A table may show finer rows (Other expanded) but its totals must reconcile with the chart.",
+   "origin": "DX2",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-19",
+   "title": "Phone navigation",
+   "rule": "Below 820 px the side rail becomes a bottom tab bar, matching the approved Responsive board.",
+   "origin": "DX2",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-20",
+   "title": "Value labels on narrow charts",
+   "rule": "When direct value labels would collide, show the value on the selected mark and in the tooltip; the Table tab lists every value.",
+   "origin": "DX2",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-21",
+   "title": "How DR-007 is verified",
+   "rule": "First, run the gallery’s self-test in Play with real ECharts loaded and review the result. If the library cannot load in the canvas, validate with a local, version-pinned ECharts asset. Test-double runs never count as proof.",
+   "origin": "DX3",
+   "cls": "V",
+   "note": "ECharts runtime could not be loaded from this workspace (egress refused); GDQ-06."
+  },
+  {
+   "id": "DXD-22",
+   "title": "minShare 0.08",
+   "rule": "Option A, provisionally. Every treemap category and sub-category stays a tile with its drilldown; the threshold only decides label visibility. Confirm against the original ui-kit source if available.",
+   "origin": "DX3",
+   "cls": "D",
+   "note": "Option A provisional; no ui-kit source available — batch approval to make it final."
+  },
+  {
+   "id": "DXD-23",
+   "title": "Treemap fallback",
+   "rule": "If ECharts misses the agreed fidelity, accessibility or interaction thresholds, both treemaps use the custom squarified component. ECharts stays for the other suitable chart types.",
+   "origin": "DX3",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-24",
+   "title": "V2 palette with verified accessibility",
+   "rule": "Keep the V2 hues. Every chart must still have accessible labels, visible focus indicators, text alternatives and selection states that do not rely on colour. WCAG compliance is verified, not assumed: a table alternative does not settle every contrast…",
+   "origin": "DX3",
+   "cls": "V",
+   "note": "WCAG verified on the real build (axe-core, screen reader)."
+  },
+  {
+   "id": "DXD-25",
+   "title": "One selection contract",
+   "rule": "Every selectable chart, table row, tile and generated component emits selection_ref.v1 : dashboard cards, the agent panel, the workspace and generative UI alike.",
+   "origin": "DX3",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-26",
+   "title": "What a selection carries",
+   "rule": "A semantic metric identifier with version and kind (parity or corrected), grain, dimensions, value and unit, filter context, authorization scope, and a validated dataset reference (dataset version, as-of date, result reference).",
+   "origin": "DX3",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-27",
+   "title": "Chart ↔ table keeps the definition",
+   "rule": "Switching a chart to its table (dashboard card or generated component) reads the same result reference: same metric definition, grain, filters and access scope. A table may show finer rows only if they reconcile with the chart totals.",
+   "origin": "DX3",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-28",
+   "title": "Same semantics everywhere",
+   "rule": "Selecting in the workspace or in a generated chart behaves exactly as on the dashboard: same states, the same Ask and View records actions, the same payload.",
+   "origin": "DX3",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-29",
+   "title": "Active, kept and pinned",
+   "rule": "One active selection globally is the agent’s default context. Each card or component keeps its own last selection, which is never sent automatically. Multi-selection analysis happens only after the user explicitly pins selections.",
+   "origin": "DX3",
+   "cls": "S",
+   "note": "Superseded by DXD-32."
+  },
+  {
+   "id": "DXD-30",
+   "title": "Grounded numbers",
+   "rule": "Every displayed number comes from the shared synthetic dataset. In the design prototypes, figures are computed by the DX2 model functions that draw the dashboard. In the product, they come from metric-service results. The model never types a number.",
+   "origin": "DX3",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-31",
+   "title": "Composite rankings only on request",
+   "rule": "DXQ-05 · Option C. By default the agent answers prioritisation questions with a multi-KPI comparison table, the leader on each KPI (marked “Leader” in text), magnitude and severity, and a narrative that states its ordering rule. A combined score is…",
+   "origin": "DX4",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-32",
+   "title": "Analytical selections are thread-local",
+   "rule": "DXQ-06 · Option C. Each investigation keeps its own active, kept and pinned selections and scope chips. The dashboard keeps its selection state separately. A selection crosses into an investigation only by explicit import (Ask about this, or Import a…",
+   "origin": "DX4",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-33",
+   "title": "History is immutable",
+   "rule": "DXQ-07 · Option A. Resumed investigations show answers exactly as generated, with their dataset version. Re-run with current data is an explicit action that creates a new run; stored answers never change and are never refreshed silently.",
+   "origin": "DX4",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-34",
+   "title": "KPI reconciliation (finding)",
+   "rule": "J1’s 41 and J3’s 32 measure different populations of the same KPI at Rawdah Point: 41 is all approval types older than a month; 32 is proposals of all ages. Both reconcile (table below). No synthetic-data correction was needed and no KPI definition…",
+   "origin": "DX4",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-35",
+   "title": "Coverage semantics",
+   "rule": "An observed total from incomplete reports is labelled “observed subset” with its coverage (J4: 87 of 3,000 checked units, 18 of 25 malls). The full-portfolio total is an Unavailable card (“—”), never estimated. Partial coverage is inherited by every…",
+   "origin": "DX4",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-36",
+   "title": "Evidence envelope on every statement and visual",
+   "rule": "Every statement and generated component carries: evidence class, metric ids and versions, filters (inherited from the answer when a derived value has none of its own, and marked so), authorization scope, freshness (as-of date), dataset version, and…",
+   "origin": "DX4",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-37",
+   "title": "Versioned recovery",
+   "rule": "A successful retry of a failed node is a new run that creates answer v2 (“revises v1”). v1 is preserved exactly as generated, labelled “superseded · kept unchanged”, and both appear in the inspector’s Versions list. Run again after Stop is also a new run…",
+   "origin": "DX4",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-38",
+   "title": "Context isolation rules",
+   "rule": "Switching threads, changing roles, removing scope chips and resuming investigations can never widen authorization or import context implicitly. Imports and resumes are re-checked against the current access scope; mismatches are refused or dropped with a…",
+   "origin": "DX4",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-39",
+   "title": "Accessibility of evidence, activity and selection",
+   "rule": "Evidence labels, coverage, version and connection states are text. Selectable rows, bars and cells expose aria-pressed and a text state. The inspector is a dialog that takes focus, supports Escape and restores focus; tabs use arrow keys. One polite live…",
+   "origin": "DX4",
+   "cls": "V",
+   "note": "axe-core and screen reader on the real build."
+  },
+  {
+   "id": "DXD-40",
+   "title": "AG-UI handoff contracts",
+   "rule": "Event-to-state mapping, run identity (threadId, runId, requestId, seq), cancellation, interruption and reconnection, retry kinds and idempotency are fixed as design contracts on DX4-AGUI. Assumptions about the AG-UI SDK are listed for verification against…",
+   "origin": "DX4",
+   "cls": "V",
+   "note": "SDK assumptions verified against the pinned AG-UI version (GDQ-11)."
+  },
+  {
+   "id": "DXD-41",
+   "title": "The result is authoritative",
+   "rule": "Generated components render values only from the validated result named by resultRef; payload text uses fact tokens only.",
+   "origin": "DX5",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-42",
+   "title": "Closed component registry",
+   "rule": "Fifteen approved kinds; no model-generated code; new kinds through design review.",
+   "origin": "DX5",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-43",
+   "title": "Representation alternates",
+   "rule": "View as switches representation without modifying or re-querying the result.",
+   "origin": "DX5",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-44",
+   "title": "One formatting module",
+   "rule": "Counts, rates, SAR, missing, zero and undefined formatted once, for every representation.",
+   "origin": "DX5",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-45",
+   "title": "State vocabulary",
+   "rule": "Default, partial, zero, empty, undefined ratio, loading, error, unavailable; never conflated.",
+   "origin": "DX5",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-46",
+   "title": "Size classes",
+   "rule": "Workspace 760, panel 420, canvas 360, phone 358, expanded 1000; per-kind responsive rules.",
+   "origin": "DX5",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-47",
+   "title": "Validation and fallback",
+   "rule": "Server-side validation with client-side defensive re-validation. Amended by DXD-57: the deterministic table only for presentation failures on a resolved, authorized, verified result.",
+   "origin": "DX5",
+   "cls": "R",
+   "note": "Amended by DXD-57."
+  },
+  {
+   "id": "DXD-48",
+   "title": "Envelope per component",
+   "rule": "Every component prints the evidence envelope; a payload envelope that disagrees is rejected.",
+   "origin": "DX5",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-49",
+   "title": "Drilldown and selection",
+   "rule": "Marks are buttons with names, aria-pressed and “Selected” text; arrows, Enter, Escape; selection_ref.v1 into the investigation; records from the same population.",
+   "origin": "DX5",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-50",
+   "title": "Fixtures are labelled",
+   "rule": "Design-only state fixtures are labelled; production never renders fixtures.",
+   "origin": "DX5",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-51",
+   "title": "Bounded representation policy (DXQ-08 A)",
+   "rule": "The agent selects among allowed representations using intent, result shape, dimensions, accessibility preference and display space (rules P1–P6); the user switches with View as.",
+   "origin": "DX5",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-52",
+   "title": "Deterministic table fallback (DXQ-09 A)",
+   "rule": "An invalid presentation payload falls back to a table from the verified, authorized result.",
+   "origin": "DX5",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-53",
+   "title": "Treemap below 400 px (DXQ-10 A)",
+   "rule": "Becomes a ranked list with the same keys and selection.",
+   "origin": "DX5",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-54",
+   "title": "Component budget (DXQ-11 A)",
+   "rule": "At most three generated components in the docked panel and six in the workspace; further supporting information through Open in workspace and the inspector.",
+   "origin": "DX5",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-55",
+   "title": "Verified calculations",
+   "rule": "Every derived value originates from a verified calculation recording method, operands, comparison periods, metric definition and evidence references. The verifier recomputes it. Neither the LLM nor the renderer derives business KPI values; the renderer…",
+   "origin": "DX5",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-56",
+   "title": "Authorization by grants",
+   "rule": "Validate the viewer’s current grants against the result scope, dimension values and records; never compare labels. Revalidate stored and resumed results. Withhold rather than filter a partly-authorized result; never name out-of-grant entities.",
+   "origin": "DX5",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-57",
+   "title": "Failure taxonomy",
+   "rule": "Presentation, calculation, authorization, unknown result, stale and partial are distinct classes with distinct outcomes. Only presentation failures with valid, authorized results use the table fallback.",
+   "origin": "DX5",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-58",
+   "title": "Fallback preserves boundaries",
+   "rule": "The fallback keeps row limits and paging, evidence, partial coverage, formatting and authorization.",
+   "origin": "DX5",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-59",
+   "title": "Subset disclosure",
+   "rule": "Any subset, top-N, page, sample or aggregate is declared and disclosed in text; the renderer never aggregates.",
+   "origin": "DX5",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-60",
+   "title": "Continuity",
+   "rule": "Envelope and selection semantics are preserved across View as, panel ↔ workspace moves, expansion and resume (resume re-runs authorization).",
+   "origin": "DX5",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-61",
+   "title": "ECharts at the Design Gate",
+   "rule": "Final Design Gate validates the GenUI charts on the pinned Apache ECharts runtime (5.6.0) — rendering, names, keyboard, selection, resize, subset disclosure — not on HTML stand-ins.",
+   "origin": "DX5",
+   "cls": "V",
+   "note": "Same pending verification as DXD-21."
+  },
+  {
+   "id": "DXD-62",
+   "title": "Implementation priority",
+   "rule": "Registry keeps 15 kinds; ten core kinds first, five specialized kinds wrap DX3 primitives or simple layouts; unbuilt kinds render through the table fallback.",
+   "origin": "DX5",
+   "cls": "R",
+   "note": "Specialized kinds deferrable within five days."
+  },
+  {
+   "id": "DXD-63",
+   "title": "Detection is deterministic",
+   "rule": "Rules in the analytics layer; the LLM computes nothing; templated text with fact tokens.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-64",
+   "title": "Detector catalogue",
+   "rule": "D1–D8 as detectors-1.1.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": "Refined by DXD-89."
+  },
+  {
+   "id": "DXD-65",
+   "title": "Audience-scoped instances, three checks",
+   "rule": "Generation, delivery, every read; against current grants.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-66",
+   "title": "Transparent scoring",
+   "rule": "impact × urgency; P1 ≥ 6, P2 3–5, P3 ≤ 2; Low → Watch; positive → P3.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": "Rules in DXD-90."
+  },
+  {
+   "id": "DXD-67",
+   "title": "Shared lifecycle, personal triage",
+   "rule": "Shared and per-user states.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": "Thread content private (DXD-83)."
+  },
+  {
+   "id": "DXD-68",
+   "title": "Deduplicate, merge, re-notify, suppress",
+   "rule": "Band rise or ≥ 10% worse than the last notified version.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-69",
+   "title": "Quiet by default",
+   "rule": "Logged decisions with reasons.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-70",
+   "title": "Delivery",
+   "rule": "P1 in app; P2/P3 digest; Watch inbox only.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": "Digest scheduling deferrable (DXD-92)."
+  },
+  {
+   "id": "DXD-71",
+   "title": "Investigation handoff",
+   "rule": "Insight imported and labelled into a private thread.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-72",
+   "title": "Feedback",
+   "rule": "Logged for review; no automatic threshold change; per-user mute.",
+   "origin": "DX6",
+   "cls": "D",
+   "note": "Reconcile with DR-012 re-ranking (GDQ-05)."
+  },
+  {
+   "id": "DXD-73",
+   "title": "Scenario history",
+   "rule": "Declared history extension.",
+   "origin": "DX6",
+   "cls": "S",
+   "note": "Amended by DXD-81."
+  },
+  {
+   "id": "DXD-74",
+   "title": "Five-day priority (DX6)",
+   "rule": "Original core list.",
+   "origin": "DX6",
+   "cls": "S",
+   "note": "Amended by DXD-92."
+  },
+  {
+   "id": "DXD-75",
+   "title": "Evaluation cadence (DXQ-12 A)",
+   "rule": "Weekly, monthly on the as-of day, calendar months, events; all replay.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-76",
+   "title": "Instances per authorized scope (DXQ-13 A)",
+   "rule": "Regional instances computed within each authorized region; operator and tenant never share.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-77",
+   "title": "In-app digest only (DXQ-14 A)",
+   "rule": "",
+   "origin": "DX6",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-78",
+   "title": "Positive findings P3 (DXQ-15 A)",
+   "rule": "",
+   "origin": "DX6",
+   "cls": "R",
+   "note": ""
+  },
+  {
+   "id": "DXD-79",
+   "title": "Tenant own-lease Watch and Action needed (DXQ-16 A)",
+   "rule": "",
+   "origin": "DX6",
+   "cls": "R",
+   "note": "No tenant Watch in the current data after the S6 correction (GDQ-04)."
+  },
+  {
+   "id": "DXD-80",
+   "title": "Canonical approval-age metric and as-of history",
+   "rule": "Parity live card; three new as-of metrics equal to parity at as_of; “waiting 31+ days”; no “overdue”.",
+   "origin": "DX6",
+   "cls": "D",
+   "note": "New metrics need KPI-catalog approval (DR-042); implementation route GDQ-03."
+  },
+  {
+   "id": "DXD-81",
+   "title": "Reconstructible scenario history",
+   "rule": "Series reproduced from record lifecycles; invariants GI-01…16.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": "Recorded refinement — confirm at GD."
+  },
+  {
+   "id": "DXD-82",
+   "title": "Replay oracle",
+   "rule": "Insights, versions, notifications and candidates only from replay.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": "Recorded refinement — confirm at GD."
+  },
+  {
+   "id": "DXD-83",
+   "title": "Private investigation threads",
+   "rule": "Owner only, re-authorized each read; others see status and role only.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": "Recorded refinement — confirm at GD."
+  },
+  {
+   "id": "DXD-84",
+   "title": "Explicit shared summaries",
+   "rule": "Owner-selected verified statements inside the instance scope.",
+   "origin": "DX6",
+   "cls": "F",
+   "note": "Secondary in five days; designed and tested."
+  },
+  {
+   "id": "DXD-85",
+   "title": "Uniform refusals",
+   "rule": "Same response for unauthorized and non-existent.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": "Recorded refinement — confirm at GD."
+  },
+  {
+   "id": "DXD-86",
+   "title": "Run identity and triggers",
+   "rule": "run_key over trigger, checkpoint, dataset, configuration, partition; event dedupe; one worker.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": "Recorded refinement — confirm at GD."
+  },
+  {
+   "id": "DXD-87",
+   "title": "Atomic publication and idempotent delivery",
+   "rule": "Staging; one transaction; optimistic version check; outbox keys.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": "Recorded refinement — confirm at GD."
+  },
+  {
+   "id": "DXD-88",
+   "title": "Restart, late and corrected data",
+   "rule": "Restart discards staging; ingested_at; corrections = new dataset version; stale label.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": "Recorded refinement — confirm at GD."
+  },
+  {
+   "id": "DXD-89",
+   "title": "Detector quality rules (detectors-1.1)",
+   "rule": "Versioned thresholds, minimum history, missing data, coverage, denominators, consecutive periods, no cross-entity associations.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": "Recorded refinement — confirm at GD."
+  },
+  {
+   "id": "DXD-90",
+   "title": "Scoring rules",
+   "rule": "Impact and urgency rules explicit.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": "Recorded refinement — confirm at GD."
+  },
+  {
+   "id": "DXD-91",
+   "title": "Watch promotion and clearing",
+   "rule": "Two periods → Medium Risk; else clears.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": "Recorded refinement — confirm at GD."
+  },
+  {
+   "id": "DXD-92",
+   "title": "Five-day priority for proactive work",
+   "rule": "Core incl. D8 and E2E tests; D3, D4, full D7, snooze, digest, feedback analytics secondary.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": "Overall five-day scope is GDQ-01."
+  },
+  {
+   "id": "DXD-93",
+   "title": "Lease-scoped tenant actions",
+   "rule": "Never company-wide counts for a lease audience.",
+   "origin": "DX6",
+   "cls": "R",
+   "note": "Recorded refinement — confirm at GD."
+  }
+ ],
+ "counts": {
+  "R": 104,
+  "D": 23,
+  "V": 7,
+  "F": 2,
+  "S": 5
+ }
+}
