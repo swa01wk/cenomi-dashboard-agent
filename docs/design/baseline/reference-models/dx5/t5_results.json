@@ -1,0 +1,512 @@
+{
+ "total": 3778,
+ "passed": 3778,
+ "views": 355,
+ "checks": [
+  {
+   "name": "Renewal template order matches the data (Rawdah, Sandstone, Qasr)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Renewal total 18; 7 malls with none",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Highest reported mismatch rate is Cedar Park Mall",
+   "ok": true,
+   "detail": "Cedar Park Mall"
+  },
+  {
+   "name": "Observed subset 33 of 1,291 across 7 malls",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Tenant highest March, lowest September",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Tenant total SAR 2,424,000",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Built 355 component views",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Template amd has no literal number: [[t]] renewal amendments in Central have",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Template amd has no literal number: [[r0]] are at Rawdah Point Mall, [[r1]] ",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Template mm has no literal number: Among the [[rep_n]] Central malls that f",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Template mm has no literal number: Across that observed subset, [[mm]] of [",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Template mm has no literal number: A Central-wide rate is not available: [[",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Template ud25 has no literal number: [[t]] mismatched units were reported in ",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Template ud25 has no literal number: Gulf Gate Mall has the most at [[r0]].",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Template ud25 has no literal number: A portfolio total is not available: [[mi",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Template ts has no literal number: Reported sales for lease T-31206 from Ja",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Template ts has no literal number: The highest month is March at [[r2]]; th",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "V1 Valid · ranked bar → valid",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "V2 Valid · KPI card, partial → valid",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "V3 Valid · tenant trend → valid",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "I1 Unknown component → rejected",
+   "ok": true,
+   "detail": "unknown_component"
+  },
+  {
+   "name": "I2 Line chart on a categorical grain → rejected",
+   "ok": true,
+   "detail": "shape_mismatch"
+  },
+  {
+   "name": "I3 Literal number in the title → rejected",
+   "ok": true,
+   "detail": "literal_number"
+  },
+  {
+   "name": "I4 Payload carries its own numbers → rejected",
+   "ok": true,
+   "detail": "unknown_field"
+  },
+  {
+   "name": "I5 Hides partial coverage → rejected",
+   "ok": true,
+   "detail": "envelope_mismatch"
+  },
+  {
+   "name": "I6 Outside the viewer’s access → rejected",
+   "ok": true,
+   "detail": "not_authorized,not_authorized"
+  },
+  {
+   "name": "I7 Markup in a label → rejected",
+   "ok": true,
+   "detail": "unsafe_string,literal_number"
+  },
+  {
+   "name": "I8 Token that is not a fact → rejected",
+   "ok": true,
+   "detail": "unknown_fact"
+  },
+  {
+   "name": "I9 Over the row limit → rejected",
+   "ok": true,
+   "detail": "max_rows"
+  },
+  {
+   "name": "I10 Unknown or expired result → rejected",
+   "ok": true,
+   "detail": "result_not_found"
+  },
+  {
+   "name": "A1 Regional manager · Central result → valid",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "A2 Regional manager · portfolio result → rejected",
+   "ok": true,
+   "detail": "not_authorized,not_authorized"
+  },
+  {
+   "name": "A3 Resumed after access narrowed → rejected",
+   "ok": true,
+   "detail": "not_authorized,not_authorized"
+  },
+  {
+   "name": "C1 Calculation not verified → rejected",
+   "ok": true,
+   "detail": "calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified"
+  },
+  {
+   "name": "S1 Stale stored answer → valid",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "F1 Invalid payload on a 25-row partial result → rejected",
+   "ok": true,
+   "detail": "shape_mismatch"
+  },
+  {
+   "name": "I1 reports unknown_component and fallback",
+   "ok": true,
+   "detail": "unknown_component / fallback"
+  },
+  {
+   "name": "I2 reports shape_mismatch and fallback",
+   "ok": true,
+   "detail": "shape_mismatch / fallback"
+  },
+  {
+   "name": "I3 reports literal_number and fallback",
+   "ok": true,
+   "detail": "literal_number / fallback"
+  },
+  {
+   "name": "I4 reports unknown_field and fallback",
+   "ok": true,
+   "detail": "unknown_field / fallback"
+  },
+  {
+   "name": "I5 reports envelope_mismatch and fallback",
+   "ok": true,
+   "detail": "envelope_mismatch / fallback"
+  },
+  {
+   "name": "I6 reports not_authorized and withhold",
+   "ok": true,
+   "detail": "not_authorized,not_authorized / withhold"
+  },
+  {
+   "name": "I7 reports unsafe_string and fallback",
+   "ok": true,
+   "detail": "unsafe_string,literal_number / fallback"
+  },
+  {
+   "name": "I8 reports unknown_fact and fallback",
+   "ok": true,
+   "detail": "unknown_fact / fallback"
+  },
+  {
+   "name": "I9 reports max_rows and fallback",
+   "ok": true,
+   "detail": "max_rows / fallback"
+  },
+  {
+   "name": "I10 reports result_not_found and withhold",
+   "ok": true,
+   "detail": "result_not_found / withhold"
+  },
+  {
+   "name": "A2 reports not_authorized and withhold",
+   "ok": true,
+   "detail": "not_authorized,not_authorized / withhold"
+  },
+  {
+   "name": "A3 reports not_authorized and withhold",
+   "ok": true,
+   "detail": "not_authorized,not_authorized / withhold"
+  },
+  {
+   "name": "C1 reports calculation_unverified and calc_error",
+   "ok": true,
+   "detail": "calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified,calculation_unverified / calc_error"
+  },
+  {
+   "name": "F1 reports shape_mismatch and fallback",
+   "ok": true,
+   "detail": "shape_mismatch / fallback"
+  },
+  {
+   "name": "Invalid JSON is withheld",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Plain object parse ignores prototype tricks",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Forbidden __proto__ key is rejected",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Drilldown emits selection_ref.v1 with value, resultRef and scope",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Drilldown records are the same population (Rawdah Point rows)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Selecting elsewhere keeps the previous selection on its component",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Heatmap cell selection carries both dimensions and value 18",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "amd: every derived fact has a verified calculation that recomputes",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "mm: every derived fact has a verified calculation that recomputes",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "ts: every derived fact has a verified calculation that recomputes",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "hm: every derived fact has a verified calculation that recomputes",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "fn: every derived fact has a verified calculation that recomputes",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "tm: every derived fact has a verified calculation that recomputes",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "cmp: every derived fact has a verified calculation that recomputes",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "ud25: every derived fact has a verified calculation that recomputes",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "amd_stale: every derived fact has a verified calculation that recomputes",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "amd_zero: every derived fact has a verified calculation that recomputes",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "hm_zero: every derived fact has a verified calculation that recomputes",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "mm_undef: every derived fact has a verified calculation that recomputes",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "ts_partial: every derived fact has a verified calculation that recomputes",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "hm_partial: every derived fact has a verified calculation that recomputes",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "fn_partial: every derived fact has a verified calculation that recomputes",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "fn_undef: every derived fact has a verified calculation that recomputes",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "tm_partial: every derived fact has a verified calculation that recomputes",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Unverified calculation is detected (C1)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Every rate is a derived fact",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Vacancy in the comparison table cites vacant units and units as operands",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Verifier catches a derived value that does not match its operands",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Grants check allows a Central manager on a Central result whose label says “all regions”",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Record-level check denies a record outside grants",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Tenant record check denies another lease at the same mall",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Stale stored answer renders as generated, classified stale",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Partial data renders, classified partial (not a failure)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Calculation failure never falls back to a table",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Stored result is revalidated on resume",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Presentation error on an unauthorized result is withheld, not fallen back",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Presentation error on an unverified result is a calculation error, not a fallback",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Fallback table keeps the panel row limit with paging, subset disclosure, partial coverage and envelope",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Fallback table supports stage results",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Fallback table supports hierarchical results",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Bar over its width limit shows a declared, disclosed top-N",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Complete bar declares complete and shows no subset line",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Policy: ranking intent on a categorical result → bar",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Policy: headline intent → KPI card",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Policy: screen-reader preference → table first, chart still offered",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Policy: trend intent on a time result → trend",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Policy: treemap below 400 px is a ranked list",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Policy: panel budget of three components, partial notice first",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Policy: workspace budget of six",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Policy: heatmap with four columns stays a heatmap at phone width (labels abbreviate); more than four would put the table first",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Every registry kind has an implementation tier",
+   "ok": true,
+   "detail": ""
+  }
+ ]
+}

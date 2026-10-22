@@ -1,0 +1,276 @@
+{
+ "total": 81,
+ "passed": 81,
+ "checks": [
+  {
+   "name": "K1 runs to the end with no bad values",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K1 Back replays to the previous step",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K2 runs to the end with no bad values",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K2 Back replays to the previous step",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K3 runs to the end with no bad values",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K3 Back replays to the previous step",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K4 runs to the end with no bad values",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K4 Back replays to the previous step",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K5 runs to the end with no bad values",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K5 Back replays to the previous step",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K6 runs to the end with no bad values",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K6 Back replays to the previous step",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K7 runs to the end with no bad values",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K7 Back replays to the previous step",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K8 runs to the end with no bad values",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K8 Back replays to the previous step",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K9 runs to the end with no bad values",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K9 Back replays to the previous step",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K10 runs to the end with no bad values",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K10 Back replays to the previous step",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K11 runs to the end with no bad values",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K11 Back replays to the previous step",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K12 runs to the end with no bad values",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "K12 Back replays to the previous step",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Grants check refuses an Eastern insight even if its audience list names the Central manager",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Tenant is refused a mall-level insight even if addressed to the tenant",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Tenant instances are tenant-only and lease-level (operator and tenant audiences never share an instance)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Admin badge counts new P1–P3 insights only (Watch excluded): 3",
+   "ok": true,
+   "detail": "3"
+  },
+  {
+   "name": "Opening marks seen and lowers the badge",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Personal state is per user: the Central manager still has INS-107 as new",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Investigate sets the shared status and opens a thread owned by the admin",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Other recipients see the shared status only — no thread id, no link, no conversation",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "A deep link to another user’s thread is refused",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Thread readable by its owner while the scope is inside current grants",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Share dialog blocks the one statement whose facts are outside the insight’s scope",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Published summary contains only in-scope verified statements",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "The Central manager sees the summary (4 statements), re-checked against their grants",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Tenant inbox lists only its lease-level action insight",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Tenant deep link to an operator insight is refused",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Tenant sees its own cards (2 documents to upload) and no evaluation-run log",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Tenant evidence uses lease T-31206 only (no company-wide counts)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "After the Central grant is removed the manager’s inbox is empty",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Deep links are re-checked after a grant change",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "The manager’s own thread is refused once its scope is outside their grants",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Dashboard indicators disappear with the grant",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "After a newer dataset version, the insight is labelled stale with its evidence version",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Investigating a stale insight imports it labelled stale (DX5 stale class)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Dismissed insight leaves the open list",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Next evaluation on the same data notifies nothing: dismissed and snoozed are suppressed",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-101: 7 versions, 4 notified (new, band rise, two ≥10% worsenings)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "T-202: P3 → P3 → P2 as the oldest item ages past 7 days",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Merged insight shows Merged and its version table",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Runs view shows the duplicate-event outcome from the runner model",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Pending approvals card shows its open insights with the top band",
+   "ok": true,
+   "detail": "2 insights · P1"
+  }
+ ]
+}

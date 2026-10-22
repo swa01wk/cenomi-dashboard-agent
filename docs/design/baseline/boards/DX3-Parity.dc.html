@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DX3 parity assessment</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.w{width:1936px;box-sizing:border-box;padding:56px 64px;background:#fff;font-family:'Inter',system-ui,sans-serif;color:#1B1530;display:flex;flex-direction:column;gap:20px}
+h1{margin:0;font-family:'Inter Tight','Inter',sans-serif;font-size:28px}
+h2{margin:14px 0 0;font-size:19px}
+p{margin:0}
+.lead{margin-top:8px;font-size:15px;line-height:22px;color:#4B4560;max-width:1500px}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-size:12px;font-weight:600;color:#4B4560;text-transform:uppercase;letter-spacing:.05em;padding:9px 10px;border-bottom:2px solid #E4E1EC;vertical-align:bottom}
+td{font-size:13px;line-height:19px;padding:8px 10px;border-bottom:1px solid #EEECF3;vertical-align:top}
+code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#F4F3F7;padding:1px 5px;border-radius:4px}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;white-space:nowrap}
+.ex{background:#DDF3EF;color:#0F5048}.cl{background:#FDF0E1;color:#8A4B08}.pend{background:#EFEAFB;color:#3B1F8C}.done{background:#DDF3EF;color:#0F5048}.open{background:#FDE8E8;color:#9B1C1C}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.box{border:1px solid #E4E1EC;border-radius:12px;padding:16px 18px}
+.box h3{margin:0 0 8px;font-size:15px}
+.box ul{margin:0;padding-left:18px;font-size:13px;line-height:20px}
+.verdict{display:flex;gap:24px;background:#F4F1FC;border-radius:12px;padding:18px 22px}
+.verdict b{font-size:16px}
+.verdict p{margin-top:6px;font-size:13.5px;line-height:20px;color:#3A3550}
+.note{font-size:12.5px;color:#5E5873}
+</style>
+</helmet>
+<div class="w">
+<div><h1>DX3 · Parity assessment and ECharts recommendation</h1><p class="lead">How each V2 visual is reproduced in the interactive gallery, what has been verified so far, and what still needs one run with the real library before DR-007 can close at GD. Values are the DX2 synthetic values, so the gallery reconciles with the dashboards.</p></div>
+
+<div class="verdict"><div style="flex: 1 1 0"><b>Recommendation · confirm ECharts at GD, on one condition</b><p>No V2 visual is blocked. Eleven visuals use ECharts and four stay HTML (DR-008). Everything the gallery adds on top of ECharts is built and verified: keyboard navigation, live announcements, selection, drilldown payloads, HTML legends and responsive frames. What is not yet verified is ECharts itself: treemap layout fidelity, keyboard-driven tooltips and the generated aria description. These need one browser run with ECharts 5.6.0, which this sandbox cannot load. The gallery's built-in self-test performs that run and reports pass or fail against the thresholds below.</p></div><div style="flex: 0 0 520px"><b>If the treemap fails its thresholds</b><p>Keep ECharts for the other ten visuals and draw both treemaps with our own squarified HTML component. The algorithm already exists in the gallery: about 30 lines, exact areas, tested on 2,000 random layouts. It removes the only medium-risk row from the matrix without changing the rest of the stack.</p></div></div>
+
+<h2>Parity matrix</h2>
+<table>
+<thead><tr><th style="width: 34px">#</th><th style="width: 230px">V2 visual</th><th style="width: 190px">Cards</th><th style="width: 150px">Built with</th><th style="width: 90px">Parity</th><th>What the build adds or changes</th><th style="width: 250px">Verified so far</th><th style="width: 110px">ECharts run</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Stat tiles</td><td>Properties, KPIs, Tenant overview</td><td>HTML</td><td><span class="tag ex">Exact</span></td><td>Native buttons; dash and “Unavailable” instead of 0 (DXD-16)</td><td>Selection, payload, keyboard (browser)</td><td><span class="tag done">Not needed</span></td></tr>
+<tr><td>2</td><td>Occupancy meter</td><td>Properties</td><td>HTML</td><td><span class="tag ex">Exact</span></td><td>Segments are buttons with count and share</td><td>Selection, phone frame</td><td><span class="tag done">Not needed</span></td></tr>
+<tr><td>3</td><td>Donut, top 4 + Other, view switch</td><td>Lease requests</td><td>ECharts <code>pie</code></td><td><span class="tag ex">Exact</span></td><td>HTML centre total and legend; legend selects instead of hiding; Other not selectable; shares use the displayed total</td><td>Adapter, keyboard, click path, Other rule, payload, view switch</td><td><span class="tag pend">Pending</span></td></tr>
+<tr><td>4</td><td>Stage flow with splits</td><td>Sales funnel</td><td>HTML (DR-008)</td><td><span class="tag ex">Exact</span></td><td>“Other statuses” line</td><td>Selection, phone stacking</td><td><span class="tag done">Not needed</span></td></tr>
+<tr><td>5</td><td>Half gauges ×3</td><td>Pending approvals</td><td>ECharts <code>gauge</code></td><td><span class="tag cl">Close</span></td><td>Captions and band counts in HTML; arc thickness and caps to compare at GD</td><td>Adapter, keyboard, caption selection</td><td><span class="tag pend">Pending</span></td></tr>
+<tr><td>6</td><td>Heatmap type × delay week</td><td>Pending amendments</td><td>ECharts <code>heatmap</code></td><td><span class="tag ex">Exact</span></td><td>Quintile colours computed in the adapter, no visualMap; 2-D keyboard</td><td>2-D keyboard, tooltip text, selection style, kept style</td><td><span class="tag pend">Pending</span></td></tr>
+<tr><td>7</td><td>Treemap + category legend</td><td>Service requests (Admin)</td><td>ECharts <code>treemap</code></td><td><span class="tag cl">Close</span></td><td>Squarify with golden-ratio target; labels by share; fixed category order; tile positions differ from the in-house layout</td><td>Index mapping for keyboard and tooltip; reference layout metrics</td><td><span class="tag open">Required</span></td></tr>
+<tr><td>8</td><td>Work-permit strip</td><td>Service requests (Admin)</td><td>HTML</td><td><span class="tag ex">Exact</span></td><td>—</td><td>Selection</td><td><span class="tag done">Not needed</span></td></tr>
+<tr><td>9</td><td>Progress rings ×4</td><td>Fit-out and handover</td><td>ECharts <code>gauge</code> 360°</td><td><span class="tag cl">Close</span></td><td>Null share draws no arc and shows a dash</td><td>Adapter, keyboard</td><td><span class="tag pend">Pending</span></td></tr>
+<tr><td>10</td><td>Horizontal stacked bars</td><td>Fit-out drawings</td><td>ECharts <code>bar</code></td><td><span class="tag ex">Exact</span></td><td>Totals as a right-hand axis; inside labels only when wide enough</td><td>2-D keyboard</td><td><span class="tag pend">Pending</span></td></tr>
+<tr><td>11</td><td>Stacked columns + table</td><td>Drawing document status</td><td>ECharts <code>bar</code></td><td><span class="tag cl">Close</span></td><td>Rotated labels; 7 malls at a time below 640 px with keyboard paging; table from the same dataset</td><td>Table parity (21 malls), paging window, keyboard</td><td><span class="tag pend">Pending</span></td></tr>
+<tr><td>12</td><td>Diverging bars</td><td>Unit discrepancy</td><td>ECharts <code>bar</code></td><td><span class="tag ex">Exact</span></td><td>Partial-coverage label (DXD-14)</td><td>2-D keyboard</td><td><span class="tag pend">Pending</span></td></tr>
+<tr><td>13</td><td>Monthly columns</td><td>Tenant reported sales</td><td>ECharts <code>bar</code></td><td><span class="tag ex">Exact</span></td><td><code>labelLayout.hideOverlap</code>; narrow: value on the selected column only (DXD-20)</td><td>Narrow label rule</td><td><span class="tag pend">Pending</span></td></tr>
+<tr><td>14</td><td>Donut, fixed status order</td><td>Tenant service requests</td><td>ECharts <code>pie</code></td><td><span class="tag cl">Close</span></td><td>“Other” darkened to #D4D0DE to stay visible on white</td><td>Adapter, keyboard</td><td><span class="tag pend">Pending</span></td></tr>
+<tr><td>15</td><td>Treemap, leaf per status</td><td>Tenant service requests</td><td>ECharts <code>treemap</code></td><td><span class="tag cl">Close</span></td><td>As row 7</td><td>Index mapping</td><td><span class="tag open">Required</span></td></tr>
+</tbody>
+</table>
+
+<div class="cols">
+<div class="box"><h3>Verified in this session</h3><ul>
+<li>39 of 39 browser checks on the gallery (Chromium, Playwright), with ECharts replaced by a labelled test double. Covered: keyboard paths, announcements, the click and Enter selection paths, active and kept styles, payloads, legends, view switches, table parity, phone frame, paging window, narrow label rule, blocked-CDN fallback, and no page errors.</li>
+<li>Squarified reference layout: 2,000 random layouts with exact areas, in bounds, no overlaps. Admin data at 760 / 480 / 326 px gives an area CV of 0 % and 100 % largest-first order.</li>
+<li>Palette contrast computed with the WCAG 2.2 formula (in the gallery’s accessibility section).</li>
+<li>Every value comes from the DX2 models, so the gallery and the dashboards reconcile.</li></ul></div>
+<div class="box"><h3>Needs the real ECharts run</h3><ul>
+<li>Each chart renders with the SVG renderer, and its option data matches the adapter.</li>
+<li>ECharts’ aria description carries our summary.</li>
+<li>Keyboard focus shows the real ECharts tooltip, the same one as hover.</li>
+<li>Treemap: area ÷ value CV ≤ 5 %, largest-first order ≥ 90 %, mean aspect ≤ 1.25 × reference. Read from the chart model at 760, 480 and 326 px.</li>
+<li>Charts resize to a 390 px frame without overflow.</li>
+<li>Side-by-side visual check of gauges, rings and both treemaps against V2 screenshots at GD.</li></ul></div>
+</div>
+
+<h2>Findings</h2>
+<table>
+<thead><tr><th style="width: 70px">ID</th><th style="width: 300px">Finding</th><th>Design response</th></tr></thead>
+<tbody>
+<tr><td>F-01</td><td>ECharts gives no keyboard focus to individual data points</td><td>The gallery’s accessibility layer makes each chart one tab stop. Arrow keys move an active point (2-D where the chart is 2-D) and drive ECharts’ <code>highlight</code> and <code>showTip</code>. A polite live region announces the value and position, and Enter reuses the click path. It depends only on two documented actions.</td></tr>
+<tr><td>F-02</td><td>ECharts’ default legend hides series when clicked</td><td>Hidden series would change totals and break parity. Legends are HTML: they show counts, are real buttons, and select rather than hide.</td></tr>
+<tr><td>F-03</td><td>Selection state differs by series type in ECharts</td><td>Selection is drawn as data-level style (ink border, dashed when kept), the same for pie, bar, heatmap, treemap and gauge captions. It survives option rebuilds and is testable from <code>getOption()</code>.</td></tr>
+<tr><td>F-04</td><td>Treemap tile positions will not match the in-house layout</td><td>Fidelity is defined by measurable properties (area, order, shape, grouping, labels), not pixel identity. The HTML fallback is ready if ECharts misses a threshold.</td></tr>
+<tr><td>F-05</td><td><code>minShare 0.08</code> is ambiguous in the API reference</td><td>Two readings are shown in the lab. Reading B would hide 8 of 13 sub-categories and their drilldowns, so A is recommended unless the ui-kit source says otherwise.</td></tr>
+<tr><td>F-06</td><td>Several V2 palette colours are below 3:1 against the white card (teal, amber, light amber, ink-3)</td><td>Acceptable under WCAG 1.4.11 only because every value is also text: labels or legend counts, the tooltip, and the Table tab. Label text colour is chosen by measured contrast. Keep the hues for V2 recognition.</td></tr>
+<tr><td>F-07</td><td>Narrow widths</td><td>Document status pages 7 malls at a time, and keyboard focus scrolls the window. Sales values show only on the selected column (DXD-20). Donut legends wrap below the chart.</td></tr>
+<tr><td>F-08</td><td>Review-time CDN dependency</td><td>The gallery loads ECharts from cdnjs only for review, trying a local vendor file first. Production imports ECharts modules from npm, version pinned in M0 (DR-007).</td></tr>
+</tbody>
+</table>
+
+<h2>Decisions needed before DX4</h2>
+<table>
+<thead><tr><th style="width: 70px">ID</th><th style="width: 300px">Question</th><th>Options</th><th style="width: 330px">Recommendation</th></tr></thead>
+<tbody>
+<tr><td>DXQ-1</td><td>How should DR-007 be verified?</td><td>(a) allow cdnjs.cloudflare.com and registry.npmjs.org for the session so Claude reruns the full suite; (b) attach <code>echarts.min.js</code> 5.6.0 and <code>axe.min.js</code>; (c) run the gallery’s self-test in Play and paste the result</td><td>(a): repeatable, and the vendor file can then ship inside the canvas</td></tr>
+<tr><td>DXQ-2</td><td>What does <code>minShare 0.08</code> mean?</td><td>A: label threshold · B: fold small leaves · or provide the ui-kit Treemap source</td><td>A, unless the source shows B</td></tr>
+<tr><td>DXQ-3</td><td>Treemap fallback</td><td>If ECharts misses a threshold: our HTML squarify component, or accept the ECharts layout</td><td>HTML component</td></tr>
+<tr><td>DXQ-4</td><td>Low-contrast V2 hues</td><td>Keep the hues with text equivalents, or darken marks to reach 3:1 (changes the V2 look)</td><td>Keep the hues</td></tr>
+</tbody>
+</table>
+<p class="note">Design artefact for review. Not production code. Synthetic data as of 20 Oct 2026.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1936,"height":2260}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

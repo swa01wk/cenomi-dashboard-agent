@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Card states</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.card{background:#fff;border:1px solid #E4E1EC;border-radius:12px;display:flex;flex-direction:column;min-height:260px}
+.ch{display:flex;align-items:center;gap:8px;padding:14px 16px 8px}
+.ct{font-size:15px;font-weight:600;margin:0}
+.fl{display:flex;gap:6px;padding:0 16px 8px}
+.fl span{font-size:12px;border:1px solid #D9D4E6;border-radius:7px;padding:4px 8px;color:#1B1530}
+.stbox{margin:6px 16px 12px;padding:16px;border:1px dashed #CFC8E0;border-radius:10px;background:#FAF9FC;display:flex;flex-direction:column;gap:6px;align-items:flex-start;font-size:13px;line-height:19px;color:#4B4560;flex:1 1 auto}
+.stbox b{color:#1B1530}
+.err{border-color:#F3B4AF;background:#FFF7F6}
+.btn{display:inline-flex;align-items:center;min-height:30px;padding:0 12px;border-radius:8px;border:1px solid #D9D4E6;background:#fff;font-size:13px;font-weight:500;color:#1B1530}
+.sk{display:block;height:14px;border-radius:6px;background:#EEEBF4}
+.cf{margin-top:auto;padding:8px 16px 12px;font-size:11px;color:#5E5873;border-top:1px solid #F0EEF4}
+.lab{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#5B21B6}
+.cap{font-size:13px;line-height:19px;color:#4B4560;margin:0}
+.una{display:inline-flex;font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 7px;border-radius:5px;background:#EEECEF;color:#3F3B46}
+</style>
+</helmet>
+<div style="width: 1936px; box-sizing: border-box; padding: 56px 64px; background: #F6F5F9; font-family: 'Inter', system-ui, sans-serif; color: #1B1530; display: flex; flex-direction: column; gap: 24px">
+<div>
+<h1 style="margin: 0; font-family: 'Inter Tight', 'Inter', sans-serif; font-size: 28px">Card states</h1>
+<p style="margin: 8px 0 0; font-size: 15px; line-height: 22px; color: #4B4560; max-width: 1400px">Every card uses the same nine states. A state never shows a fabricated chart: empty, unavailable and error states replace the chart body, while the card title, filters and footer stay so the user keeps their bearings.</p>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px">
+
+<div style="display: flex; flex-direction: column; gap: 10px"><span class="lab">1 · Loading</span>
+<div class="card"><div class="ch"><h2 class="ct">Pending approvals</h2></div><div class="fl"><span>All regions</span><span>All malls</span></div><div style="padding: 8px 16px 16px; display: flex; flex-direction: column; gap: 10px; flex: 1 1 auto"><span class="sk" style="width: 40%"></span><span class="sk" style="height: 90px"></span><span class="sk" style="width: 70%"></span></div><div class="cf">As of 20 Oct 2026 · synthetic data</div></div>
+<p class="cap">Skeleton in the shape of the content, with a shimmer. Filters stay usable. Shown per card, so one slow card never blocks the page.</p></div>
+
+<div style="display: flex; flex-direction: column; gap: 10px"><span class="lab">2 · Empty — no matching records</span>
+<div class="card"><div class="ch"><h2 class="ct">Service requests</h2></div><div class="fl"><span>2026</span><span>Feb</span><span>Western</span><span>Minaret View</span></div><div class="stbox"><b>No service requests for these filters</b><span>Try a different month, region or mall.</span></div><div class="cf">As of 20 Oct 2026 · synthetic data</div></div>
+<p class="cap">The filters are valid but nothing matches. The message names what is missing and how to widen the view.</p></div>
+
+<div style="display: flex; flex-direction: column; gap: 10px"><span class="lab">3 · Empty — before the dataset starts</span>
+<div class="card"><div class="ch"><h2 class="ct">Lease requests</h2></div><div class="fl"><span>2023</span></div><div class="stbox"><b>No lease requests in 2023</b><span>The synthetic dataset starts in January 2024. Earlier years are kept in the year filter to match V2.</span></div><div class="cf">As of 20 Oct 2026 · synthetic data</div></div>
+<p class="cap">V2 always offers the current year and the four before it. The POC keeps that and explains why 2022–2023 are empty.</p></div>
+
+<div style="display: flex; flex-direction: column; gap: 10px"><span class="lab">4 · Empty — after the reference date</span>
+<div class="card"><div class="ch"><h2 class="ct">Sales funnel</h2></div><div class="fl"><span>2026</span><span>Nov</span><span>All regions</span></div><div class="stbox"><b>Nov 2026 is after the reference date</b><span>Synthetic data runs to 20 Oct 2026, so later months have no records.</span></div><div class="cf">As of 20 Oct 2026 · synthetic data</div></div>
+<p class="cap">The frozen reference date is explicit. Nothing is ever computed or projected beyond it.</p></div>
+
+<div style="display: flex; flex-direction: column; gap: 10px"><span class="lab">5 · Error</span>
+<div class="card"><div class="ch"><h2 class="ct">Fit-out and handover</h2></div><div class="fl"><span>2026</span><span>All months</span><span>All regions</span></div><div class="stbox err"><b>Couldn’t load this card.</b><span>The rest of the dashboard is unaffected. Reference req_8f21c4.</span><span class="btn">Retry</span></div><div class="cf">As of 20 Oct 2026 · synthetic data</div></div>
+<p class="cap">Plain-language message, a request reference for support, and Retry. Typed backend errors map to this one pattern; access denials do not (see 7).</p></div>
+
+<div style="display: flex; flex-direction: column; gap: 10px"><span class="lab">6 · Unavailable — not in the dataset</span>
+<div class="card"><div class="ch"><h2 class="ct">Overview</h2></div><div style="padding: 4px 16px 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; flex: 1 1 auto">
+<div style="border-radius: 10px; padding: 12px 14px; background: #E3F5F2"><div style="font-size: 12px; font-weight: 600">Pending sales data</div><div style="font-size: 28px; font-weight: 700">1</div><div style="font-size: 12px; color: #4B4560">2026 · 24 approved</div></div>
+<div style="border-radius: 10px; padding: 12px 14px; border: 1px dashed #B9B0D3"><div style="font-size: 12px; font-weight: 600">Payments</div><div style="font-size: 28px; font-weight: 700; color: #6E6789">—</div><div style="font-size: 12px; color: #4B4560">Not available in this POC</div></div>
+<div style="grid-column: span 2; display: flex; gap: 8px; align-items: flex-start; font-size: 12px; line-height: 17px; color: #4B4560"><span class="una">UNAVAILABLE</span><span>Payments are not part of the synthetic dataset. The agent says so rather than estimating a figure.</span></div>
+</div><div class="cf">As of 20 Oct 2026 · synthetic data</div></div>
+<p class="cap">A dashed outline and a dash, never 0. The same Unavailable label the agent uses for questions like footfall.</p></div>
+
+<div style="display: flex; flex-direction: column; gap: 10px"><span class="lab">7 · Outside your access</span>
+<div class="card"><div class="ch"><h2 class="ct">Pending approvals</h2></div><div class="fl"><span>Central</span><span>All malls</span></div><div class="stbox"><b>Nothing in your access matches these filters</b><span>Your role covers the Central region only. Data outside your access is never shown, and an empty scope never falls back to all malls.</span></div><div class="cf">As of 20 Oct 2026 · synthetic data</div></div>
+<p class="cap">Fixes V2 behaviour where an empty scope could mean “everything” or a 500 error. Cards the role cannot use at all are hidden, with a count in the page header.</p></div>
+
+<div style="display: flex; flex-direction: column; gap: 10px"><span class="lab">8 · Partial coverage</span>
+<div class="card"><div class="ch"><h2 class="ct">Unit discrepancy</h2></div><div class="fl"><span>2026</span><span>Sep</span><span>Mall-wise</span></div><div style="padding: 4px 16px 12px; display: flex; flex-direction: column; gap: 8px; flex: 1 1 auto">
+<div style="display: grid; grid-template-columns: 130px minmax(0, 1fr) 2px minmax(0, 1fr); align-items: center; font-size: 12px"><span>Gulf Gate Mall</span><span style="display: flex; justify-content: flex-end; gap: 4px; align-items: center"><b>11</b><span style="width: 3.7%; height: 12px; background: #DC2626"></span></span><span style="height: 18px; background: #9A93AD"></span><span style="display: flex; gap: 4px; align-items: center"><span style="width: 42.5%; height: 12px; background: #8B5CF6"></span><b>128</b></span></div>
+<div style="display: grid; grid-template-columns: 130px minmax(0, 1fr) 2px minmax(0, 1fr); align-items: center; font-size: 12px"><span>Rawdah Point Mall</span><span style="display: flex; justify-content: flex-end; gap: 4px; align-items: center"><b>6</b><span style="width: 2%; height: 12px; background: #DC2626"></span></span><span style="height: 18px; background: #9A93AD"></span><span style="display: flex; gap: 4px; align-items: center"><span style="width: 100%; height: 12px; background: #8B5CF6"></span><b>301</b></span></div>
+<div style="display: flex; gap: 8px; align-items: flex-start; font-size: 12px; line-height: 17px; color: #4B4560; margin-top: auto"><span class="una" style="background: #FEF3C7; color: #7C3A06">PARTIAL</span><span>No report this month from 7 of 25 malls. Totals cover the 18 that reported.</span></div>
+</div><div class="cf">As of 20 Oct 2026 · synthetic data</div></div>
+<p class="cap">The chart renders what exists and states what is missing, in words, beside it.</p></div>
+
+<div style="display: flex; flex-direction: column; gap: 10px"><span class="lab">9 · No value for a measure</span>
+<div class="card"><div class="ch"><h2 class="ct">Fit-out and handover</h2></div><div class="fl"><span>2026</span><span>Oct</span><span>Central</span><span>Oasis Row</span></div><div style="padding: 8px 16px 12px; display: flex; gap: 18px; align-items: center; flex: 1 1 auto">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 2px"><svg width="88" height="88" viewBox="0 0 96 96" aria-hidden="true"><circle cx="48" cy="48" r="38" fill="none" stroke="#F1EFF5" stroke-width="10"></circle></svg><span style="margin-top: -58px; height: 40px; font-size: 17px; font-weight: 700">—</span><span style="font-size: 12px; font-weight: 600">Close ceiling</span><span style="font-size: 11px; color: #4B4560">0 of 0 reviewed</span></div>
+<p class="cap" style="margin: 0">A ratio with a zero denominator shows a dash and “0 of 0”, never 0% or 100%. The agent returns null with a reason for the same case.</p>
+</div><div class="cf">As of 20 Oct 2026 · synthetic data</div></div>
+<p class="cap">Applies to every ratio: gauges, rings, occupancy and shares.</p></div>
+
+<div style="display: flex; flex-direction: column; gap: 10px; grid-column: span 3"><span class="lab">Rules shared by every state</span>
+<div class="card" style="min-height: 0; padding: 16px 18px; gap: 8px; font-size: 13px; line-height: 20px; color: #4B4560">
+<p style="margin: 0"><b style="color: #1B1530">Footer on every card:</b> “As of 20 Oct 2026 · synthetic data”. Cards with a related snapshot say which figures are live (Sales funnel).</p>
+<p style="margin: 0"><b style="color: #1B1530">Zero is shown as 0</b> (V2 sometimes dropped zero counts from responses). A missing or impossible value is a dash with a reason.</p>
+<p style="margin: 0"><b style="color: #1B1530">States are per card</b> and announced to screen readers; Retry and filter controls stay keyboard reachable in every state.</p>
+<p style="margin: 0"><b style="color: #1B1530">The agent uses the same vocabulary:</b> Empty, Partial, Unavailable and Outside your access map directly to its coverage classes.</p>
+</div></div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1936,"height":1460}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

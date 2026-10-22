@@ -1,0 +1,1167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DX4 agent workspace</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#EEECF4}
+.g{width:1440px;box-sizing:border-box;padding:24px 40px 40px;background:#EEECF4;font-family:'Inter',system-ui,sans-serif;color:#1B1530;display:flex;flex-direction:column;gap:14px}
+h1{margin:0;font-family:'Inter Tight','Inter',sans-serif;font-size:24px}
+h2{margin:0;font-size:16px}
+h3{margin:0;font-size:14px}
+p{margin:0}
+code{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:#F1EFF6;padding:1px 4px;border-radius:4px}
+.lead{margin-top:4px;font-size:13px;line-height:19px;color:#4B4560;max-width:900px}
+.rv{background:#fff;border:1px dashed #B9B2CC;border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.rvh{display:flex;gap:16px;align-items:flex-start;justify-content:space-between}
+.jrow{display:flex;gap:6px;flex-wrap:wrap}
+.jb{border:1px solid #D9D4E6;background:#fff;border-radius:8px;padding:6px 10px;font:500 12.5px 'Inter',system-ui,sans-serif;color:#3A3550;cursor:pointer}
+.jb-on{background:#1B1530;color:#fff;border-color:#1B1530}
+.player{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ctr{font-size:12px;font-weight:600;color:#5E5873;margin-left:6px}
+.pnote{font-size:12.5px;color:#3B1F8C;background:#F1ECFD;border-radius:6px;padding:4px 8px;flex:1 1 300px}
+.covers{font-size:12px;color:#4B4560}.covers span{color:#5E5873}
+.sg{display:inline-flex;border:1px solid #D9D4E6;border-radius:9px;overflow:hidden;background:#fff;flex:0 0 auto}
+.sgb{border:0;background:#fff;padding:6px 12px;font:500 12.5px 'Inter',system-ui,sans-serif;color:#4B4560;cursor:pointer;border-right:1px solid #E4E1EC}
+.sgb:last-child{border-right:0}.sg-on{background:#1B1530;color:#fff}
+.btn{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 12px;border-radius:8px;border:1px solid #D9D4E6;background:#fff;color:#1B1530;font:500 13px 'Inter',system-ui,sans-serif;cursor:pointer;white-space:nowrap}
+.btn.sm{min-height:28px;font-size:12px;padding:0 10px}.btn.xs{min-height:24px;font-size:11.5px;padding:0 8px;border-radius:6px}
+.btn.ghost{border-color:transparent;background:transparent}.btn.pri{background:#1B1530;color:#fff;border-color:#1B1530}
+.btn:focus-visible,.jb:focus-visible,.sgb:focus-visible,.ibtn:focus-visible,.hm:focus-visible,.brow:focus-visible,.rowb:focus-visible,.srt:focus-visible,.sugg:focus-visible,.hitem:focus-visible,.opt:focus-visible,.colb:focus-visible,.vt:focus-visible,.itab:focus-visible,.ctab:focus-visible,.evl:focus-visible{outline:3px solid #7C3AED;outline-offset:2px}
+.ibtn{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:7px;border:1px solid transparent;background:transparent;color:#6D28D9;cursor:pointer}
+.ibtn:hover{background:#F1ECFD}
+/* app frame */
+.app{position:relative;height:880px;margin:0 auto;width:100%;background:#F6F5FA;border:1px solid #D9D4E6;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 8px 30px rgba(27,21,48,.08)}
+.fr-tab{width:1024px}.fr-phone{width:390px;height:844px}
+.top{display:flex;gap:12px;align-items:center;padding:10px 16px;background:#fff;border-bottom:1px solid #E4E1EC;flex:0 0 auto}
+.brand{font-size:14px}.brand span{font-size:10.5px;color:#5E5873;font-weight:600}
+.syn{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:#FFF4D6;color:#7A5300;border:1px solid #F2D58A;border-radius:6px;padding:3px 7px}
+.vtabs{display:inline-flex;gap:2px;background:#F1EFF6;border-radius:8px;padding:2px}
+.vt{border:0;background:transparent;border-radius:6px;padding:5px 10px;font:500 12.5px 'Inter',system-ui,sans-serif;color:#4B4560;cursor:pointer}
+.vt-on{background:#fff;color:#1B1530;box-shadow:0 1px 2px rgba(27,21,48,.12)}
+.sp{flex:1 1 auto}.who{font-size:12px;color:#4B4560}
+.fr-phone .syn,.fr-phone .who{display:none}
+.banner{display:flex;gap:10px;align-items:center;justify-content:space-between;background:#1B1530;color:#fff;font-size:12.5px;padding:7px 12px 7px 16px;flex:0 0 auto}
+.banner .ibtn{color:#fff}
+.body{position:relative;flex:1 1 auto;min-height:0;display:flex}
+/* dashboard */
+.dash{display:flex;flex:1 1 auto;min-width:0;min-height:0}
+.dscroll{flex:1 1 auto;min-width:0;overflow:auto;padding:16px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.fr-phone .cards{grid-template-columns:minmax(0,1fr)}
+.v-db.panel-on.fr-desk .cards{grid-template-columns:minmax(0,1fr)}
+.card{background:#fff;border:1px solid #E4E1EC;border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.c-hm,.c-wide{grid-column:1/-1}
+.chd{display:flex;justify-content:space-between;gap:8px}.filt{font-size:11.5px;color:#5E5873;margin-top:2px}
+.foot{font-size:11px;color:#5E5873;border-top:1px solid #F1EFF6;padding-top:6px}
+.hmg{display:flex;flex-direction:column;gap:4px}
+.hmr{display:grid;grid-template-columns:52px repeat(4,minmax(0,1fr));gap:4px;align-items:center}
+.hmh span{font-size:11px;color:#4B4560;text-align:center}.hmb{font-size:11px;color:#4B4560}
+.hm{border:0;border-radius:5px;height:30px;font:600 12px 'Inter',system-ui,sans-serif;cursor:pointer}
+.hm0{background:#F4F2F8;color:#5E5873}.hm1{background:#EDE7FB;color:#1B1530}.hm2{background:#CDBDF5;color:#1B1530}.hm3{background:#A68BEA;color:#1B1530}.hm4{background:#7C55D6;color:#fff}.hm5{background:#4C1D95;color:#fff}
+.sel-active{box-shadow:0 0 0 3px #1B1530;position:relative;z-index:1}
+.sel-kept{outline:2px dashed #1B1530;outline-offset:1px}
+.selbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-radius:9px;padding:6px 8px;font-size:12.5px}
+.sb-a{background:#F1ECFD;border:1px solid #CDBDF5}.sb-k{background:#fff;border:1px dashed #A9A2BF}
+.sbr{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#6D28D9}.sb-k .sbr{color:#5E5873}
+.sbt{flex:1 1 120px;min-width:0}.sbx{display:flex;gap:4px;flex-wrap:wrap}
+.chg{display:flex;gap:8px;align-items:center;justify-content:space-between;font-size:12px;background:#FFF8EB;border:1px solid #F6D9A8;border-radius:8px;padding:6px 8px;color:#7A4A00}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.gq{background:#F6F4FA;border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:2px}
+.gq b{font-size:22px;color:#4C1D95}.gl{font-size:12px;font-weight:600}.gc{font-size:11px;color:#5E5873}
+.partial{display:flex;gap:8px;align-items:center;font-size:12px;color:#3A3550;background:#FFF8EB;border:1px solid #F6D9A8;border-radius:8px;padding:5px 9px}
+.pb{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:#B45309;color:#fff;border-radius:4px;padding:1px 6px;align-self:flex-start}
+.udl{display:flex;flex-direction:column;gap:5px}
+.udr{display:grid;grid-template-columns:minmax(0,1fr) 90px 22px;gap:8px;align-items:center;font-size:12px}
+.udt{height:8px;background:#F4F2F8;border-radius:4px;overflow:hidden}.udf{display:block;height:100%;background:#DC2626}
+.tcol{display:flex;gap:6px;align-items:flex-end;height:150px}
+.tc{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:3px}
+.tcv{font-size:10px;font-weight:600;color:#0F5048}.tcb{width:100%;max-width:36px;background:#14B8A6;border-radius:4px 4px 0 0}.tcm{font-size:10.5px;color:#4B4560}
+.band{display:flex;justify-content:space-between;align-items:center;background:#E3F5F2;border-radius:10px;padding:8px 12px;font-size:12.5px;color:#0F5048}.band b{font-size:16px}
+/* panel */
+.panel{flex:0 0 420px;display:none;flex-direction:column;background:#fff;border-left:1px solid #E4E1EC;min-height:0}
+.panel-on .panel{display:flex}
+.fr-tab .panel,.fr-phone .panel{position:absolute;top:0;right:0;bottom:0;z-index:30;box-shadow:-16px 0 40px rgba(27,21,48,.18)}
+.fr-phone .panel{width:100%;flex-basis:auto;border-left:0}
+.ph1{display:flex;gap:6px;align-items:center;padding:10px 12px;border-bottom:1px solid #EEECF3}
+.ph1 b{display:inline-flex;gap:6px;align-items:center;font-size:14px;color:#1B1530}
+.pctx{padding:8px 12px;border-bottom:1px solid #EEECF3;display:flex;flex-direction:column;gap:4px}
+.pl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#5E5873;margin-top:2px}
+.chips{display:flex;gap:4px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:5px;min-height:22px;padding:0 8px;border-radius:999px;font-size:11.5px;font-weight:500}
+.c-scope{background:#EFEAFB;color:#3B1F8C}.c-sel{background:#6D28D9;color:#fff}.c-pin{background:#1B1530;color:#fff}.c-fixed{background:#F4F3F7;color:#3A3550;border:1px dashed #A9A2BF}
+.pmsgs,.tmsgs{flex:1 1 auto;min-height:0;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
+.composer{border-top:1px solid #EEECF3;padding:8px 12px;display:flex;flex-direction:column;gap:6px;background:#fff}
+.cchips{display:flex;gap:4px;flex-wrap:wrap}.cchips:empty{display:none}
+.crow{display:flex;gap:6px}.cin{flex:1 1 auto;min-width:0;height:34px;border:1px solid #D9D4E6;border-radius:8px;padding:0 10px;font:13px 'Inter',system-ui,sans-serif}
+.cin:focus-visible{outline:3px solid #7C3AED;outline-offset:1px}
+.empty{display:flex;flex-direction:column;gap:8px;font-size:13px;color:#4B4560;padding:10px 0}
+/* messages */
+.mu{align-self:flex-end;max-width:88%;background:#1B1530;color:#fff;border-radius:12px 12px 2px 12px;padding:8px 11px;display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:18px}
+.mu .chip{font-size:10.5px;min-height:19px}.mu .c-scope{background:#3A2D63;color:#E9E5F5}.mu .c-fixed{background:transparent;color:#CFC6E6;border-color:#6E6789}.mu .c-sel{background:#7C3AED}
+.ma{align-self:flex-end;font-size:12px;color:#3A3550;background:#fff;border:1px dashed #A9A2BF;border-radius:8px;padding:5px 9px}
+.mn{font-size:12px;color:#7A4A00;background:#FFF8EB;border:1px solid #F6D9A8;border-radius:8px;padding:7px 10px}
+.mr{background:#fff;border:1px solid #E4E1EC;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.mrh{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.agn{display:inline-flex;gap:4px;align-items:center;font-size:12.5px;font-weight:700;color:#6D28D9}
+.ph{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
+.ph-live{background:#EFEAFB;color:#3B1F8C;animation:pulse 1.4s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.ph-live{animation:none}}
+@keyframes pulse{50%{opacity:.6}}
+.ph-supported,.ph-derived{background:#DDF3EF;color:#0F5048}.ph-partial{background:#FDF0E1;color:#8A4B08}.ph-related_only{background:#E8F1FB;color:#0B4A7A}.ph-unavailable{background:#FDE8E8;color:#9B1C1C}.ph-needs_input{background:#FFF4D6;color:#7A5300}
+.sum{font-size:11.5px;color:#5E5873}.mra{margin-left:auto;display:flex;gap:2px;flex-wrap:wrap}
+.act{border:1px solid #EEECF3;border-radius:10px;background:#FBFAFD;padding:8px 10px;display:flex;flex-direction:column;gap:8px}
+.iter{display:flex;flex-direction:column;gap:5px}.itl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#5E5873}
+.why{font-size:12px;color:#3B1F8C;background:#F1ECFD;border-radius:6px;padding:4px 8px}
+.node{display:grid;grid-template-columns:76px minmax(0,1fr);gap:8px;align-items:start;font-size:12px}
+.nst{font-size:10.5px;font-weight:700;border-radius:5px;padding:2px 6px;text-align:center}
+.ns-q .nst{background:#F1EFF6;color:#5E5873}.ns-r .nst{background:#EFEAFB;color:#3B1F8C}.ns-rt .nst{background:#FFF4D6;color:#7A5300}.ns-d .nst{background:#DDF3EF;color:#0F5048}.ns-f .nst{background:#FDE8E8;color:#9B1C1C}.ns-b .nst{background:#1B1530;color:#fff}
+.nbd{min-width:0}.ntt{font-weight:600}.nms{font-weight:400;color:#5E5873;font-size:11px}
+.nar{color:#5E5873;font-size:11.5px;word-break:break-word}.nrs{color:#0F5048;font-size:11.5px}.natt{color:#9B1C1C;font-size:11.5px}
+.actn{font-size:11px;color:#5E5873}
+.stmt{display:grid;grid-template-columns:128px minmax(0,1fr) auto;gap:8px;align-items:start;font-size:13px;line-height:19px;padding:6px 8px;border-radius:8px;border:1px solid transparent}
+.fr-phone .stmt{grid-template-columns:minmax(0,1fr) auto}.fr-phone .stmt .kl{grid-column:1/-1;justify-self:start}
+.kl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-radius:5px;padding:2px 6px;text-align:center;align-self:start}
+.k-obs .kl{background:#E3F5F2;color:#0F5048}.k-der .kl{background:#E8F1FB;color:#0B4A7A}.k-hyp .kl{background:#FFF4D6;color:#7A5300}.k-rec .kl{background:#EFEAFB;color:#3B1F8C}.k-una .kl{background:#FDE8E8;color:#9B1C1C}
+.k-hyp{border:1px dashed #D9A93A;background:#FFFCF2}.k-una{background:#FFF8F8}
+.st-focus{box-shadow:0 0 0 2px #7C3AED}
+.evl{border:0;background:transparent;color:#6D28D9;font:600 11.5px 'Inter',system-ui,sans-serif;cursor:pointer;padding:2px 4px;border-radius:5px}
+.cavs{display:flex;flex-direction:column;gap:3px}.cavs p,.cavp{font-size:12px;color:#4B4560}
+.cavl{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#7A4A00;background:#FFF4D6;border-radius:4px;padding:1px 5px;margin-right:6px}
+.comp{border:1px solid #E4E1EC;border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:8px;background:#fff;min-width:0}
+.ch{display:flex;gap:8px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.cht{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:12.5px}.mid{font-size:10.5px;color:#5E5873;font-family:ui-monospace,Menlo,monospace;word-break:break-all}
+.cha{display:flex;gap:2px;flex-wrap:wrap}
+.bars{display:flex;flex-direction:column;gap:4px}
+.brow{display:grid;grid-template-columns:170px minmax(0,1fr) 34px;gap:8px;align-items:center;border:1px solid transparent;background:transparent;border-radius:6px;padding:3px 4px;font:12px 'Inter',system-ui,sans-serif;color:#1B1530;cursor:pointer;text-align:left}
+.fr-phone .brow{grid-template-columns:110px minmax(0,1fr) 30px}
+.brow:hover{background:#F6F4FA}.brow-off{cursor:default;color:#5E5873}
+.bl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bt{height:12px;background:#F4F2F8;border-radius:4px;overflow:hidden}.bf{display:block;height:100%;background:#7C55D6}.bv{font-weight:600;text-align:right}
+.brow.sel-active{box-shadow:none;border:2px solid #1B1530}.brow.sel-kept{outline:none;border:2px dashed #1B1530}
+.is-pinned{background:#F6F4FA}
+.cn,.rnote{font-size:11px;color:#5E5873}
+.cols{display:flex;gap:5px;align-items:flex-end;height:140px}
+.colb{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:2px;border:2px solid transparent;background:transparent;border-radius:6px;cursor:pointer;padding:0}
+.cv{font-size:9.5px;font-weight:600;color:#0F5048}.cb{width:100%;max-width:34px;background:#14B8A6;border-radius:4px 4px 0 0}.cm{font-size:10px;color:#4B4560}
+.colb.sel-active{box-shadow:none;border-color:#1B1530}.colb.sel-kept{outline:none;border:2px dashed #1B1530}
+.tblw{overflow:auto;border:1px solid #EEECF3;border-radius:8px}
+.tbl{border-collapse:collapse;width:100%;font-size:12px}
+.tbl th{text-align:left;font-size:11px;font-weight:600;color:#4B4560;padding:6px 8px;border-bottom:1px solid #E4E1EC;background:#FBFAFD;vertical-align:top}
+.tbl td{padding:5px 8px;border-bottom:1px solid #F1EFF6;vertical-align:top}
+.rank th[scope="row"]{background:#fff;font-weight:500}
+.srt{border:0;background:transparent;font:600 11px 'Inter',system-ui,sans-serif;color:#4B4560;cursor:pointer;padding:0;text-align:left}
+.srt-on{color:#1B1530;text-decoration:underline}
+.rowb{border:0;background:transparent;font:600 12px 'Inter',system-ui,sans-serif;color:#1B1530;cursor:pointer;padding:0;text-align:left}
+.rrow.sel-active{box-shadow:inset 0 0 0 2px #1B1530}.rrow.sel-kept{outline:2px dashed #1B1530;outline-offset:-2px}
+.pm{display:inline-block;margin-left:6px;font-size:9.5px;font-weight:700;text-transform:uppercase;background:#1B1530;color:#fff;border-radius:4px;padding:1px 5px}
+.rn3{display:block;font-size:10.5px;color:#8A4B08;font-weight:500}
+.rk{text-align:right}.rk0{background:#CDBDF5}.rk1{background:#E3DAFA}.rk2{background:#F1ECFD}.rk3,.rk4{background:#fff}.rkx{background:#FFF8EB;color:#8A4B08}.rks{font-weight:700}
+.kpi{display:flex;flex-direction:column;gap:2px;background:#F6F4FA;border-radius:10px;padding:10px 12px}
+.kpl{font-size:12px;font-weight:600}.kpv{font-size:26px}.kps{font-size:12px;color:#4B4560}
+.notice{display:flex;gap:10px;align-items:flex-start;border-radius:9px;padding:9px 11px;font-size:12.5px;line-height:18px}
+.notice p{color:#3A3550}.notice .btn{margin-top:6px}
+.ntl{flex:0 0 auto;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:4px;padding:2px 6px}
+.nt-partial{background:#FFF8EB;border:1px solid #F6D9A8}.nt-partial .ntl{background:#B45309;color:#fff}
+.nt-unavailable{background:#FFF8F8;border:1px solid #F3C9C9}.nt-unavailable .ntl{background:#9B1C1C;color:#fff}
+.nt-error{background:#FFF8F8;border:1px solid #F3C9C9}.nt-error .ntl{background:#DC2626;color:#fff}
+.nt-boundary{background:#F4F3F7;border:1px dashed #A9A2BF}.nt-boundary .ntl{background:#1B1530;color:#fff}
+.prop{border:1px solid #CDBDF5;background:#F7F4FE;border-radius:10px;padding:9px 11px;display:flex;flex-direction:column;gap:6px;font-size:12.5px}
+.pbt{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.okt{color:#0F5048;font-weight:600}
+.note{font-size:11.5px;color:#5E5873}
+.clar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.fr-phone .clar{grid-template-columns:minmax(0,1fr)}
+.opt{border:1px solid #D9D4E6;background:#fff;border-radius:9px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;text-align:left;font:12.5px 'Inter',system-ui,sans-serif;color:#1B1530;cursor:pointer}
+.opt span{font-size:11.5px;color:#5E5873}.opt-on{border:2px solid #1B1530;background:#F6F4FA}
+.suggs{display:flex;gap:5px;flex-wrap:wrap}.suggs:empty{display:none}
+.sugg{border:1px solid #CDBDF5;background:#fff;color:#3B1F8C;border-radius:999px;padding:5px 10px;font:500 12px 'Inter',system-ui,sans-serif;cursor:pointer;text-align:left}
+/* workspace */
+.ws{display:grid;grid-template-columns:230px minmax(0,1fr) 330px;flex:1 1 auto;min-width:0;min-height:0}
+.hist{border-right:1px solid #E4E1EC;background:#fff;overflow:auto;padding:10px;display:flex;flex-direction:column;gap:6px;min-height:0}
+.hh{display:flex;align-items:center;gap:6px;justify-content:space-between;margin-bottom:4px}
+.hitem{border:1px solid transparent;background:transparent;border-radius:9px;padding:8px;display:flex;flex-direction:column;gap:2px;text-align:left;font:12.5px 'Inter',system-ui,sans-serif;color:#1B1530;cursor:pointer}
+.hitem:hover{background:#F6F4FA}.h-on{background:#F1ECFD;border-color:#CDBDF5}
+.ht{font-weight:600}.hw{font-size:10.5px;color:#5E5873}
+.oc{align-self:flex-start;font-size:10px;font-weight:700;border-radius:999px;padding:1px 7px;margin-top:2px}
+.oc-supported{background:#DDF3EF;color:#0F5048}.oc-partial{background:#FDF0E1;color:#8A4B08}.oc-related_only{background:#E8F1FB;color:#0B4A7A}.oc-needs_input{background:#FFF4D6;color:#7A5300}.oc-new{background:#F1EFF6;color:#5E5873}
+.thread{display:flex;flex-direction:column;min-width:0;min-height:0}
+.th{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:10px 14px;border-bottom:1px solid #E4E1EC;background:#fff}
+.tht p{font-size:11.5px;color:#5E5873;margin-top:2px}
+.thb{display:none;gap:4px}
+.ctx{border-left:1px solid #E4E1EC;background:#fff;display:flex;flex-direction:column;min-height:0}
+.ctabs{display:flex;gap:2px;padding:8px 10px;border-bottom:1px solid #EEECF3;align-items:center}
+.ctab{border:0;background:transparent;border-radius:6px;padding:5px 10px;font:600 12px 'Inter',system-ui,sans-serif;color:#5E5873;cursor:pointer}
+.ctab-on{background:#F1ECFD;color:#3B1F8C}
+.cbody{overflow:auto;padding:10px;display:flex;flex-direction:column;gap:12px;min-height:0}
+.cbody section{display:flex;flex-direction:column;gap:5px}
+.selc{border-radius:9px;padding:7px 9px;display:flex;flex-direction:column;gap:2px;font-size:12.5px}
+.selc .btn{align-self:flex-start}
+.sc-a{background:#F1ECFD;border:1px solid #CDBDF5}.sc-k{border:1px dashed #A9A2BF}.sc-p{background:#1B1530;color:#fff}.sc-p .mid{color:#CFC6E6}.sc-p .btn{color:#fff}
+.json{margin:0;font-size:10.5px;line-height:14px;background:#1B1530;color:#E9E5F5;border-radius:8px;padding:8px;overflow:auto;max-height:260px}
+.dclose{display:none}
+/* narrow: drawers */
+.fr-tab .ws,.fr-phone .ws{grid-template-columns:minmax(0,1fr)}
+.fr-tab .hist,.fr-phone .hist,.fr-tab .ctx,.fr-phone .ctx{display:none;position:absolute;top:0;bottom:0;z-index:30;box-shadow:0 0 40px rgba(27,21,48,.22)}
+.fr-tab .hist,.fr-phone .hist{left:0;width:280px}
+.fr-tab .ctx,.fr-phone .ctx{right:0;width:340px}
+.fr-phone .hist,.fr-phone .ctx{width:100%}
+.dr-history .hist,.dr-context .ctx{display:flex}
+.fr-tab .thb,.fr-phone .thb,.fr-tab .dclose,.fr-phone .dclose{display:flex}
+/* inspector */
+.insp{position:absolute;top:0;right:0;bottom:0;width:480px;z-index:40;background:#fff;border-left:1px solid #D9D4E6;box-shadow:-20px 0 48px rgba(27,21,48,.22);display:flex;flex-direction:column}
+.fr-phone .insp{width:100%}
+.ih{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 12px;border-bottom:1px solid #EEECF3}.ih div{display:flex;flex-direction:column;gap:2px}
+.itabs{display:flex;gap:2px;padding:6px 10px;border-bottom:1px solid #EEECF3}
+.itab{border:0;background:transparent;border-radius:6px;padding:5px 9px;font:600 12px 'Inter',system-ui,sans-serif;color:#5E5873;cursor:pointer}.itab-on{background:#1B1530;color:#fff}
+.ib{overflow:auto;padding:10px 12px;display:flex;flex-direction:column;gap:10px}
+.ihint{font-size:12px;color:#3B1F8C;background:#F1ECFD;border-radius:8px;padding:6px 9px}
+.ib .stmt{grid-template-columns:128px minmax(0,1fr);background:#FBFAFD;border-color:#EEECF3}
+.ib .stmt .tblw,.ib .stmt .steps{grid-column:1/-1}
+.steps{font-size:11px;color:#5E5873}
+.evt td{font-size:11.5px}
+.def{display:flex;flex-direction:column;gap:4px;border-bottom:1px solid #F1EFF6;padding-bottom:8px;font-size:12.5px}
+.phs,.agl{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px}
+.phs li{display:grid;grid-template-columns:150px 120px minmax(0,1fr) 50px;gap:6px;font-size:11.5px;align-items:baseline}
+.pt{color:#5E5873;text-align:right}
+.agl{max-height:240px;overflow:auto;border:1px solid #EEECF3;border-radius:8px;padding:6px}
+.agl li{display:flex;gap:8px;font-size:11px}.agl li span{color:#9A93AD;width:20px}
+
+.ib>*,.cbody>*,.pmsgs>*,.tmsgs>*{flex-shrink:0}
+.panel .stmt{grid-template-columns:minmax(0,1fr) auto}.panel .stmt .kl{grid-column:1/-1;justify-self:start}
+/* DX4 corrections · evidence envelope, versions, connection, isolation, a11y */
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.stb{min-width:0;display:flex;flex-direction:column;gap:2px}
+.stb p{margin:0}
+.prov{font-size:11px;line-height:15px;color:#4F4866;margin:0}
+.prov-p{color:#8A4B08}
+.prov-p::before{content:"Partial coverage · ";font-weight:700}
+.cenv{display:flex;gap:6px;align-items:baseline;font-size:11px;line-height:15px;color:#4F4866;margin:6px 0 0;padding-top:6px;border-top:1px solid #ECE9F2}
+.cenv-p{color:#8A4B08}
+.envl{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#3A3550;flex-shrink:0}
+.ver{font-size:11.5px;font-weight:600;margin:4px 0;padding:3px 8px;border-radius:6px;display:inline-block}
+.ver-old{background:#F4F3F7;color:#3A3550;border:1px dashed #A9A2BF}
+.ver-new{background:#E7F5EC;color:#14532D;border:1px solid #86C29E}
+.mr-old{opacity:1}
+.mr-old .stmt p{color:#3A3550}
+.conn{font-size:12px;margin:4px 0;padding:5px 8px;border-radius:6px;display:flex;gap:6px;align-items:center}
+.conn::before{font-weight:700;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase}
+.conn-lost{background:#FFF4E5;color:#7A3E06;border:1px solid #F0B46A}.conn-lost::before{content:"Reconnecting"}
+.conn-replayed{background:#EEF4FF;color:#1E3A8A;border:1px solid #A9C0F0}.conn-replayed::before{content:"Recovered"}
+.stopb{border-color:#B42318;color:#B42318}
+.cxl{display:flex;flex-direction:column;gap:4px;padding:8px 10px;border-radius:8px;background:#F4F3F7;border:1px solid #D8D3E6;font-size:12.5px;margin:6px 0}
+.cxl .btn{align-self:flex-start}
+.ph-cancelled{background:#F4F3F7;color:#3A3550;border:1px solid #A9A2BF}
+.meth{display:grid;grid-template-columns:1fr;gap:4px;margin:0}
+.mi{display:grid;grid-template-columns:140px minmax(0,1fr);gap:8px;font-size:12.5px;padding:4px 0;border-bottom:1px solid #F1EFF5}
+.mi dt{font-weight:600;color:#3A3550}.mi dd{margin:0}
+.ldr{display:block;font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#3B1F8C}
+.rk-lead{box-shadow:inset 0 0 0 2px #6D28D9}
+.kpi-una{background:#FFF8EB;border:1px dashed #C77C1A}
+.kpi-una .kpv{color:#8A4B08}
+.pb-una{background:#8A4B08}
+.aall{font-size:12px;font-weight:600;color:#3A3550;margin:6px 0 0}
+.c-none{background:#fff;color:#4F4866;border:1px dashed #A9A2BF}
+.c-rm{padding-right:2px}
+.chx{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;border:0;background:transparent;color:inherit;cursor:pointer;padding:0}
+.chx:hover{background:#DCD2F6}
+.chx:focus-visible,.rsw:focus-visible,.imp summary:focus-visible{outline:2px solid #6D28D9;outline-offset:2px}
+.dsel{display:flex;flex-direction:column;gap:1px;margin-top:6px;padding:6px 8px;border-radius:8px;border:1px dashed #A9A2BF;font-size:12.5px}
+.dsel .pl{margin:0}
+.imp{margin-top:6px;font-size:12.5px}
+.imp summary{cursor:pointer;font-weight:600;color:#3B1F8C;padding:2px 0}
+.imp .selc{margin-top:4px}
+.sc-i{border:1px solid #D8D3E6;background:#fff}
+.ctxh{font-size:12px;color:#3A3550;margin:0 0 8px;padding:6px 8px;background:#F6F4FA;border-radius:8px}
+.rsw{margin-left:8px}
+.fr-phone .rsw{display:none}
+.sel-active.brow::after,.rrow.sel-active th::after{content:"Selected";font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#4C1D95;margin-left:6px}
+.hm.sel-active{outline:3px solid #1B1530;outline-offset:-3px}
+.hm.sel-active::after{content:"\2713";font-size:10px;margin-left:2px}
+.cchips .chip{border-radius:8px;min-height:22px;height:auto;padding:3px 8px;line-height:15px}
+.rra{margin-left:auto;align-self:center}.fr-phone .rra{display:none}
+
+</style>
+</helmet>
+<div class="g">
+<div class="rv"><div class="rvh"><div><h1>DX4 · Dashboard Intelligence Agent workspace</h1><p class="lead">Interactive design prototype. Ten journeys play the agent lifecycle step by step: context, plan, tool calls, evidence, generated components, confirmations and history. Every number comes from the shared synthetic dataset through fact tokens.</p></div><div class="sg" role="group" aria-label="Frame width"><sc-for list="{{frameOpts}}" as="o"><button class="{{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.go}}">{{o.label}}</button></sc-for></div></div>
+<div class="jrow" role="group" aria-label="Journeys"><sc-for list="{{jbtns}}" as="b"><button class="{{b.cls}}" aria-pressed="{{b.pressed}}" onClick="{{b.go}}">{{b.label}}</button></sc-for></div>
+<div class="player"><sc-if value="{{notPlaying}}"><button class="btn pri" onClick="{{play}}">Play</button></sc-if><sc-if value="{{playing}}"><button class="btn pri" onClick="{{pause}}">Pause</button></sc-if><button class="btn" onClick="{{step}}">Step</button><button class="btn" onClick="{{skip}}">Skip to end</button><button class="btn ghost" onClick="{{restart}}">Restart</button><span class="ctr">{{counter}}</span><span class="pnote" role="status">{{note}}</span></div>
+<sc-if value="{{jOn}}"><p class="covers"><b>{{jTitle}}</b> · {{jWhere}} · <span>{{jCovers}}</span></p></sc-if></div><div class="{{appCls}}"><header class="top"><b class="brand">Cenomi Dashboard Agent <span>POC</span></b><span class="syn">Synthetic data · as of 20 Oct 2026</span><div class="vtabs" role="tablist"><button role="tab" class="{{tabDash}}" aria-selected="{{dashSel}}" onClick="{{goDash}}">Dashboard</button><button role="tab" class="{{tabWs}}" aria-selected="{{wsSel}}" onClick="{{goWs}}">Workspace</button></div><span class="sp"></span><span class="who">{{who}}</span><button class="btn xs rsw" onClick="{{switchRole}}">{{switchLbl}}</button></header><p class="sr" role="status" aria-live="polite">{{live}}</p>
+<sc-if value="{{hasBanner}}"><div class="banner" role="status"><span>{{banner}}</span><button class="ibtn" onClick="{{closeBanner}}" aria-label="Dismiss"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div></sc-if>
+<div class="body"><sc-if value="{{isDash}}"><div class="dash"><div class="dscroll"><sc-if value="{{isAdmin}}"><div class="cards">
+<section class="card c-hm" aria-label="Pending amendments"><div class="chd"><div><h3>Pending amendments</h3><p class="filt">2026 · All months · Central · All malls</p></div><button class="ibtn" onClick="{{openPanel}}" aria-label="Ask the agent about Pending amendments"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></button></div>
+<div class="hmg" role="group" aria-label="Pending amendments by type and age band"><div class="hmr hmh"><span></span><span>Expansion</span><span>HoldOver</span><span>Renewal</span><span>Termination</span></div><sc-for list="{{hm}}" as="r"><div class="hmr"><span class="hmb">{{r.band}}</span><sc-for list="{{r.cells}}" as="c"><button class="{{c.cls}}" onClick="{{c.go}}" aria-pressed="{{c.pressed}}" aria-label="{{c.aria}}">{{c.v}}</button></sc-for></div></sc-for></div>
+<sc-if value="{{hmSel}}"><div class="{{hmSelCls}}"><span class="sbr">{{hmSelRole}}</span><b class="sbt">{{hmSelTxt}}</b><span class="sbx"><button class="btn xs" onClick="{{hmAsk}}">Ask about this</button><button class="btn xs ghost" onClick="{{hmClear}}">Clear</button></span></div></sc-if>
+<p class="foot">As of 20 Oct 2026 · synthetic data</p></section>
+<section class="card" aria-label="Pending approvals"><div class="chd"><div><h3>Pending approvals</h3><p class="filt">{{apprFilt}}</p></div><button class="ibtn" onClick="{{openPanel}}" aria-label="Ask the agent about Pending approvals"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></button></div>
+<sc-if value="{{apprChanged}}"><div class="chg"><span>Changed after your confirmation in the agent panel</span><button class="btn xs" onClick="{{apprUndo}}">Undo</button></div></sc-if>
+<div class="g3"><sc-for list="{{appr}}" as="g"><div class="gq"><b>{{g.pct}}</b><span class="gl">{{g.label}} · {{g.total}} pending</span><span class="gc">{{g.cap}}</span></div></sc-for></div><p class="aall">{{apprAll}}</p><p class="foot">Share older than one month · as of 20 Oct 2026 · synthetic data</p></section>
+<section class="card" aria-label="Unit discrepancy"><div class="chd"><div><h3>Unit discrepancy</h3><p class="filt">2026 · Sep · mall-wise</p></div><button class="ibtn" onClick="{{openPanel}}" aria-label="Ask the agent about Unit discrepancy"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></button></div>
+<div class="partial"><span class="pb">Partial</span>{{udPartial}}</div><div class="udl"><sc-for list="{{udTop}}" as="u"><div class="udr"><span>{{u.mall}}</span><span class="udt"><span class="udf" style="width: {{u.w}}"></span></span><b>{{u.mm}}</b></div></sc-for></div><p class="foot">Mismatched units in the latest report · as of 20 Oct 2026</p></section>
+</div></sc-if><sc-if value="{{isTenant}}"><div class="cards"><section class="card c-wide" aria-label="Reported sales"><div class="chd"><div><h3>Reported sales</h3><p class="filt">2026 · T-31206 · Lumen Home · Sandstone Galleria</p></div><button class="ibtn" onClick="{{openPanel}}" aria-label="Ask the agent about Reported sales"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></button></div><div class="tcol"><sc-for list="{{tcols}}" as="c"><div class="tc"><span class="tcv">{{c.v}}</span><span class="tcb" style="height: {{c.h}}"></span><span class="tcm">{{c.m}}</span></div></sc-for></div><div class="band"><span>Reported sales · T-31206 · 2026</span><b>{{tTotal}}</b></div><p class="foot">As of 20 Oct 2026 · synthetic data</p></section></div></sc-if></div><aside class="panel" aria-label="Agent panel"><div class="ph1"><b><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg> Agent</b><span class="sp"></span><button class="btn xs" onClick="{{toWs}}">Open in workspace</button><button class="ibtn" onClick="{{closePanel}}" aria-label="Close agent panel"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+<div class="pctx"><p class="pl">Analytical scope · you can remove it</p><div class="chips"><sc-for list="{{scope}}" as="c"><span class="chip c-scope c-rm">{{c.label}}<button class="chx" onClick="{{c.rm}}" aria-label="{{c.aria}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></span></sc-for><sc-if value="{{noScope}}"><span class="note">{{accessTxt}}</span></sc-if></div><p class="pl">Boundaries · cannot be removed</p><div class="chips"><sc-for list="{{bounds}}" as="c"><span class="chip c-fixed"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>{{c}}</span></sc-for></div><sc-if value="{{hasDashSel}}"><div class="dsel"><span class="pl">{{dashSelHead}}</span><b>{{dashSelLbl}}</b></div></sc-if><sc-if value="{{hasImps}}"><details class="imp"><summary>Import a selection…</summary><sc-for list="{{imps}}" as="ip"><div class="selc sc-i"><b>{{ip.label}}</b><span class="mid">From {{ip.src}}</span><button class="btn xs" onClick="{{ip.go}}">Import</button></div></sc-for><p class="note">Imported selections are labelled with their source. Imports outside your access are refused.</p></details></sc-if></div>
+<div class="pmsgs" data-dx4-scroll><sc-for list="{{pmsgs}}" as="mm">
+<sc-if value="{{mm.isUser}}"><div class="mu"><p>{{mm.text}}</p><div class="chips"><sc-for list="{{mm.chips}}" as="c"><span class="{{c.cls}}">{{c.label}}</span></sc-for></div></div></sc-if>
+<sc-if value="{{mm.isAction}}"><div class="ma">{{mm.text}}</div></sc-if>
+<sc-if value="{{mm.isNote}}"><div class="mn">{{mm.text}}</div></sc-if>
+<sc-if value="{{mm.isRun}}"><div class="{{mm.mrCls}}"><div class="mrh"><span class="agn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg> Agent</span><span class="{{mm.phaseCls}}">{{mm.phaseLbl}}</span><span class="sum">{{mm.summary}}</span><span class="mra"><button class="btn xs ghost" onClick="{{mm.openExec}}">Execution</button><button class="btn xs ghost" onClick="{{mm.openEvid}}">Evidence</button><sc-if value="{{mm.hasRec}}"><button class="btn xs ghost" onClick="{{mm.openRec}}">Records</button></sc-if></span></div>
+<sc-if value="{{mm.hasVer}}"><p class="{{mm.verCls}}">{{mm.verLbl}}</p></sc-if>
+<sc-if value="{{mm.hasConn}}"><p class="{{mm.connCls}}" role="status">{{mm.connNote}}</p></sc-if>
+
+<sc-if value="{{mm.isCancelled}}"><div class="cxl"><b>Stopped before the answer was written.</b><span>Completed tool results are kept in Execution. No partial narrative is shown.</span><sc-if value="{{mm.canRerun}}"><button class="btn sm pri" onClick="{{mm.rerun}}">Run again</button></sc-if></div></sc-if>
+<sc-for list="{{mm.stmts}}" as="st"><div class="{{st.cls}}"><span class="kl">{{st.lbl}}</span><div class="stb"><p>{{st.text}}</p><sc-if value="{{st.prov}}"><p class="{{st.provCls}}">{{st.prov}}</p></sc-if></div><button class="evl" onClick="{{st.ev}}">Evidence</button></div></sc-for>
+<sc-if value="{{mm.hasCav}}"><div class="cavs"><sc-for list="{{mm.cavs}}" as="cv"><p><span class="cavl">Caveat</span>{{cv}}</p></sc-for></div></sc-if>
+<sc-for list="{{mm.comps}}" as="cc"><div class="comp">
+<sc-if value="{{cc.hasHead}}"><div class="ch"><div class="cht"><b>{{cc.title}}</b><span class="mid">{{cc.metric}}</span></div><div class="cha"><sc-if value="{{cc.canToggle}}"><button class="btn xs" onClick="{{cc.toggle}}">{{cc.toggleLbl}}</button></sc-if><button class="btn xs" onClick="{{cc.pinCanvas}}">{{cc.canvasLbl}}</button><button class="btn xs ghost" onClick="{{cc.evid}}">Evidence</button></div></div></sc-if>
+<sc-if value="{{cc.isBars}}"><div class="bars"><sc-for list="{{cc.rows}}" as="r"><button class="{{r.cls}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}" aria-label="{{r.aria}}"><span class="bl">{{r.label}}</span><span class="bt"><span class="bf" style="width: {{r.w}}"></span></span><span class="bv">{{r.v}}</span></button></sc-for></div><p class="cn">{{cc.note}}</p></sc-if>
+<sc-if value="{{cc.isCols}}"><div class="cols"><sc-for list="{{cc.crows}}" as="r"><button class="{{r.cls}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}" aria-label="{{r.aria}}"><span class="cv">{{r.v}}</span><span class="cb" style="height: {{r.h}}"></span><span class="cm">{{r.m}}</span></button></sc-for></div></sc-if>
+<sc-if value="{{cc.isRank}}"><div class="tblw"><table class="tbl rank"><thead><tr><th scope="col">Mall</th><sc-for list="{{cc.heads}}" as="h"><th scope="col" aria-sort="{{h.sort}}"><button class="{{h.cls}}" onClick="{{h.go}}" aria-label="{{h.aria}}">{{h.label}}</button></th></sc-for></tr></thead><tbody><sc-for list="{{cc.rrows}}" as="r"><tr class="{{r.cls}}"><th scope="row"><button class="rowb" onClick="{{r.go}}" aria-pressed="{{r.pressed}}">{{r.mall}}<span class="sr">{{r.sr}}</span></button><sc-if value="{{r.pinMark}}"><span class="pm">Pinned</span></sc-if><sc-if value="{{r.hasNote}}"><span class="rn3">{{r.note}}</span></sc-if></th><sc-for list="{{r.cells}}" as="c"><td class="{{c.cls}}">{{c.v}}<sc-if value="{{c.lead}}"><span class="ldr">Leader</span></sc-if></td></sc-for></tr></sc-for></tbody></table></div><p class="cn">{{cc.rankNote}} Darker cells rank higher on that KPI.</p></sc-if>
+<sc-if value="{{cc.isMethod}}"><dl class="meth"><sc-for list="{{cc.items}}" as="it"><div class="mi"><dt>{{it.k}}</dt><dd>{{it.v}}</dd></div></sc-for></dl></sc-if>
+<sc-if value="{{cc.isTable}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{cc.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{cc.trows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><sc-if value="{{cc.sameNote}}"><p class="cn">{{cc.sameNote}}</p></sc-if></sc-if>
+<sc-if value="{{cc.isKpi}}"><div class="{{cc.kpiCls}}"><b class="kpv">{{cc.value}}</b><span class="kps">{{cc.sub}}</span><sc-if value="{{cc.hasBadge}}"><span class="{{cc.badgeCls}}">{{cc.badge}}</span></sc-if></div></sc-if>
+<sc-if value="{{cc.isNotice}}"><div class="{{cc.tone}}"><span class="ntl">{{cc.toneLbl}}</span><div><b>{{cc.ntitle}}</b><p>{{cc.text}}</p><sc-if value="{{cc.retry}}"><button class="btn xs" onClick="{{cc.doRetry}}">Retry this step</button></sc-if><sc-if value="{{cc.recovered}}"><p class="okt">Recovered: the retry below loaded this step.</p></sc-if></div></div></sc-if>
+<sc-if value="{{cc.hasSel}}"><div class="{{cc.selCls}}"><span class="sbr">{{cc.selRole}}</span><b class="sbt">{{cc.selTxt}}</b><span class="sbx"><button class="btn xs" onClick="{{cc.selAsk}}">Ask about this</button><button class="btn xs" onClick="{{cc.selRec}}">View records</button><button class="btn xs" onClick="{{cc.selPin}}">{{cc.pinLbl}}</button></span></div></sc-if>
+<p class="{{cc.envCls}}"><span class="envl">Evidence</span>{{cc.env}}</p>
+</div></sc-for>
+<sc-if value="{{mm.hasProp}}"><div class="prop"><p class="pl">Proposed dashboard change</p><p>Set <b>{{mm.prop.card}}</b> from {{mm.prop.from}} to <b>{{mm.prop.to}}</b>?</p><sc-if value="{{mm.prop.pending}}"><div class="pbt"><button class="btn sm pri" onClick="{{mm.prop.apply}}">Apply filter</button><button class="btn sm" onClick="{{mm.prop.dismiss}}">Dismiss</button><span class="note">Nothing changes until you confirm.</span></div></sc-if><sc-if value="{{mm.prop.applied}}"><div class="pbt"><span class="okt">Applied. The card is flagged as changed.</span><button class="btn sm" onClick="{{mm.prop.undo}}">Undo</button></div></sc-if><sc-if value="{{mm.prop.dismissed}}"><p class="note">Dismissed. The dashboard is unchanged.</p></sc-if><sc-if value="{{mm.prop.undone}}"><p class="note">Undone. Pending approvals is back to All regions · All malls.</p></sc-if></div></sc-if>
+<sc-if value="{{mm.hasClar}}"><div class="clar"><sc-for list="{{mm.clar}}" as="o"><button class="{{o.cls}}" onClick="{{o.go}}" aria-pressed="{{o.pressed}}"><b>{{o.label}}</b><span>{{o.sub}}</span></button></sc-for></div></sc-if>
+<div class="suggs"><sc-for list="{{mm.suggs}}" as="sg"><button class="sugg" onClick="{{sg.go}}">{{sg.label}}</button></sc-for></div>
+</div></sc-if>
+</sc-for><sc-if value="{{noMsgs}}"><div class="empty"><p>Ask about any card, or select a value first.</p><div class="suggs"><sc-for list="{{sugg0}}" as="sg"><button class="sugg" onClick="{{sg.go}}">{{sg.label}}</button></sc-for></div></div></sc-if></div><div class="composer"><div class="cchips"><sc-if value="{{hasActive}}"><span class="chip c-sel">Context sent: {{actLbl}}</span><button class="btn xs ghost" onClick="{{clearCtx}}" aria-label="Remove this selection from the next question">Remove</button></sc-if><sc-if value="{{noActive}}"><span class="chip c-none">No selection sent</span></sc-if><sc-if value="{{hasPins}}"><span class="chip c-pin">Pinned sent · {{pinCount}}</span></sc-if><sc-for list="{{scope}}" as="c"><span class="chip c-scope">{{c.label}}</span></sc-for></div><div class="crow"><input class="cin" data-dx4-input type="text" placeholder="{{ask}}" aria-label="Ask the agent"><button class="btn pri" onClick="{{send}}">Send</button></div></div></aside></div></sc-if><sc-if value="{{isWs}}"><div class="ws"><nav class="hist" aria-label="Investigation history"><div class="hh"><b>History</b><button class="btn xs" onClick="{{newInv}}">New</button><button class="ibtn dclose" onClick="{{closeDrawer}}" aria-label="Close history"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div><sc-for list="{{hist}}" as="h"><button class="{{h.cls}}" onClick="{{h.go}}" aria-current="{{h.cur}}"><span class="ht">{{h.title}}</span><span class="hw">{{h.when}}</span><span class="hw">{{h.n}}</span><span class="{{h.ocls}}">{{h.out}}</span></button></sc-for></nav>
+<main class="thread"><div class="th"><div class="tht"><h2>{{threadTitle}}</h2><p>{{threadMeta}}</p></div><button class="btn xs rra" onClick="{{rerunAll}}">Re-run with current data</button><div class="thb"><button class="btn xs nb" onClick="{{openHist}}">History</button><button class="btn xs nb" onClick="{{openCtx}}">Context</button></div></div>
+<div class="tmsgs" data-dx4-scroll><sc-for list="{{msgs}}" as="mm">
+<sc-if value="{{mm.isUser}}"><div class="mu"><p>{{mm.text}}</p><div class="chips"><sc-for list="{{mm.chips}}" as="c"><span class="{{c.cls}}">{{c.label}}</span></sc-for></div></div></sc-if>
+<sc-if value="{{mm.isAction}}"><div class="ma">{{mm.text}}</div></sc-if>
+<sc-if value="{{mm.isNote}}"><div class="mn">{{mm.text}}</div></sc-if>
+<sc-if value="{{mm.isRun}}"><div class="{{mm.mrCls}}"><div class="mrh"><span class="agn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg> Agent</span><span class="{{mm.phaseCls}}">{{mm.phaseLbl}}</span><span class="sum">{{mm.summary}}</span><span class="mra"><sc-if value="{{mm.canStop}}"><button class="btn xs stopb" onClick="{{mm.stop}}">Stop</button></sc-if><sc-if value="{{mm.canToggle}}"><button class="btn xs ghost" onClick="{{mm.actToggle}}">{{mm.actLbl}}</button></sc-if><button class="btn xs ghost" onClick="{{mm.openExec}}">Execution</button><button class="btn xs ghost" onClick="{{mm.openEvid}}">Evidence</button><sc-if value="{{mm.hasRec}}"><button class="btn xs ghost" onClick="{{mm.openRec}}">Records</button></sc-if></span></div>
+<sc-if value="{{mm.hasVer}}"><p class="{{mm.verCls}}">{{mm.verLbl}}</p></sc-if>
+<sc-if value="{{mm.hasConn}}"><p class="{{mm.connCls}}" role="status">{{mm.connNote}}</p></sc-if>
+<sc-if value="{{mm.showAct}}"><div class="act"><sc-for list="{{mm.iters}}" as="it"><div class="iter"><p class="itl">{{it.label}}</p><sc-if value="{{it.hasWhy}}"><p class="why">Re-plan · {{it.why}}</p></sc-if><sc-for list="{{it.nodes}}" as="nd"><div class="{{nd.cls}}"><span class="nst">{{nd.st}}</span><div class="nbd"><p class="ntt">{{nd.title}} <code>{{nd.tool}}</code> <span class="nms">{{nd.ms}}</span></p><p class="nar">{{nd.args}}</p><sc-if value="{{nd.res}}"><p class="nrs">{{nd.res}}</p></sc-if><sc-if value="{{nd.hasAtt}}"><sc-for list="{{nd.att}}" as="at"><p class="natt">{{at}}</p></sc-for></sc-if></div></div></sc-for></div></sc-for><p class="actn">Only verified steps are shown, not the model’s private reasoning.</p></div></sc-if>
+<sc-if value="{{mm.isCancelled}}"><div class="cxl"><b>Stopped before the answer was written.</b><span>Completed tool results are kept in Execution. No partial narrative is shown.</span><sc-if value="{{mm.canRerun}}"><button class="btn sm pri" onClick="{{mm.rerun}}">Run again</button></sc-if></div></sc-if>
+<sc-for list="{{mm.stmts}}" as="st"><div class="{{st.cls}}"><span class="kl">{{st.lbl}}</span><div class="stb"><p>{{st.text}}</p><sc-if value="{{st.prov}}"><p class="{{st.provCls}}">{{st.prov}}</p></sc-if></div><button class="evl" onClick="{{st.ev}}">Evidence</button></div></sc-for>
+<sc-if value="{{mm.hasCav}}"><div class="cavs"><sc-for list="{{mm.cavs}}" as="cv"><p><span class="cavl">Caveat</span>{{cv}}</p></sc-for></div></sc-if>
+<sc-for list="{{mm.comps}}" as="cc"><div class="comp">
+<sc-if value="{{cc.hasHead}}"><div class="ch"><div class="cht"><b>{{cc.title}}</b><span class="mid">{{cc.metric}}</span></div><div class="cha"><sc-if value="{{cc.canToggle}}"><button class="btn xs" onClick="{{cc.toggle}}">{{cc.toggleLbl}}</button></sc-if><button class="btn xs" onClick="{{cc.pinCanvas}}">{{cc.canvasLbl}}</button><button class="btn xs ghost" onClick="{{cc.evid}}">Evidence</button></div></div></sc-if>
+<sc-if value="{{cc.isBars}}"><div class="bars"><sc-for list="{{cc.rows}}" as="r"><button class="{{r.cls}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}" aria-label="{{r.aria}}"><span class="bl">{{r.label}}</span><span class="bt"><span class="bf" style="width: {{r.w}}"></span></span><span class="bv">{{r.v}}</span></button></sc-for></div><p class="cn">{{cc.note}}</p></sc-if>
+<sc-if value="{{cc.isCols}}"><div class="cols"><sc-for list="{{cc.crows}}" as="r"><button class="{{r.cls}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}" aria-label="{{r.aria}}"><span class="cv">{{r.v}}</span><span class="cb" style="height: {{r.h}}"></span><span class="cm">{{r.m}}</span></button></sc-for></div></sc-if>
+<sc-if value="{{cc.isRank}}"><div class="tblw"><table class="tbl rank"><thead><tr><th scope="col">Mall</th><sc-for list="{{cc.heads}}" as="h"><th scope="col" aria-sort="{{h.sort}}"><button class="{{h.cls}}" onClick="{{h.go}}" aria-label="{{h.aria}}">{{h.label}}</button></th></sc-for></tr></thead><tbody><sc-for list="{{cc.rrows}}" as="r"><tr class="{{r.cls}}"><th scope="row"><button class="rowb" onClick="{{r.go}}" aria-pressed="{{r.pressed}}">{{r.mall}}<span class="sr">{{r.sr}}</span></button><sc-if value="{{r.pinMark}}"><span class="pm">Pinned</span></sc-if><sc-if value="{{r.hasNote}}"><span class="rn3">{{r.note}}</span></sc-if></th><sc-for list="{{r.cells}}" as="c"><td class="{{c.cls}}">{{c.v}}<sc-if value="{{c.lead}}"><span class="ldr">Leader</span></sc-if></td></sc-for></tr></sc-for></tbody></table></div><p class="cn">{{cc.rankNote}} Darker cells rank higher on that KPI.</p></sc-if>
+<sc-if value="{{cc.isMethod}}"><dl class="meth"><sc-for list="{{cc.items}}" as="it"><div class="mi"><dt>{{it.k}}</dt><dd>{{it.v}}</dd></div></sc-for></dl></sc-if>
+<sc-if value="{{cc.isTable}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{cc.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{cc.trows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><sc-if value="{{cc.sameNote}}"><p class="cn">{{cc.sameNote}}</p></sc-if></sc-if>
+<sc-if value="{{cc.isKpi}}"><div class="{{cc.kpiCls}}"><b class="kpv">{{cc.value}}</b><span class="kps">{{cc.sub}}</span><sc-if value="{{cc.hasBadge}}"><span class="{{cc.badgeCls}}">{{cc.badge}}</span></sc-if></div></sc-if>
+<sc-if value="{{cc.isNotice}}"><div class="{{cc.tone}}"><span class="ntl">{{cc.toneLbl}}</span><div><b>{{cc.ntitle}}</b><p>{{cc.text}}</p><sc-if value="{{cc.retry}}"><button class="btn xs" onClick="{{cc.doRetry}}">Retry this step</button></sc-if><sc-if value="{{cc.recovered}}"><p class="okt">Recovered: the retry below loaded this step.</p></sc-if></div></div></sc-if>
+<sc-if value="{{cc.hasSel}}"><div class="{{cc.selCls}}"><span class="sbr">{{cc.selRole}}</span><b class="sbt">{{cc.selTxt}}</b><span class="sbx"><button class="btn xs" onClick="{{cc.selAsk}}">Ask about this</button><button class="btn xs" onClick="{{cc.selRec}}">View records</button><button class="btn xs" onClick="{{cc.selPin}}">{{cc.pinLbl}}</button></span></div></sc-if>
+<p class="{{cc.envCls}}"><span class="envl">Evidence</span>{{cc.env}}</p>
+</div></sc-for>
+<sc-if value="{{mm.hasProp}}"><div class="prop"><p class="pl">Proposed dashboard change</p><p>Set <b>{{mm.prop.card}}</b> from {{mm.prop.from}} to <b>{{mm.prop.to}}</b>?</p><sc-if value="{{mm.prop.pending}}"><div class="pbt"><button class="btn sm pri" onClick="{{mm.prop.apply}}">Apply filter</button><button class="btn sm" onClick="{{mm.prop.dismiss}}">Dismiss</button><span class="note">Nothing changes until you confirm.</span></div></sc-if><sc-if value="{{mm.prop.applied}}"><div class="pbt"><span class="okt">Applied. The card is flagged as changed.</span><button class="btn sm" onClick="{{mm.prop.undo}}">Undo</button></div></sc-if><sc-if value="{{mm.prop.dismissed}}"><p class="note">Dismissed. The dashboard is unchanged.</p></sc-if><sc-if value="{{mm.prop.undone}}"><p class="note">Undone. Pending approvals is back to All regions · All malls.</p></sc-if></div></sc-if>
+<sc-if value="{{mm.hasClar}}"><div class="clar"><sc-for list="{{mm.clar}}" as="o"><button class="{{o.cls}}" onClick="{{o.go}}" aria-pressed="{{o.pressed}}"><b>{{o.label}}</b><span>{{o.sub}}</span></button></sc-for></div></sc-if>
+<div class="suggs"><sc-for list="{{mm.suggs}}" as="sg"><button class="sugg" onClick="{{sg.go}}">{{sg.label}}</button></sc-for></div>
+</div></sc-if>
+</sc-for><sc-if value="{{noMsgs}}"><div class="empty"><p>Start an investigation, or open one from the dashboard, the agent panel or history.</p><div class="suggs"><sc-for list="{{sugg0}}" as="sg"><button class="sugg" onClick="{{sg.go}}">{{sg.label}}</button></sc-for></div></div></sc-if></div><div class="composer"><div class="cchips"><sc-if value="{{hasActive}}"><span class="chip c-sel">Context sent: {{actLbl}}</span><button class="btn xs ghost" onClick="{{clearCtx}}" aria-label="Remove this selection from the next question">Remove</button></sc-if><sc-if value="{{noActive}}"><span class="chip c-none">No selection sent</span></sc-if><sc-if value="{{hasPins}}"><span class="chip c-pin">Pinned sent · {{pinCount}}</span></sc-if><sc-for list="{{scope}}" as="c"><span class="chip c-scope">{{c.label}}</span></sc-for></div><div class="crow"><input class="cin" data-dx4-input type="text" placeholder="{{ask}}" aria-label="Ask the agent"><button class="btn pri" onClick="{{send}}">Send</button></div></div></main>
+<aside class="ctx" aria-label="Context and canvas"><div class="ctabs" role="tablist"><sc-for list="{{ctxTabs}}" as="t"><button role="tab" class="{{t.cls}}" aria-selected="{{t.on}}" onClick="{{t.go}}">{{t.label}}</button></sc-for><button class="ibtn dclose" onClick="{{closeDrawer}}" aria-label="Close context"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+<sc-if value="{{isCtx}}"><div class="cbody"><p class="ctxh">This investigation’s context. Other investigations and the dashboard keep their own.</p><section><p class="pl">Active selection · sent with the next question</p><sc-if value="{{noActive}}"><p class="note">None.</p></sc-if><sc-if value="{{hasActive}}"><div class="selc sc-a"><b>{{actLbl}}</b><span class="mid">{{actSurf}} · {{actComp}}</span><button class="btn xs ghost" onClick="{{toggleRef}}">{{refLbl}}</button></div><sc-if value="{{showRef}}"><pre class="json">{{actJson}}</pre></sc-if></sc-if><sc-if value="{{hasActive}}"><button class="btn xs ghost" onClick="{{clearCtx}}">Remove from context</button></sc-if></section>
+<section><p class="pl">Kept on their cards · not sent</p><sc-if value="{{hasKept}}"><sc-for list="{{keptList}}" as="k"><div class="selc sc-k"><b>{{k.label}}</b><span class="mid">{{k.comp}}</span><span class="note">{{k.src}}</span><button class="btn xs ghost" onClick="{{k.go}}">Make active</button></div></sc-for></sc-if></section>
+<section><p class="pl">Pinned for comparison · sent together</p><sc-if value="{{hasPins}}"><sc-for list="{{pins}}" as="p"><div class="selc sc-p"><b>{{p.label}}</b><span class="mid">{{p.comp}}</span><button class="btn xs ghost" onClick="{{p.rm}}">Unpin</button></div></sc-for></sc-if><sc-if value="{{canCompare}}"><button class="btn sm pri" onClick="{{compare}}">Compare pinned</button></sc-if><p class="note">Only the active selection and pinned selections reach the agent. Kept selections never combine on their own.</p></section>
+<section><p class="pl">Analytical scope · you can remove it</p><div class="chips"><sc-for list="{{scope}}" as="c"><span class="chip c-scope c-rm">{{c.label}}<button class="chx" onClick="{{c.rm}}" aria-label="{{c.aria}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></span></sc-for><sc-if value="{{noScope}}"><span class="note">{{accessTxt}}</span></sc-if></div><p class="pl">Boundaries · cannot be removed</p><div class="chips"><sc-for list="{{bounds}}" as="c"><span class="chip c-fixed"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>{{c}}</span></sc-for></div></section><section><sc-if value="{{hasDashSel}}"><div class="dsel"><span class="pl">{{dashSelHead}}</span><b>{{dashSelLbl}}</b></div></sc-if><sc-if value="{{hasImps}}"><details class="imp"><summary>Import a selection…</summary><sc-for list="{{imps}}" as="ip"><div class="selc sc-i"><b>{{ip.label}}</b><span class="mid">From {{ip.src}}</span><button class="btn xs" onClick="{{ip.go}}">Import</button></div></sc-for><p class="note">Imported selections are labelled with their source. Imports outside your access are refused.</p></details></sc-if></section></div></sc-if>
+<sc-if value="{{isCanvas}}"><div class="cbody"><sc-if value="{{noCanvas}}"><p class="note">Pin generated components here to keep them side by side while the conversation moves on.</p></sc-if><sc-for list="{{canvas}}" as="cc"><div class="comp">
+<sc-if value="{{cc.hasHead}}"><div class="ch"><div class="cht"><b>{{cc.title}}</b><span class="mid">{{cc.metric}}</span></div><div class="cha"><sc-if value="{{cc.canToggle}}"><button class="btn xs" onClick="{{cc.toggle}}">{{cc.toggleLbl}}</button></sc-if><button class="btn xs" onClick="{{cc.pinCanvas}}">{{cc.canvasLbl}}</button><button class="btn xs ghost" onClick="{{cc.evid}}">Evidence</button></div></div></sc-if>
+<sc-if value="{{cc.isBars}}"><div class="bars"><sc-for list="{{cc.rows}}" as="r"><button class="{{r.cls}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}" aria-label="{{r.aria}}"><span class="bl">{{r.label}}</span><span class="bt"><span class="bf" style="width: {{r.w}}"></span></span><span class="bv">{{r.v}}</span></button></sc-for></div><p class="cn">{{cc.note}}</p></sc-if>
+<sc-if value="{{cc.isCols}}"><div class="cols"><sc-for list="{{cc.crows}}" as="r"><button class="{{r.cls}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}" aria-label="{{r.aria}}"><span class="cv">{{r.v}}</span><span class="cb" style="height: {{r.h}}"></span><span class="cm">{{r.m}}</span></button></sc-for></div></sc-if>
+<sc-if value="{{cc.isRank}}"><div class="tblw"><table class="tbl rank"><thead><tr><th scope="col">Mall</th><sc-for list="{{cc.heads}}" as="h"><th scope="col" aria-sort="{{h.sort}}"><button class="{{h.cls}}" onClick="{{h.go}}" aria-label="{{h.aria}}">{{h.label}}</button></th></sc-for></tr></thead><tbody><sc-for list="{{cc.rrows}}" as="r"><tr class="{{r.cls}}"><th scope="row"><button class="rowb" onClick="{{r.go}}" aria-pressed="{{r.pressed}}">{{r.mall}}<span class="sr">{{r.sr}}</span></button><sc-if value="{{r.pinMark}}"><span class="pm">Pinned</span></sc-if><sc-if value="{{r.hasNote}}"><span class="rn3">{{r.note}}</span></sc-if></th><sc-for list="{{r.cells}}" as="c"><td class="{{c.cls}}">{{c.v}}<sc-if value="{{c.lead}}"><span class="ldr">Leader</span></sc-if></td></sc-for></tr></sc-for></tbody></table></div><p class="cn">{{cc.rankNote}} Darker cells rank higher on that KPI.</p></sc-if>
+<sc-if value="{{cc.isMethod}}"><dl class="meth"><sc-for list="{{cc.items}}" as="it"><div class="mi"><dt>{{it.k}}</dt><dd>{{it.v}}</dd></div></sc-for></dl></sc-if>
+<sc-if value="{{cc.isTable}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{cc.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{cc.trows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><sc-if value="{{cc.sameNote}}"><p class="cn">{{cc.sameNote}}</p></sc-if></sc-if>
+<sc-if value="{{cc.isKpi}}"><div class="{{cc.kpiCls}}"><b class="kpv">{{cc.value}}</b><span class="kps">{{cc.sub}}</span><sc-if value="{{cc.hasBadge}}"><span class="{{cc.badgeCls}}">{{cc.badge}}</span></sc-if></div></sc-if>
+<sc-if value="{{cc.isNotice}}"><div class="{{cc.tone}}"><span class="ntl">{{cc.toneLbl}}</span><div><b>{{cc.ntitle}}</b><p>{{cc.text}}</p><sc-if value="{{cc.retry}}"><button class="btn xs" onClick="{{cc.doRetry}}">Retry this step</button></sc-if><sc-if value="{{cc.recovered}}"><p class="okt">Recovered: the retry below loaded this step.</p></sc-if></div></div></sc-if>
+<sc-if value="{{cc.hasSel}}"><div class="{{cc.selCls}}"><span class="sbr">{{cc.selRole}}</span><b class="sbt">{{cc.selTxt}}</b><span class="sbx"><button class="btn xs" onClick="{{cc.selAsk}}">Ask about this</button><button class="btn xs" onClick="{{cc.selRec}}">View records</button><button class="btn xs" onClick="{{cc.selPin}}">{{cc.pinLbl}}</button></span></div></sc-if>
+<p class="{{cc.envCls}}"><span class="envl">Evidence</span>{{cc.env}}</p>
+</div></sc-for></div></sc-if></aside></div></sc-if><sc-if value="{{ivOpen}}"><aside class="insp" role="dialog" aria-modal="false" aria-labelledby="dx4-ih"><div class="ih"><div><b id="dx4-ih" tabindex="-1" data-dx4-ifocus>Inspector</b><span class="mid">{{iv.title}}</span></div><button class="ibtn" onClick="{{iv.close}}" aria-label="Close inspector"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+<div class="itabs" role="tablist"><sc-for list="{{iv.tabs}}" as="t"><button role="tab" class="{{t.cls}}" aria-selected="{{t.on}}" tabindex="{{t.ti}}" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
+<div class="ib">
+<sc-if value="{{iv.isEv}}"><p class="ihint">Each number below is a fact token filled from a tool result. The verifier rejects any number that is not a token.</p><sc-if value="{{iv.hasVersions}}"><p class="pl">Versions · history is never rewritten</p><div class="tblw"><table class="tbl"><thead><tr><th scope="col">Version</th><th scope="col">Outcome</th><th scope="col">What changed</th><th scope="col"></th></tr></thead><tbody><sc-for list="{{iv.versions}}" as="vv"><tr><td><b>{{vv.v}}</b></td><td>{{vv.out}}</td><td>{{vv.note}}</td><td>{{vv.cur}}</td></tr></sc-for></tbody></table></div></sc-if><sc-for list="{{iv.ev}}" as="e"><div class="{{e.cls}}"><span class="kl">{{e.lbl}}</span><p>{{e.text}}</p><p class="prov">{{e.env}}</p><sc-if value="{{e.hasItems}}"><div class="tblw"><table class="tbl evt"><thead><tr><th scope="col">Token</th><th scope="col">Value</th><th scope="col">Source</th><th scope="col">Result</th><th scope="col">Coverage</th></tr></thead><tbody><sc-for list="{{e.items}}" as="it"><tr><td><code>{{it.tok}}</code></td><td><b>{{it.val}}</b></td><td>{{it.src}}</td><td><code>{{it.ref}}</code></td><td>{{it.cov}}</td></tr></sc-for></tbody></table></div></sc-if><p class="steps">From: {{e.steps}}</p></div></sc-for></sc-if>
+<sc-if value="{{iv.isDef}}"><sc-for list="{{iv.defs}}" as="d"><div class="def"><b>{{d.name}}</b><code>{{d.id}}</code><p>{{d.def}}</p><sc-for list="{{d.cav}}" as="cv"><p class="cavp"><span class="cavl">Caveat</span>{{cv}}</p></sc-for></div></sc-for></sc-if>
+<sc-if value="{{iv.isRec}}"><sc-if value="{{iv.hasRec}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{iv.rec.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{iv.rec.rows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="note">{{iv.rec.note}}</p></sc-if><sc-if value="{{iv.noRec}}"><p class="note">This answer has no record-level drilldown. Select a row in a generated table, then View records.</p></sc-if></sc-if>
+<sc-if value="{{iv.isExe}}"><p class="pl">Run identity and context</p><div class="tblw"><table class="tbl"><tbody><sc-for list="{{iv.ctx}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="pl">Lifecycle</p><ol class="phs"><sc-for list="{{iv.phases}}" as="p"><li><code>{{p.s}}</code><span>{{p.lbl}}</span><span class="note">{{p.note}}</span><span class="pt">{{p.t}}</span></li></sc-for></ol><p class="pl">Budgets</p><div class="tblw"><table class="tbl"><tbody><sc-for list="{{iv.budget}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="pl">AG-UI events · seq per run</p><ol class="agl"><sc-for list="{{iv.log}}" as="l"><li><span>{{l.i}}</span><code>{{l.ev}}</code></li></sc-for></ol><p class="note">Tool arguments are sanitised summaries; rows and SQL never reach the client. Reasoning events are not forwarded.</p></sc-if>
+</div></aside></sc-if></div></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1220}}'>
+const DX4_DATA = {"rows":[{"mall":"Rawdah Point Mall","apOld":{"proposal":19,"contract":15,"lease":7},"apTot":71,"apOldTot":41,"am":{"Expansion":[1,0,1,1,1],"HoldOver":[1,1,0,1,0],"Renewal":[9,2,1,1,1],"Termination":[2,1,1,1,1]},"am4":13,"amTot":27,"renewal4":9,"units":527,"vacant":45,"ud":{"total":310,"mm":6,"pending":3,"match":301},"ap":{"proposal":[4,3,2,4,19],"contract":[3,2,1,2,15],"lease":[3,2,2,2,7]}},{"mall":"Sandstone Galleria","apOld":{"proposal":2,"contract":1,"lease":1},"apTot":14,"apOldTot":4,"am":{"Expansion":[0,0,0,1,0],"HoldOver":[1,0,0,0,0],"Renewal":[6,1,1,0,1],"Termination":[1,0,1,0,0]},"am4":8,"amTot":13,"renewal4":6,"units":416,"vacant":54,"ud":{"total":176,"mm":5,"pending":2,"match":169},"ap":{"proposal":[1,1,1,1,2],"contract":[1,1,1,1,1],"lease":[1,1,0,0,1]}},{"mall":"Qasr Plaza","apOld":{"proposal":1,"contract":1,"lease":0},"apTot":7,"apOldTot":2,"am":{"Expansion":[0,0,0,0,0],"HoldOver":[0,0,0,0,0],"Renewal":[3,0,0,0,0],"Termination":[1,0,0,0,0]},"am4":4,"amTot":4,"renewal4":3,"units":304,"vacant":33,"ud":{"total":158,"mm":4,"pending":1,"match":153},"ap":{"proposal":[1,1,1,1,1],"contract":[1,0,0,0,1],"lease":[0,0,0,0,0]}},{"mall":"Najd Gate Mall","apOld":{"proposal":2,"contract":1,"lease":1},"apTot":12,"apOldTot":4,"am":{"Expansion":[0,0,0,0,0],"HoldOver":[0,0,0,0,0],"Renewal":[0,0,0,0,0],"Termination":[0,0,0,0,0]},"am4":0,"amTot":0,"renewal4":0,"units":368,"vacant":37,"ud":{"total":190,"mm":5,"pending":2,"match":183},"ap":{"proposal":[1,1,1,1,2],"contract":[1,1,1,1,1],"lease":[0,0,0,0,1]}},{"mall":"Wadi Crescent Centre","apOld":{"proposal":2,"contract":1,"lease":0},"apTot":11,"apOldTot":3,"am":{"Expansion":[0,0,0,0,0],"HoldOver":[0,0,0,0,0],"Renewal":[0,0,0,0,0],"Termination":[0,0,0,0,0]},"am4":0,"amTot":0,"renewal4":0,"units":350,"vacant":49,"ud":{"total":164,"mm":4,"pending":1,"match":159},"ap":{"proposal":[1,1,1,1,2],"contract":[1,1,1,1,1],"lease":[0,0,0,0,0]}},{"mall":"Falcon Square","apOld":{"proposal":1,"contract":1,"lease":0},"apTot":5,"apOldTot":2,"am":{"Expansion":[0,0,0,0,0],"HoldOver":[0,0,0,0,0],"Renewal":[0,0,0,0,0],"Termination":[0,0,0,0,0]},"am4":0,"amTot":0,"renewal4":0,"units":300,"vacant":29,"ud":{"total":142,"mm":4,"pending":2,"match":136},"ap":{"proposal":[1,1,1,0,1],"contract":[0,0,0,0,1],"lease":[0,0,0,0,0]}},{"mall":"Oasis Row","apOld":{"proposal":1,"contract":1,"lease":0},"apTot":3,"apOldTot":2,"am":{"Expansion":[0,0,0,0,0],"HoldOver":[0,0,0,0,0],"Renewal":[0,0,0,0,0],"Termination":[0,0,0,0,0]},"am4":0,"amTot":0,"renewal4":0,"units":282,"vacant":41,"ud":null,"ap":{"proposal":[1,0,0,0,1],"contract":[0,0,0,0,1],"lease":[0,0,0,0,0]}},{"mall":"Cedar Park Mall","apOld":{"proposal":1,"contract":1,"lease":0},"apTot":4,"apOldTot":2,"am":{"Expansion":[0,0,0,0,0],"HoldOver":[0,0,0,0,0],"Renewal":[0,0,0,0,0],"Termination":[0,0,0,0,0]},"am4":0,"amTot":0,"renewal4":0,"units":296,"vacant":25,"ud":{"total":151,"mm":5,"pending":1,"match":145},"ap":{"proposal":[1,1,0,0,1],"contract":[0,0,0,0,1],"lease":[0,0,0,0,0]}},{"mall":"Amber Heights","apOld":{"proposal":1,"contract":0,"lease":0},"apTot":2,"apOldTot":1,"am":{"Expansion":[0,0,0,0,0],"HoldOver":[0,0,0,0,0],"Renewal":[0,0,0,0,0],"Termination":[0,0,0,0,0]},"am4":0,"amTot":0,"renewal4":0,"units":278,"vacant":37,"ud":null,"ap":{"proposal":[1,0,0,0,1],"contract":[0,0,0,0,0],"lease":[0,0,0,0,0]}},{"mall":"Mirage Commons","apOld":{"proposal":1,"contract":0,"lease":0},"apTot":1,"apOldTot":1,"am":{"Expansion":[0,0,0,0,0],"HoldOver":[0,0,0,0,0],"Renewal":[0,0,0,0,0],"Termination":[0,0,0,0,0]},"am4":0,"amTot":0,"renewal4":0,"units":299,"vacant":58,"ud":null,"ap":{"proposal":[0,0,0,0,1],"contract":[0,0,0,0,0],"lease":[0,0,0,0,0]}}],"apC":{"proposal":[12,9,7,8,31],"contract":[7,5,4,5,22],"lease":[4,3,2,2,9]},"amC":{"Expansion":[1,0,1,2,1],"HoldOver":[2,1,0,1,0],"Renewal":[18,3,2,1,2],"Termination":[4,1,2,1,1]},"am25":{"Expansion":[1,0,0,0,0],"HoldOver":[2,0,0,0,0],"Renewal":[5,0,0,0,0],"Termination":[1,0,0,0,0]},"amRecords":{"on":true,"cols":["Amendment","Mall","Lease","Created","Age (days)","Status"],"rows":[["AMD-24086","Rawdah Point Mall","T-30477","2 May 2026","171","Ready"],["AMD-24095","Sandstone Galleria","T-31120","20 May 2026","153","In process"],["AMD-24118","Rawdah Point Mall","T-30512","14 Jun 2026","128","Ready"],["AMD-24133","Rawdah Point Mall","T-30877","2 Jul 2026","110","In process"],["AMD-24190","Sandstone Galleria","T-31206","21 Jul 2026","91","Ready"],["AMD-24207","Rawdah Point Mall","T-30940","5 Aug 2026","76","Ready"],["AMD-24251","Sandstone Galleria","T-31388","28 Aug 2026","53","In process"],["AMD-24302","Qasr Plaza","T-31455","19 Sep 2026","31","Ready"]],"note":"Showing 8 of 18 · Rawdah Point Mall 9 · Sandstone Galleria 6 · Qasr Plaza 3 · same population as the cell"},"ud":[{"mall":"Rawdah Point Mall","total":310,"mm":6,"pending":3},{"mall":"Sandstone Galleria","total":176,"mm":5,"pending":2},{"mall":"Qasr Plaza","total":158,"mm":4,"pending":1},{"mall":"Najd Gate Mall","total":190,"mm":5,"pending":2},{"mall":"Wadi Crescent Centre","total":164,"mm":4,"pending":1},{"mall":"Falcon Square","total":142,"mm":4,"pending":2},{"mall":"Cedar Park Mall","total":151,"mm":5,"pending":1},{"mall":"Gulf Gate Mall","total":142,"mm":11,"pending":3},{"mall":"Pearl Bay Centre","total":188,"mm":5,"pending":2},{"mall":"Dune Harbour Mall","total":149,"mm":4,"pending":1},{"mall":"Coral Point","total":133,"mm":3,"pending":1},{"mall":"Seabreeze Plaza","total":127,"mm":4,"pending":2},{"mall":"Harbor Lights Mall","total":214,"mm":6,"pending":3},{"mall":"Tidewater Arcade","total":172,"mm":5,"pending":2},{"mall":"Coastline Galleria","total":166,"mm":4,"pending":1},{"mall":"Spice Route Mall","total":158,"mm":4,"pending":2},{"mall":"Minaret View","total":141,"mm":4,"pending":1},{"mall":"Breeze Walk","total":119,"mm":4,"pending":1}],"quiet":["Oasis Row","Amber Heights","Mirage Commons","Lantern Quay","Mangrove Mall","Marina Square West","Hijaz Crossing"],"pu":{"Central":[3420,3012,408,612400,88900,10],"Eastern":[2180,1868,312,371800,56200,7],"Western":[2540,2234,306,428400,69200,8]},"gulf":{"occupied":336,"vacant":48,"units":384,"ud":["Gulf Gate Mall",142,11,3]},"tenant":{"cols":[{"m":"Jan","v":269600},{"m":"Feb","v":250400},{"m":"Mar","v":312100},{"m":"Apr","v":277500},{"m":"May","v":266500},{"m":"Jun","v":294600},{"m":"Jul","v":260000},{"m":"Aug","v":251500},{"m":"Sep","v":241800}],"lease":"T-31206","who":"Omar · Lumen Retail Co.","leaseLine":"1 lease · 2 units"},"apAll":{"proposal":[25,18,14,15,45],"contract":[16,11,9,9,33],"lease":[9,6,4,4,14]},"apReg":{"Central":{"proposal":[12,9,7,8,31],"contract":[7,5,4,5,22],"lease":[4,3,2,2,9]},"Eastern":{"proposal":[6,4,3,3,6],"contract":[4,3,2,2,5],"lease":[2,1,1,1,2]},"Western":{"proposal":[7,5,4,4,8],"contract":[5,3,3,2,6],"lease":[3,2,1,1,3]}},"amReg":{"Central":{"Expansion":[1,0,1,2,1],"HoldOver":[2,1,0,1,0],"Renewal":[18,3,2,1,2],"Termination":[4,1,2,1,1]},"Eastern":{"Expansion":[1,0,0,1,0],"HoldOver":[1,0,1,0,1],"Renewal":[6,2,1,2,1],"Termination":[3,1,0,1,1]},"Western":{"Expansion":[2,1,0,0,1],"HoldOver":[1,1,0,1,0],"Renewal":[9,2,2,1,2],"Termination":[2,1,1,0,1]}},"regionOf":{"Rawdah Point Mall":"Central","Sandstone Galleria":"Central","Qasr Plaza":"Central","Najd Gate Mall":"Central","Wadi Crescent Centre":"Central","Falcon Square":"Central","Oasis Row":"Central","Cedar Park Mall":"Central","Amber Heights":"Central","Mirage Commons":"Central","Gulf Gate Mall":"Eastern","Pearl Bay Centre":"Eastern","Dune Harbour Mall":"Eastern","Coral Point":"Eastern","Seabreeze Plaza":"Eastern","Lantern Quay":"Eastern","Mangrove Mall":"Eastern","Harbor Lights Mall":"Western","Tidewater Arcade":"Western","Coastline Galleria":"Western","Spice Route Mall":"Western","Minaret View":"Western","Breeze Walk":"Western","Marina Square West":"Western","Hijaz Crossing":"Western"},"mallsByRegion":{"Central":["Rawdah Point Mall","Sandstone Galleria","Qasr Plaza","Najd Gate Mall","Wadi Crescent Centre","Falcon Square","Oasis Row","Cedar Park Mall","Amber Heights","Mirage Commons"],"Eastern":["Gulf Gate Mall","Pearl Bay Centre","Dune Harbour Mall","Coral Point","Seabreeze Plaza","Lantern Quay","Mangrove Mall"],"Western":["Harbor Lights Mall","Tidewater Arcade","Coastline Galleria","Spice Route Mall","Minaret View","Breeze Walk","Marina Square West","Hijaz Crossing"]}};
+/* DX4 agent workspace — design prototype logic. Not production code. Every number comes from DX4_DATA (DX2 model output). */
+const DSV = 'sd-2026.10.20-01';
+const n = (x) => Number(x).toLocaleString('en-US');
+const pc0 = (a, b) => (b ? Math.round((a / b) * 100) + '%' : '—');
+const pc1 = (a, b) => (b ? (Math.round((a / b) * 1000) / 10).toFixed(1) + '%' : '—');
+const sar = (x) => 'SAR ' + n(x);
+const sum = (a) => a.reduce((x, y) => x + y, 0);
+const hsh = (str) => { let x = 2166136261; for (let i = 0; i < str.length; i++) { x ^= str.charCodeAt(i); x = Math.imul(x, 16777619); } return (x >>> 0).toString(16).padStart(8, '0'); };
+const rref = (metric, filters) => 'res_' + hsh(metric + JSON.stringify(filters || {}));
+
+const METRICS = {
+  'amendments.pending_by_age_band': { name: 'Pending amendments by age band', kind: 'parity', def: 'Lease amendments with status Ready or In process, by amendment type and weeks since creation. Created year and age use the Asia/Riyadh calendar.', cav: ['Age bands are not SLA breaches.', 'Amendments dated in the future fall into “4 wk+” (V2 behaviour, listed as a known limitation).'] },
+  'approvals.pending_by_delay': { name: 'Pending approvals by delay band', kind: 'parity', def: 'Proposals, contracts and leases waiting for approval, grouped into five delay bands. “1m+” means waiting more than one month.', cav: ['Section filters follow V2: proposals “Pending proposal”, contracts “Contract sent”, leases “Contract signed”.'] },
+  'units.vacant': { name: 'Vacant units', kind: 'parity', def: 'Units whose best current lease is not active on the reference date. Vacancy rate = vacant ÷ all units (derived).', cav: ['Unit counts, not GLA.'] },
+  'units.occupied': { name: 'Occupied units', kind: 'parity', def: 'Units whose best current lease is active on the reference date.', cav: [] },
+  'unit_discrepancy.units': { name: 'Unit discrepancy (latest report per mall per month)', kind: 'parity', def: 'Units in the latest discrepancy report per mall in the month, split into match, mismatch and pending. Mismatch = status mismatch or any flag: store closed, wrong location, open without contract, brand changed.', cav: ['Only malls that filed a report that month are counted. Missing malls are not estimated.'] },
+  'tenant_sales.reported': { name: 'Reported sales', kind: 'parity', def: 'Sales submissions with status Submitted or Approved, bucketed by the month the sales period ends.', cav: ['Limited to the leases the user may see.'] },
+  'comparison.multi_kpi': { name: 'Multi-KPI comparison (no combined score)', kind: 'view', def: 'Several parity metrics shown side by side for the same entities, each with its own value, share and leader. No score is derived across KPIs unless the user asks for one (DXD-31).', cav: ['Each column keeps its own population and coverage; mismatch rates cover only malls that reported.'] },
+  'catalogue.unavailable_concepts': { name: 'Unavailable-concepts catalogue', kind: 'catalogue', def: 'Concepts users ask about that the POC dataset does not contain (footfall, payments). The agent answers “not available” and never estimates them.', cav: [] },
+  'derived.mean_rank': { name: 'Mean rank across KPIs (derived)', kind: 'derived', def: 'Each mall is ranked on each KPI (1 = most attention needed; ties share the average rank). The score is the mean of the ranks available for that mall. Equal weights.', cav: ['Ranks ignore magnitude: a mall far ahead on one KPI counts the same as one slightly ahead.', 'Malls without a discrepancy report are ranked on three KPIs.'] }
+};
+
+function buildFacts(D) {
+  const F = {}; const T = {};
+  const put = (k, v, fmt, src) => { F[k] = { v, fmt: fmt === undefined ? n(v) : fmt, src: src || {} }; };
+  const R = {}; D.rows.forEach((r) => { R[r.mall] = r; });
+  const amC = D.amC; const apC = D.apC;
+  const cellF = { year: 2026, month: 'All', region: 'Central', mall: 'All' };
+  const s1 = { tool: 'get_metric', metric: 'amendments.pending_by_age_band', filters: Object.assign({ type: 'Renewal', band: '4 wk+' }, cellF) };
+  const s2 = { tool: 'get_breakdown', metric: 'amendments.pending_by_age_band', filters: Object.assign({ type: 'Renewal', band: '4 wk+', by: 'mall' }, cellF) };
+  const s3 = { tool: 'get_metric', metric: 'amendments.pending_by_age_band', filters: cellF };
+  const s5 = { tool: 'get_breakdown', metric: 'approvals.pending_by_delay', filters: { region: 'Central', band: '1m+', by: 'mall' } };
+  put('am_cell', amC.Renewal[0], undefined, s1);
+  put('am_central_total', sum(Object.values(amC).map(sum)), undefined, s3);
+  put('am_central_4wp', sum(Object.values(amC).map((v) => v[0])), undefined, s3);
+  put('am_rawdah', R['Rawdah Point Mall'].renewal4, undefined, s2); put('am_sandstone', R['Sandstone Galleria'].renewal4, undefined, s2); put('am_qasr', R['Qasr Plaza'].renewal4, undefined, s2);
+  put('am_zero_malls', D.rows.filter((r) => !r.renewal4).length, undefined, s2);
+  put('sh_cell_total', F.am_cell.v / F.am_central_total.v, pc1(F.am_cell.v, F.am_central_total.v), { tool: 'derive', formula: 'am_cell ÷ am_central_total' });
+  put('sh_cell_4wp', F.am_cell.v / F.am_central_4wp.v, pc0(F.am_cell.v, F.am_central_4wp.v), { tool: 'derive', formula: 'am_cell ÷ am_central_4wp' });
+  put('ap_old_central', apC.proposal[4] + apC.contract[4] + apC.lease[4], undefined, s5);
+  const raw = R['Rawdah Point Mall'];
+  put('ap_old_rawdah', raw.apOldTot, undefined, s5); put('ap_old_rawdah_p', raw.apOld.proposal, undefined, s5); put('ap_old_rawdah_c', raw.apOld.contract, undefined, s5); put('ap_old_rawdah_l', raw.apOld.lease, undefined, s5);
+  put('sh_rawdah_ap', raw.apOldTot / F.ap_old_central.v, pc0(raw.apOldTot, F.ap_old_central.v), { tool: 'derive', formula: 'ap_old_rawdah ÷ ap_old_central' });
+  put('am4_rawdah', raw.am4, undefined, { tool: 'get_breakdown', metric: 'amendments.pending_by_age_band', filters: Object.assign({ band: '4 wk+', by: 'mall' }, cellF) });
+  /* J2 ranking — deterministic, equal weights */
+  const rows = D.rows.map((r) => ({ mall: r.mall, ap: r.apOldTot, am: r.am4, vac: r.vacant, units: r.units, vr: r.vacant / r.units, mm: r.ud ? r.ud.mm : null, mt: r.ud ? r.ud.total : null, mr: r.ud ? r.ud.mm / r.ud.total : null }));
+  const rank = (vals) => { const idx = vals.map((v, i) => [v, i]).filter((x) => x[0] !== null).sort((a, b) => b[0] - a[0]); const out = vals.map(() => null); let i = 0; while (i < idx.length) { let j = i; while (j + 1 < idx.length && idx[j + 1][0] === idx[i][0]) j++; const rk = (i + j) / 2 + 1; for (let k = i; k <= j; k++) out[idx[k][1]] = rk; i = j + 1; } return out; };
+  const rk = { ap: rank(rows.map((x) => x.ap)), am: rank(rows.map((x) => x.am)), vr: rank(rows.map((x) => x.vr)), mr: rank(rows.map((x) => x.mr)) };
+  rows.forEach((x, i) => { x.rk = [rk.ap[i], rk.am[i], rk.vr[i], rk.mr[i]]; const av = x.rk.filter((v) => v !== null); x.score = sum(av) / av.length; x.kpis = av.length; });
+  rows.sort((a, b) => a.score - b.score || b.ap - a.ap);
+  T.rank = rows;
+  const rsrc = { tool: 'derive', formula: 'mean_rank(ap_1m+, am_4wk+, vacancy_rate, mismatch_rate) · equal weights' };
+  put('rank1', rows[0].score, rows[0].mall, rsrc); put('rank2', rows[1].score, rows[1].mall, rsrc); put('rank3', rows[2].score, rows[2].mall, rsrc);
+  put('rank1_score', rows[0].score, rows[0].score.toFixed(2), rsrc); put('rank2_score', rows[1].score, rows[1].score.toFixed(2), rsrc);
+  const mir = rows.find((x) => x.mall === 'Mirage Commons');
+  const sv = { tool: 'get_breakdown', metric: 'units.vacant', filters: { region: 'Central', by: 'mall', date: '2026-10-20' } };
+  put('vac_mirage', mir.vac, undefined, sv); put('units_mirage', mir.units, undefined, sv); put('vr_mirage', mir.vr, pc1(mir.vac, mir.units), { tool: 'derive', formula: 'vac_mirage ÷ units_mirage' });
+  const sand = rows.find((x) => x.mall === 'Sandstone Galleria');
+  put('sand_ap', sand.ap, undefined, s5); put('sand_am', sand.am, undefined, s2); put('vr_sand', sand.vr, pc1(sand.vac, sand.units), { tool: 'derive', formula: 'vacant ÷ units' });
+  const qC = D.rows.filter((r) => !r.ud).map((r) => r.mall);
+  put('ud_central_reported', D.rows.length - qC.length, undefined, { tool: 'get_data_coverage', metric: 'unit_discrepancy.units', filters: { region: 'Central', month: '2026-09' } });
+  put('ud_central_malls', D.rows.length, undefined, { tool: 'get_data_coverage', metric: 'unit_discrepancy.units', filters: { region: 'Central', month: '2026-09' } });
+  T.quietCentral = qC;
+  put('ap_next_max', Math.max.apply(null, rows.filter((x) => x.mall !== 'Rawdah Point Mall').map((x) => x.ap)), undefined, s5);
+  /* J3 pending approvals card */
+  const card = (ap) => ['proposal', 'contract', 'lease'].map((t) => ({ t, total: sum(ap[t]), old: ap[t][4] }));
+  T.cardAll = card(D.apAll); T.cardRawdah = card(raw.ap);
+  /* J4 portfolio discrepancy */
+  const ud = D.ud; const sU = { tool: 'get_metric', metric: 'unit_discrepancy.units', filters: { month: '2026-09', scope: 'portfolio' } };
+  put('ud_mm', sum(ud.map((x) => x.mm)), undefined, sU); put('ud_units', sum(ud.map((x) => x.total)), undefined, sU);
+  put('ud_rate', F.ud_mm.v / F.ud_units.v, pc1(F.ud_mm.v, F.ud_units.v), { tool: 'derive', formula: 'ud_mm ÷ ud_units' });
+  const cov = { tool: 'get_data_coverage', metric: 'unit_discrepancy.units', filters: { month: '2026-09' } };
+  put('ud_reported', ud.length, undefined, cov); put('ud_all', Object.keys(D.regionOf).length, undefined, cov); put('ud_missing', D.quiet.length, undefined, cov);
+  T.quiet = D.quiet;
+  T.covRegion = ['Central', 'Eastern', 'Western'].map((g) => { const all = D.mallsByRegion[g]; const rep = ud.filter((x) => D.regionOf[x.mall] === g); return { region: g, reported: rep.length, malls: all.length, mm: sum(rep.map((x) => x.mm)), units: sum(rep.map((x) => x.total)) }; });
+  T.covRegion.forEach((c) => { put('cov_' + c.region, c.reported, c.reported + ' of ' + c.malls, cov); });
+  /* J5 Gulf Gate */
+  const g = D.gulf; const sg = { tool: 'get_metric', metric: 'units.occupied', filters: { mall: 'Gulf Gate Mall', date: '2026-10-20' } };
+  put('gg_occ', g.occupied, undefined, sg); put('gg_units', g.units, undefined, sg); put('gg_occ_rate', g.occupied / g.units, pc1(g.occupied, g.units), { tool: 'derive', formula: 'gg_occ ÷ gg_units' });
+  const sgd = { tool: 'get_metric', metric: 'unit_discrepancy.units', filters: { mall: 'Gulf Gate Mall', month: '2026-09' } };
+  put('gg_ud_total', g.ud[1], undefined, sgd); put('gg_ud_mm', g.ud[2], undefined, sgd); put('gg_ud_pending', g.ud[3], undefined, sgd);
+  /* J6 regions */
+  const regs = ['Central', 'Eastern', 'Western'];
+  T.reg = regs.map((rg) => { const a = D.apReg[rg], m = D.amReg[rg]; const c = T.covRegion.find((x) => x.region === rg); return { region: rg, ap: a.proposal[4] + a.contract[4] + a.lease[4], am: sum(Object.values(m).map((v) => v[0])), mm: c.mm, units: c.units, mr: c.units ? c.mm / c.units : null }; });
+  T.reg.forEach((x) => { put('reg_ap_' + x.region, x.ap, undefined, { tool: 'get_breakdown', metric: 'approvals.pending_by_delay', filters: { band: '1m+', by: 'region' } }); put('reg_am_' + x.region, x.am, undefined, { tool: 'get_breakdown', metric: 'amendments.pending_by_age_band', filters: { band: '4 wk+', year: 2026, by: 'region' } }); put('reg_mr_' + x.region, x.mr, pc1(x.mm, x.units), { tool: 'derive', formula: 'mismatched ÷ units reported' }); });
+  const rr = { ap: rank(T.reg.map((x) => x.ap)), am: rank(T.reg.map((x) => x.am)), mr: rank(T.reg.map((x) => x.mr)) };
+  T.reg.forEach((x, i) => { x.rk = [rr.ap[i], rr.am[i], rr.mr[i]]; x.score = sum(x.rk) / 3; });
+  T.regRank = T.reg.slice().sort((a, b) => a.score - b.score || b.ap - a.ap);
+  put('reg_first', 0, T.regRank[0].region, { tool: 'derive', formula: 'mean_rank(ap_1m+, am_4wk+, mismatch_rate) · equal weights' });
+  /* J8 tenant */
+  const tc = D.tenant.cols; const st = { tool: 'get_trend', metric: 'tenant_sales.reported', filters: { lease: 'T-31206', year: 2026, grain: 'month' } };
+  const mx = tc.reduce((a, b) => (b.v > a.v ? b : a)), mn = tc.reduce((a, b) => (b.v < a.v ? b : a));
+  put('ts_total', sum(tc.map((x) => x.v)), sar(sum(tc.map((x) => x.v))), st); put('ts_max', mx.v, sar(mx.v), st); put('ts_max_m', 0, mx.m === 'Mar' ? 'March' : mx.m, st); put('ts_min', mn.v, sar(mn.v), st); put('ts_min_m', 0, mn.m === 'Sep' ? 'September' : mn.m, st); put('ts_months', tc.length, undefined, st);
+  return { F, T, R };
+}
+const FACT_RE = /\[\[([a-zA-Z0-9_]+)\]\]/g;
+const fill = (t, F) => String(t).replace(FACT_RE, (m, k) => (F[k] ? F[k].fmt : '⟨missing fact ' + k + '⟩'));
+const factsIn = (t) => { const out = []; String(t).replace(FACT_RE, (m, k) => { if (out.indexOf(k) < 0) out.push(k); return m; }); return out; };
+
+function selRef(o) {
+  return { schema: 'selection_ref.v1', selectionId: 'sel_' + hsh(o.componentId + '|' + JSON.stringify(o.dims)), surface: o.surface, componentId: o.componentId, metric: { id: o.metric, version: 'v1', kind: (METRICS[o.metric] || {}).kind || 'parity' }, grain: o.dims.map((d) => d.name).join(' × '), dimensions: o.dims, value: { number: o.value, unit: o.unit }, filters: o.filters, scope: o.scope, dataset: { version: DSV, asOf: '2026-10-20', resultRef: o.resultRef || rref(o.metric, o.filters), validated: true }, role: o.role || 'active' };
+}
+const SCOPE_ADMIN = { kind: 'regions', label: 'Access: all regions' };
+const SCOPE_TENANT = { kind: 'lease', label: 'Access: lease T-31206 only' };
+
+/* ---------- Journeys. Numbers only through [[fact]] tokens or dataset values. ---------- */
+function buildJourneys(D, FT) {
+  const F = FT.F, T = FT.T, R = FT.R;
+  const sys = (k, v, fmt, src) => { F[k] = { v, fmt: fmt === undefined ? n(v) : fmt, src: src || {} }; };
+  const cov = (keys, text) => keys.forEach((k) => { if (F[k]) F[k].src = Object.assign({}, F[k].src, { cov: text }); });
+  sys('budget_max', 8, undefined, { tool: 'plan_validator', formula: 'limit: tool nodes per iteration' });
+  sys('budget_needed', 12, undefined, { tool: 'plan_validator', formula: '4 KPIs × 3 years = 12 tool nodes' });
+  sys('dsv', 0, DSV, { tool: 'dataset_registry' });
+  sys('am_malls_with', D.rows.filter((r) => r.renewal4 > 0).length, undefined, F.am_rawdah.src);
+  const rowOf = (m) => T.rank.find((x) => x.mall === m);
+  const mir = rowOf('Mirage Commons'), rawr = rowOf('Rawdah Point Mall'), sand = rowOf('Sandstone Galleria'), oas = rowOf('Oasis Row'), wadi = rowOf('Wadi Crescent Centre'), qasr = rowOf('Qasr Plaza');
+  const sAP = F.ap_old_rawdah.src, sAM = F.am4_rawdah.src, sV = F.vac_mirage.src;
+  sys('ap_mirage', mir.ap, undefined, sAP); sys('am_mirage', mir.am, undefined, sAM); sys('vr_rawdah', rawr.vr, pc1(rawr.vac, rawr.units), { tool: 'derive', formula: 'vacant ÷ units' });
+  /* populations made explicit (KPI reconciliation) */
+  const rap = D.rows.find((r) => r.mall === 'Rawdah Point Mall').ap; const tot = (ap) => sum(ap.proposal) + sum(ap.contract) + sum(ap.lease);
+  const sAPall = { tool: 'get_breakdown', metric: 'approvals.pending_by_delay', filters: { region: 'Central', band: 'all', by: 'mall' } };
+  sys('ap_tot_rawdah', tot(rap), undefined, sAPall); sys('ap_tot_rawdah_p', sum(rap.proposal), undefined, sAPall); sys('ap_tot_rawdah_c', sum(rap.contract), undefined, sAPall); sys('ap_tot_rawdah_l', sum(rap.lease), undefined, sAPall);
+  sys('ap_tot_central', tot(D.apC), undefined, sAPall);
+  /* leaders, magnitude, severity (DXD-31 default presentation) */
+  sys('ap_gap', rawr.ap - F.ap_next_max.v, undefined, { tool: 'derive', formula: 'ap_old_rawdah − ap_next_max' });
+  sys('qasr_am4', qasr.am, undefined, sAM); sys('am4_zero_malls', T.rank.filter((x) => x.am === 0).length, undefined, sAM);
+  sys('vr_oasis', oas.vr, pc1(oas.vac, oas.units), { tool: 'derive', formula: 'vacant ÷ units' }); sys('vr_wadi', wadi.vr, pc1(wadi.vac, wadi.units), { tool: 'derive', formula: 'vacant ÷ units' });
+  sys('vac_sand', sand.vac, undefined, sV); sys('vac_wadi', wadi.vac, undefined, sV); sys('vac_central', sum(T.rank.map((x) => x.vac)), undefined, sV); sys('units_central', sum(T.rank.map((x) => x.units)), undefined, sV);
+  const lead = (f) => T.rank.filter((x) => f(x) !== null).reduce((a, b) => (f(b) > f(a) ? b : a));
+  const lmr = lead((x) => x.mr);
+  const sLead = { tool: 'derive', formula: 'argmax per KPI over the comparison table' };
+  sys('lead_ap', 0, lead((x) => x.ap).mall, sLead); sys('lead_am', 0, lead((x) => x.am).mall, sLead); sys('lead_vr', 0, lead((x) => x.vr).mall, sLead); sys('lead_mr', 0, lmr.mall, sLead);
+  sys('mr_top', lmr.mr, pc1(lmr.mm, lmr.mt), { tool: 'derive', formula: 'mismatched ÷ units checked' });
+  const med = (vals) => { const v = vals.filter((x) => x !== null).sort((a, b) => a - b); const k = Math.floor(v.length / 2); return v.length % 2 ? v[k] : (v[k - 1] + v[k]) / 2; };
+  const kp = [(x) => x.ap, (x) => x.am, (x) => x.vr, (x) => x.mr];
+  sys('sand_med', kp.filter((f) => f(sand) !== null && f(sand) > med(T.rank.map(f))).length, undefined, { tool: 'derive', formula: 'count of KPIs where Sandstone Galleria is above the Central median' });
+  sys('sand_med_n', 4, undefined, { tool: 'derive', formula: 'KPIs compared' });
+  const leadsNone = kp.every((f) => lead(f).mall !== 'Sandstone Galleria'); if (!leadsNone) throw new Error('Sandstone leads a KPI: statement would be false');
+  /* regions (J6) */
+  const rl = (f) => T.reg.reduce((a, b) => (f(b) > f(a) ? b : a)).region; const sRL = { tool: 'derive', formula: 'argmax per KPI over regions' };
+  sys('reg_lead_ap', 0, rl((x) => x.ap), sRL); sys('reg_lead_am', 0, rl((x) => x.am), sRL); sys('reg_lead_mr', 0, rl((x) => x.mr), sRL);
+  /* coverage tags (evidence inheritance) */
+  cov(['ud_mm', 'ud_units', 'ud_rate', 'ud_reported', 'ud_all', 'ud_missing', 'cov_Central', 'cov_Eastern', 'cov_Western'], 'observed subset · 18 of 25 malls reported in September');
+  cov(['ud_central_reported', 'ud_central_malls', 'lead_mr', 'mr_top', 'sand_med'], 'mismatch rate covers 7 of 10 Central malls (September reports)');
+  cov(['reg_mr_Central', 'reg_mr_Eastern', 'reg_mr_Western', 'reg_lead_mr'], 'reporting malls only · 18 of 25 malls');
+  cov(['rank1', 'rank2', 'rank3', 'rank1_score', 'rank2_score'], 'three malls ranked on three KPIs (no September report)');
+  const CF = 'Pending amendments · 2026 · Central';
+  const amSel = selRef({ surface: 'dashboard', componentId: 'admin.pendingAmendments.heatmap', metric: 'amendments.pending_by_age_band', dims: [{ name: 'amendment_type', value: 'Renewal' }, { name: 'age_band', value: '4 wk+' }], value: F.am_cell.v, unit: 'amendments', filters: { year: 2026, month: 'All', region: 'Central', mall: 'All' }, scope: SCOPE_ADMIN });
+  const bars1 = { kind: 'bars', id: 'c_r1_bars', cls: 'Observed', title: 'Renewal amendments, 4 wk+ · Central · 2026 · by mall', metric: 'amendments.pending_by_age_band', unit: 'amendments', filters: { year: 2026, region: 'Central', type: 'Renewal', band: '4 wk+' }, rows: [['Rawdah Point Mall', F.am_rawdah.v], ['Sandstone Galleria', F.am_sandstone.v], ['Qasr Plaza', F.am_qasr.v], ['Other ' + F.am_zero_malls.fmt + ' Central malls', 0, true]], note: 'Same population as the dashboard cell · ' + F.am_cell.fmt + ' amendments' };
+  const leaders = { ap: lead((x) => x.ap).mall, am: lead((x) => x.am).mall, vr: lead((x) => x.vr).mall, mr: lmr.mall };
+  const cmpComp = { kind: 'rank', id: 'c_r2_cmp', cls: 'Observed', title: 'Central malls · four KPIs side by side · no combined score', metric: 'comparison.multi_kpi', unit: 'malls', filters: { region: 'Central', asOf: '2026-10-20', discrepancyMonth: '2026-09' }, cov: 'mismatch rate covers 7 of 10 Central malls', cols: ['Approvals 1m+', 'Amendments 4 wk+', 'Vacancy', 'Mismatch rate'], rows: T.rank.slice().sort((a, b) => b.ap - a.ap || b.am - a.am).map((x) => ({ mall: x.mall, cells: [n(x.ap) + ' · ' + pc0(x.ap, F.ap_old_central.v) + ' of Central', n(x.am), pc1(x.vac, x.units) + ' (' + x.vac + ' units)', x.mr === null ? 'No report' : pc1(x.mm, x.mt)], raw: [x.ap, x.am, x.vr, x.mr], rk: x.rk, lead: [leaders.ap === x.mall, leaders.am === x.mall, leaders.vr === x.mall, leaders.mr === x.mall], note: x.mr === null ? 'no September discrepancy report' : '' })) };
+  const rankComp = { kind: 'rank', id: 'c_r2_rank', cls: 'Derived · composite on request', title: 'Central malls · combined score you asked for · equal-weight mean rank', metric: 'derived.mean_rank', unit: 'mean rank', filters: { region: 'Central', asOf: '2026-10-20', discrepancyMonth: '2026-09' }, cov: 'three malls ranked on three KPIs', cols: ['Approvals 1m+', 'Amendments 4 wk+', 'Vacancy', 'Mismatch rate', 'Mean rank'], rows: T.rank.map((x) => ({ mall: x.mall, cells: [n(x.ap), n(x.am), pc1(x.vac, x.units), x.mr === null ? 'No report' : pc1(x.mm, x.mt), x.score.toFixed(2)], raw: [x.ap, x.am, x.vr, x.mr, x.score], rk: x.rk, lead: [false, false, false, false, false], note: x.kpis < 4 ? 'ranked on three KPIs' : '' })) };
+  const covComp = { kind: 'table', id: 'c_r4_cov', cls: 'Observed · partial', title: 'September 2026 discrepancy reports · coverage by region', metric: 'unit_discrepancy.units', unit: 'malls', filters: { month: '2026-09' }, cov: 'observed subset · 18 of 25 malls reported', cols: ['Region', 'Malls reporting', 'Mismatched units (observed)', 'Units checked'], rows: T.covRegion.map((c) => [c.region, c.reported + ' of ' + c.malls, n(c.mm), n(c.units)]) };
+  const regComp = { kind: 'table', id: 'c_r6_reg', cls: 'Observed · partial', title: 'Regions · 2026 · three of four KPIs (vacancy failed)', metric: 'comparison.multi_kpi', unit: 'regions', filters: { year: 2026, by: 'region' }, cov: 'mismatch rate: reporting malls only · vacancy missing (query failed)', cols: ['Region', 'Approvals 1m+', 'Amendments 4 wk+', 'Mismatch rate (reporting malls)'], rows: T.reg.slice().sort((a, b) => b.ap - a.ap).map((x) => [x.region, n(x.ap), n(x.am), pc1(x.mm, x.units)]) };
+  const salesComp = { kind: 'cols', id: 'c_r8_sales', cls: 'Observed', title: 'Reported sales · T-31206 · 2026', metric: 'tenant_sales.reported', unit: 'SAR', filters: { lease: 'T-31206', year: 2026 }, rows: D.tenant.cols.map((c) => [c.m, c.v]) };
+  const vacBars = { kind: 'bars', id: 'c_r9_vac', cls: 'Observed', title: 'Vacant units · Central · 20 Oct 2026 · by mall', metric: 'units.vacant', unit: 'units', filters: { region: 'Central', date: '2026-10-20' }, rows: T.rank.slice().sort((a, b) => b.vac - a.vac).map((x) => [x.mall, x.vac]), note: 'Central total ' + F.vac_central.fmt + ' of ' + F.units_central.fmt + ' units' };
+  const r9 = (id, extra) => Object.assign({ id, title: 'Vacancy in Central', outcome: 'supported',
+    iters: [{ parallel: true, nodes: [
+      { id: 'n1', title: 'Vacant units, by mall', tool: 'get_breakdown', args: 'units.vacant v1 · Central · 20 Oct 2026 · by mall', res: '[[vac_central]] vacant of [[units_central]]', ms: 190, rows: 10, facts: ['vac_mirage', 'vac_sand', 'vac_wadi', 'vac_central', 'units_central', 'units_mirage'] },
+      { id: 'n2', title: 'Units, by mall', tool: 'get_breakdown', args: 'units.occupied v1 · Central · 20 Oct 2026 · by mall', res: '10 malls', ms: 170, rows: 10 },
+      { id: 'n3', title: 'Vacancy rates', tool: 'derive', args: 'share per mall over the two results', res: 'highest [[vr_mirage]]', ms: 15, rows: 10, facts: ['vr_mirage', 'vr_oasis'] }
+    ] }],
+    stmts: [{ k: 'obs', t: 'Mirage Commons has the most vacant units ([[vac_mirage]]), then Sandstone Galleria ([[vac_sand]]) and Wadi Crescent Centre ([[vac_wadi]]).', nodes: ['n1'] }, { k: 'der', t: 'By rate, Mirage Commons is also highest at [[vr_mirage]]; Oasis Row is second at [[vr_oasis]].', nodes: ['n3'] }],
+    caveats: METRICS['units.vacant'].cav, comps: [vacBars], metrics: ['units.vacant', 'units.occupied'], suggs: [] }, extra || {});
+  const J = [
+    { id: 'J1', title: 'Ask from a chart selection', where: 'Dashboard · docked panel', persona: 'admin', pre: [], thread: 't1',
+      covers: ['Docked agent panel', 'Dashboard selection imported explicitly', 'Selection and filter context', 'Plan and tool activity', 'Evidence inspection'],
+      steps: [
+        { do: 'begin', persona: 'admin', view: 'dashboard' },
+        { do: 'select', sel: amSel, label: 'Renewal × 4 wk+ · ' + F.am_cell.fmt, cell: 'Renewal|4 wk+', note: 'Selects the heatmap cell. It is the dashboard’s selection; it is not sent anywhere yet.' },
+        { do: 'panel', note: 'Ask about this imports the dashboard selection into the investigation, labelled with its source.' },
+        { do: 'say', text: 'Why are so many renewal amendments older than four weeks?', chips: ['Selected: Renewal × 4 wk+ · [[am_cell]]', CF, 'Access: all regions', 'As of 20 Oct 2026'] },
+        { do: 'run', run: { id: 'r1', title: 'Renewal backlog', outcome: 'supported',
+          iters: [
+            { parallel: true, nodes: [
+              { id: 'n1', title: 'Confirm the selected value', tool: 'get_metric', args: 'amendments.pending_by_age_band v1 · Renewal × 4 wk+ · Central · 2026', res: '[[am_cell]] · matches the selection', ms: 140, rows: 1, facts: ['am_cell'] },
+              { id: 'n2', title: 'Break the cell down by mall', tool: 'get_breakdown', args: 'same metric and filters · by mall', res: '[[am_malls_with]] malls with renewals · [[am_zero_malls]] with none', ms: 190, rows: 10, facts: ['am_rawdah', 'am_sandstone', 'am_qasr', 'am_zero_malls', 'am_malls_with'] },
+              { id: 'n3', title: 'All Central pending amendments', tool: 'get_metric', args: 'amendments.pending_by_age_band v1 · Central · 2026', res: '[[am_central_total]] in total · [[am_central_4wp]] at 4 wk+', ms: 150, rows: 20, facts: ['am_central_total', 'am_central_4wp'] }
+            ] },
+            { why: 'Half of the cell sits in one mall, so the plan adds a related KPI for that mall.', nodes: [
+              { id: 'n4', title: 'Find related KPIs', tool: 'get_related_metrics', args: 'amendments.pending_by_age_band', res: 'approvals.pending_by_delay · same lease lifecycle · joins on mall', ms: 60, rows: 3 },
+              { id: 'n5', title: 'Approvals by mall and delay band', tool: 'get_breakdown', args: 'approvals.pending_by_delay v1 · all types · all bands · Central · by mall', res: 'Central [[ap_tot_central]] pending, [[ap_old_central]] over a month · Rawdah Point [[ap_tot_rawdah]] pending, [[ap_old_rawdah]] over a month', ms: 170, rows: 150, facts: ['ap_old_central', 'ap_old_rawdah', 'ap_old_rawdah_p', 'ap_old_rawdah_c', 'ap_old_rawdah_l', 'ap_tot_rawdah', 'ap_tot_central'] },
+              { id: 'n6', title: 'Shares', tool: 'derive', args: 'share × 3 over the results above', res: '[[sh_cell_total]] · [[sh_cell_4wp]] · [[sh_rawdah_ap]]', ms: 20, rows: 3, facts: ['sh_cell_total', 'sh_cell_4wp', 'sh_rawdah_ap'] }
+            ] }
+          ],
+          stmts: [
+            { k: 'obs', t: '[[am_cell]] of the [[am_central_total]] pending amendments in Central ([[sh_cell_total]]) are renewals that have waited four weeks or more.', nodes: ['n1', 'n3', 'n6'] },
+            { k: 'obs', t: 'Rawdah Point Mall has [[am_rawdah]] of them, Sandstone Galleria [[am_sandstone]] and Qasr Plaza [[am_qasr]]. The other [[am_zero_malls]] Central malls have none.', nodes: ['n2'] },
+            { k: 'der', t: 'Renewals make up [[sh_cell_4wp]] of the [[am_central_4wp]] Central amendments that are four weeks or older.', nodes: ['n3', 'n6'] },
+            { k: 'obs', t: 'Rawdah Point also holds [[ap_old_rawdah]] of Central’s [[ap_old_central]] approvals waiting more than a month ([[sh_rawdah_ap]]): [[ap_old_rawdah_p]] proposals, [[ap_old_rawdah_c]] contracts and [[ap_old_rawdah_l]] leases, out of [[ap_tot_rawdah]] pending approvals of all ages there.', nodes: ['n5', 'n6'] },
+            { k: 'hyp', t: 'One approval queue at Rawdah Point may be slowing both renewals and new deals. The data shows both backlogs in the same mall; it does not show why.', nodes: ['n2', 'n5'] },
+            { k: 'rec', t: 'Start with the Rawdah Point renewals. The oldest are in Records, sorted by age.', nodes: ['n2'] }
+          ],
+          caveats: METRICS['amendments.pending_by_age_band'].cav,
+          comps: [bars1], records: D.amRecords, metrics: ['amendments.pending_by_age_band', 'approvals.pending_by_delay'],
+          suggs: [{ label: 'Which Central malls need leasing attention first?', j: 'J2' }, { label: 'Show the Rawdah Point renewals', act: 'records' }, { label: 'Open in workspace', act: 'workspace' }] } }
+      ] },
+    { id: 'J2', title: 'Multi-step investigation', where: 'Expanded workspace', persona: 'admin', pre: ['J1'], thread: 't1',
+      covers: ['Expanded workspace', 'Parallel plan, retry, re-plan', 'KPI leaders, magnitude and severity (no composite by default)', 'Composite only on request, with disclosure', 'Pinned multi-selection'],
+      steps: [
+        { do: 'view', view: 'workspace', banner: 'Opened from the agent panel. This investigation’s conversation, selections and scope came with it.' },
+        { do: 'say', text: 'Which Central malls need leasing attention first? Use every KPI you can break down by mall.', chips: ['Active: Renewal × 4 wk+ · [[am_cell]]', 'Region: Central', 'Access: all regions', 'As of 20 Oct 2026'] },
+        { do: 'run', run: { id: 'r2', title: 'Central leasing priorities', outcome: 'partial',
+          iters: [
+            { parallel: true, nodes: [
+              { id: 'n1', title: 'Approvals over a month, by mall', tool: 'reuse_dataset', args: 'result of step 5 in the previous answer', res: 'reused · no new query', ms: 10, rows: 10, facts: ['ap_old_rawdah', 'ap_old_central', 'sh_rawdah_ap', 'ap_next_max'] },
+              { id: 'n2', title: 'Amendments 4 wk+, by mall', tool: 'get_breakdown', args: 'amendments.pending_by_age_band v1 · band 4 wk+ · Central · 2026 · by mall', res: 'Rawdah Point [[am4_rawdah]] · Sandstone Galleria [[sand_am]] · Qasr Plaza [[qasr_am4]]', ms: 180, rows: 10, facts: ['am4_rawdah', 'sand_am', 'qasr_am4', 'am4_zero_malls'] },
+              { id: 'n3', title: 'Vacant units, by mall', tool: 'get_breakdown', args: 'units.vacant v1 · Central · 20 Oct 2026 · by mall', res: 'highest rate Mirage Commons [[vr_mirage]]', ms: 210, rows: 10, facts: ['vac_mirage', 'units_mirage', 'vr_mirage', 'vr_oasis', 'vr_wadi'] },
+              { id: 'n4', title: 'Unit discrepancy, Sep 2026, by mall', tool: 'get_breakdown', args: 'unit_discrepancy.units v1 · Central · Sep 2026 · by mall', res: '[[ud_central_reported]] malls with a report', ms: 260, rows: 7, fails: ['Timed out after 3.0 s'], facts: ['ud_central_reported'] }
+            ] },
+            { why: 'Three malls have no discrepancy report, so the plan checks coverage before comparing.', nodes: [
+              { id: 'n5', title: 'Check coverage', tool: 'get_data_coverage', args: 'unit_discrepancy.units · Central · Sep 2026', res: '[[ud_central_reported]] of [[ud_central_malls]] malls reported · missing Oasis Row, Amber Heights, Mirage Commons', ms: 90, rows: 10, facts: ['ud_central_reported', 'ud_central_malls'] },
+              { id: 'n6', title: 'Leaders, shares and gaps per KPI', tool: 'derive', args: 'argmax, share and gap per KPI · no combined score (DXD-31)', res: 'leaders [[lead_ap]] · [[lead_am]] · [[lead_vr]] · [[lead_mr]]', ms: 30, rows: 10, facts: ['lead_ap', 'lead_am', 'lead_vr', 'lead_mr', 'mr_top', 'ap_gap', 'sand_med', 'sand_med_n'] }
+            ] }
+          ],
+          stmts: [
+            { k: 'obs', t: 'Approvals over a month: Rawdah Point Mall leads with [[ap_old_rawdah]] of Central’s [[ap_old_central]] ([[sh_rawdah_ap]]). No other mall has more than [[ap_next_max]].', nodes: ['n1', 'n6'] },
+            { k: 'obs', t: 'Amendments over four weeks: Rawdah Point Mall [[am4_rawdah]], Sandstone Galleria [[sand_am]] and Qasr Plaza [[qasr_am4]]. The other [[am4_zero_malls]] malls have none.', nodes: ['n2'] },
+            { k: 'obs', t: 'Vacancy: Mirage Commons is highest at [[vr_mirage]] ([[vac_mirage]] of [[units_mirage]] units), followed by Oasis Row ([[vr_oasis]]) and Wadi Crescent Centre ([[vr_wadi]]).', nodes: ['n3'] },
+            { k: 'obs', t: 'Mismatch rate, among the [[ud_central_reported]] malls that filed a September report: [[lead_mr]] is highest at [[mr_top]].', nodes: ['n4', 'n5'] },
+            { k: 'der', t: 'By magnitude, Rawdah Point’s approval backlog is the most severe gap: [[ap_gap]] more approvals over a month than any other Central mall.', nodes: ['n6'] },
+            { k: 'hyp', t: 'These look like two different problems: a process backlog at Rawdah Point and a leasing gap at Mirage Commons.', nodes: ['n1', 'n3'] },
+            { k: 'rec', t: 'Suggested order: the Rawdah Point approval queue first (largest and most concentrated backlog), then Mirage Commons’ vacancy, then Sandstone Galleria, which is above the Central median on [[sand_med]] of [[sand_med_n]] KPIs without leading any.', nodes: ['n6'] }
+          ],
+          caveats: ['No combined score was calculated. Ask for one if you need it; its method will be shown.', 'Mismatch rates cover only malls that filed a September report.'],
+          comps: [{ kind: 'notice', id: 'c_r2_partial', cls: 'Coverage', tone: 'partial', title: 'Unit discrepancy covers [[ud_central_reported]] of [[ud_central_malls]] Central malls', text: 'Oasis Row, Amber Heights and Mirage Commons filed no September report. Their mismatch rate is shown as “No report”. Nothing is estimated.', cov: '7 of 10 Central malls reported', metric: 'unit_discrepancy.units', filters: { region: 'Central', month: '2026-09' } }, cmpComp],
+          metrics: ['approvals.pending_by_delay', 'amendments.pending_by_age_band', 'units.vacant', 'unit_discrepancy.units', 'comparison.multi_kpi'],
+          suggs: [{ label: 'Combine the KPIs into one score', act: 'composite' }, { label: 'Show Rawdah Point on the dashboard', j: 'J3' }, { label: 'Compare pinned malls', act: 'compare' }] } },
+        { do: 'say', text: 'Combine the KPIs into one score.', chips: ['Explicit request: combined score', 'Region: Central', 'Access: all regions'] },
+        { do: 'run', run: { id: 'r2c', title: 'Combined score (requested)', outcome: 'derived',
+          iters: [{ nodes: [{ id: 'n1', title: 'Reuse the four KPI results', tool: 'reuse_dataset', args: 'results of the previous answer', res: 'reused · no new query', ms: 10, rows: 40 }, { id: 'n2', title: 'Rank and average', tool: 'derive', args: 'rank per KPI · ties share the average · mean of available ranks · equal weights', res: '[[rank1]] · [[rank2]] · [[rank3]]', ms: 30, rows: 10, facts: ['rank1', 'rank2', 'rank3', 'rank1_score', 'rank2_score'] }] }],
+          stmts: [
+            { k: 'der', t: 'As requested, with the four KPIs weighted equally, [[rank1]] ranks first (mean rank [[rank1_score]]), [[rank2]] second ([[rank2_score]]) and [[rank3]] third.', nodes: ['n2'] },
+            { k: 'obs', t: 'This differs from the magnitude view: Rawdah Point’s backlog of [[ap_old_rawdah]] counts as one rank step ahead of a mall with [[ap_next_max]].', nodes: ['n1'] }
+          ],
+          caveats: METRICS['derived.mean_rank'].cav,
+          comps: [{ kind: 'method', id: 'c_r2c_m', cls: 'Method disclosure', title: 'How this score is built', items: [['Weighting', 'Equal: each KPI counts once.'], ['Normalisation', 'Rank within Central, 1 = most attention needed; ties share the average rank. Magnitudes are discarded.'], ['Missing data', 'Mean of the ranks available. Oasis Row, Amber Heights and Mirage Commons are ranked on three KPIs (no September report).'], ['Limitations', 'A large gap and a small gap count the same. Use the side-by-side table for magnitude and severity.']], metric: 'derived.mean_rank', filters: { region: 'Central' }, cov: 'three malls ranked on three KPIs' }, rankComp],
+          metrics: ['derived.mean_rank'], suggs: [{ label: 'Compare pinned malls', act: 'compare' }] } },
+        { do: 'pickrow', comp: 'c_r2_cmp', mall: 'Rawdah Point Mall', note: 'Selects a row in the side-by-side table. It becomes this investigation’s active selection; the earlier imported cell is kept in the investigation.' },
+        { do: 'pin', note: 'Pins Rawdah Point for comparison.' },
+        { do: 'pickrow', comp: 'c_r2_cmp', mall: 'Mirage Commons' },
+        { do: 'pin', note: 'Two selections are pinned. Pinned selections are the only way several selections reach the agent together.' },
+        { do: 'compare' }
+      ] },
+    { id: 'J3', title: 'Confirmed dashboard filter change', where: 'Workspace → dashboard', persona: 'admin', pre: ['J1', 'J2'], thread: 't1',
+      covers: ['Agent proposes; the user confirms', 'Populations stated (all types vs one type)', 'Undo'],
+      steps: [
+        { do: 'say', text: 'Show Rawdah Point on the dashboard.', chips: ['Pinned: Rawdah Point Mall · Mirage Commons', 'Access: all regions'] },
+        { do: 'run', run: { id: 'r3', title: 'Dashboard change', outcome: 'supported', fast: true,
+          iters: [{ nodes: [{ id: 'n1', title: 'Propose a card filter', tool: 'propose_dashboard_filters', args: 'frontend tool · Pending approvals · Central · Rawdah Point Mall', res: 'waiting for your confirmation', ms: 15, rows: 0, facts: ['ap_tot_rawdah', 'ap_tot_rawdah_p', 'ap_tot_rawdah_c', 'ap_tot_rawdah_l', 'ap_old_rawdah'] }] }],
+          stmts: [{ k: 'rec', t: 'I can set the Pending approvals card to Central · Rawdah Point Mall. It will show [[ap_tot_rawdah]] pending approvals of all ages ([[ap_tot_rawdah_p]] proposals, [[ap_tot_rawdah_c]] contracts, [[ap_tot_rawdah_l]] leases), [[ap_old_rawdah]] of them older than a month. Nothing changes until you confirm.', nodes: ['n1'] }],
+          proposal: { card: 'Pending approvals', from: 'All regions · All malls', to: 'Central · Rawdah Point Mall' }, comps: [], metrics: ['approvals.pending_by_delay'], suggs: [] } },
+        { do: 'apply', note: 'Apply. The card changes and is flagged; the dashboard view opens.' },
+        { do: 'view', view: 'dashboard', banner: 'Pending approvals now shows Central · Rawdah Point Mall. Undo is on the card.' }
+      ] },
+    { id: 'J4', title: 'Partial information', where: 'Workspace · new investigation', persona: 'admin', pre: [], thread: 't2',
+      covers: ['Observed subset vs unavailable total', 'No extrapolation'],
+      steps: [
+        { do: 'begin', persona: 'admin', view: 'workspace', thread: 't2' },
+        { do: 'say', text: 'How many units had mismatches across the portfolio in September?', chips: ['No selection', 'Access: all regions', 'As of 20 Oct 2026'] },
+        { do: 'run', run: { id: 'r4', title: 'Portfolio mismatches', outcome: 'partial',
+          iters: [{ parallel: true, nodes: [
+            { id: 'n1', title: 'Mismatched units in filed reports, Sep 2026', tool: 'get_metric', args: 'unit_discrepancy.units v1 · Sep 2026 · all malls with a report', res: '[[ud_mm]] mismatched of [[ud_units]] checked · observed subset', ms: 160, rows: 18, facts: ['ud_mm', 'ud_units'] },
+            { id: 'n2', title: 'Check coverage', tool: 'get_data_coverage', args: 'unit_discrepancy.units · Sep 2026', res: '[[ud_reported]] of [[ud_all]] malls reported', ms: 80, rows: 25, facts: ['ud_reported', 'ud_all', 'ud_missing', 'cov_Central', 'cov_Eastern', 'cov_Western'] },
+            { id: 'n3', title: 'Share of checked units', tool: 'derive', args: 'share over the two results', res: '[[ud_rate]] of checked units', ms: 10, rows: 1, facts: ['ud_rate'] }
+          ] }],
+          stmts: [
+            { k: 'obs', t: 'In the [[ud_reported]] September reports that were filed, [[ud_mm]] of [[ud_units]] checked units were mismatched ([[ud_rate]] of checked units). This is an observed subset, not a portfolio total.', nodes: ['n1', 'n3'] },
+            { k: 'obs', t: 'The reports cover [[ud_reported]] of [[ud_all]] malls: Central [[cov_Central]], Eastern [[cov_Eastern]], Western [[cov_Western]].', nodes: ['n2'] },
+            { k: 'una', t: 'The portfolio-wide number of mismatched units is not available: [[ud_missing]] malls filed no report, and they are not estimated.', nodes: ['n2'] },
+            { k: 'rec', t: 'Collect the missing September reports before comparing regions or malls.', nodes: ['n2'] }
+          ],
+          caveats: METRICS['unit_discrepancy.units'].cav,
+          comps: [{ kind: 'kpi', id: 'c_r4_kpi', cls: 'Observed · partial', label: 'Mismatched units · observed subset · Sep 2026', value: '[[ud_mm]]', sub: 'of [[ud_units]] checked units in the [[ud_reported]] malls that reported', badge: 'Partial · [[ud_reported]] of [[ud_all]] malls', metric: 'unit_discrepancy.units', filters: { month: '2026-09', scope: 'malls with a report' }, cov: 'observed subset · 18 of 25 malls reported' },
+            { kind: 'kpi', id: 'c_r4_tot', cls: 'Unavailable', label: 'Mismatched units · whole portfolio · Sep 2026', value: '—', sub: 'Not available: [[ud_missing]] malls filed no report. Not estimated.', badge: 'Unavailable', unavail: true, metric: 'unit_discrepancy.units', filters: { month: '2026-09', scope: 'portfolio' }, cov: 'incomplete · 7 malls missing' },
+            { kind: 'notice', id: 'c_r4_partial', cls: 'Coverage', tone: 'partial', title: '[[ud_missing]] malls filed no September report', text: T.quiet.join(', ') + '.', metric: 'unit_discrepancy.units', filters: { month: '2026-09' }, cov: '18 of 25 malls reported' }, covComp],
+          metrics: ['unit_discrepancy.units'], suggs: [{ label: 'What was footfall at Gulf Gate Mall last month?', j: 'J5' }] } }
+      ] },
+    { id: 'J5', title: 'Unavailable data', where: 'Workspace · new investigation', persona: 'admin', pre: [], thread: 't3',
+      covers: ['Unavailable concept handled without a number', 'Related, clearly labelled information'],
+      steps: [
+        { do: 'begin', persona: 'admin', view: 'workspace', thread: 't3' },
+        { do: 'say', text: 'What was footfall at Gulf Gate Mall last month?', chips: ['No selection', 'Access: all regions', 'As of 20 Oct 2026'] },
+        { do: 'run', run: { id: 'r5', title: 'Footfall at Gulf Gate', outcome: 'related_only',
+          iters: [{ nodes: [
+            { id: 'n1', title: 'Is footfall in the dataset?', tool: 'check_concept_availability', args: '“footfall” · Gulf Gate Mall', res: 'not available · no approved proxy', ms: 40, rows: 0 },
+            { id: 'n2', title: 'Occupancy at Gulf Gate', tool: 'get_metric', args: 'units.occupied v1 · Gulf Gate Mall · 20 Oct 2026', res: '[[gg_occ]] of [[gg_units]] units', ms: 120, rows: 1, facts: ['gg_occ', 'gg_units', 'gg_occ_rate'] },
+            { id: 'n3', title: 'Latest discrepancy report', tool: 'get_metric', args: 'unit_discrepancy.units v1 · Gulf Gate Mall · Sep 2026', res: '[[gg_ud_mm]] mismatched of [[gg_ud_total]]', ms: 110, rows: 1, facts: ['gg_ud_total', 'gg_ud_mm', 'gg_ud_pending'] }
+          ] }],
+          stmts: [
+            { k: 'una', t: 'Footfall is not available. The POC has no visitor-count source, so there is no number or estimate to give.', nodes: ['n1'] },
+            { k: 'obs', t: 'What the data does show for Gulf Gate Mall: [[gg_occ]] of [[gg_units]] units occupied on 20 Oct 2026 ([[gg_occ_rate]]).', nodes: ['n2'] },
+            { k: 'obs', t: 'Its September discrepancy report checked [[gg_ud_total]] units: [[gg_ud_mm]] mismatched and [[gg_ud_pending]] pending.', nodes: ['n3'] }
+          ],
+          caveats: ['Occupancy and discrepancy describe the mall, not its visitors. They are not a proxy for footfall.'],
+          comps: [{ kind: 'notice', id: 'c_r5_una', cls: 'Unavailable', tone: 'unavailable', title: 'Footfall · not in the dataset', text: 'Listed in the unavailable-concepts catalogue together with payments. The agent never estimates these.', metric: 'catalogue.unavailable_concepts', filters: { concept: 'footfall' }, cov: 'not collected' }, { kind: 'kpi', id: 'c_r5_occ', cls: 'Observed · related', label: 'Occupied units · Gulf Gate Mall', value: '[[gg_occ]]', sub: 'of [[gg_units]] units · [[gg_occ_rate]]', metric: 'units.occupied', filters: { mall: 'Gulf Gate Mall', date: '2026-10-20' } }, { kind: 'kpi', id: 'c_r5_ud', cls: 'Observed · related', label: 'Mismatched units · Sep 2026 report', value: '[[gg_ud_mm]]', sub: 'of [[gg_ud_total]] checked · [[gg_ud_pending]] pending', metric: 'unit_discrepancy.units', filters: { mall: 'Gulf Gate Mall', month: '2026-09' } }],
+          metrics: ['units.occupied', 'unit_discrepancy.units'], suggs: [{ label: 'Compare every KPI for all malls over three years', j: 'J6' }] } }
+      ] },
+    { id: 'J6', title: 'Budget limit, failure and versioned retry', where: 'Workspace · new investigation', persona: 'admin', pre: [], thread: 't4',
+      covers: ['Plan rejected by the budget → clarification', 'Tool failure after retry', 'Partial answer v1 kept', 'Retry creates answer v2'],
+      steps: [
+        { do: 'begin', persona: 'admin', view: 'workspace', thread: 't4' },
+        { do: 'say', text: 'Compare every KPI for all 25 malls for 2024, 2025 and 2026.', chips: ['No selection', 'Access: all regions', 'As of 20 Oct 2026'] },
+        { do: 'run', run: { id: 'r6a', title: 'Scope check', outcome: 'needs_input', clarify: true,
+          iters: [{ nodes: [{ id: 'n1', title: 'Validate the plan', tool: 'plan_validator', args: '4 KPIs × 3 years × 25 malls', res: 'rejected · needs [[budget_needed]] tool nodes, limit [[budget_max]]', ms: 5, rows: 0, facts: ['budget_needed', 'budget_max'] }] }],
+          stmts: [{ k: 'rec', t: 'That comparison needs [[budget_needed]] queries, more than one run allows ([[budget_max]]). Choose a smaller scope and I’ll run it.', nodes: ['n1'] }],
+          clar: { options: [{ id: 'reg', label: 'By region, 2026 only', sub: '4 tool nodes · one run' }, { id: 'cen', label: 'Central malls, 2026 only', sub: '5 tool nodes · one run' }, { id: 'split', label: 'One year per run', sub: 'three runs · you confirm each' }] },
+          comps: [], metrics: [], suggs: [] } },
+        { do: 'choose', opt: 'reg', text: 'By region, 2026 only' },
+        { do: 'run', run: { id: 'r6b', title: 'Regions compared', version: 1, outcome: 'partial',
+          iters: [{ parallel: true, nodes: [
+            { id: 'n1', title: 'Approvals over a month, by region', tool: 'get_breakdown', args: 'approvals.pending_by_delay v1 · band 1m+ · by region', res: 'Central [[reg_ap_Central]] · Western [[reg_ap_Western]] · Eastern [[reg_ap_Eastern]]', ms: 150, rows: 3, facts: ['reg_ap_Central', 'reg_ap_Western', 'reg_ap_Eastern'] },
+            { id: 'n2', title: 'Amendments 4 wk+, by region', tool: 'get_breakdown', args: 'amendments.pending_by_age_band v1 · 2026 · band 4 wk+ · by region', res: 'Central [[reg_am_Central]] · Western [[reg_am_Western]] · Eastern [[reg_am_Eastern]]', ms: 160, rows: 3, facts: ['reg_am_Central', 'reg_am_Western', 'reg_am_Eastern'] },
+            { id: 'n3', title: 'Mismatch rate, Sep 2026, by region', tool: 'get_breakdown', args: 'unit_discrepancy.units v1 · Sep 2026 · by region · reporting malls', res: 'Eastern [[reg_mr_Eastern]] · Western [[reg_mr_Western]] · Central [[reg_mr_Central]]', ms: 170, rows: 3, facts: ['reg_mr_Eastern', 'reg_mr_Western', 'reg_mr_Central'] },
+            { id: 'n4', title: 'Vacant units, by region', tool: 'get_breakdown', args: 'units.vacant v1 · 20 Oct 2026 · by region', res: 'failed after 2 attempts', ms: 0, rows: 0, fails: ['Service unavailable (503)', 'Service unavailable (503)'], failed: true }
+          ] }, { nodes: [{ id: 'n5', title: 'Leaders per KPI that loaded', tool: 'derive', args: 'argmax per KPI · no combined score (DXD-31)', res: 'approvals [[reg_lead_ap]] · amendments [[reg_lead_am]] · mismatch [[reg_lead_mr]]', ms: 20, rows: 3, facts: ['reg_lead_ap', 'reg_lead_am', 'reg_lead_mr'] }] }],
+          stmts: [
+            { k: 'obs', t: 'Approvals waiting over a month: Central [[reg_ap_Central]], Western [[reg_ap_Western]], Eastern [[reg_ap_Eastern]].', nodes: ['n1'] },
+            { k: 'obs', t: 'Amendments four weeks or older in 2026: Central [[reg_am_Central]], Western [[reg_am_Western]], Eastern [[reg_am_Eastern]].', nodes: ['n2'] },
+            { k: 'obs', t: 'September mismatch rate among malls that reported: Eastern [[reg_mr_Eastern]], Western [[reg_mr_Western]], Central [[reg_mr_Central]].', nodes: ['n3'] },
+            { k: 'der', t: '[[reg_lead_ap]] leads on old approvals and old amendments; [[reg_lead_mr]] has the highest mismatch rate among reporting malls.', nodes: ['n5'] },
+            { k: 'una', t: 'Vacancy by region could not be loaded. The query failed twice, so it is left out rather than guessed.', nodes: ['n4'] }
+          ],
+          caveats: ['Mismatch rates cover only malls that filed a September report.', 'No combined score was calculated.'],
+          comps: [{ kind: 'notice', id: 'c_r6_err', cls: 'Error', tone: 'error', title: 'Vacant units · query failed', text: 'Two attempts returned “service unavailable”. This answer uses three KPIs. Retrying runs only this step and creates an updated answer; this one is kept.', retry: true, metric: 'units.vacant', filters: { by: 'region' }, cov: 'missing · query failed' }, regComp],
+          metrics: ['approvals.pending_by_delay', 'amendments.pending_by_age_band', 'unit_discrepancy.units', 'comparison.multi_kpi'], suggs: [] } },
+        { do: 'retry', note: 'Retry this step re-runs only the failed node. The result is a new answer, v2; v1 and its evidence stay as they were.' }
+      ] },
+    { id: 'J7', title: 'History and resume', where: 'Workspace · history', persona: 'admin', pre: ['J1', 'J2', 'J3', 'J4', 'J5', 'J6'], thread: 't1',
+      covers: ['Conversation and investigation history', 'Stored answers never refreshed silently', 'Dataset version and explicit re-run'],
+      steps: [
+        { do: 'view', view: 'workspace' },
+        { do: 'history', note: 'History lists every investigation with its outcome and dataset version.' },
+        { do: 'thread', id: 't2', note: 'Resuming shows the answers exactly as generated, with their dataset version. Re-running is a separate, explicit action.' },
+        { do: 'thread', id: 't1', note: 'Back to the first investigation: its own selections and pins are still there.' }
+      ] },
+    { id: 'J8', title: 'Tenant access boundary', where: 'Tenant · docked panel', persona: 'tenant', pre: [], thread: 't5',
+      covers: ['Authorization boundary in conversation', 'Tool blocked before any query', 'Related data within scope'],
+      steps: [
+        { do: 'begin', persona: 'tenant', view: 'dashboard', thread: 't5' },
+        { do: 'panel' },
+        { do: 'say', text: 'How do my sales compare with other tenants at Sandstone Galleria?', chips: ['Reported sales · 2026 · T-31206', 'Access: lease T-31206 only', 'As of 20 Oct 2026'] },
+        { do: 'run', run: { id: 'r8', title: 'Sales comparison', outcome: 'related_only',
+          iters: [{ nodes: [
+            { id: 'n1', title: 'Other tenants’ sales at Sandstone Galleria', tool: 'get_breakdown', args: 'tenant_sales.reported · Sandstone Galleria · all tenants', res: 'blocked by the access scope · not queried', ms: 0, rows: 0, blocked: true },
+            { id: 'n2', title: 'Your sales by month', tool: 'get_trend', args: 'tenant_sales.reported v1 · T-31206 · 2026 · monthly', res: '[[ts_months]] months · [[ts_total]]', ms: 130, rows: 9, facts: ['ts_months', 'ts_total', 'ts_max', 'ts_max_m', 'ts_min', 'ts_min_m'] }
+          ] }],
+          stmts: [
+            { k: 'una', t: 'I can’t compare you with other tenants. Their sales are outside your access (lease T-31206), so they were not queried.', nodes: ['n1'] },
+            { k: 'obs', t: 'Your reported sales for T-31206 from January to September 2026 total [[ts_total]].', nodes: ['n2'] },
+            { k: 'obs', t: 'Your highest month was [[ts_max_m]] ([[ts_max]]) and your lowest [[ts_min_m]] ([[ts_min]]).', nodes: ['n2'] }
+          ],
+          caveats: METRICS['tenant_sales.reported'].cav,
+          comps: [{ kind: 'notice', id: 'c_r8_b', cls: 'Boundary', tone: 'boundary', title: 'Outside your access', text: 'Benchmarks across tenants are not part of the tenant view in this POC.', metric: 'tenant_sales.reported', filters: { scope: 'other tenants' }, cov: 'not queried · outside access' }, salesComp],
+          metrics: ['tenant_sales.reported'], suggs: [] } }
+      ] },
+    { id: 'J9', title: 'Interruption, reconnection and Stop', where: 'Workspace · new investigation', persona: 'admin', pre: [], thread: 't6',
+      covers: ['Connection lost mid-run', 'Reconnect and replay from the run ledger (deduplicated)', 'User stops a run', 'Run again with a new request id'],
+      steps: [
+        { do: 'begin', persona: 'admin', view: 'workspace', thread: 't6' },
+        { do: 'say', text: 'Which Central malls have the most vacant units?', chips: ['Region: Central', 'Access: all regions', 'As of 20 Oct 2026'] },
+        { do: 'run', run: r9('r9', { interruptAfter: 'n1', cancelBefore: true, outcome: 'cancelled' }) },
+        { do: 'rerun', note: 'Run again starts a new run with a new request id. The stopped run stays in the thread.' }
+      ] },
+    { id: 'J10', title: 'Context isolation checks', where: 'Workspace · threads, roles, scope', persona: 'admin', pre: ['J1', 'J2', 'J3', 'J4'], thread: 't1',
+      covers: ['Thread-local selections (DXD-32)', 'Explicit, labelled import', 'Removing scope never widens access', 'Role switch isolates context', 'Resume re-validates'],
+      steps: [
+        { do: 'view', view: 'workspace' },
+        { do: 'thread', id: 't2', note: 'Another investigation: none of the first investigation’s selections or pins are here, and the composer shows no context.' },
+        { do: 'import', note: 'Import is explicit: the selection arrives labelled with its source and is visible in the composer before anything is sent.' },
+        { do: 'clearctx', note: 'Clear removes the imported selection from this investigation only.' },
+        { do: 'thread', id: 't1' },
+        { do: 'unscope', label: 'Region: Central', note: 'Removing an analytical scope chip widens the next question only up to your access. Boundaries cannot be removed, and dashboard filters are unchanged.' },
+        { do: 'persona', to: 'tenant', note: 'Role switch: tenant threads only, tenant boundary, no admin selections or scope.' },
+        { do: 'persona', to: 'admin', note: 'Back to admin: the admin investigation is intact and its stored context is re-checked against the current access.' }
+      ] }
+  ];
+  return { J, amSel, r9 };
+}
+
+/* ---------- Engine: model, run expansion (lifecycle + AG-UI events), step application ---------- */
+const PHASE = { RECEIVED: 'Received', CONTEXT_RESOLVED: 'Context resolved', PLANNED: 'Planning', PLAN_VALIDATED: 'Plan checked', EXECUTED: 'Running tools', FACTS_EXTRACTED: 'Facts extracted', SYNTHESIZED: 'Writing the answer', EVIDENCE_VERIFIED: 'Evidence verified', COMPOSED: 'Composing', COMPLETE: 'Complete', CLARIFICATION_REQUIRED: 'Needs your input', CANCELLED: 'Stopped', ERROR: 'Error' };
+const OUTCOME = { supported: 'Supported', derived: 'Derived', partial: 'Partial', related_only: 'Related only', unavailable: 'Unavailable', needs_input: 'Needs your input', cancelled: 'Stopped' };
+const THREADS = { t1: 'Renewal backlog at Rawdah Point', t2: 'Portfolio mismatches in September', t3: 'Footfall at Gulf Gate Mall', t4: 'All KPIs by region', t5: 'My sales vs other tenants', t6: 'Vacancy in Central' };
+const WHEN = { t1: 'Today · 09:12', t2: 'Today · 09:31', t3: 'Today · 09:38', t4: 'Today · 09:44', t5: 'Today · 10:02', t6: 'Today · 10:15' };
+const BOUNDS = { admin: ['Access: all regions', 'As of 20 Oct 2026 · synthetic'], tenant: ['Access: lease T-31206 only', 'As of 20 Oct 2026 · synthetic'] };
+const ACCESS = { admin: 'all regions', tenant: 'lease T-31206' };
+
+function newStore() { return { active: null, kept: {} }; }
+function newModel(persona) { return { persona: persona || 'admin', view: 'dashboard', panel: false, threads: {}, order: [], active: { admin: null, tenant: null }, dsel: { admin: newStore(), tenant: newStore() }, dash: { cell: null, appr: 'all', changed: false }, banner: '', insp: { open: false, tab: 'evidence', msg: null, stmt: -1 }, ctxTab: 'context', drawer: null, showRef: false, sortBy: {}, tableView: {}, seq: 0, evSeq: 0, live: '' }; }
+function ensureThread(m, id) { if (!m.threads[id]) { m.threads[id] = { id, persona: id === 't5' ? 'tenant' : 'admin', title: THREADS[id] || 'New investigation', when: WHEN[id] || 'Today', msgs: [], pins: [], canvas: [], outcome: null, sel: newStore(), scope: [], dsv: DSV }; m.order.unshift(id); } return m.threads[id]; }
+const curThread = (m) => m.threads[m.active[m.persona]];
+const thSel = (m) => curThread(m).sel;
+const dashSel = (m) => m.dsel[m.persona];
+const findMsg = (m, id) => { for (const t of Object.values(m.threads)) { const x = t.msgs.find((y) => y.id === id); if (x) return x; } return null; };
+function setActiveSel(store, ref, label, key, src) {
+  const prev = store.active; if (prev && prev.ref.componentId !== ref.componentId) store.kept[prev.ref.componentId] = Object.assign({}, prev, { ref: Object.assign({}, prev.ref, { role: 'kept' }) });
+  store.active = { ref: Object.assign({}, ref, { role: 'active' }), label, key, src: src || '' }; delete store.kept[ref.componentId];
+}
+
+function expandRun(spec, ctx) {
+  const E = []; const ev = (d, ag, f, label) => E.push({ d, ag, f, label });
+  let msg = null; const log = (m, names) => { names.forEach((x) => { m.evSeq += 1; msg.log.push({ ev: x, t: msg.t, seq: m.evSeq }); }); };
+  const phase = (p, extra) => { msg.phase = p; msg.phases.push({ s: p, t: msg.t, note: extra || '' }); };
+  ev(300, ['RUN_STARTED'], (m) => { const th = curThread(m); const rid = spec.id + '_' + (++m.seq); msg = { kind: 'run', id: rid, runId: rid, requestId: 'req_' + hsh(rid + '|' + th.id + '|' + m.seq), threadId: th.id, spec, title: spec.title, version: spec.version || (spec.revises ? 2 : 1), revises: spec.revises || null, phase: 'RECEIVED', phases: [], iters: spec.iters.map((it) => ({ why: it.why || '', parallel: !!it.parallel, shown: false, nodes: it.nodes.map((nd) => Object.assign({}, nd, { status: 'queued', attempts: [] })) })), stmts: (spec.stmts || []).map((s) => Object.assign({}, s, { shown: 0 })), comps: (spec.comps || []).map((c) => ({ spec: c, shown: false })), cavShown: false, proposal: spec.proposal ? Object.assign({ state: 'hidden' }, spec.proposal) : null, clar: spec.clar ? { options: spec.clar.options, chosen: null, shown: false } : null, outcome: null, suggsShown: false, log: [], t: 0, llm: 0, rows: 0, collapsed: false, done: false, conn: '', connNote: '', ctxChips: ctx.chips || [], persona: m.persona, scope: th.scope.slice(), bounds: BOUNDS[m.persona].slice(), ctxSel: th.sel.active ? th.sel.active.label + (th.sel.active.src ? ' · ' + th.sel.active.src : '') : '', pins: th.pins.map((p) => p.label) }; th.msgs.push(msg); log(m, ['RUN_STARTED']); phase('RECEIVED'); m.live = 'Agent: received'; }, 'Run started');
+  ev(350, ['STEP_STARTED · CONTEXT_RESOLVED', 'STATE_SNAPSHOT'], (m) => { msg.t += 40; phase('CONTEXT_RESOLVED', 'AccessScope: ' + ACCESS[m.persona]); log(m, ['STEP_STARTED · CONTEXT_RESOLVED', 'STATE_SNAPSHOT']); m.live = 'Agent: context resolved'; }, 'Context resolved: scope, selection and filters');
+  const iters = spec.iters;
+  let cancelled = false;
+  iters.forEach((it, ii) => {
+    if (cancelled) return;
+    if (!spec.fast) {
+      ev(550, ii ? ['ACTIVITY_DELTA · ANALYSIS_PLAN (re-plan)'] : ['STEP_STARTED · PLANNED', 'ACTIVITY_SNAPSHOT · ANALYSIS_PLAN'], (m) => { msg.t += ii ? 520 : 680; msg.llm += 1; msg.iters[ii].shown = true; phase('PLANNED', ii ? 'Re-plan · iteration ' + (ii + 1) : 'Iteration 1'); log(m, ii ? ['ACTIVITY_DELTA · ANALYSIS_PLAN (re-plan)'] : ['STEP_STARTED · PLANNED', 'ACTIVITY_SNAPSHOT · ANALYSIS_PLAN']); m.live = 'Agent: planning'; }, ii ? 'Re-plan: the plan adds steps' : 'Plan drafted');
+      if (spec.clarify) {
+        ev(450, ['TOOL_CALL_RESULT · plan_validator'], (m) => { const nd = msg.iters[0].nodes[0]; nd.status = 'failed'; nd.attempts.push('Rejected: ' + (spec.id === 'rc' ? 'selections differ' : 'over budget')); phase('CLARIFICATION_REQUIRED', spec.id === 'rc' ? 'Pinned selections use different metrics' : 'Plan exceeds the tool-node budget'); log(m, ['STEP_FINISHED · PLANNED', 'STATE_DELTA · clarification']); m.live = 'Agent needs your input'; }, 'Plan rejected');
+        return;
+      }
+      ev(300, ['STEP_FINISHED · PLANNED'], (m) => { msg.t += 30; phase('PLAN_VALIDATED', (it.nodes.length) + ' tool nodes'); log(m, ['STEP_FINISHED · PLANNED']); }, 'Plan checked against budgets and scope');
+    } else { ev(200, ['ACTIVITY_SNAPSHOT'], (m) => { msg.iters[ii].shown = true; phase('PLANNED', 'Fast path · deterministic plan'); log(m, ['ACTIVITY_SNAPSHOT · ANALYSIS_PLAN']); }, 'Fast path'); }
+    const startNodes = (m, list) => { list.forEach((nd) => { nd.status = 'running'; }); log(m, list.reduce((a, nd) => a.concat(['TOOL_CALL_START · ' + nd.tool, 'TOOL_CALL_ARGS']), [])); };
+    ev(300, ['TOOL_CALL_START'], (m) => { phase('EXECUTED', it.parallel ? 'Parallel branch' : 'Sequential'); const nodes = msg.iters[ii].nodes; startNodes(m, it.parallel ? nodes : [nodes[0]]); m.live = 'Agent: running tools'; }, it.parallel ? 'Tool calls start in parallel' : 'First tool call starts');
+    let tmax = 0;
+    it.nodes.forEach((nd0, ni) => {
+      const fails = nd0.fails || [];
+      fails.forEach((fm, fi) => {
+        const last = fi === fails.length - 1 && nd0.failed;
+        ev(650, ['TOOL_CALL_END', 'TOOL_CALL_RESULT · error'], (m) => { const nd = msg.iters[ii].nodes[ni]; nd.attempts.push('Attempt ' + (fi + 1) + ': ' + fm); nd.status = last ? 'failed' : 'retrying'; log(m, ['TOOL_CALL_END · ' + nd.tool, 'TOOL_CALL_RESULT · error (' + fm + ')']); if (!last) log(m, ['TOOL_CALL_START · ' + nd.tool + ' (automatic retry)']); m.live = 'Agent: ' + nd.title + (last ? ' failed' : ', retrying'); }, last ? nd0.title + ': failed' : nd0.title + ': ' + fm + ', retrying');
+      });
+      if (nd0.failed) { if (!it.parallel && it.nodes[ni + 1]) ev(250, [], (m) => startNodes(m, [msg.iters[ii].nodes[ni + 1]]), 'Next tool call'); return; }
+      ev(nd0.blocked ? 420 : 460, nd0.blocked ? ['ACTIVITY_DELTA · blocked'] : ['TOOL_CALL_END', 'TOOL_CALL_RESULT', 'ACTIVITY_DELTA'], (m) => { const nd = msg.iters[ii].nodes[ni]; if (nd0.blocked) { nd.status = 'blocked'; log(m, ['ACTIVITY_DELTA · node blocked by AccessScope']); } else { nd.status = 'done'; msg.rows += nd0.rows || 0; tmax = it.parallel ? Math.max(tmax, nd0.ms) : tmax + nd0.ms; log(m, ['TOOL_CALL_END · ' + nd.tool, 'TOOL_CALL_RESULT · ' + (nd0.rows || 0) + ' rows', 'ACTIVITY_DELTA']); } if (!it.parallel && it.nodes[ni + 1]) startNodes(m, [msg.iters[ii].nodes[ni + 1]]); const done = msg.iters[ii].nodes.filter((x) => x.status === 'done').length; m.live = 'Agent: running tools, ' + done + ' of ' + msg.iters[ii].nodes.length + ' done'; }, nd0.blocked ? nd0.title + ': blocked by the access scope' : nd0.title + ': done');
+      if (spec.interruptAfter === nd0.id) {
+        ev(700, ['(connection lost)'], (m) => { msg.conn = 'lost'; msg.lastSeq = m.evSeq; msg.connNote = 'Connection lost after event #' + m.evSeq + '. Reconnecting (attempt 1 of 5)…'; msg.log.push({ ev: 'CLIENT · stream ended without RUN_FINISHED → reconnecting', t: msg.t, seq: null }); m.live = 'Connection lost. Reconnecting.'; }, 'Connection drops mid-run');
+        ev(900, ['(replay)'], (m) => { const from = msg.lastSeq + 1; m.evSeq += 3; msg.conn = 'replayed'; msg.connNote = 'Reconnected. Events #' + from + '–#' + m.evSeq + ' were replayed from the run ledger; 2 duplicates were ignored by (runId, seq).'; msg.log.push({ ev: 'CLIENT · GET /runs/' + msg.runId + '/events?after=' + msg.lastSeq, t: msg.t, seq: null }, { ev: 'REPLAY · events #' + from + '–#' + m.evSeq + ' · 2 duplicates dropped', t: msg.t, seq: null }); m.live = 'Reconnected. Nothing was lost.'; }, 'Reconnects and replays missed events');
+      }
+    });
+    ev(150, [], (m) => { msg.t += tmax + (it.nodes.some((x) => x.fails) ? 3000 * (it.nodes.find((x) => x.fails).fails.length) : 0); }, 'Iteration complete');
+  });
+  if (spec.clarify) {
+    ev(350, ['TEXT_MESSAGE_START', 'TEXT_MESSAGE_CONTENT', 'TEXT_MESSAGE_END'], (m) => { msg.stmts.forEach((s) => { s.shown = 1; }); log(m, ['TEXT_MESSAGE_START', 'TEXT_MESSAGE_CONTENT', 'TEXT_MESSAGE_END']); }, 'Explains why');
+    ev(350, ['CUSTOM · cenomi.presentation.v1 (choice)', 'RUN_FINISHED'], (m) => { msg.clar.shown = true; msg.outcome = 'needs_input'; msg.done = true; log(m, ['CUSTOM · cenomi.presentation.v1', 'RUN_FINISHED · needs_input']); m.live = 'Agent needs your input'; }, 'Offers options');
+    return E;
+  }
+  if (spec.cancelBefore) {
+    ev(500, ['(user pressed Stop)'], (m) => { phase('CANCELLED', 'Stopped by the user before the answer was written'); msg.outcome = 'cancelled'; msg.done = true; msg.collapsed = false; msg.log.push({ ev: 'CLIENT · Stop → abort stream + POST /runs/' + msg.runId + '/cancel (idempotent)', t: msg.t, seq: null }); log(m, ['RUN_ERROR · CANCELLED']); curThread(m).outcome = 'cancelled'; m.live = 'Run stopped. Completed tool results are kept.'; }, 'User presses Stop before the answer is written');
+    return E;
+  }
+  if (!spec.fast) {
+    ev(300, ['STATE_DELTA · facts'], (m) => { msg.t += 20; const nf = msg.spec.iters.reduce((a, it) => a + it.nodes.reduce((x, nd) => x + (nd.facts || []).length, 0), 0); phase('FACTS_EXTRACTED', nf + ' facts from tool results'); log(m, ['STEP_STARTED · FACTS_EXTRACTED', 'STATE_DELTA · facts']); }, 'Facts extracted from tool results');
+    ev(400, [], (m) => { msg.t += 900; msg.llm += 1; phase('SYNTHESIZED', 'Draft uses fact tokens only'); log(m, ['STEP_STARTED · SYNTHESIZED']); m.live = 'Agent: writing the answer'; }, 'Answer drafted with fact tokens');
+    ev(300, [], (m) => { msg.t += 30; const k = msg.stmts.reduce((a, s) => a + factsIn(s.t).length, 0); phase('EVIDENCE_VERIFIED', k + ' numbers checked against facts'); log(m, ['STEP_FINISHED · EVIDENCE_VERIFIED']); }, 'Every number checked against a fact');
+  }
+  (spec.stmts || []).forEach((s, si) => {
+    ev(220, ['TEXT_MESSAGE_START', 'TEXT_MESSAGE_CONTENT'], (m) => { msg.stmts[si].shown = 0.5; if (si === 0) log(m, ['TEXT_MESSAGE_START']); log(m, ['TEXT_MESSAGE_CONTENT']); }, 'Statement ' + (si + 1) + ' streaming');
+    ev(260, ['TEXT_MESSAGE_CONTENT'], (m) => { msg.stmts[si].shown = 1; log(m, ['TEXT_MESSAGE_CONTENT']); }, 'Statement ' + (si + 1) + ' complete');
+  });
+  if (spec.stmts && spec.stmts.length) ev(180, ['TEXT_MESSAGE_END'], (m) => { msg.cavShown = true; log(m, ['TEXT_MESSAGE_END']); }, 'Caveats');
+  (spec.comps || []).forEach((c, ci) => ev(420, ['CUSTOM · cenomi.presentation.v1'], (m) => { msg.comps[ci].shown = true; log(m, ['CUSTOM · cenomi.presentation.v1 · ' + c.kind]); }, 'Component: ' + c.kind));
+  if (spec.proposal) ev(380, ['TOOL_CALL_START · propose_dashboard_filters (frontend)'], (m) => { msg.proposal.state = 'pending'; msg.proposal.id = 'prop_' + hsh(msg.runId); log(m, ['TOOL_CALL_START · propose_dashboard_filters (frontend tool)', 'TOOL_CALL_ARGS']); }, 'Proposes a dashboard filter change');
+  ev(300, ['STEP_FINISHED · COMPOSED', 'RUN_FINISHED'], (m) => { msg.t += 40; phase('COMPOSED'); phase('COMPLETE', OUTCOME[spec.outcome] || ''); msg.outcome = spec.outcome; msg.done = true; msg.collapsed = true; msg.suggsShown = true; const th = curThread(m); th.outcome = spec.outcome; log(m, ['STEP_FINISHED · COMPOSED', 'RUN_FINISHED · ' + spec.outcome]); m.live = 'Answer complete: ' + (OUTCOME[spec.outcome] || '') + (msg.version > 1 ? ' (version ' + msg.version + ')' : ''); }, 'Run complete · ' + (OUTCOME[spec.outcome] || ''));
+  return E;
+}
+
+/* Dynamic runs built from the current model (compare pinned, retry v2) */
+function compareSpec(m, FT) {
+  const th = curThread(m); const pins = th.pins; const F = FT.F;
+  const ok = ['comparison.multi_kpi', 'derived.mean_rank'];
+  const rows = pins.map((p) => FT.T.rank.find((x) => p.ref.dimensions[0] && x.mall === p.ref.dimensions[0].value && ok.indexOf(p.ref.metric.id) >= 0)).filter(Boolean);
+  if (rows.length < 2 || rows.length !== pins.length) {
+    return { id: 'rc', title: 'Compare pinned', outcome: 'needs_input', clarify: true, iters: [{ nodes: [{ id: 'n1', title: 'Check the pinned selections', tool: 'plan_validator', args: pins.map((p) => p.ref.metric.id + ' · ' + p.ref.grain).join(' | '), res: 'rejected · selections use different metrics or grains', ms: 5, rows: 0 }] }], stmts: [{ k: 'rec', t: 'The pinned selections use different metrics or grains, so they are not combined automatically. Pin rows from the same table, or ask about one selection at a time.', nodes: ['n1'] }], clar: { options: pins.map((p, i) => ({ id: 'p' + i, label: 'Ask about ' + p.label, sub: p.ref.componentId })) }, comps: [], metrics: [], suggs: [] };
+  }
+  const put = (k, v, fmt, src) => { F[k] = { v, fmt, src }; };
+  const keys = rows.map((x, i) => { const p = 'cmp' + i + '_'; const sv = { tool: 'reuse_dataset', metric: 'comparison.multi_kpi', filters: { region: 'Central', mall: x.mall } }; put(p + 'm', 0, x.mall, sv); put(p + 'ap', x.ap, n(x.ap), sv); put(p + 'am', x.am, n(x.am), sv); put(p + 'vr', x.vr, pc1(x.vac, x.units), sv); put(p + 'mr', x.mr, x.mr === null ? 'no September report' : pc1(x.mm, x.mt), x.mr === null ? Object.assign({}, sv, { cov: 'no September report for this mall' }) : sv); return p; });
+  const hi = (f) => rows.reduce((a, b) => (f(b) > f(a) ? b : a)).mall;
+  put('cmp_hi_ap', 0, hi((x) => x.ap), { tool: 'derive', formula: 'argmax(approvals 1m+) over pinned rows' }); put('cmp_hi_vr', 0, hi((x) => x.vr), { tool: 'derive', formula: 'argmax(vacancy rate) over pinned rows' });
+  return { id: 'rc', title: 'Pinned comparison', outcome: 'supported',
+    iters: [{ nodes: [{ id: 'n1', title: 'Reuse the comparison result', tool: 'reuse_dataset', args: 'side-by-side table · ' + rows.length + ' pinned rows', res: 'reused · no new query', ms: 10, rows: rows.length, facts: keys.reduce((a, p) => a.concat([p + 'm', p + 'ap', p + 'am', p + 'vr', p + 'mr']), []) }, { id: 'n2', title: 'Compare', tool: 'derive', args: 'argmax per KPI', res: 'approvals: [[cmp_hi_ap]] · vacancy: [[cmp_hi_vr]]', ms: 15, rows: 4, facts: ['cmp_hi_ap', 'cmp_hi_vr'] }] }],
+    stmts: keys.map((p) => ({ k: 'obs', t: '[[' + p + 'm]]: approvals over a month [[' + p + 'ap]], amendments over four weeks [[' + p + 'am]], vacancy [[' + p + 'vr]], mismatch rate [[' + p + 'mr]].', nodes: ['n1'] })).concat([{ k: 'der', t: 'Higher on approvals over a month: [[cmp_hi_ap]]. Higher on vacancy: [[cmp_hi_vr]].', nodes: ['n2'] }]),
+    caveats: ['Only the pinned rows are compared. Kept selections and other investigations are not included.'],
+    comps: [{ kind: 'compare', id: 'c_cmp', cls: 'Observed', title: 'Pinned malls · side by side', metric: 'comparison.multi_kpi', unit: 'mixed', filters: { region: 'Central', malls: rows.map((x) => x.mall).join(' + ') }, cov: rows.some((x) => x.mr === null) ? 'mismatch rate missing for a pinned mall (no September report)' : '', cols: ['KPI'].concat(rows.map((x) => x.mall)), rows: [['Approvals 1m+'].concat(rows.map((x) => n(x.ap))), ['Amendments 4 wk+'].concat(rows.map((x) => n(x.am))), ['Vacancy'].concat(rows.map((x) => pc1(x.vac, x.units))), ['Mismatch rate (Sep)'].concat(rows.map((x) => (x.mr === null ? 'No report' : pc1(x.mm, x.mt))))] }],
+    metrics: ['comparison.multi_kpi'], suggs: [] };
+}
+function retrySpec(D, FT) {
+  const F = FT.F; const regs = ['Central', 'Eastern', 'Western'];
+  const vr = regs.map((g) => ({ g, v: D.pu[g][2], u: D.pu[g][0] }));
+  vr.forEach((x) => { F['reg_vr_' + x.g] = { v: x.v / x.u, fmt: pc1(x.v, x.u), src: { tool: 'get_breakdown', metric: 'units.vacant', filters: { by: 'region', date: '2026-10-20' } } }; });
+  const top = vr.slice().sort((a, b) => b.v / b.u - a.v / a.u)[0].g;
+  F.reg_lead_vr = { v: 0, fmt: top, src: { tool: 'derive', formula: 'argmax(vacancy rate) over regions' } };
+  const ord = vr.slice().sort((a, b) => b.v / b.u - a.v / a.u);
+  const reg = FT.T.reg.slice().sort((a, b) => b.ap - a.ap);
+  return { id: 'r6c', title: 'Regions compared', revises: 'r6b', version: 2, outcome: 'supported',
+    iters: [{ nodes: [{ id: 'n1', title: 'Vacant units, by region (user retry)', tool: 'get_breakdown', args: 'units.vacant v1 · 20 Oct 2026 · by region · retryOf r6b/n4', res: ord.map((x) => x.g + ' [[reg_vr_' + x.g + ']]').join(' · '), ms: 140, rows: 3, facts: regs.map((g) => 'reg_vr_' + g) }, { id: 'n2', title: 'Leaders per KPI, now four', tool: 'derive', args: 'argmax per KPI · no combined score', res: 'vacancy [[reg_lead_vr]]', ms: 20, rows: 3, facts: ['reg_lead_vr', 'reg_lead_ap', 'reg_lead_mr'] }] }],
+    stmts: [{ k: 'obs', t: 'Vacancy on 20 Oct 2026: ' + ord.map((x) => x.g + ' [[reg_vr_' + x.g + ']]').join(', ') + '.', nodes: ['n1'] }, { k: 'der', t: 'Leaders with all four KPIs: old approvals and old amendments [[reg_lead_ap]]; mismatch rate [[reg_lead_mr]]; vacancy [[reg_lead_vr]].', nodes: ['n2'] }],
+    caveats: ['This is version 2 of the answer. Version 1 above is kept exactly as it was generated, with its evidence.', 'Mismatch rates cover only malls that filed a September report.'],
+    comps: [{ kind: 'table', id: 'c_r6c_reg', cls: 'Observed · v2', title: 'Regions · 2026 · all four KPIs (v2)', metric: 'comparison.multi_kpi', unit: 'regions', filters: { year: 2026, by: 'region' }, cov: 'mismatch rate: reporting malls only', cols: ['Region', 'Approvals 1m+', 'Amendments 4 wk+', 'Mismatch rate (reporting malls)', 'Vacancy'], rows: reg.map((x) => [x.region, n(x.ap), n(x.am), pc1(x.mm, x.units), F['reg_vr_' + x.region].fmt]) }],
+    metrics: ['units.vacant', 'comparison.multi_kpi'], suggs: [] };
+}
+
+const KLBL = { obs: ['Observed', 'k-obs'], der: ['Derived', 'k-der'], hyp: ['Hypothesis', 'k-hyp'], rec: ['Recommendation', 'k-rec'], una: ['Unavailable', 'k-una'] };
+const NST = { queued: ['Queued', 'ns-q'], running: ['Running', 'ns-r'], retrying: ['Retrying', 'ns-rt'], done: ['Done', 'ns-d'], failed: ['Failed', 'ns-f'], blocked: ['Blocked', 'ns-b'] };
+const ROUTES = [[/renewal|four weeks|4 ?wk/i, 'J1'], [/attention|priorit|which central/i, 'J2'], [/dashboard|show rawdah/i, 'J3'], [/mismatch|discrepanc/i, 'J4'], [/footfall|visitor/i, 'J5'], [/every kpi|all malls|three years/i, 'J6'], [/vacant/i, 'J9'], [/other tenants|compare.*tenant/i, 'J8']];
+const ANALYTIC = (c) => !/^Access|^As of|^Selected|^Active|^Pinned|^No selection|^Scope:|^Explicit/.test(c);
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.D = typeof DX4_DATA !== 'undefined' ? DX4_DATA : this.props.data;
+    this.FT = buildFacts(this.D); const B = buildJourneys(this.D, this.FT); this.J = B.J; this.amSel = B.amSel; this.r9 = B.r9;
+    this.m = newModel('admin'); this.TL = [];
+    this.state = { v: 0, jid: null, pos: 0, total: 0, playing: false, note: 'Choose a journey, then Play or Step. You can also click around freely.', frame: 'desk', speed: 1 };
+    this.bootstrap();
+  }
+  componentDidMount() {
+    this.onKey = (e) => {
+      const m = this.m;
+      if (e.key === 'Escape' && m.insp.open) { e.preventDefault(); this.closeInsp(); return; }
+      const t = e.target; if (t && t.getAttribute && t.getAttribute('role') === 'tab' && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) { const tabs = Array.from(t.parentNode.querySelectorAll('[role="tab"]')); const i = tabs.indexOf(t); const nx = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; if (nx) { e.preventDefault(); nx.click(); setTimeout(() => { const again = Array.from(t.parentNode.querySelectorAll('[role="tab"]'))[tabs.indexOf(nx)]; if (again) again.focus(); }, 40); } }
+    };
+    document.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() { clearTimeout(this.timer); if (this.onKey) document.removeEventListener('keydown', this.onKey); }
+  bootstrap() { const m = this.m; ensureThread(m, 't1'); m.active.admin = 't1'; ensureThread(m, 't5'); m.active.tenant = 't5'; }
+  bump(extra) { this.setState(Object.assign({ v: this.state.v + 1 }, extra || {})); setTimeout(() => { document.querySelectorAll('[data-dx4-scroll]').forEach((el) => { el.scrollTop = el.scrollHeight; }); }, 30); }
+  jById(id) { return this.J.find((j) => j.id === id); }
+  stepEvents(j, st) {
+    const self = this; const one = (f, label, d) => [{ d: d || 500, ag: [], f, label: st.note || label }];
+    switch (st.do) {
+      case 'begin': return one((m) => { m.persona = st.persona; const tid = st.thread || j.thread; ensureThread(m, tid); m.active[st.persona] = tid; m.view = st.view; m.panel = false; m.banner = ''; m.drawer = null; m.insp.open = false; }, 'Start: ' + j.where, 300);
+      case 'select': return one((m) => { setActiveSel(dashSel(m), st.sel, st.label, st.cell, 'Dashboard · Pending amendments'); m.dash.cell = st.cell; }, 'Select a chart value on the dashboard');
+      case 'panel': return one((m) => { m.view = 'dashboard'; m.panel = true; self.importDash(m); }, 'Open the docked agent panel');
+      case 'say': return one((m) => { const th = curThread(m); const chips = (st.chips || []).map((c) => fill(c, self.FT.F)); th.msgs.push({ kind: 'user', id: 'u' + (++m.seq), text: st.text, chips }); const sc = chips.filter(ANALYTIC); if (sc.length) th.scope = sc.map((label) => ({ label })); }, 'User asks: “' + st.text + '”', 650);
+      case 'run': return expandRun(st.run, { chips: st.chips });
+      case 'view': return one((m) => { m.view = st.view; m.banner = st.banner || ''; if (st.view === 'workspace') m.panel = false; }, st.view === 'workspace' ? 'Open in workspace' : 'Back to the dashboard');
+      case 'pickrow': return one((m) => self.pickRow(m, st.comp, st.mall), 'Select a row in a generated table');
+      case 'pin': return one((m) => self.pinActive(m), 'Pin the active selection');
+      case 'compare': return [{ d: 300, macro: (m) => self.compareEvents(m), label: 'Compare pinned' }];
+      case 'apply': return one((m) => self.proposal(m, 'apply'), 'Apply the proposed filter');
+      case 'choose': return one((m) => { const msg = curThread(m).msgs.slice().reverse().find((x) => x.clar); if (msg) msg.clar.chosen = st.opt; curThread(m).msgs.push({ kind: 'user', id: 'u' + (++m.seq), text: st.text, chips: ['Scope: ' + st.text] }); }, 'Choose a smaller scope');
+      case 'retry': return [{ d: 300, macro: (m) => self.retryEvents(m), label: st.note || 'Retry the failed step' }];
+      case 'rerun': return [{ d: 300, macro: (m) => self.rerunEvents(m), label: st.note || 'Run again' }];
+      case 'history': return one((m) => { m.drawer = 'history'; }, 'Open history');
+      case 'thread': return one((m) => self.openThread(m, st.id), 'Open another investigation');
+      case 'import': return one((m) => { const c = self.importables(m)[0]; if (c) self.importSel(m, c); }, 'Import a selection explicitly');
+      case 'clearctx': return one((m) => { thSel(m).active = null; m.banner = 'The imported selection was cleared from this investigation.'; }, 'Clear the context');
+      case 'unscope': return one((m) => self.unscope(m, st.label), 'Remove an analytical scope chip');
+      case 'persona': return one((m) => self.switchPersona(m, st.to), 'Switch role');
+      default: return [];
+    }
+  }
+  timeline(jid) { const j = this.jById(jid); return j.steps.reduce((a, st) => a.concat(this.stepEvents(j, st)), []); }
+  applyEv(ev, i) { if (ev.macro) { const extra = ev.macro(this.m); this.TL.splice(i + 1, 0, ...extra); } else ev.f(this.m); }
+  runAll(list) { for (let i = 0; i < list.length; i++) { const ev = list[i]; if (ev.macro) { const extra = ev.macro(this.m); list.splice(i + 1, 0, ...extra); } else ev.f(this.m); } }
+  start(jid, play) {
+    clearTimeout(this.timer); this.m = newModel(this.jById(jid).persona); this.bootstrap();
+    const done = {}; const pre = (id) => { const j = this.jById(id); j.pre.forEach((p) => { if (!done[p]) pre(p); }); if (!done[id] && id !== jid) { this.runAll(this.timeline(id)); done[id] = true; } };
+    pre(jid); this.m.persona = this.jById(jid).persona;
+    this.TL = this.timeline(jid);
+    this.bump({ jid, pos: 0, total: this.TL.length, playing: !!play, note: play ? 'Playing…' : 'Ready. Press Step or Play.' });
+    if (play) this.schedule();
+  }
+  next() { if (this.state.pos >= this.TL.length) { this.setState({ playing: false }); return false; } const i = this.state.pos; const ev = this.TL[i]; this.applyEv(ev, i); this.bump({ pos: i + 1, total: this.TL.length, note: ev.label || '' }); return true; }
+  schedule() { clearTimeout(this.timer); if (!this.state.playing) return; const ev = this.TL[this.state.pos]; if (!ev) { this.setState({ playing: false, note: 'Journey complete.' }); return; } this.timer = setTimeout(() => { if (this.next()) this.schedule(); }, Math.max(60, (ev.d || 400) / this.state.speed)); }
+  play() { if (!this.state.jid) { this.start('J1', true); return; } if (this.state.pos >= this.TL.length) { this.start(this.state.jid, true); return; } this.setState({ playing: true }); setTimeout(() => this.schedule(), 0); }
+  pause() { clearTimeout(this.timer); this.setState({ playing: false }); }
+  skip() { clearTimeout(this.timer); let i = this.state.pos; while (i < this.TL.length) { this.applyEv(this.TL[i], i); i++; } this.bump({ pos: i, total: this.TL.length, playing: false, note: 'Skipped to the end of the journey.' }); }
+  adhoc(events, note) { clearTimeout(this.timer); this.TL.splice(this.state.pos, 0, ...events); this.setState({ total: this.TL.length, playing: true, note }); setTimeout(() => this.schedule(), 0); }
+  /* selection, scope and context isolation */
+  importDash(m) { const d = dashSel(m).active; if (!d) return; setActiveSel(thSel(m), d.ref, d.label, d.key, 'imported from Dashboard · Pending amendments'); }
+  importables(m) {
+    const per = m.persona, th = curThread(m), out = [];
+    const d = dashSel(m).active; if (d && !(th.sel.active && th.sel.active.ref.selectionId === d.ref.selectionId)) out.push({ ref: d.ref, label: d.label, key: d.key, src: 'Dashboard · Pending amendments' });
+    m.order.forEach((id) => { const t = m.threads[id]; if (id === th.id || t.persona !== per) return; if (t.sel.active) out.push({ ref: t.sel.active.ref, label: t.sel.active.label, key: t.sel.active.key, src: 'Investigation “' + t.title + '”' }); t.pins.forEach((p) => { if (!out.some((o) => o.ref.selectionId === p.ref.selectionId)) out.push({ ref: p.ref, label: p.label, key: p.key, src: 'Pinned in “' + t.title + '”' }); }); });
+    return out;
+  }
+  importSel(m, c) { if (c.ref.scope.label !== BOUNDS[m.persona][0]) { m.banner = 'That selection was created under a different access scope and cannot be imported.'; return; } setActiveSel(thSel(m), c.ref, c.label, c.key, 'imported from ' + c.src); m.banner = 'Imported “' + c.label + '” from ' + c.src + '. It is visible in the composer and will be sent only with your next question here.'; }
+  unscope(m, label) { const th = curThread(m); const i = th.scope.findIndex((x) => x.label === label); if (i < 0) return; th.scope.splice(i, 1); m.banner = 'Removed “' + label + '” from the next question. The question can widen only up to your access (' + ACCESS[m.persona] + '). Boundaries and dashboard filters are unchanged.'; }
+  switchPersona(m, to) { if (m.persona === to) return; m.persona = to; if (!m.active[to]) { ensureThread(m, to === 'tenant' ? 't5' : 't1'); m.active[to] = to === 'tenant' ? 't5' : 't1'; } m.panel = false; m.insp.open = false; m.drawer = null; m.view = 'workspace'; m.banner = to === 'tenant' ? 'Switched to Tenant · Omar (demo control). Admin investigations, selections and scope are not visible or importable here.' : 'Switched back to Portfolio admin. This investigation’s stored selections and scope were re-checked against your current access (all regions) before use.'; }
+  pickRow(m, compId, mall) {
+    const th = curThread(m); let msg = null, comp = null;
+    th.msgs.forEach((x) => { if (x.kind === 'run') x.comps.forEach((c) => { if (c.spec.id === compId) { msg = x; comp = c.spec; } }); });
+    if (!comp) return; const row = comp.rows.find((r) => r.mall === mall || r[0] === mall); if (!row) return;
+    const isRank = comp.kind === 'rank'; const score = isRank && row.raw.length > 4;
+    const ref = selRef({ surface: 'genui', componentId: 'genui:' + msg.id + '/' + comp.id, metric: comp.metric, dims: [{ name: isRank ? 'mall' : 'category', value: isRank ? row.mall : row[0] }], value: isRank ? (score ? Number(row.raw[4].toFixed(2)) : row.raw[0]) : row[1], unit: isRank ? (score ? 'mean rank' : 'approvals 1m+') : comp.unit, filters: comp.filters, scope: m.persona === 'tenant' ? SCOPE_TENANT : SCOPE_ADMIN });
+    setActiveSel(thSel(m), ref, isRank ? row.mall + (score ? ' · mean rank ' + row.cells[4] : ' · Central comparison') : row[0] + ' · ' + n(row[1]), comp.id + ':' + (isRank ? row.mall : row[0]), '');
+  }
+  pinActive(m) { const a = thSel(m).active; if (!a) return; const th = curThread(m); if (!th.pins.find((p) => p.ref.selectionId === a.ref.selectionId)) th.pins.push({ ref: Object.assign({}, a.ref, { role: 'pinned' }), label: a.label, key: a.key, src: a.src }); }
+  compareEvents(m) { const spec = compareSpec(m, this.FT); const pins = curThread(m).pins; const say = { d: 500, ag: [], f: (mm) => { curThread(mm).msgs.push({ kind: 'user', id: 'u' + (++mm.seq), text: 'Compare the pinned selections.', chips: pins.map((p) => 'Pinned: ' + p.label) }); }, label: 'User: compare the pinned selections' }; return [say].concat(expandRun(spec, {})); }
+  compositeEvents(m) { const j = this.jById('J2'); const i = j.steps.findIndex((s) => s.run && s.run.id === 'r2c'); return this.stepEvents(j, j.steps[i - 1]).concat(this.stepEvents(j, j.steps[i])); }
+  retryEvents(m) { const spec = retrySpec(this.D, this.FT); return [{ d: 400, ag: [], f: (mm) => { curThread(mm).msgs.push({ kind: 'action', id: 'a' + (++mm.seq), text: 'Retry this step · Vacant units, by region · creates answer v2' }); }, label: 'Retry pressed' }].concat(expandRun(spec, {})); }
+  rerunEvents(m) { return [{ d: 400, ag: [], f: (mm) => { curThread(mm).msgs.push({ kind: 'action', id: 'a' + (++mm.seq), text: 'Run again · new request id · the stopped run is kept' }); }, label: 'Run again pressed' }].concat(expandRun(this.r9('r9b'), {})); }
+  stopRun(msg) { clearTimeout(this.timer); const m = this.m; this.TL.length = this.state.pos; msg.phase = 'CANCELLED'; msg.phases.push({ s: 'CANCELLED', t: msg.t, note: 'Stopped by the user' }); msg.outcome = 'cancelled'; msg.done = true; msg.iters.forEach((it) => it.nodes.forEach((nd) => { if (nd.status === 'running' || nd.status === 'queued' || nd.status === 'retrying') nd.status = 'queued'; })); msg.log.push({ ev: 'CLIENT · Stop → abort stream + POST /runs/' + msg.runId + '/cancel (idempotent)', t: msg.t, seq: null }); m.evSeq += 1; msg.log.push({ ev: 'RUN_ERROR · CANCELLED', t: msg.t, seq: m.evSeq }); curThread(m).outcome = 'cancelled'; m.live = 'Run stopped. Completed tool results are kept.'; this.bump({ playing: false, total: this.TL.length, note: 'Run stopped.' }); }
+  proposal(m, act) { const th = curThread(m); const msg = th.msgs.slice().reverse().find((x) => x.proposal && x.proposal.state !== 'hidden'); if (!msg) return; if (act === 'apply' && msg.proposal.state !== 'applied') { msg.proposal.state = 'applied'; m.dash.appr = 'rawdah'; m.dash.changed = true; } if (act === 'dismiss') msg.proposal.state = 'dismissed'; if (act === 'undo') { msg.proposal.state = 'undone'; m.dash.appr = 'all'; m.dash.changed = false; } }
+  openThread(m, id) {
+    const t = m.threads[id]; if (!t) return;
+    if (t.persona !== m.persona) { m.banner = 'That investigation belongs to another role and cannot be opened here.'; return; }
+    const was = m.active[m.persona]; m.active[m.persona] = id; m.drawer = null; m.insp.open = false;
+    if (t.sel.active && t.sel.active.ref.scope.label !== BOUNDS[m.persona][0]) t.sel.active = null;
+    m.banner = id === was ? '' : 'Resumed “' + t.title + '”. Answers are shown exactly as generated with dataset ' + t.dsv + (t.dsv === DSV ? ' (current).' : ' (current is ' + DSV + ').') + ' Selections and scope were re-checked against your access.';
+  }
+  act(fn) { return () => { fn(this.m); this.bump(); }; }
+  send() {
+    const el = document.querySelector('[data-dx4-input]'); const txt = el ? el.value.trim() : ''; if (!txt) return; if (el) el.value = '';
+    const hit = ROUTES.find((r) => r[0].test(txt)); const j = hit && this.jById(hit[1]);
+    if (j && (j.persona === this.m.persona)) { this.start(j.id, true); return; }
+    curThread(this.m).msgs.push({ kind: 'user', id: 'u' + (++this.m.seq), text: txt, chips: [] }, { kind: 'note', id: 'x' + (++this.m.seq), text: 'This design prototype plays scripted journeys only. Try one of the suggested questions, or pick a journey above.' });
+    this.bump();
+  }
+  openInsp(msgId, tab, stmt) { this.lastFocus = document.activeElement; const m = this.m; m.insp = { open: true, tab: tab || 'evidence', msg: msgId, stmt: stmt === undefined ? -1 : stmt }; this.bump(); setTimeout(() => { const h = document.querySelector('.insp [data-dx4-ifocus]'); if (h) h.focus(); }, 60); }
+  closeInsp() { this.m.insp.open = false; this.bump(); const f = this.lastFocus; setTimeout(() => { if (f && document.body.contains(f)) f.focus(); }, 60); }
+
+  /* Evidence envelope inherited by every statement and component (DXD-36) */
+  envFor(keys, cls, extra) {
+    const F = this.FT.F; const m = this.m; extra = extra || {};
+    const srcs = keys.map((k) => F[k] && F[k].src).filter(Boolean);
+    const metrics = []; srcs.forEach((s) => { const id = s.metric || (s.formula ? 'derive' : s.tool); if (id && metrics.indexOf(id) < 0) metrics.push(id); });
+    if (extra.metric && metrics.indexOf(extra.metric) < 0) metrics.unshift(extra.metric);
+    const fsrc = extra.filters || (srcs.find((s) => s.filters) || {}).filters || extra.inherit || {};
+    const filters = Object.entries(fsrc).map(([a, b]) => a + ' ' + b).join(', ') || 'no filters';
+    const inh = !extra.filters && !srcs.some((s) => s.filters) && !!extra.inherit;
+    const covs = []; srcs.forEach((s) => { if (s.cov && covs.indexOf(s.cov) < 0) covs.push(s.cov); }); if (extra.cov && !covs.some((c0) => c0.indexOf(extra.cov) >= 0 || extra.cov.indexOf(c0) >= 0)) covs.push(extra.cov);
+    const scope = BOUNDS[m.persona][0];
+    const o = { cls, metrics: metrics.map((x) => (x === 'derive' ? 'derive' : x + ' v1')).join(' + ') || '—', filters: inh ? filters + ' (inherited from the answer)' : filters, scope, freshness: 'data as of 20 Oct 2026 · ' + DSV, coverage: covs.length ? 'Coverage: partial — ' + covs.join('; ') : 'Coverage: complete', partial: covs.length > 0 };
+    o.text = [o.cls, o.metrics, o.filters, o.scope, o.freshness, o.coverage].join(' · ');
+    o.short = [o.cls, o.filters, o.scope, 'as of 20 Oct 2026 · ' + DSV, o.partial ? 'Coverage: partial' : 'Coverage: complete'].join(' · ');
+    return o;
+  }
+  msgFilters(msg) { const F = this.FT.F; if (msg.spec.filters) return msg.spec.filters; const c = (msg.spec.comps || []).find((x) => x.filters); if (c) return c.filters; let out = null; (msg.spec.stmts || []).some((s0) => factsIn(s0.t).some((k) => { const f = F[k]; if (f && f.src && f.src.filters) { out = f.src.filters; return true; } return false; })); return out; }
+  stmtKeys(msg, s0) { const k = factsIn(s0.t); if (k.length) return k; const nodes = msg.iters.reduce((a, it) => a.concat(it.nodes), []); return (s0.nodes || []).reduce((a, id) => { const nd = nodes.find((x) => x.id === id); return a.concat(nd && nd.facts ? nd.facts : []); }, []); }
+  compVM(msg, c, compact) {
+    const m = this.m, F = this.FT.F, s = c.spec; const th = curThread(m); const st = th.sel;
+    const compKey = 'genui:' + msg.id + '/' + s.id;
+    const selOf = (key) => { const a = st.active; if (a && a.ref.componentId === compKey && a.key === key) return 'active'; const k = st.kept[compKey]; if (k && k.key === key) return 'kept'; return ''; };
+    const pinned = (key) => th.pins.some((p) => p.key === key);
+    const srTxt = (sc, pin) => (sc === 'active' ? ' (selected, agent context)' : sc === 'kept' ? ' (kept selection)' : '') + (pin ? ' (pinned)' : '');
+    const tv = !!m.tableView[compKey];
+    const keys = (s.facts || []).slice(); ['value', 'sub', 'title', 'badge', 'label'].forEach((f) => { if (s[f]) factsIn(s[f]).forEach((k) => { if (keys.indexOf(k) < 0) keys.push(k); }); });
+    const env = this.envFor(keys, s.cls || 'Observed', { metric: s.metric, filters: s.filters, cov: s.cov, inherit: this.msgFilters(msg) });
+    const vm = { id: s.id, title: fill(s.title || '', F), metric: s.metric ? s.metric + ' · v1' : '', isBars: s.kind === 'bars' && !tv, isRank: s.kind === 'rank', isTable: s.kind === 'table' || s.kind === 'compare' || (tv && (s.kind === 'bars' || s.kind === 'cols')), isKpi: s.kind === 'kpi', isNotice: s.kind === 'notice', isCols: s.kind === 'cols' && !tv, isMethod: s.kind === 'method', canToggle: s.kind === 'bars' || s.kind === 'cols', toggleLbl: tv ? 'Chart' : 'Table', toggle: this.act((mm) => { mm.tableView[compKey] = !tv; }), hasHead: s.kind !== 'notice',
+      onCanvas: th.canvas.indexOf(compKey) >= 0, pinCanvas: this.act((mm) => { const t = curThread(mm); const i = t.canvas.indexOf(compKey); if (i >= 0) t.canvas.splice(i, 1); else t.canvas.push(compKey); }), canvasLbl: th.canvas.indexOf(compKey) >= 0 ? 'On canvas' : 'Pin to canvas', evid: () => this.openInsp(msg.id, 'evidence'), compact: !!compact,
+      env: compact ? env.short : env.text, envCls: 'cenv' + (env.partial ? ' cenv-p' : '') };
+    if (s.kind === 'bars') { const mx = Math.max.apply(null, s.rows.map((r) => r[1])) || 1; vm.rows = s.rows.map((r) => { const key = s.id + ':' + r[0]; const sc = selOf(key); const pin = pinned(key); return { label: r[0], v: n(r[1]), w: (r[1] / mx * 100) + '%', cls: 'brow' + (sc ? ' sel-' + sc : '') + (r[2] ? ' brow-off' : '') + (pin ? ' is-pinned' : ''), pressed: sc === 'active' ? 'true' : 'false', go: r[2] ? () => {} : this.act((mm) => this.pickBar(mm, msg, s, r)), aria: r[0] + ': ' + n(r[1]) + ' ' + s.unit + (r[2] ? '. Not selectable.' : '') + srTxt(sc, pin) }; }); vm.note = s.note || ''; }
+    if ((s.kind === 'bars' || s.kind === 'cols') && tv) { vm.cols = [s.kind === 'cols' ? 'Month' : 'Mall', s.unit === 'SAR' ? 'SAR' : s.unit]; vm.trows = s.rows.map((r) => [r[0], n(r[1])]); vm.sameNote = 'Same result, metric, grain, filters, access scope and coverage as the chart (DXD-27).'; }
+    if (s.kind === 'table' || s.kind === 'compare') { vm.cols = s.cols; vm.trows = s.rows; }
+    if (s.kind === 'method') { vm.items = s.items.map((x) => ({ k: x[0], v: x[1] })); }
+    if (s.kind === 'rank') {
+      const scoreCol = s.cols.indexOf('Mean rank'); const def = scoreCol >= 0 ? scoreCol : 0;
+      const sk = m.sortBy[compKey] === undefined ? def : m.sortBy[compKey];
+      const rows = s.rows.slice().sort((a, b) => { const x = a.raw[sk], y = b.raw[sk]; if (x === null) return 1; if (y === null) return -1; return sk === scoreCol ? x - y : y - x; });
+      vm.heads = s.cols.map((h, i) => ({ label: h, cls: 'srt' + (sk === i ? ' srt-on' : ''), go: this.act((mm) => { mm.sortBy[compKey] = i; }), aria: 'Sort by ' + h + (sk === i ? ' (sorted)' : ''), sort: sk === i ? (i === scoreCol ? 'ascending' : 'descending') : 'none' }));
+      vm.rrows = rows.map((r) => { const key = s.id + ':' + r.mall; const sc = selOf(key); const pin = pinned(key); return { mall: r.mall, sr: srTxt(sc, false), pressed: sc === 'active' ? 'true' : 'false', cells: r.cells.map((v, i) => ({ v, lead: !!(r.lead && r.lead[i]), cls: (i < 4 ? 'rk rk' + (r.rk[i] === null ? 'x' : Math.min(4, Math.floor((r.rk[i] - 1) / 2.5))) : 'rk rks') + (r.lead && r.lead[i] ? ' rk-lead' : '') })), note: r.note, hasNote: !!r.note, cls: 'rrow' + (sc ? ' sel-' + sc : '') + (pin ? ' is-pinned' : ''), pinMark: pin, go: this.act((mm) => this.pickRow(mm, s.id, r.mall)) }; });
+      vm.rankNote = scoreCol >= 0 ? 'Combined score you asked for. Method above. Click a column to sort; the same result is re-ordered, not re-queried.' : 'No combined score. “Leader” marks the highest value per KPI. Click a column to sort; the same result is re-ordered, not re-queried.';
+    }
+    if (s.kind === 'kpi') { vm.title = fill(s.label, F); vm.value = fill(s.value, F); vm.sub = fill(s.sub, F); vm.badge = fill(s.badge || '', F); vm.hasBadge = !!s.badge; vm.kpiCls = 'kpi' + (s.unavail ? ' kpi-una' : ''); vm.badgeCls = 'pb' + (s.unavail ? ' pb-una' : ''); }
+    if (s.kind === 'notice') { vm.tone = 'notice nt-' + s.tone; vm.toneLbl = { partial: 'Partial', unavailable: 'Unavailable', error: 'Error', boundary: 'Outside your access' }[s.tone]; vm.ntitle = fill(s.title, F); vm.text = s.text; const rec = th.msgs.some((x) => x.revises === msg.spec.id && x.done); vm.retry = !!s.retry && !th.msgs.some((x) => x.revises === msg.spec.id); vm.recovered = !!s.retry && rec; vm.doRetry = () => this.adhoc(this.retryEvents(this.m), 'Retrying the failed step'); }
+    if (s.kind === 'cols') { const mx = Math.max.apply(null, s.rows.map((r) => r[1])); vm.crows = s.rows.map((r) => { const key = s.id + ':' + r[0]; const sc = selOf(key); return { m: r[0], v: (r[1] / 1e3).toFixed(0) + 'K', h: (r[1] / mx * 100) + '%', cls: 'colb' + (sc ? ' sel-' + sc : ''), pressed: sc === 'active' ? 'true' : 'false', go: this.act((mm) => this.pickBar(mm, msg, s, r)), aria: r[0] + ' 2026: ' + sar(r[1]) + srTxt(sc, false) }; }); }
+    const a = st.active, k = st.kept[compKey]; const mine = a && a.ref.componentId === compKey ? a : k || null;
+    vm.hasSel = !!mine && !compact; vm.selRole = a && a.ref.componentId === compKey ? 'Agent context' : 'Kept in this investigation'; vm.selCls = 'selbar ' + (a && a.ref.componentId === compKey ? 'sb-a' : 'sb-k'); vm.selTxt = mine ? mine.label : '';
+    vm.selPinned = mine ? pinned(mine.key) : false; vm.pinLbl = vm.selPinned ? 'Pinned' : 'Pin for comparison';
+    vm.selAsk = this.act((mm) => { if (k && !(a && a.ref.componentId === compKey)) setActiveSel(thSel(mm), k.ref, k.label, k.key, k.src); mm.banner = '“' + (mine ? mine.label : '') + '” is this investigation’s context for your next question.'; });
+    vm.selPin = this.act((mm) => { if (k && !(a && a.ref.componentId === compKey)) setActiveSel(thSel(mm), k.ref, k.label, k.key, k.src); this.pinActive(mm); });
+    vm.selRec = () => { if (mine) { this.recSel = mine; this.openInsp(msg.id, 'records'); } };
+    return vm;
+  }
+  pickBar(m, msg, s, r) { const ref = selRef({ surface: 'genui', componentId: 'genui:' + msg.id + '/' + s.id, metric: s.metric, dims: [{ name: s.kind === 'cols' ? 'month' : 'mall', value: r[0] }], value: r[1], unit: s.unit, filters: s.filters, scope: m.persona === 'tenant' ? SCOPE_TENANT : SCOPE_ADMIN }); setActiveSel(thSel(m), ref, r[0] + ' · ' + (s.unit === 'SAR' ? sar(r[1]) : n(r[1])), s.id + ':' + r[0], ''); }
+  msgVM(msg, compact) {
+    const F = this.FT.F; const th = curThread(this.m);
+    if (msg.kind === 'user') return { isUser: true, isRun: false, isAction: false, isNote: false, text: msg.text, chips: msg.chips.map((c) => ({ label: c, cls: /^Access|^As of/.test(c) ? 'chip c-fixed' : /^Selected|^Active|^Pinned/.test(c) ? 'chip c-sel' : 'chip c-scope' })) };
+    if (msg.kind === 'action') return { isUser: false, isRun: false, isAction: true, isNote: false, text: msg.text };
+    if (msg.kind === 'note') return { isUser: false, isRun: false, isAction: false, isNote: true, text: msg.text };
+    const nodesAll = msg.iters.reduce((a, it) => a.concat(it.nodes), []); const doneN = nodesAll.filter((x) => x.status === 'done').length;
+    const iterShown = msg.iters.filter((it) => it.shown).length;
+    const live = !msg.done;
+    const st = live ? PHASE[msg.phase] + (msg.phase === 'EXECUTED' ? ' · ' + doneN + ' of ' + nodesAll.length + ' tool nodes done' : '') : (OUTCOME[msg.outcome] || '');
+    const summary = nodesAll.length + ' tool node' + (nodesAll.length === 1 ? '' : 's') + ' · ' + iterShown + ' iteration' + (iterShown === 1 ? '' : 's') + ' · ' + (msg.t / 1000).toFixed(1) + ' s · ' + msg.llm + ' model call' + (msg.llm === 1 ? '' : 's');
+    const sup = th.msgs.find((x) => x.revises === msg.spec.id && x.kind === 'run');
+    const verLbl = msg.revises ? 'Answer v' + msg.version + ' · revises v1 above' : sup ? 'Answer v1 · superseded by v2 below · kept unchanged' : '';
+    const vm = { isUser: false, isRun: true, isAction: false, isNote: false, id: msg.id, title: msg.title, live, phaseLbl: st, phaseCls: 'ph ' + (live ? 'ph-live' : 'ph-' + msg.outcome), summary,
+      hasVer: !!verLbl, verLbl, verCls: 'ver' + (msg.revises ? ' ver-new' : ' ver-old'), mrCls: 'mr' + (sup ? ' mr-old' : ''),
+      hasConn: !!msg.conn, connNote: msg.connNote, connCls: 'conn conn-' + msg.conn, canStop: live && !compact, stop: () => this.stopRun(msg),
+      isCancelled: msg.outcome === 'cancelled', canRerun: msg.outcome === 'cancelled' && !th.msgs.some((x) => x.spec && x.spec.id === 'r9b'), rerun: () => this.adhoc(this.rerunEvents(this.m), 'Running again'),
+      showAct: (!msg.collapsed || msg.outcome === 'cancelled') && !compact, actLbl: msg.collapsed ? 'Show steps' : 'Hide steps', actToggle: this.act(() => { msg.collapsed = !msg.collapsed; }), canToggle: !compact,
+      openExec: () => this.openInsp(msg.id, 'execution'), openEvid: () => this.openInsp(msg.id, 'evidence'), hasRec: !!msg.spec.records, openRec: () => { this.recSel = null; this.openInsp(msg.id, 'records'); },
+      iters: msg.iters.filter((it) => it.shown).map((it, ii) => ({ label: 'Iteration ' + (ii + 1) + (it.parallel ? ' · parallel' : ''), why: it.why, hasWhy: !!it.why && ii > 0, nodes: it.nodes.map((nd) => ({ title: nd.title, tool: nd.tool, args: fill(nd.args, F), res: nd.status === 'done' || nd.status === 'blocked' || (nd.status === 'failed' && nd.failed) ? fill(nd.res, F) : '', st: NST[nd.status][0], cls: 'node ' + NST[nd.status][1], ms: nd.status === 'done' ? nd.ms + ' ms' : '', att: nd.attempts, hasAtt: nd.attempts.length > 0 })) })),
+      stmts: msg.stmts.filter((s0) => s0.shown > 0).map((s0, si) => { const full = fill(s0.t, F); const words = full.split(' '); const env = this.envFor(this.stmtKeys(msg, s0), KLBL[s0.k][0] + (s0.k === 'hyp' ? ' · not established by the data' : s0.k === 'rec' ? ' · based on the statements above' : ''), { inherit: this.msgFilters(msg) }); return { lbl: KLBL[s0.k][0], cls: 'stmt ' + KLBL[s0.k][1], text: s0.shown < 1 ? words.slice(0, Math.ceil(words.length / 2)).join(' ') + ' …' : full, ev: () => this.openInsp(msg.id, 'evidence', si), streaming: s0.shown < 1, prov: s0.shown < 1 ? '' : (compact ? env.short : env.text), provCls: 'prov' + (env.partial ? ' prov-p' : '') }; }),
+      cavs: msg.cavShown ? (msg.spec.caveats || []) : [], hasCav: msg.cavShown && (msg.spec.caveats || []).length > 0,
+      comps: msg.comps.filter((c) => c.shown).map((c) => this.compVM(msg, c, compact)),
+      hasProp: !!msg.proposal && msg.proposal.state !== 'hidden', suggs: msg.suggsShown ? (msg.spec.suggs || []).map((sg) => ({ label: sg.label, go: () => this.sugg(sg, msg) })) : [], hasClar: !!msg.clar && msg.clar.shown };
+    if (vm.hasProp) { const p = msg.proposal; vm.prop = { card: p.card, from: p.from, to: p.to, pending: p.state === 'pending', applied: p.state === 'applied', dismissed: p.state === 'dismissed', undone: p.state === 'undone', apply: this.act((mm) => this.proposal(mm, 'apply')), dismiss: this.act((mm) => this.proposal(mm, 'dismiss')), undo: this.act((mm) => this.proposal(mm, 'undo')) }; }
+    if (vm.hasClar) vm.clar = msg.clar.options.map((o) => ({ label: o.label, sub: o.sub, cls: 'opt' + (msg.clar.chosen === o.id ? ' opt-on' : ''), pressed: msg.clar.chosen === o.id ? 'true' : 'false', go: () => { if (msg.spec.id === 'r6a' && o.id === 'reg' && !msg.clar.chosen) this.start('J6', true); } }));
+    return vm;
+  }
+  sugg(sg, msg) {
+    if (sg.j) { this.start(sg.j, true); return; }
+    if (sg.act === 'records') { this.recSel = null; this.openInsp(msg.id, 'records'); return; }
+    if (sg.act === 'workspace') { this.m.view = 'workspace'; this.m.panel = false; this.m.banner = 'Opened from the agent panel. This investigation’s conversation, selections and scope came with it.'; this.bump(); return; }
+    if (sg.act === 'composite') { if (curThread(this.m).msgs.some((x) => x.spec && x.spec.id === 'r2c')) return; this.adhoc(this.compositeEvents(this.m), 'You asked for a combined score'); return; }
+    if (sg.act === 'compare') { if (curThread(this.m).pins.length >= 2) this.adhoc(this.compareEvents(this.m), 'Comparing pinned selections'); else { this.m.banner = 'Pin at least two rows of the table first (select a row, then Pin for comparison).'; this.bump(); } }
+  }
+  inspVM() {
+    const m = this.m, F = this.FT.F; const msg = m.insp.msg ? findMsg(m, m.insp.msg) : null; if (!m.insp.open || !msg) return { open: false };
+    const tab = m.insp.tab; const tabs = [['evidence', 'Evidence'], ['definition', 'Definition'], ['records', 'Records'], ['execution', 'Execution']].map(([k, l]) => ({ label: l, cls: 'itab' + (tab === k ? ' itab-on' : ''), on: tab === k ? 'true' : 'false', ti: tab === k ? '0' : '-1', go: this.act((mm) => { mm.insp.tab = k; }) }));
+    const nodes = msg.iters.reduce((a, it) => a.concat(it.nodes), []);
+    const ev = msg.stmts.map((s0, si) => { const keys = this.stmtKeys(msg, s0); const env = this.envFor(keys, KLBL[s0.k][0], { inherit: this.msgFilters(msg) }); return { idx: si, lbl: KLBL[s0.k][0], cls: 'stmt ' + KLBL[s0.k][1] + (m.insp.stmt === si ? ' st-focus' : ''), text: fill(s0.t, F), env: env.text, items: factsIn(s0.t).map((k) => { const f = F[k]; const src = f.src || {}; return { tok: '⟦' + k + '⟧', val: f.fmt, src: src.formula ? 'derive · ' + src.formula : (src.tool || '') + (src.metric ? ' · ' + src.metric + ' v1' : '') + (src.filters ? ' · ' + Object.entries(src.filters).map(([a, b]) => a + '=' + b).join(', ') : ''), ref: src.metric ? rref(src.metric, src.filters) : '', cov: src.cov || 'complete' }; }), steps: (s0.nodes || []).map((id) => { const nd = nodes.find((x) => x.id === id); return nd ? nd.title + ' (' + nd.tool + ')' : id; }).join(' · '), hasItems: factsIn(s0.t).length > 0 }; });
+    const th = Object.values(m.threads).find((t) => t.msgs.indexOf(msg) >= 0);
+    const fam = th ? th.msgs.filter((x) => x.kind === 'run' && (x === msg || x.revises === msg.spec.id || msg.revises === x.spec.id || (msg.revises && x.revises === msg.revises))) : [];
+    const versions = fam.length > 1 ? fam.map((x) => ({ v: 'v' + x.version, title: x.title, out: OUTCOME[x.outcome] || 'In progress', note: x.revises ? 'Vacancy loaded on user retry (retryOf ' + x.revises + '/n4). New facts only for the retried node; other facts unchanged.' : 'Generated with vacancy missing (query failed twice). Kept exactly as generated.', cur: x === msg ? 'Shown' : '' })) : [];
+    const defs = (msg.spec.metrics || []).map((id) => { const d = METRICS[id] || {}; return { id: id + ' · v1 · ' + (d.kind || 'parity'), name: d.name || id, def: d.def || '', cav: d.cav || [] }; });
+    let rec = null; const rs = this.recSel;
+    if (msg.spec.records && !rs) rec = { cols: msg.spec.records.cols, rows: msg.spec.records.rows, note: msg.spec.records.note };
+    else if (rs) { const mall = rs.ref.dimensions[0].value; const src = msg.spec.records || this.D.amRecords; const rows = src.rows.filter((r) => r[1] === mall); rec = { cols: src.cols, rows, note: rows.length ? 'Pending renewal amendments over four weeks at ' + mall + ' (same population as the earlier answer).' : 'No pending renewal amendments over four weeks at ' + mall + '.' }; }
+    const totalNodes = msg.iters.map((it, i) => 'Iteration ' + (i + 1) + ': ' + it.nodes.length + ' of 8');
+    const budget = [['Tool nodes per iteration', totalNodes.join(' · ') || '—', 'limit 8'], ['Planning iterations', msg.iters.filter((x) => x.shown).length + ' of 2', 'limit 2'], ['Model calls', msg.llm + ' of 4', 'planning, re-plan, synthesis'], ['Rows fetched', n(msg.rows) + ' of 50,000', 'summaries only reach the client'], ['Elapsed', (msg.t / 1000).toFixed(1) + ' s', msg.iters.length > 1 ? 'investigative limit 30 s' : 'standard limit 20 s']];
+    const ctx = [['Run', msg.runId], ['Request (idempotency key)', msg.requestId], ['Thread', msg.threadId], ['Role and access', (msg.persona === 'tenant' ? 'Tenant' : 'Portfolio admin') + ' · ' + msg.bounds[0]], ['Context sent', msg.ctxSel || 'No selection'], ['Pinned sent', msg.pins.length ? msg.pins.join('; ') : 'None'], ['Analytical scope', msg.scope.length ? msg.scope.map((x) => x.label).join('; ') : 'Within access only'], ['Dataset', DSV + ' · as of 20 Oct 2026']];
+    return { open: true, tabs, title: msg.title + (msg.version > 1 ? ' · v' + msg.version : ''), isEv: tab === 'evidence', isDef: tab === 'definition', isRec: tab === 'records', isExe: tab === 'execution', ev, versions, hasVersions: versions.length > 0, defs, hasRec: !!rec, rec: rec || { cols: [], rows: [], note: '' }, noRec: !rec, phases: msg.phases.map((p) => ({ s: p.s, lbl: PHASE[p.s] || p.s, note: p.note, t: (p.t / 1000).toFixed(2) + ' s' })), budget, ctx, log: msg.log.map((l, i) => ({ i: l.seq === null || l.seq === undefined ? '—' : '#' + l.seq, ev: l.ev })), close: () => this.closeInsp() };
+  }
+  renderVals() {
+    const m = this.m, F = this.FT.F, T = this.FT.T, D = this.D, s = this.state; const th = curThread(m); const per = m.persona;
+    const msgs = th ? th.msgs.map((x) => this.msgVM(x, false)) : []; const pmsgs = th ? th.msgs.map((x) => this.msgVM(x, true)) : [];
+    const j = s.jid ? this.jById(s.jid) : null;
+    const ts = th ? th.sel : newStore(); const a = ts.active; const ds = dashSel(m); const da = ds.active;
+    /* dashboard (its own selection state) */
+    const types = ['Expansion', 'HoldOver', 'Renewal', 'Termination'], bands = ['4 wk+', '4 wk', '3 wk', '2 wk', '1 wk'];
+    const nz = types.reduce((acc, t) => acc.concat(D.amC[t]), []).filter((v) => v > 0).sort((x, y) => x - y);
+    const shade = (v) => { if (!v) return 'hm hm0'; const r = nz.indexOf(v) / Math.max(1, nz.length - 1); return 'hm hm' + (1 + Math.min(4, Math.floor(r * 5))); };
+    const dk = ds.kept['admin.pendingAmendments.heatmap'];
+    const hm = bands.map((b, bi) => ({ band: b, cells: types.map((t) => { const key = t + '|' + b; const on = da && da.ref.componentId === 'admin.pendingAmendments.heatmap' && da.key === key; return { v: String(D.amC[t][bi]), cls: shade(D.amC[t][bi]) + (on ? ' sel-active' : dk && dk.key === key ? ' sel-kept' : ''), pressed: on ? 'true' : 'false', aria: t + ', ' + b + ': ' + D.amC[t][bi] + ' amendments' + (on ? ' (selected on the dashboard)' : ''), go: this.act((mm) => { const ref = selRef({ surface: 'dashboard', componentId: 'admin.pendingAmendments.heatmap', metric: 'amendments.pending_by_age_band', dims: [{ name: 'amendment_type', value: t }, { name: 'age_band', value: b }], value: D.amC[t][bi], unit: 'amendments', filters: { year: 2026, month: 'All', region: 'Central', mall: 'All' }, scope: SCOPE_ADMIN }); setActiveSel(dashSel(mm), ref, t + ' × ' + b + ' · ' + D.amC[t][bi], key, 'Dashboard · Pending amendments'); mm.dash.cell = key; }) }; }) }));
+    const hmSel = da && da.ref.componentId === 'admin.pendingAmendments.heatmap' ? da : null;
+    const card = m.dash.appr === 'rawdah' ? T.cardRawdah : T.cardAll;
+    const appr = card.map((c) => ({ label: { proposal: 'Proposals', contract: 'Contracts', lease: 'Leases' }[c.t], total: n(c.total), pct: pc0(c.old, c.total), cap: n(c.old) + ' older than a month' }));
+    const apprAll = 'All types: ' + n(sum(card.map((c) => c.total))) + ' pending · ' + n(sum(card.map((c) => c.old))) + ' older than a month';
+    const udMax = Math.max.apply(null, D.ud.map((x) => x.mm)); const udTop = D.ud.slice().sort((x, y) => y.mm - x.mm || y.total - x.total).slice(0, 6).map((x) => ({ mall: x.mall, mm: String(x.mm), w: (x.mm / udMax * 100) + '%' }));
+    const tMax = Math.max.apply(null, D.tenant.cols.map((c) => c.v)); const tcols = D.tenant.cols.map((c) => ({ m: c.m, h: (c.v / tMax * 100) + '%', v: (c.v / 1000).toFixed(0) + 'K' }));
+    /* context tray: thread-local */
+    const keptList = Object.values(ts.kept).map((k) => ({ label: k.label, comp: k.ref.componentId, src: k.src ? 'Source: ' + k.src : 'Source: this investigation', go: this.act((mm) => setActiveSel(thSel(mm), k.ref, k.label, k.key, k.src)) }));
+    const pins = th ? th.pins.map((p, i) => ({ label: p.label, comp: p.ref.componentId, rm: this.act((mm) => curThread(mm).pins.splice(i, 1)) })) : [];
+    const bounds = BOUNDS[per];
+    const scope = th ? th.scope.map((x) => ({ label: x.label, rm: this.act((mm) => this.unscope(mm, x.label)), aria: 'Remove ' + x.label + ' from the next question' })) : [];
+    const imps = this.importables(m).map((c) => ({ label: c.label, src: c.src, go: this.act((mm) => this.importSel(mm, c)) }));
+    const canvas = th ? th.canvas.map((key) => { let out = null; th.msgs.forEach((x) => { if (x.kind === 'run') x.comps.forEach((c) => { if ('genui:' + x.id + '/' + c.spec.id === key) out = Object.assign(this.compVM(x, c, true), { from: x.title }); }); }); return out; }).filter(Boolean) : [];
+    const hist = m.order.filter((id) => m.threads[id].persona === per && (m.threads[id].msgs.length || id === m.active[per])).map((id) => { const t = m.threads[id]; return { title: t.title, when: t.when, out: t.outcome ? OUTCOME[t.outcome] : t.msgs.length ? 'In progress' : 'New', ocls: 'oc oc-' + (t.outcome || 'new'), cls: 'hitem' + (id === m.active[per] ? ' h-on' : ''), cur: id === m.active[per] ? 'true' : 'false', go: this.act((mm) => this.openThread(mm, id)), n: (() => { const q = t.msgs.filter((x) => x.kind === 'user').length; return q + (q === 1 ? ' question · ' : ' questions · ') + t.dsv; })() }; });
+    const iv = this.inspVM();
+    const lastRun = th ? th.msgs.slice().reverse().find((x) => x.kind === 'run') : null;
+    return {
+      jbtns: this.J.map((x) => ({ label: x.id + ' · ' + x.title, cls: 'jb' + (s.jid === x.id ? ' jb-on' : ''), pressed: s.jid === x.id ? 'true' : 'false', go: () => this.start(x.id, false) })),
+      jOn: !!j, jTitle: j ? j.id + ' · ' + j.title : '', jWhere: j ? j.where : '', jCovers: j ? j.covers.join(' · ') : '',
+      playing: s.playing, notPlaying: !s.playing, play: () => this.play(), pause: () => this.pause(), step: () => { if (!s.jid) this.start('J1', false); else this.next(); }, skip: () => this.skip(), restart: () => this.start(s.jid || 'J1', false),
+      counter: s.jid ? 'Event ' + s.pos + ' of ' + s.total : 'No journey loaded', note: s.note, live: m.live,
+      frameOpts: [['desk', 'Desktop'], ['tab', 'Tablet · 1024'], ['phone', 'Phone · 390']].map(([k, l]) => ({ label: l, cls: 'sgb' + (s.frame === k ? ' sg-on' : ''), on: s.frame === k ? 'true' : 'false', go: () => this.setState({ frame: k }) })),
+      appCls: 'app fr-' + s.frame + (m.view === 'workspace' ? ' v-ws' : ' v-db') + (m.panel ? ' panel-on' : '') + (m.drawer ? ' dr-' + m.drawer : '') + (iv.open ? ' insp-on' : ''),
+      isAdmin: per === 'admin', isTenant: per === 'tenant', who: per === 'tenant' ? 'Omar · Lumen Retail Co. · lease T-31206' : 'Portfolio admin · 3 regions', ask: per === 'tenant' ? 'Ask about your lease…' : 'Ask about your portfolio…',
+      switchLbl: per === 'tenant' ? 'Switch to admin (demo)' : 'Switch to tenant (demo)', switchRole: this.act((mm) => this.switchPersona(mm, per === 'tenant' ? 'admin' : 'tenant')),
+      isDash: m.view === 'dashboard', isWs: m.view === 'workspace', tabDash: 'vt' + (m.view === 'dashboard' ? ' vt-on' : ''), tabWs: 'vt' + (m.view === 'workspace' ? ' vt-on' : ''), dashSel: m.view === 'dashboard' ? 'true' : 'false', wsSel: m.view === 'workspace' ? 'true' : 'false', goDash: this.act((mm) => { mm.view = 'dashboard'; mm.banner = ''; }), goWs: this.act((mm) => { mm.view = 'workspace'; mm.panel = false; mm.banner = ''; }),
+      banner: m.banner, hasBanner: !!m.banner, closeBanner: this.act((mm) => { mm.banner = ''; }),
+      hm, hmSel: !!hmSel, hmSelTxt: hmSel ? hmSel.label : '', hmSelRole: 'Selected on the dashboard', hmSelCls: 'selbar sb-a',
+      hmAsk: () => { const s0 = dashSel(this.m).active; if (s0 && s0.key === 'Renewal|4 wk+') this.start('J1', true); else { this.m.panel = true; this.importDash(this.m); curThread(this.m).msgs.push({ kind: 'note', id: 'x' + (++this.m.seq), text: 'The selection was imported into this investigation. The prototype scripts only the Renewal × 4 wk+ question (journey J1).' }); this.bump(); } },
+      hmClear: this.act((mm) => { const d = dashSel(mm); if (d.active && d.active.ref.componentId === 'admin.pendingAmendments.heatmap') d.active = null; mm.dash.cell = null; }),
+      appr, apprAll, apprChanged: m.dash.changed, apprFilt: m.dash.appr === 'rawdah' ? 'Central · Rawdah Point Mall' : 'All regions · All malls', apprUndo: this.act((mm) => this.proposal(mm, 'undo')),
+      udTop, udPartial: 'Observed subset: no report this month from ' + F.ud_missing.fmt + ' of ' + F.ud_all.fmt + ' malls.', tcols, tTotal: F.ts_total.fmt,
+      openPanel: this.act((mm) => { mm.panel = true; }), closePanel: this.act((mm) => { mm.panel = false; }), toWs: this.act((mm) => { mm.view = 'workspace'; mm.panel = false; mm.banner = 'Opened from the agent panel. This investigation’s conversation, selections and scope came with it.'; }),
+      msgs, pmsgs, noMsgs: msgs.length === 0, threadTitle: th ? th.title : '', threadMeta: th ? (th.outcome ? OUTCOME[th.outcome] + (lastRun && lastRun.version > 1 ? ' (v' + lastRun.version + ')' : '') + ' · ' : '') + 'Dataset ' + th.dsv + ' · as of 20 Oct 2026' : '',
+      rerunAll: this.act((mm) => { mm.banner = 'Re-run with current data starts a new run in this investigation. Stored answers stay unchanged. (Not scripted in this prototype; the dataset version is unchanged.)'; }),
+      scope, hasScope: scope.length > 0, noScope: scope.length === 0, accessTxt: 'Within your access: ' + ACCESS[per], bounds,
+      hasActive: !!a, actLbl: a ? a.label + (a.src ? ' · ' + a.src : '') : '', clearCtx: this.act((mm) => { thSel(mm).active = null; }), actComp: a ? a.ref.componentId : '', actSurf: a ? a.ref.surface : '', actJson: a ? JSON.stringify(a.ref, null, 2) : '', showRef: m.showRef && !!a, refLbl: m.showRef ? 'Hide selection_ref' : 'Show selection_ref', toggleRef: this.act((mm) => { mm.showRef = !mm.showRef; }), noActive: !a,
+      keptList, hasKept: keptList.length > 0, pins, hasPins: pins.length > 0, canCompare: pins.length >= 2, pinCount: String(pins.length), compare: () => this.sugg({ act: 'compare' }),
+      hasDashSel: !!da, dashSelLbl: da ? da.label : '', dashSelHead: da && a && a.ref.selectionId === da.ref.selectionId ? 'Dashboard selection · imported into this investigation' : da && Object.values(ts.kept).some((k) => k.ref.selectionId === da.ref.selectionId) ? 'Dashboard selection · imported earlier, kept here, not sent' : 'Dashboard selection · not sent unless imported', imps, hasImps: imps.length > 0,
+      ctxTabs: [['context', 'Context'], ['canvas', 'Canvas · ' + canvas.length]].map(([k, l]) => ({ label: l, cls: 'ctab' + (m.ctxTab === k ? ' ctab-on' : ''), on: m.ctxTab === k ? 'true' : 'false', go: this.act((mm) => { mm.ctxTab = k; }) })), isCtx: m.ctxTab === 'context', isCanvas: m.ctxTab === 'canvas', canvas, noCanvas: canvas.length === 0,
+      hist, newInv: this.act((mm) => { const id = 'n' + (++mm.seq); mm.threads[id] = { id, persona: mm.persona, title: 'New investigation', when: 'Just now', msgs: [], pins: [], canvas: [], outcome: null, sel: newStore(), scope: [], dsv: DSV }; mm.order.unshift(id); mm.active[mm.persona] = id; mm.banner = ''; }),
+      openHist: this.act((mm) => { mm.drawer = mm.drawer === 'history' ? null : 'history'; }), openCtx: this.act((mm) => { mm.drawer = mm.drawer === 'context' ? null : 'context'; }), closeDrawer: this.act((mm) => { mm.drawer = null; }),
+      send: () => this.send(), sugg0: per === 'tenant' ? [{ label: 'How do my sales compare with other tenants at Sandstone Galleria?', go: () => this.start('J8', true) }] : [{ label: 'Which Central malls need leasing attention first?', go: () => this.start('J2', true) }, { label: 'How many units had mismatches in September?', go: () => this.start('J4', true) }, { label: 'Which Central malls have the most vacant units?', go: () => this.start('J9', true) }],
+      iv, ivOpen: !!iv.open
+    };
+  }
+}
+
+</script>
+</body>
+</html>

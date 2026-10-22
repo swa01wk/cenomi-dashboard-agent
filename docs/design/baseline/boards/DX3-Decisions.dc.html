@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DX3 design decision register</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-size:12px;font-weight:600;color:#4B4560;text-transform:uppercase;letter-spacing:.05em;padding:10px 12px;border-bottom:2px solid #E4E1EC}
+td{font-size:13px;line-height:19px;padding:10px 12px;border-bottom:1px solid #EEECF3;vertical-align:top}
+code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#F4F3F7;padding:1px 5px;border-radius:4px}
+.ok{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#DDF3EF;color:#0F5048;white-space:nowrap}
+.cond{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#FDF0E1;color:#8A4B08;white-space:nowrap}
+.gate{display:flex;gap:24px;background:#FFF8EB;border:1px solid #F6D9A8;border-radius:12px;padding:16px 20px}
+.gate b{font-size:15px}.gate p{margin:4px 0 0;font-size:13px;line-height:19px;color:#4B4560}
+.gate ul{margin:6px 0 0;padding-left:18px;font-size:13px;line-height:19px;color:#4B4560}
+pre{margin:0;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;line-height:16px;background:#1B1530;color:#E9E5F5;border-radius:10px;padding:14px 16px;white-space:pre}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:24px;align-items:start}
+.two h2{margin:0 0 8px;font-size:17px}
+.two p{margin:0 0 8px;font-size:13px;line-height:19px;color:#4B4560}
+</style>
+</helmet>
+<div style="width: 1936px; box-sizing: border-box; padding: 56px 64px; background: #FFFFFF; font-family: 'Inter', system-ui, sans-serif; color: #1B1530; display: flex; flex-direction: column; gap: 20px">
+<div>
+<h1 style="margin: 0; font-family: 'Inter Tight', 'Inter', sans-serif; font-size: 28px">DX3 · Design decision register</h1>
+<p style="margin: 8px 0 0; font-size: 15px; color: #4B4560">Decisions from the project owner’s DX3 review, 22 Oct 2026. They extend DXD-01…20 and bind DX4–DX6, GENERATIVE_UI.md, AGUI_INTEGRATION.md and API_CONTRACTS.md in M0.</p>
+</div>
+<div class="gate"><div style="flex: 1 1 0"><b>Gate DX3 · Conditionally approved</b><p>The DX3 design architecture is approved. DR-007 (ECharts) stays open: real ECharts rendering and interaction validation is a requirement of Design Gate GD. Results from the ECharts test double show only that the gallery’s own layer works; they are never evidence of library compatibility.</p></div><div style="flex: 0 0 640px"><b>Carried to GD</b><ul><li>The gallery self-test passes with real ECharts 5.6.0: rendering, aria description, keyboard tooltip, selection, resize.</li><li>Treemap thresholds met (area CV ≤ 5 %, order ≥ 90 %, aspect ≤ 1.25 × reference), or both treemaps switch to the custom squarified component.</li><li>WCAG checks completed as listed under DXD-24.</li><li>minShare reading confirmed against the ui-kit source, if it is available.</li></ul></div></div>
+<table>
+<thead><tr><th style="width: 90px">ID</th><th style="width: 230px">Decision</th><th>What it means for the design</th><th style="width: 260px">Applied in</th><th style="width: 110px">Status</th></tr></thead>
+<tbody>
+<tr><td>DXD-21</td><td>How DR-007 is verified</td><td>First, run the gallery’s self-test in Play with real ECharts loaded and review the result. If the library cannot load in the canvas, validate with a local, version-pinned ECharts asset. Test-double runs never count as proof.</td><td>DX3 gallery · GD</td><td><span class="cond">Open until GD</span></td></tr>
+<tr><td>DXD-22</td><td>minShare 0.08</td><td>Option A, provisionally. Every treemap category and sub-category stays a tile with its drilldown; the threshold only decides label visibility. Confirm against the original ui-kit source if available.</td><td>Both treemaps · DX5 GenUI treemap</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-23</td><td>Treemap fallback</td><td>If ECharts misses the agreed fidelity, accessibility or interaction thresholds, both treemaps use the custom squarified component. ECharts stays for the other suitable chart types.</td><td>GD · M2</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-24</td><td>V2 palette with verified accessibility</td><td>Keep the V2 hues. Every chart must still have accessible labels, visible focus indicators, text alternatives and selection states that do not rely on colour. WCAG compliance is verified, not assumed: a table alternative does not settle every contrast issue. Checks before GD: 1.4.1 use of colour, 1.4.3 text contrast, 1.4.11 non-text contrast, 2.1.1 keyboard, 2.4.7 focus visible, 2.4.11 focus not obscured (sticky bars), 4.1.2 name, role, value, 4.1.3 status messages. Automated with axe-core where it applies, plus a manual pass.</td><td>DX3 gallery · DX4 · DX5 · GD</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-25</td><td>One selection contract</td><td>Every selectable chart, table row, tile and generated component emits <code>selection_ref.v1</code>: dashboard cards, the agent panel, the workspace and generative UI alike.</td><td>DX3 gallery payloads · DX4 · DX5</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-26</td><td>What a selection carries</td><td>A semantic metric identifier with version and kind (parity or corrected), grain, dimensions, value and unit, filter context, authorization scope, and a validated dataset reference (dataset version, as-of date, result reference).</td><td>Selection contract</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-27</td><td>Chart ↔ table keeps the definition</td><td>Switching a chart to its table (dashboard card or generated component) reads the same result reference: same metric definition, grain, filters and access scope. A table may show finer rows only if they reconcile with the chart totals.</td><td>Cards · generated components</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-28</td><td>Same semantics everywhere</td><td>Selecting in the workspace or in a generated chart behaves exactly as on the dashboard: same states, the same Ask and View records actions, the same payload.</td><td>DX4 · DX5</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-29</td><td>Active, kept and pinned</td><td>One active selection globally is the agent’s default context. Each card or component keeps its own last selection, which is never sent automatically. Multi-selection analysis happens only after the user explicitly pins selections.</td><td>DX4 context tray</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-30</td><td>Grounded numbers</td><td>Every displayed number comes from the shared synthetic dataset. In the design prototypes, figures are computed by the DX2 model functions that draw the dashboard. In the product, they come from metric-service results. The model never types a number.</td><td>All stages</td><td><span class="ok">Approved</span></td></tr>
+</tbody>
+</table>
+<div class="two">
+<div><h2>selection_ref.v1</h2><p>Emitted by every selectable element. The agent receives only the active selection and any pinned ones; kept selections stay on their cards. The backend re-validates the dataset reference and scope before using a selection, so a stale or widened selection is rejected rather than trusted.</p><p>Generated components set <code>surface</code> to <code>genui</code> and <code>componentId</code> to the message and component IDs, and point <code>resultRef</code> at the tool result they render.</p></div>
+<pre>{
+  "schema": "selection_ref.v1",
+  "selectionId": "sel_3f9c21aa",
+  "surface": "dashboard",               // dashboard | workspace | genui
+  "componentId": "admin.pendingAmendments.heatmap",
+  "metric": { "id": "amendments.pending_by_age_band", "version": "v1", "kind": "parity" },
+  "grain": "amendment_type × age_band",
+  "dimensions": [ { "name": "amendment_type", "value": "Renewal" },
+                  { "name": "age_band", "value": "4 wk+" } ],
+  "value": { "number": 18, "unit": "amendments" },
+  "filters": { "year": 2026, "month": "All", "region": "Central", "mall": "All" },
+  "scope": { "kind": "regions", "label": "Access: all regions" },
+  "dataset": { "version": "sd-2026.10.20-01", "asOf": "2026-10-20",
+               "resultRef": "res_7f3a0c12", "validated": true },
+  "role": "active"                      // active | kept | pinned
+}</pre>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1936,"height":1400}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

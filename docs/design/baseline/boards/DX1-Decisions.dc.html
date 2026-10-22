@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DX1 design decision register</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-size:12px;font-weight:600;color:#4B4560;text-transform:uppercase;letter-spacing:.05em;padding:10px 12px;border-bottom:2px solid #E4E1EC}
+td{font-size:13px;line-height:19px;padding:10px 12px;border-bottom:1px solid #EEECF3;vertical-align:top}
+.ok{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:#DDF3EF;color:#0F5048}
+</style>
+</helmet>
+<div style="width: 1936px; box-sizing: border-box; padding: 56px 64px; background: #FFFFFF; font-family: 'Inter', system-ui, sans-serif; color: #1B1530; display: flex; flex-direction: column; gap: 20px">
+<div>
+<h1 style="margin: 0; font-family: 'Inter Tight', 'Inter', sans-serif; font-size: 28px">DX1 · Design decision register</h1>
+<p style="margin: 8px 0 0; font-size: 15px; color: #4B4560">Approved by the project owner on 22 Oct 2026. These decisions bind DX2–DX6 and the GENERATIVE_UI and PRODUCT_SPEC documents in M0.</p>
+</div>
+<table>
+<thead><tr><th style="width: 90px">ID</th><th style="width: 220px">Decision</th><th>What it means for the design</th><th style="width: 160px">Applied in</th><th style="width: 100px">Status</th></tr></thead>
+<tbody>
+<tr><td>DXD-01</td><td>Visual direction</td><td>Ink and Violet is the primary design system. Night Operations may follow later as an optional dark theme; Warm Editorial is not pursued.</td><td>All stages</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-02</td><td>Screen architecture</td><td>Four screens — Admin or Tenant dashboard, Analytical workspace, Insight inbox — plus the docked agent panel and four overlays: card focus, inspector, notifications, filter-change confirmation.</td><td>DX1 · all</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-03</td><td>Agent UX</td><td>Hybrid: docked agent panel for quick questions; expandable analytical workspace for multi-step investigations; contextual entry points on every card and data point.</td><td>DX2 entry points · DX4</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-04</td><td>Shared inspector</td><td>One inspector with Evidence, Definition, Records and Execution tabs, used for dashboard metrics, generated components and proactive insights alike.</td><td>DX2 card focus · DX4–DX6</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-05</td><td>Three kinds of context</td><td>Visibly separate (1) card-level dashboard filters, set on the card; (2) the agent's analytical query scope, which the user can narrow or widen in the panel without touching the dashboard; (3) proposed dashboard filter changes, which apply only after confirmation.</td><td>DX2 agent panel · DX4</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-06</td><td>State preservation</td><td>Moving between dashboard and workspace keeps the conversation, selected data points, card filters, pinned results and scroll position.</td><td>DX2 · DX4</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-07</td><td>Responsive behaviour</td><td>Desktop, tablet and mobile designs. Below desktop width the agent opens as an overlay (tablet) or full screen (mobile) instead of permanently narrowing charts.</td><td>DX2 responsive board</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-08</td><td>Statement labels</td><td>Every analytical statement carries a text label — Observed, Derived, Hypothesis, Recommendation, Unavailable. Colour supports the label and is never the only signal; hypotheses also use a dashed outline.</td><td>DX4–DX6</td><td><span class="ok">Approved</span></td></tr>
+<tr><td>DXD-09</td><td>Synthetic data</td><td>The reference date and the synthetic-data designation stay visible on every screen, and every card footer repeats "As of 20 Oct 2026 · synthetic data".</td><td>All stages</td><td><span class="ok">Approved</span></td></tr>
+</tbody>
+</table>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1936,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

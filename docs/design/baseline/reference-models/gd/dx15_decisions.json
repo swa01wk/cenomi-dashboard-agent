@@ -1,0 +1,517 @@
+[
+[
+"DX1-Decisions",
+"DXD-01",
+"Visual direction",
+"Ink and Violet is the primary design system. Night Operations may follow later as an optional dark theme; Warm Editorial is not pursued.",
+"All stages",
+"Approved"
+],
+[
+"DX1-Decisions",
+"DXD-02",
+"Screen architecture",
+"Four screens — Admin or Tenant dashboard, Analytical workspace, Insight inbox — plus the docked agent panel and four overlays: card focus, inspector, notifications, filter-change confirmation.",
+"DX1 · all",
+"Approved"
+],
+[
+"DX1-Decisions",
+"DXD-03",
+"Agent UX",
+"Hybrid: docked agent panel for quick questions; expandable analytical workspace for multi-step investigations; contextual entry points on every card and data point.",
+"DX2 entry points · DX4",
+"Approved"
+],
+[
+"DX1-Decisions",
+"DXD-04",
+"Shared inspector",
+"One inspector with Evidence, Definition, Records and Execution tabs, used for dashboard metrics, generated components and proactive insights alike.",
+"DX2 card focus · DX4–DX6",
+"Approved"
+],
+[
+"DX1-Decisions",
+"DXD-05",
+"Three kinds of context",
+"Visibly separate (1) card-level dashboard filters, set on the card; (2) the agent's analytical query scope, which the user can narrow or widen in the panel without touching the dashboard; (3) proposed dashboard filter changes, which apply only after confirmation.",
+"DX2 agent panel · DX4",
+"Approved"
+],
+[
+"DX1-Decisions",
+"DXD-06",
+"State preservation",
+"Moving between dashboard and workspace keeps the conversation, selected data points, card filters, pinned results and scroll position.",
+"DX2 · DX4",
+"Approved"
+],
+[
+"DX1-Decisions",
+"DXD-07",
+"Responsive behaviour",
+"Desktop, tablet and mobile designs. Below desktop width the agent opens as an overlay (tablet) or full screen (mobile) instead of permanently narrowing charts.",
+"DX2 responsive board",
+"Approved"
+],
+[
+"DX1-Decisions",
+"DXD-08",
+"Statement labels",
+"Every analytical statement carries a text label — Observed, Derived, Hypothesis, Recommendation, Unavailable. Colour supports the label and is never the only signal; hypotheses also use a dashed outline.",
+"DX4–DX6",
+"Approved"
+],
+[
+"DX1-Decisions",
+"DXD-09",
+"Synthetic data",
+"The reference date and the synthetic-data designation stay visible on every screen, and every card footer repeats \"As of 20 Oct 2026 · synthetic data\".",
+"All stages",
+"Approved"
+],
+[
+"DX2-Decisions",
+"DXD-10",
+"Expanded cards",
+"Keep the centred overlay for quick inspection. Every expanded card also offers Open in workspace , which moves the card into the analytical workspace with its filters, selection and active tab intact.",
+"Overlay and the Open in workspace action on all 12 Admin cards.",
+"DX4 workspace",
+"Approved"
+],
+[
+"DX2-Decisions",
+"DXD-11",
+"Records vs Inspector",
+"Dashboard drilldowns live in the card’s Records tab. The shared Inspector is reserved for evidence, definitions, calculation provenance and execution details. Both reuse the same table and dataset components.",
+"Records tab drills to the selected point (e.g. 18 amendments, by mall).",
+"DX4 inspector · GD components",
+"Approved"
+],
+[
+"DX2-Decisions",
+"DXD-12",
+"Selection model",
+"One active selection globally is the agent’s default context. Each card remembers its own last selection. The user can explicitly pin several selections for a cross-KPI comparison; unrelated selections are never combined automatically.",
+"Single global selection. Per-card memory and pinning are not drawn yet.",
+"DX4 context tray",
+"Approved"
+],
+[
+"DX2-Decisions",
+"DXD-13",
+"Mall map",
+"Out of the baseline. Keep the mall cards, available-unit counts, regions and actions.",
+"Tenant opportunities card without the map.",
+"—",
+"Approved"
+],
+[
+"DX2-Decisions",
+"DXD-14",
+"Partial coverage everywhere",
+"The same Partial label and a sentence naming what is missing (“covers 18 of 25 malls”) on dashboard charts and on agent-generated components. Coverage is a field of the result, not text the model writes.",
+"Unit discrepancy card; States board, state 8.",
+"DX3 charts · DX5 GenUI",
+"Approved"
+],
+[
+"DX2-Decisions",
+"DXD-15",
+"Filters vs boundaries",
+"Analytical filters are removable chips. Authorization boundaries (role access, lease restriction) and the frozen reference date sit in a separate Boundaries row with a lock icon. Neither the user nor the agent can remove or widen them in the panel.",
+"Admin and Tenant agent panels.",
+"DX4 · DX5",
+"Approved"
+],
+[
+"DX2-Decisions",
+"DXD-16",
+"One state vocabulary",
+"Cards and generative components share one set of states: loading , zero (shown as 0), empty (no match · before dataset · after reference date), unavailable (not in the dataset), error (reference and Retry), outside_access , partial , undefined_ratio (zero denominator: dash and “0 of 0”).",
+"States board covers all eight on cards.",
+"DX5 GenUI states",
+"Approved"
+],
+[
+"DX2-Decisions",
+"DXD-17",
+"Context and scroll preservation",
+"Opening or closing any overlay (expanded card, agent sheet, filter sheet, inspector) keeps page scroll, card filters, selection and active tab.",
+"Verified for the expanded card: scroll and card position unchanged after close.",
+"DX4 inspector",
+"Approved"
+],
+[
+"DX2-Decisions",
+"DXD-18",
+"Chart and table share one dataset",
+"Chart, Table and Records read the same authorized result for the card’s scope. A table may show finer rows (Other expanded) but its totals must reconcile with the chart.",
+"Verified: heatmap 44 = 44; donut Other 199 = 97 + 74 + 28.",
+"DX3 · GD",
+"Approved"
+],
+[
+"DX2-Decisions",
+"DXD-19",
+"Phone navigation",
+"Below 820 px the side rail becomes a bottom tab bar, matching the approved Responsive board.",
+"Admin and Tenant boards.",
+"—",
+"Approved"
+],
+[
+"DX2-Decisions",
+"DXD-20",
+"Value labels on narrow charts",
+"When direct value labels would collide, show the value on the selected mark and in the tooltip; the Table tab lists every value.",
+"Reported sales below 520 px.",
+"DX3 rule for all charts",
+"Approved"
+],
+[
+"DX3-Decisions",
+"DXD-21",
+"How DR-007 is verified",
+"First, run the gallery’s self-test in Play with real ECharts loaded and review the result. If the library cannot load in the canvas, validate with a local, version-pinned ECharts asset. Test-double runs never count as proof.",
+"DX3 gallery · GD",
+"Open until GD"
+],
+[
+"DX3-Decisions",
+"DXD-22",
+"minShare 0.08",
+"Option A, provisionally. Every treemap category and sub-category stays a tile with its drilldown; the threshold only decides label visibility. Confirm against the original ui-kit source if available.",
+"Both treemaps · DX5 GenUI treemap",
+"Approved"
+],
+[
+"DX3-Decisions",
+"DXD-23",
+"Treemap fallback",
+"If ECharts misses the agreed fidelity, accessibility or interaction thresholds, both treemaps use the custom squarified component. ECharts stays for the other suitable chart types.",
+"GD · M2",
+"Approved"
+],
+[
+"DX3-Decisions",
+"DXD-24",
+"V2 palette with verified accessibility",
+"Keep the V2 hues. Every chart must still have accessible labels, visible focus indicators, text alternatives and selection states that do not rely on colour. WCAG compliance is verified, not assumed: a table alternative does not settle every contrast issue. Checks before GD: 1.4.1 use of colour, 1.4.3 text contrast, 1.4.11 non-text contrast, 2.1.1 keyboard, 2.4.7 focus visible, 2.4.11 focus not obscured (sticky bars), 4.1.2 name, role, value, 4.1.3 status messages. Automated with axe-core where it applies, plus a manual pass.",
+"DX3 gallery · DX4 · DX5 · GD",
+"Approved"
+],
+[
+"DX3-Decisions",
+"DXD-25",
+"One selection contract",
+"Every selectable chart, table row, tile and generated component emits selection_ref.v1 : dashboard cards, the agent panel, the workspace and generative UI alike.",
+"DX3 gallery payloads · DX4 · DX5",
+"Approved"
+],
+[
+"DX3-Decisions",
+"DXD-26",
+"What a selection carries",
+"A semantic metric identifier with version and kind (parity or corrected), grain, dimensions, value and unit, filter context, authorization scope, and a validated dataset reference (dataset version, as-of date, result reference).",
+"Selection contract",
+"Approved"
+],
+[
+"DX3-Decisions",
+"DXD-27",
+"Chart ↔ table keeps the definition",
+"Switching a chart to its table (dashboard card or generated component) reads the same result reference: same metric definition, grain, filters and access scope. A table may show finer rows only if they reconcile with the chart totals.",
+"Cards · generated components",
+"Approved"
+],
+[
+"DX3-Decisions",
+"DXD-28",
+"Same semantics everywhere",
+"Selecting in the workspace or in a generated chart behaves exactly as on the dashboard: same states, the same Ask and View records actions, the same payload.",
+"DX4 · DX5",
+"Approved"
+],
+[
+"DX3-Decisions",
+"DXD-29",
+"Active, kept and pinned",
+"One active selection globally is the agent’s default context. Each card or component keeps its own last selection, which is never sent automatically. Multi-selection analysis happens only after the user explicitly pins selections.",
+"DX4 context tray",
+"Approved"
+],
+[
+"DX3-Decisions",
+"DXD-30",
+"Grounded numbers",
+"Every displayed number comes from the shared synthetic dataset. In the design prototypes, figures are computed by the DX2 model functions that draw the dashboard. In the product, they come from metric-service results. The model never types a number.",
+"All stages",
+"Approved"
+],
+[
+"DX4-Decisions",
+"DXD-31",
+"Composite rankings only on request",
+"DXQ-05 · Option C. By default the agent answers prioritisation questions with a multi-KPI comparison table, the leader on each KPI (marked “Leader” in text), magnitude and severity, and a narrative that states its ordering rule. A combined score is produced only when the user explicitly asks; it is classified Derived and carries a method card: weighting, normalisation, missing-data treatment and limitations. The default answer says no combined score was calculated.",
+"J2 · J6 · agent prompt and composer rules · GENERATIVE_UI (method kind)",
+"Approved"
+],
+[
+"DX4-Decisions",
+"DXD-32",
+"Analytical selections are thread-local",
+"DXQ-06 · Option C. Each investigation keeps its own active, kept and pinned selections and scope chips. The dashboard keeps its selection state separately. A selection crosses into an investigation only by explicit import (Ask about this, or Import a selection…), labelled with its source and visible in the composer (“Context sent”) before submission. Revises DXD-29; see reconciliation below.",
+"DX4 workspace · DX5 · selection contract",
+"Revises DXD-29"
+],
+[
+"DX4-Decisions",
+"DXD-33",
+"History is immutable",
+"DXQ-07 · Option A. Resumed investigations show answers exactly as generated, with their dataset version. Re-run with current data is an explicit action that creates a new run; stored answers never change and are never refreshed silently.",
+"J7 · history · run store",
+"Approved"
+],
+[
+"DX4-Decisions",
+"DXD-34",
+"KPI reconciliation (finding)",
+"J1’s 41 and J3’s 32 measure different populations of the same KPI at Rawdah Point: 41 is all approval types older than a month; 32 is proposals of all ages. Both reconcile (table below). No synthetic-data correction was needed and no KPI definition changed. Fix: every approval statement names its population, the proposal states all-types totals, and the dashboard card adds an all-types line.",
+"J1 · J3 · Pending approvals card · KPI_CATALOG note",
+"Resolved"
+],
+[
+"DX4-Decisions",
+"DXD-35",
+"Coverage semantics",
+"An observed total from incomplete reports is labelled “observed subset” with its coverage (J4: 87 of 3,000 checked units, 18 of 25 malls). The full-portfolio total is an Unavailable card (“—”), never estimated. Partial coverage is inherited by every statement and visual built on the subset.",
+"J2 · J4 · GENERATIVE_UI unavailable variant",
+"Approved"
+],
+[
+"DX4-Decisions",
+"DXD-36",
+"Evidence envelope on every statement and visual",
+"Every statement and generated component carries: evidence class, metric ids and versions, filters (inherited from the answer when a derived value has none of its own, and marked so), authorization scope, freshness (as-of date), dataset version, and coverage. Compact form in the panel, full form in the workspace and inspector; coverage “partial” is shown in text, not only colour.",
+"All answers · DX5 component contract",
+"Approved"
+],
+[
+"DX4-Decisions",
+"DXD-37",
+"Versioned recovery",
+"A successful retry of a failed node is a new run that creates answer v2 (“revises v1”). v1 is preserved exactly as generated, labelled “superseded · kept unchanged”, and both appear in the inspector’s Versions list. Run again after Stop is also a new run with a new request id; the stopped run stays.",
+"J6 · J9 · run store",
+"Approved"
+],
+[
+"DX4-Decisions",
+"DXD-38",
+"Context isolation rules",
+"Switching threads, changing roles, removing scope chips and resuming investigations can never widen authorization or import context implicitly. Imports and resumes are re-checked against the current access scope; mismatches are refused or dropped with a banner. Another role’s investigations are not listed, opened or importable. Removing a scope chip widens only to the access scope; boundaries cannot be removed.",
+"J7 · J10 · server AccessScope",
+"Approved"
+],
+[
+"DX4-Decisions",
+"DXD-39",
+"Accessibility of evidence, activity and selection",
+"Evidence labels, coverage, version and connection states are text. Selectable rows, bars and cells expose aria-pressed and a text state. The inspector is a dialog that takes focus, supports Escape and restores focus; tabs use arrow keys. One polite live region announces run status. Text contrast ≥ 4.5:1 on all labels and controls (automated).",
+"DX4 · DX5 · GD (axe-core on real build)",
+"Approved"
+],
+[
+"DX4-Decisions",
+"DXD-40",
+"AG-UI handoff contracts",
+"Event-to-state mapping, run identity (threadId, runId, requestId, seq), cancellation, interruption and reconnection, retry kinds and idempotency are fixed as design contracts on DX4-AGUI. Assumptions about the AG-UI SDK are listed for verification against the pinned version in M0.",
+"AGUI_INTEGRATION.md · API_CONTRACTS.md · M4",
+"Approved"
+],
+[
+"DX4-Decisions",
+"DXD-25 · one selection contract",
+"Kept",
+"All surfaces still emit selection_ref.v1 ."
+],
+[
+"DX4-Decisions",
+"DXD-26 · what a selection carries",
+"Kept",
+"Unchanged. The scope field is now also used to refuse cross-scope imports."
+],
+[
+"DX4-Decisions",
+"DXD-27 · chart ↔ table keeps the definition",
+"Kept",
+"Extended: the table view also keeps the coverage label."
+],
+[
+"DX4-Decisions",
+"DXD-28 · same semantics everywhere",
+"Kept",
+"Same states and actions on dashboard, panel, workspace and generated components."
+],
+[
+"DX4-Decisions",
+"DXD-29 · one active selection globally",
+"Superseded for analytical context",
+"Replaced by DXD-32. “Active” now means active within its store: the dashboard has one, each investigation has one. Per-card kept selections and explicit pinning are unchanged."
+],
+[
+"DX5-Decisions",
+"DXD-41",
+"The result is authoritative",
+"Generated components render values only from the validated result named by resultRef; payload text uses fact tokens only.",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-42",
+"Closed component registry",
+"Fifteen approved kinds; no model-generated code; new kinds through design review.",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-43",
+"Representation alternates",
+"View as switches representation without modifying or re-querying the result.",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-44",
+"One formatting module",
+"Counts, rates, SAR, missing, zero and undefined formatted once, for every representation.",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-45",
+"State vocabulary",
+"Default, partial, zero, empty, undefined ratio, loading, error, unavailable; never conflated.",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-46",
+"Size classes",
+"Workspace 760, panel 420, canvas 360, phone 358, expanded 1000; per-kind responsive rules.",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-47",
+"Validation and fallback",
+"Server-side validation with client-side defensive re-validation. Amended by DXD-57: the deterministic table only for presentation failures on a resolved, authorized, verified result.",
+"Approved · amended"
+],
+[
+"DX5-Decisions",
+"DXD-48",
+"Envelope per component",
+"Every component prints the evidence envelope; a payload envelope that disagrees is rejected.",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-49",
+"Drilldown and selection",
+"Marks are buttons with names, aria-pressed and “Selected” text; arrows, Enter, Escape; selection_ref.v1 into the investigation; records from the same population.",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-50",
+"Fixtures are labelled",
+"Design-only state fixtures are labelled; production never renders fixtures.",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-51",
+"Bounded representation policy (DXQ-08 A)",
+"The agent selects among allowed representations using intent, result shape, dimensions, accessibility preference and display space (rules P1–P6); the user switches with View as.",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-52",
+"Deterministic table fallback (DXQ-09 A)",
+"An invalid presentation payload falls back to a table from the verified, authorized result.",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-53",
+"Treemap below 400 px (DXQ-10 A)",
+"Becomes a ranked list with the same keys and selection.",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-54",
+"Component budget (DXQ-11 A)",
+"At most three generated components in the docked panel and six in the workspace; further supporting information through Open in workspace and the inspector.",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-55",
+"Verified calculations",
+"Every derived value originates from a verified calculation recording method, operands, comparison periods, metric definition and evidence references. The verifier recomputes it. Neither the LLM nor the renderer derives business KPI values; the renderer computes only geometry.",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-56",
+"Authorization by grants",
+"Validate the viewer’s current grants against the result scope, dimension values and records; never compare labels. Revalidate stored and resumed results. Withhold rather than filter a partly-authorized result; never name out-of-grant entities.",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-57",
+"Failure taxonomy",
+"Presentation, calculation, authorization, unknown result, stale and partial are distinct classes with distinct outcomes. Only presentation failures with valid, authorized results use the table fallback.",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-58",
+"Fallback preserves boundaries",
+"The fallback keeps row limits and paging, evidence, partial coverage, formatting and authorization.",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-59",
+"Subset disclosure",
+"Any subset, top-N, page, sample or aggregate is declared and disclosed in text; the renderer never aggregates.",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-60",
+"Continuity",
+"Envelope and selection semantics are preserved across View as, panel ↔ workspace moves, expansion and resume (resume re-runs authorization).",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-61",
+"ECharts at the Design Gate",
+"Final Design Gate validates the GenUI charts on the pinned Apache ECharts runtime (5.6.0) — rendering, names, keyboard, selection, resize, subset disclosure — not on HTML stand-ins.",
+"Approved"
+],
+[
+"DX5-Decisions",
+"DXD-62",
+"Implementation priority",
+"Registry keeps 15 kinds; ten core kinds first, five specialized kinds wrap DX3 primitives or simple layouts; unbuilt kinds render through the table fallback.",
+"Approved"
+]
+]

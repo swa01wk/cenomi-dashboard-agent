@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Canonical screen inventory</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-size:12px;font-weight:600;color:#4B4560;text-transform:uppercase;letter-spacing:.05em;padding:10px 12px;border-bottom:2px solid #E4E1EC;vertical-align:bottom}
+td{font-size:13px;line-height:19px;padding:10px 12px;border-bottom:1px solid #EEECF3;vertical-align:top}
+.k{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:5px;background:#EFEAFB;color:#3B1E7A}
+.o{background:#F1EFF5;color:#3F3B46}
+</style>
+</helmet>
+<div style="width: 1936px; box-sizing: border-box; padding: 56px 64px; background: #FFFFFF; font-family: 'Inter', system-ui, sans-serif; color: #1B1530; display: flex; flex-direction: column; gap: 28px">
+<div>
+<h1 style="margin: 0; font-family: 'Inter Tight', 'Inter', sans-serif; font-size: 28px">Canonical screen inventory</h1>
+<p style="margin: 8px 0 0; font-size: 15px; line-height: 22px; color: #4B4560; max-width: 1300px">Smallest set that demonstrates the whole POC: <b>4 screens</b>, <b>1 docked panel</b> and <b>4 overlays</b>. The 11 surfaces in the brief map onto these (right-hand table) — none needs its own page.</p>
+</div>
+<div style="display: flex; gap: 40px; align-items: flex-start">
+<div style="flex: 1 1 1180px; min-width: 0">
+<table>
+<thead><tr><th style="width: 190px">Surface</th><th style="width: 90px">Kind</th><th style="width: 120px">Personas</th><th>Entry points</th><th>Exits</th><th>Primary actions</th><th>Secondary actions</th></tr></thead>
+<tbody>
+<tr><td><b>Admin dashboard</b></td><td><span class="k">Screen</span></td><td>Admin roles, by permission</td><td>Sign-in landing · rail · back from any screen</td><td>Card focus · agent panel · workspace · inbox</td><td>Read KPIs · change a card's filters · select a data point · ask on a card</td><td>Expand card · drilldown to records · definition tooltip</td></tr>
+<tr><td><b>Tenant dashboard</b></td><td><span class="k">Screen</span></td><td>Tenant users</td><td>Sign-in landing · rail</td><td>Card focus · agent panel · workspace</td><td>See next actions · documents · requests · sales</td><td>Ask on a card · change sales year or lease</td></tr>
+<tr><td><b>Analytical workspace</b></td><td><span class="k">Screen</span></td><td>All</td><td>“Open in workspace” · Investigate on an insight · rail</td><td>Back to dashboard · inspector</td><td>Multi-step investigation · pin results to the canvas · resume a past thread</td><td>Rename or delete a thread · switch chart ↔ table · export view</td></tr>
+<tr><td><b>Insight inbox</b></td><td><span class="k">Screen</span></td><td>Admin roles</td><td>Bell · rail</td><td>Workspace (Investigate) · inspector</td><td>Triage New → Acknowledged / Dismissed / Resolved · Investigate</td><td>Give feedback · browse replay checkpoints · filter by severity</td></tr>
+<tr><td><b>Agent panel</b></td><td><span class="k">Docked</span></td><td>All</td><td>Ask icon on a card · data-point selection · top-bar search · <span style="font-family: monospace">/</span></td><td>Workspace · inspector · close</td><td>Ask · follow up · confirm or dismiss suggested filter changes</td><td>Remove a context chip · suggested questions · view steps</td></tr>
+<tr><td><b>Card focus</b></td><td><span class="k o">Overlay</span></td><td>All</td><td>Expand icon on any card or generated chart</td><td>Close · agent panel</td><td>Chart · Table · Records · Definition tabs</td><td>Ask about this card · select a row as context</td></tr>
+<tr><td><b>Inspector</b></td><td><span class="k o">Overlay</span></td><td>All</td><td>Evidence or Records on an answer, chart, card or insight</td><td>Close (returns to the same place)</td><td>Evidence · Definition · Records · Execution tabs</td><td>Copy scope · ask about a record</td></tr>
+<tr><td><b>Notifications</b></td><td><span class="k o">Overlay</span></td><td>Admin roles</td><td>Bell in the top bar</td><td>Inbox · close</td><td>Open an insight</td><td>Mark all seen</td></tr>
+<tr><td><b>Filter-change confirmation</b></td><td><span class="k o">Inline</span></td><td>All</td><td>An agent answer that suggests a filter change</td><td>Apply · dismiss · undo</td><td>Apply the suggested filter to the named card</td><td>Undo from the card’s “changed” flag</td></tr>
+</tbody>
+</table>
+</div>
+<div style="flex: 0 0 520px">
+<table>
+<thead><tr><th>Brief asks for</th><th>Delivered as</th></tr></thead>
+<tbody>
+<tr><td>Admin Dashboard</td><td>Admin dashboard screen</td></tr>
+<tr><td>Tenant Dashboard</td><td>Tenant dashboard screen</td></tr>
+<tr><td>Agent conversation panel</td><td>Agent panel (docked)</td></tr>
+<tr><td>Expanded analytical workspace</td><td>Analytical workspace</td></tr>
+<tr><td>Investigation workspace</td><td>Same screen — one place for multi-step work</td></tr>
+<tr><td>KPI detail views</td><td>Card focus → Definition and Chart tabs</td></tr>
+<tr><td>Data exploration tables</td><td>Card focus → Table / Records; generated tables</td></tr>
+<tr><td>Evidence inspector</td><td>Inspector → Evidence tab</td></tr>
+<tr><td>Insight inbox</td><td>Insight inbox screen</td></tr>
+<tr><td>Proactive monitoring view</td><td>Inbox header: replay checkpoint timeline</td></tr>
+<tr><td>Agent activity / history</td><td>Workspace history list · Inspector → Execution</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div style="display: flex; gap: 40px; font-size: 13px; line-height: 19px; color: #4B4560">
+<p style="margin: 0; flex: 1 1 0"><b style="color: #1B1530">Why the workspace and investigation merge.</b> Splitting “conversation” from “investigation” would force users to choose a mode before they know how deep a question goes. One workspace, with pinned results, grows with the question.</p>
+<p style="margin: 0; flex: 1 1 0"><b style="color: #1B1530">Why monitoring has no screen of its own.</b> Monitoring in this POC is synthetic historical replay. Its output is insights, so the replay timeline sits on top of the inbox rather than on a separate dashboard that would look like live monitoring.</p>
+<p style="margin: 0; flex: 1 1 0"><b style="color: #1B1530">Persona switch is demo-only.</b> The top-bar switch between Portfolio admin and Tenant exists for the design review and the POC demo. Each persona sees only what its role permits.</p>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1936,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

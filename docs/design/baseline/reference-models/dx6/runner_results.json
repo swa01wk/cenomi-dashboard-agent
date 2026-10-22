@@ -1,0 +1,196 @@
+{
+ "tests": [
+  {
+   "id": "R1",
+   "name": "Duplicate event delivery is ignored",
+   "ok": true,
+   "detail": {
+    "result": "duplicate",
+    "new_versions": 0,
+    "new_notifications": 0
+   }
+  },
+  {
+   "id": "R2",
+   "name": "The same checkpoint triggered twice runs once (run key = trigger \u00b7 checkpoint \u00b7 dataset \u00b7 config)",
+   "ok": true,
+   "detail": {
+    "first": "queued",
+    "second_while_queued": "coalesced",
+    "after_completion": "duplicate"
+   }
+  },
+  {
+   "id": "R3",
+   "name": "Concurrent claims: one worker holds the lease; another can take over only after it expires",
+   "ok": true,
+   "detail": {
+    "w1": true,
+    "w2_during_lease": false,
+    "w2_after_expiry": true
+   }
+  },
+  {
+   "id": "R4",
+   "name": "An older checkpoint replayed late never overwrites a later version",
+   "ok": true,
+   "detail": {
+    "version": 3,
+    "checkpoint": "2026-10-20"
+   }
+  },
+  {
+   "id": "R5",
+   "name": "Crash after staging: nothing is visible; the restart discards staging and publishes once",
+   "ok": true,
+   "detail": {
+    "staged_rows_at_crash": 8,
+    "visible_versions_at_crash": 0,
+    "equal_to_clean_run": true
+   }
+  },
+  {
+   "id": "R6",
+   "name": "Crash inside publish: the transaction rolls back; no partial insight or notification",
+   "ok": true,
+   "detail": {
+    "before": [
+     18,
+     18
+    ],
+    "after_crash": [
+     18,
+     18
+    ]
+   }
+  },
+  {
+   "id": "R7",
+   "name": "Crash after commit or during delivery: re-trigger is a no-op and each notification is delivered exactly once",
+   "ok": true,
+   "detail": {
+    "retrigger": "duplicate",
+    "outbox": 21,
+    "delivered": 21
+   }
+  },
+  {
+   "id": "R8",
+   "name": "Triggers arriving in any order give the same versions, candidates and notifications",
+   "ok": true,
+   "detail": {
+    "hash": "c1e36ced42cebecc",
+    "reference": "c1e36ced42cebecc"
+   }
+  },
+  {
+   "id": "R9",
+   "name": "Deterministic replay: the detector replay and the runner replay are byte-identical across runs",
+   "ok": true,
+   "detail": {
+    "replay_hash": "82fde5250960761d",
+    "runner_hash": "c1e36ced42cebecc"
+   }
+  },
+  {
+   "id": "R10",
+   "name": "Only notified versions create outbox rows (silent updates, Watch and merges do not)",
+   "ok": true,
+   "detail": {
+    "notified_versions": 13,
+    "silent_or_watch_versions": 8
+   }
+  },
+  {
+   "id": "R11",
+   "name": "Late-arriving rows are invisible to earlier checkpoints and visible from their ingestion run on",
+   "ok": true,
+   "detail": {
+    "13 Oct sees": [
+     "2026-08"
+    ],
+    "19 Oct sees": [
+     "2026-09",
+     "2026-08"
+    ]
+   }
+  },
+  {
+   "id": "R12",
+   "name": "A corrected dataset version gets a new run key; the insight gains a version marked \u201cdata corrected\u201d, earlier versions keep their dataset, no notification without a band rise",
+   "ok": true,
+   "detail": {
+    "versions": [
+     [
+      1,
+      56,
+      "P2",
+      "sd-2026.10.20-01"
+     ],
+     [
+      2,
+      58,
+      "P2",
+      "sd-2026.10.20-01"
+     ],
+     [
+      3,
+      57,
+      "P2",
+      "sd-2026.10.20-02"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "R13",
+   "name": "Insights whose evidence predates the latest dataset version are flagged stale until re-evaluated",
+   "ok": true,
+   "detail": {
+    "before_correction_run": true,
+    "after": false
+   }
+  }
+ ],
+ "passed": 13,
+ "total": 13,
+ "cases": {
+  "duplicate_event": {
+   "title": "Event ud-2026-09 delivered again",
+   "result": "Ignored: event id already recorded",
+   "lines": [
+    "Trigger result: duplicate (event id ud-2026-09 already recorded)",
+    "New candidates: 0 \u00b7 new insight versions: 0 \u00b7 new notifications: 0"
+   ]
+  },
+  "rerun_checkpoint": {
+   "title": "Checkpoint 20 Oct triggered again",
+   "result": "No-op: run key already completed",
+   "lines": [
+    "Run key 9dbb4dbd0a9244e6 \u00b7 status completed",
+    "Trigger result: duplicate \u00b7 0 new candidates \u00b7 0 new versions \u00b7 0 notifications",
+    "A new dataset or configuration version would produce a different key and a new run."
+   ]
+  },
+  "crash_before_publish": {
+   "title": "Crash after staging, before publish",
+   "result": "Restarted: identical to a clean run",
+   "lines": [
+    "At the crash: 8 staged candidate rows, 0 published versions, 0 notifications",
+    "Lease expired \u2192 attempt 2 discards staging and re-evaluates (detectors are read-only and deterministic)",
+    "Result hash equal to a clean run: True"
+   ]
+  },
+  "full_replay": {
+   "title": "Full replay of the checkpoint calendar",
+   "result": "Identical result",
+   "lines": [
+    "13 runs replayed on sd-2026.10.20-01 with detectors-1.1",
+    "Detector replay hash 82fde5250960761d (twice) \u00b7 runner snapshot c1e36ced42cebecc (twice)",
+    "21 insight versions \u00b7 42 candidates \u00b7 21 notifications"
+   ]
+  }
+ },
+ "reference_hash": "c1e36ced42cebecc",
+ "replay_hash": "82fde5250960761d"
+}

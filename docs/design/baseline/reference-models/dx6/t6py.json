@@ -1,0 +1,482 @@
+{
+ "total": 387,
+ "passed": 387,
+ "texts": 43,
+ "checks": [
+  {
+   "name": "INS-107 explains why, confidence and limitations",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-107 priority follows the rule (P1)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-107 every version records dataset and configuration; the latest matches the shown band",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-107 versions are ordered by checkpoint",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-107 Central-audience instance is inside Central",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-107 hypothesis carries no number",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "T-202 explains why, confidence and limitations",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "T-202 priority follows the rule (P2)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "T-202 every version records dataset and configuration; the latest matches the shown band",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "T-202 versions are ordered by checkpoint",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "T-202 tenant instance is lease-level and tenant-only",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "T-202 tenant facts come only from lease T-31206",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-105 explains why, confidence and limitations",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-105 priority follows the rule (P2)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-105 every version records dataset and configuration; the latest matches the shown band",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-105 versions are ordered by checkpoint",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-105C explains why, confidence and limitations",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-105C priority follows the rule (P2)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-105C every version records dataset and configuration; the latest matches the shown band",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-105C versions are ordered by checkpoint",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-105C Central-audience instance is inside Central",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-104 explains why, confidence and limitations",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-104 priority follows the rule (P2)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-104 every version records dataset and configuration; the latest matches the shown band",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-104 versions are ordered by checkpoint",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-104 Central-audience instance is inside Central",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-104 hypothesis carries no number",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-106 explains why, confidence and limitations",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-106 priority follows the rule (Watch)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-106 every version records dataset and configuration; the latest matches the shown band",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-106 versions are ordered by checkpoint",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-106 hypothesis carries no number",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-103 explains why, confidence and limitations",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-103 priority follows the rule (P3)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-103 every version records dataset and configuration; the latest matches the shown band",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-103 versions are ordered by checkpoint",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-103 Central-audience instance is inside Central",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-103 hypothesis carries no number",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-101 explains why, confidence and limitations",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-101 priority follows the rule (P1)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-101 every version records dataset and configuration; the latest matches the shown band",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-101 versions are ordered by checkpoint",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-101 Central-audience instance is inside Central",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-090 explains why, confidence and limitations",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-090 priority follows the rule (P3)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-090 every version records dataset and configuration; the latest matches the shown band",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-090 versions are ordered by checkpoint",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-090 Central-audience instance is inside Central",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Open insights have unique deduplication keys",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Candidate log includes a \u201cnot material\u201d decision",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Candidate log includes a \u201cno sustained change\u201d decision",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Candidate log includes a \u201cwithin normal range\u201d decision",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Candidate log includes a \u201ccorrelation only\u201d decision",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Candidate log includes a \u201cNot concluded\u201d decision",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Candidate log includes a \u201cisolation\u201d decision",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Candidate log includes a \u201cseasonal pattern\u201d decision",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Candidate log includes a \u201cUpdated silently\u201d decision",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Candidate log includes a \u201cMerged\u201d decision",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Candidate log includes a \u201cWatch\u201d decision",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Candidate log includes a \u201cResolved automatically\u201d decision",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Candidate log includes a \u201cnot yet sustained\u201d decision",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_m_2026-10-20 counts match its candidate log",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_m_2026-10-20 has a run key over trigger, checkpoint, dataset and configuration",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_w_2026-10-20 counts match its candidate log",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_w_2026-10-20 has a run key over trigger, checkpoint, dataset and configuration",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_e_2026-10-19_ud counts match its candidate log",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_e_2026-10-19_ud has a run key over trigger, checkpoint, dataset and configuration",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_e_2026-10-17_t2 counts match its candidate log",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_e_2026-10-17_t2 has a run key over trigger, checkpoint, dataset and configuration",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_w_2026-10-13 counts match its candidate log",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_w_2026-10-13 has a run key over trigger, checkpoint, dataset and configuration",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_e_2026-10-12_t1 counts match its candidate log",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_e_2026-10-12_t1 has a run key over trigger, checkpoint, dataset and configuration",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_w_2026-10-06 counts match its candidate log",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_w_2026-10-06 has a run key over trigger, checkpoint, dataset and configuration",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_w_2026-09-29 counts match its candidate log",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_w_2026-09-29 has a run key over trigger, checkpoint, dataset and configuration",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_w_2026-09-22 counts match its candidate log",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_w_2026-09-22 has a run key over trigger, checkpoint, dataset and configuration",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_m_2026-09-20 counts match its candidate log",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_m_2026-09-20 has a run key over trigger, checkpoint, dataset and configuration",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_w_2026-09-15 counts match its candidate log",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_w_2026-09-15 has a run key over trigger, checkpoint, dataset and configuration",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_w_2026-09-08 counts match its candidate log",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_w_2026-09-08 has a run key over trigger, checkpoint, dataset and configuration",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_w_2026-09-01 counts match its candidate log",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "run_w_2026-09-01 has a run key over trigger, checkpoint, dataset and configuration",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Run keys are unique",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Notification keys (insight \u00b7 version \u00b7 recipient \u00b7 channel) are unique",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Every notified version has outbox rows for its audiences",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Golden-data invariants: 51 of 51 reconciliation checks pass",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-107 uses the canonical snapshot: 41 of 62 Central, 71 pending at Rawdah Point",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "INS-090 resolves on 22 Sep with the series value 7 (was \u201c5 on 22 Sep\u201d in v1)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Lease T-31206 sales dip is not reported: the prior year shows the same movement",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "T-202 counts the 2 lease-scoped drawings, not the company-wide service requests",
+   "ok": true,
+   "detail": ""
+  }
+ ]
+}

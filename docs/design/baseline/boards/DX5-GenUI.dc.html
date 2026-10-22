@@ -1,0 +1,1093 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DX5 generative UI</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.g{width:1440px;min-height:100%;box-sizing:border-box;background:#F6F4FA;font-family:'Inter',system-ui,sans-serif;color:#1B1530;font-size:13px}
+h1{margin:0;font-family:'Inter Tight','Inter',sans-serif;font-size:22px}
+p{margin:0}
+code{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;background:#F1EFF5;padding:1px 4px;border-radius:4px}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.rv{display:flex;flex-direction:column;gap:12px;padding:20px 24px 14px;background:#fff;border-bottom:1px solid #E4E1EC}
+.lead{margin-top:6px;font-size:13.5px;line-height:20px;color:#4B4560;max-width:1180px}
+.tabs{display:flex;gap:6px}
+.tb{border:1px solid #D8D3E6;background:#fff;color:#1B1530;border-radius:8px;padding:7px 12px;font:600 13px Inter,system-ui,sans-serif;cursor:pointer}
+.tb-on{background:#1B1530;color:#fff;border-color:#1B1530}
+.btn{border:1px solid #D8D3E6;background:#fff;color:#1B1530;border-radius:8px;padding:6px 11px;font:600 12.5px Inter,system-ui,sans-serif;cursor:pointer}
+.btn.pri{background:#6D28D9;border-color:#6D28D9;color:#fff}
+.btn.xs{padding:3px 8px;font-size:11.5px}
+.btn.ghost{border-color:transparent;background:transparent;color:#4C1D95}
+.tb:focus-visible,.btn:focus-visible,.sgb:focus-visible,.cl:focus-visible,.smp:focus-visible,.bar:focus-visible,.pt:focus-visible,.rowb:focus-visible,.hc:focus-visible,.fs:focus-visible,.tt:focus-visible,.tli:focus-visible,.pay:focus-visible{outline:2px solid #6D28D9;outline-offset:2px}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:0;align-items:start}
+.work{padding:16px 20px;min-width:0}
+.insp{position:sticky;top:0;background:#fff;border-left:1px solid #E4E1EC;padding:16px;min-height:600px;display:flex;flex-direction:column;gap:8px;box-sizing:border-box}
+.pl{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#4B4560;margin:4px 0 2px}
+.pl.inl{margin:0 2px 0 6px;align-self:center}
+.note{font-size:12px;line-height:17px;color:#4B4560}
+.mid{font-size:11px;color:#4B4560;font-family:ui-monospace,Menlo,monospace}
+.ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.sg{display:inline-flex;border:1px solid #D8D3E6;border-radius:8px;overflow:hidden;background:#fff;flex-wrap:wrap}
+.sgb{border:0;border-right:1px solid #E4E1EC;background:#fff;color:#1B1530;padding:6px 10px;font:500 12px Inter,system-ui,sans-serif;cursor:pointer}
+.sgb:last-child{border-right:0}
+.sg-on{background:#EFEAFB;color:#3B1F8C;font-weight:700}
+.sg-na{color:#6B6584;background:#F6F5F9;text-decoration:line-through;cursor:not-allowed}
+.json{margin:0;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;line-height:14px;background:#1B1530;color:#E9E5F5;border-radius:8px;padding:10px;white-space:pre-wrap;word-break:break-word;max-height:240px;overflow:auto}
+.sj{max-height:260px}
+.selc{display:flex;gap:8px;align-items:center;justify-content:space-between;background:#F1ECFD;border:1px solid #CDBDF5;border-radius:8px;padding:6px 8px}
+.selc.skept{background:#fff;border-style:dashed;flex-direction:column;align-items:flex-start}
+/* lab */
+.labg{display:flex;flex-direction:column;gap:14px}
+.res{background:#fff;border:1px solid #E4E1EC;border-radius:12px;padding:12px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px}
+.rc{display:flex;flex-direction:column;gap:4px;min-width:0}
+.envb{font-size:11.5px;line-height:16px;color:#3A3550}
+.reps{display:grid;gap:14px;align-items:start}
+.rz-workspace{grid-template-columns:760px}.rz-panel{grid-template-columns:repeat(2,420px)}.rz-phone{grid-template-columns:repeat(2,358px)}
+.rep{min-width:0}
+.repl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#3B1F8C;margin:0 0 4px}
+.cks{border-radius:10px;padding:8px 10px;margin-top:8px;display:flex;flex-direction:column;gap:4px}
+.cks-ok{background:#E7F5EC;border:1px solid #86C29E}.cks-bad{background:#FDECEC;border:1px solid #F0A3A3}
+.ckh{font-weight:600;font-size:12.5px}
+.ckr{display:grid;grid-template-columns:74px 46px minmax(0,1fr);gap:6px;font-size:11.5px;align-items:baseline}
+.ck{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:1px 5px;border-radius:4px;text-align:center}
+.ck-ok{background:#14532D;color:#fff}.ck-bad{background:#B42318;color:#fff}
+.ckd{color:#3A3550}
+/* generic component */
+.gc{background:#fff;border:1px solid #E4E1EC;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0;box-sizing:border-box}
+.gch{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.gct{display:flex;flex-direction:column;gap:1px;min-width:0}
+.gct b{font-size:13.5px;line-height:18px}
+.stl{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 6px;border-radius:4px;white-space:nowrap;background:#F1EFF5;color:#3A3550}
+.stl-partial{background:#FFF4E5;color:#7A3E06}.stl-error{background:#FDECEC;color:#8F1D14}.stl-unavailable{background:#FFF8EB;color:#7A3E06}.stl-undef{background:#EEF4FF;color:#1E3A8A}
+.fix{font-size:11px;line-height:15px;color:#5B4A00;background:#FFF8D6;border:1px dashed #C9A400;border-radius:6px;padding:4px 7px}
+.fixm{font-size:11.5px;color:#7A3E06}
+.env{display:flex;gap:6px;align-items:baseline;font-size:11px;line-height:15px;color:#4F4866;margin:0;padding-top:7px;border-top:1px solid #ECE9F2}
+.env-p{color:#7A3E06}
+.envl{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#3A3550;flex-shrink:0}
+.cap{font-size:11.5px;color:#4B4560}
+.tot{font-size:12px;font-weight:600;color:#3A3550}
+/* states */
+.ld{display:flex;flex-direction:column;gap:6px}
+.sk{display:block;height:12px;border-radius:6px;background:linear-gradient(90deg,#EEEAF6,#E2DCF0,#EEEAF6);width:90%}
+.sk2{width:70%}.sk3{width:50%}
+.ld p{font-size:12px;color:#4B4560}
+.er,.em,.ntc,.una,.wh{display:flex;gap:10px;align-items:flex-start;border-radius:10px;padding:10px}
+.er{background:#FDECEC;border:1px solid #F0A3A3}.em{background:#F6F5F9;border:1px dashed #A9A2BF}.ntc{background:#FFF8EB;border:1px solid #F0C27A}.una{background:#FFF8EB;border:1px dashed #C77C1A}.wh{background:#F4F3F7;border:1px solid #D8D3E6;margin-top:8px}
+.er p,.em p,.ntc p,.una p,.wh p{font-size:12.5px;line-height:18px}
+.er .btn{margin-top:6px}
+.erl,.eml,.ntl,.unl{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 6px;border-radius:4px;color:#fff;white-space:nowrap}
+.erl{background:#B42318}.eml{background:#4F4866}.ntl{background:#8A4B08}.unl{background:#8A4B08;display:inline-block;margin-bottom:3px}
+.unv{font-size:30px;line-height:34px;color:#8A4B08}
+.una2{color:#3A3550}
+/* kpi */
+.kpi{display:flex;flex-direction:column;gap:3px;background:#F6F4FA;border-radius:10px;padding:12px}
+.kpi-p{background:#FFF8EB}.kpi-u{background:#EEF4FF}
+.kl{font-size:12px;color:#4B4560;font-weight:600}
+.kv{font-family:'Inter Tight','Inter',sans-serif;font-size:30px;line-height:36px}
+.ks{font-size:12.5px;color:#3A3550}
+.bdg{align-self:flex-start;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:4px;margin-top:3px}
+.bdg-p{background:#8A4B08;color:#fff}.bdg-u{background:#1E3A8A;color:#fff}.bdg-d{background:#EFEAFB;color:#3B1F8C}
+/* text */
+.txt,.ins{display:flex;flex-direction:column;gap:6px}
+.stx{display:grid;grid-template-columns:108px minmax(0,1fr);gap:8px;font-size:13px;line-height:19px}
+.sz-phone .stx,.sz-canvas .stx{grid-template-columns:1fr;gap:2px}
+.sxl{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 6px;border-radius:4px;align-self:start;justify-self:start;background:#E6F4F1;color:#0F5048}
+.sx-derived .sxl{background:#EEF4FF;color:#1E3A8A}.sx-hypothesis .sxl{background:#fff;color:#4C1D95;border:1px dashed #6D28D9}.sx-recommendation .sxl{background:#EFEAFB;color:#3B1F8C}.sx-unavailable .sxl{background:#FFF4E5;color:#7A3E06}
+.fv{font-weight:700}
+/* bars */
+.bars{display:flex;flex-direction:column;gap:3px}
+.bar{display:grid;grid-template-columns:minmax(0,170px) minmax(0,1fr) 64px;gap:8px;align-items:center;border:1px solid transparent;background:transparent;border-radius:6px;padding:3px 4px;cursor:pointer;font:inherit;color:inherit;text-align:left}
+.sz-panel .bar{grid-template-columns:minmax(0,130px) minmax(0,1fr) 62px}
+.sz-canvas .bar,.sz-phone .bar{grid-template-columns:minmax(0,110px) minmax(0,1fr) 62px;gap:6px}
+.bar:hover{background:#F6F4FA}
+.bl{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bt{height:12px;background:#F1EFF5;border-radius:3px;overflow:hidden;display:block}
+.bf{display:block;height:100%;background:#6D28D9;border-radius:3px}
+.bv{font-size:12.5px;font-weight:700;text-align:right;white-space:nowrap}
+.bd{grid-column:3;font-size:10.5px;color:#4B4560;text-align:right;margin-top:-2px}
+.bar-off .bt{background:repeating-linear-gradient(45deg,#F1EFF5,#F1EFF5 4px,#E2DCF0 4px,#E2DCF0 8px)}
+.bar-off .bv{color:#7A3E06;font-weight:600}
+.bar-off{cursor:default}
+.bar.sel-active{border-color:#1B1530;background:#F1ECFD}
+.bar.sel-kept{border:1px dashed #6B6584}
+.bar.sel-active::after{content:"Selected · investigation context";grid-column:1/-1;font-size:10.5px;font-weight:700;color:#4C1D95;margin-top:-2px}
+/* trend */
+.trd{display:flex;flex-direction:column;gap:6px}
+.plot{position:relative;margin:6px 8px 24px;border-left:1px solid #D8D3E6;border-bottom:1px solid #D8D3E6}
+.seg{position:absolute;height:2px;background:#6D28D9;transform-origin:0 50%}
+.pt{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:2px solid #6D28D9;background:#fff;padding:0;cursor:pointer}
+.pt-hi{background:#6D28D9}
+.pt-off{border-style:dashed;border-color:#C77C1A;background:#FFF8EB}
+.pt.sel-active{width:18px;height:18px;margin:-9px 0 0 -9px;border:3px solid #1B1530;background:#F1ECFD}
+.xl{position:absolute;bottom:-20px;transform:translateX(-50%);font-size:11px;color:#4B4560}
+.tvals{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px}
+.tvals span{display:inline-flex;gap:4px}.tvals i{font-style:normal;color:#4B4560}
+/* table */
+.tblw{overflow-x:auto;max-width:100%}
+.tbl{border-collapse:collapse;width:100%;font-size:12.5px}
+.tbl th,.tbl td{text-align:left;padding:5px 7px;border-bottom:1px solid #EEECF3;vertical-align:top}
+.tbl thead th{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:#4B4560;border-bottom:2px solid #E4E1EC}
+.tbl td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.rowb{border:0;background:transparent;font:inherit;color:inherit;text-align:left;cursor:pointer;padding:0}
+.trw.sel-active{background:#F1ECFD;box-shadow:inset 3px 0 0 #1B1530}
+.trw.sel-active .rowb::after{content:" · Selected";font-weight:700;color:#4C1D95}
+.cvl{display:none}
+.ldr{display:block;font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#3B1F8C}
+.sz-phone .cmp thead,.sz-canvas .cmp thead{display:none}
+.sz-phone .cmp tr,.sz-canvas .cmp tr{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #E4E1EC;padding:4px 0}
+.sz-phone .cmp th,.sz-canvas .cmp th{grid-column:1/-1;border:0}
+.sz-phone .cmp td,.sz-canvas .cmp td{border:0;text-align:left!important;display:flex;flex-direction:column}
+.sz-phone .cvl,.sz-canvas .cvl{display:block;font-size:10px;color:#4B4560;text-transform:uppercase;letter-spacing:.04em}
+/* heatmap */
+.hm{display:flex;flex-direction:column;gap:3px}
+.hr{display:grid;grid-template-columns:52px repeat(4,minmax(0,1fr));gap:3px;align-items:center}
+.hh span{font-size:11px;color:#4B4560;text-align:center}
+.hb{font-size:11.5px;color:#3A3550}
+.hc{height:30px;border:1px solid transparent;border-radius:5px;font:600 12.5px Inter,system-ui,sans-serif;cursor:pointer}
+.h0{background:#F6F5F9;color:#3A3550}.h1{background:#EDE7FB;color:#2E1A6B}.h2{background:#D9CCF6;color:#2E1A6B}.h3{background:#A98BEA;color:#1B1530}.h4{background:#6D28D9;color:#fff}.h5{background:#4C1D95;color:#fff}
+.hx{background:repeating-linear-gradient(45deg,#FFF8EB,#FFF8EB 4px,#F6E3C4 4px,#F6E3C4 8px);color:#7A3E06;font-size:10.5px}
+.hc.sel-active{outline:3px solid #1B1530;outline-offset:-3px}
+.hc.sel-active span::after{content:" \2713"}
+/* funnel */
+.fn{display:flex;flex-direction:column;gap:2px;align-items:stretch}
+.fs{display:grid;grid-template-columns:120px minmax(0,1fr) 64px;gap:8px;align-items:center;border:1px solid transparent;background:transparent;border-radius:6px;padding:4px;cursor:pointer;font:inherit;color:inherit;text-align:left}
+.sz-phone .fs,.sz-canvas .fs{grid-template-columns:96px minmax(0,1fr) 56px;gap:6px}
+.ft{display:flex;justify-content:center;height:22px}
+.fb{display:block;height:100%;background:#6D28D9;border-radius:4px}
+.sz-phone .ft,.sz-canvas .ft{justify-content:flex-start}
+.fl{font-size:12.5px}.fvv{text-align:right;font-size:12.5px}
+.fcv{font-size:11px;color:#4B4560;padding-left:128px}
+.sz-phone .fcv,.sz-canvas .fcv{padding-left:102px}
+.fs-zero .fb{background:transparent;border:1px dashed #6B6584}
+.fs.sel-active{border-color:#1B1530;background:#F1ECFD}
+/* treemap */
+.tm{position:relative;margin:2px 0}
+.tgl{position:absolute;font-size:11px;padding:2px 4px;box-sizing:border-box;color:#1B1530;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;pointer-events:none}
+.tt{position:absolute;border:0;border-radius:3px;padding:3px 5px;box-sizing:border-box;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:1px;overflow:hidden;font:inherit}
+.tg0{background:#D9CCF6;color:#1B1530}.tg1{background:#F6E3C4;color:#1B1530}.tg2{background:#F7D0DA;color:#1B1530}
+.ttl{font-size:11px;line-height:13px}.ttv{font-size:11px;font-weight:700}
+.tt.sel-active{outline:3px solid #1B1530;outline-offset:-3px}
+.tl{display:flex;flex-direction:column;gap:2px}
+.tli{display:flex;justify-content:space-between;gap:8px;border:1px solid transparent;background:transparent;border-radius:6px;padding:4px;font:inherit;color:inherit;cursor:pointer;text-align:left}
+.tli i{display:block;font-style:normal;font-size:10.5px;color:#4B4560}
+.tli.sel-active{border-color:#1B1530;background:#F1ECFD}
+/* evidence, method */
+.evd,.meth{margin:0;display:flex;flex-direction:column;gap:2px}
+.evd div,.meth div{display:grid;grid-template-columns:100px minmax(0,1fr);gap:8px;font-size:12px;padding:3px 0;border-bottom:1px solid #F1EFF5}
+.meth div{grid-template-columns:120px minmax(0,1fr)}
+dt{font-weight:600;color:#3A3550}dd{margin:0;word-break:break-word}
+/* sizes */
+.frame{background:repeating-linear-gradient(0deg,transparent,transparent 23px,#EFECF5 24px);border:1px dashed #CFC8E0;border-radius:14px;padding:12px;box-sizing:content-box}
+.fw-workspace{width:760px}.fw-panel{width:420px}.fw-canvas{width:360px}.fw-phone{width:358px}
+.frame .gc{width:100%}
+.reps .gc{width:100%}
+/* catalogue */
+.cat{display:grid;grid-template-columns:210px minmax(0,1fr);gap:16px;align-items:start}
+.clist,.slist{display:flex;flex-direction:column;gap:3px}
+.cl,.smp{display:flex;justify-content:space-between;gap:6px;border:1px solid transparent;background:transparent;border-radius:8px;padding:6px 8px;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.cl span{font-size:11px;color:#4B4560}
+.cl-on,.smp-on{background:#fff;border-color:#CDBDF5;box-shadow:0 1px 0 #E4E1EC}
+.cmain{min-width:0}
+.mx{display:grid;grid-template-columns:repeat(2,360px);gap:14px;align-items:start}
+.mxc .gc{width:360px}
+/* validator */
+.val{display:grid;grid-template-columns:240px minmax(0,1fr);gap:16px;align-items:start}
+.smp{font-size:12px}
+.smp-v{border-left:3px solid #14532D}.smp-i{border-left:3px solid #B42318}
+.vg{display:grid;grid-template-columns:minmax(0,1fr) 450px;gap:14px;align-items:start}
+.pay{width:100%;box-sizing:border-box;height:420px;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;line-height:16px;border:1px solid #D8D3E6;border-radius:8px;padding:10px;background:#fff;color:#1B1530;resize:vertical}
+.vs{display:flex;flex-direction:column;gap:2px;border-radius:8px;padding:5px 8px;margin-bottom:4px}
+.vs-ok{background:#fff;border:1px solid #E4E1EC}
+.vs-bad{background:#FDECEC;border:1px solid #F0A3A3}
+.vsl{font-weight:700;font-size:12px}.vst{font-size:11.5px;color:#3A3550}
+.vs-ok .vst::before{content:"\2713  ";color:#14532D;font-weight:700}
+.vs-bad .vst::before{content:"\2715  ";color:#B42318;font-weight:700}
+.ve{font-size:11.5px;line-height:16px;color:#5C1410}
+.va{font-weight:700;margin:8px 0 2px;font-size:13px;padding:5px 8px;border-radius:6px;display:inline-block}
+.va-render{background:#E7F5EC;color:#14532D}.va-fallback{background:#FFF4E5;color:#7A3E06}.va-withhold{background:#F4F3F7;color:#3A3550;border:1px solid #A9A2BF}
+.insp .tbl{font-size:11px}.insp .tbl td,.insp .tbl th{white-space:nowrap;padding:4px 5px}
+.tli.sel-active::after,.fs.sel-active::after{content:"Selected";font-size:10px;font-weight:700;color:#4C1D95}
+.fs.sel-active::after{grid-column:1/-1}
+.tt.sel-active .ttl::before{content:"Selected · ";font-weight:700}
+.pt.sel-active::after{content:"Selected";position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:#4C1D95;white-space:nowrap}
+.stale,.fbk{display:flex;gap:8px;align-items:flex-start;font-size:11.5px;line-height:16px;border-radius:6px;padding:5px 8px}
+.stale{background:#EEF4FF;color:#1E3A8A;border:1px solid #A9C0F0}.fbk{background:#FFF4E5;color:#7A3E06;border:1px solid #F0B46A}
+.stl-stale{background:#1E3A8A;color:#fff}.stl-fb{background:#8A4B08;color:#fff}
+.subset{font-size:11.5px;color:#3A3550;font-weight:600}
+.subset:empty{display:none}
+.pager{display:flex;gap:6px}
+.btn[aria-disabled="true"]{opacity:.55;cursor:not-allowed}
+.calc{display:flex;flex-direction:column;gap:1px;font-size:11.5px;border-left:3px solid #CDBDF5;padding:3px 8px;margin:3px 0}
+.selnote{font-size:11.5px;font-weight:600;color:#4C1D95;background:#F1ECFD;border-radius:6px;padding:4px 8px}
+.pol{background:#F6F4FA;border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:3px}
+.ptr{margin:0;padding-left:16px;font-size:11.5px;line-height:16px;color:#3A3550}
+.choice{display:inline-block;font-size:10px;letter-spacing:.04em;padding:1px 6px;border-radius:4px;background:#6D28D9;color:#fff;margin-left:6px}
+.altc{display:inline-block;font-size:10px;letter-spacing:.04em;padding:1px 6px;border-radius:4px;background:#EFEAFB;color:#3B1F8C;margin-left:6px}
+.tier{font-style:normal;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:0 4px;border-radius:3px}
+.tier-core{background:#E6F4F1;color:#0F5048}.tier-spec{background:#FFF4E5;color:#7A3E06}
+.mv-on{background:#EFEAFB;border-color:#CDBDF5;color:#3B1F8C}
+.cont{background:#fff;border:1px solid #E4E1EC;border-radius:10px;padding:8px 10px;margin-top:10px;display:flex;flex-direction:column;gap:6px;max-width:760px}
+.contr{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;font-size:11.5px;border-top:1px solid #F1EFF5;padding-top:4px}
+.cok{color:#14532D}.cbad{color:#8F1D14;font-weight:700}
+.cok::before{content:"\2713 "}.cbad::before{content:"\2715 "}
+.modal{position:fixed;inset:0;background:rgba(27,21,48,.45);display:flex;align-items:flex-start;justify-content:center;padding-top:40px;z-index:20}
+.mbox{background:#F6F4FA;border-radius:14px;padding:14px;width:1040px;max-height:90vh;overflow:auto;display:flex;flex-direction:column;gap:10px}
+.mhd{display:flex;justify-content:space-between;align-items:center}
+.mbox .gc{width:1000px}
+.vs-skip{background:#F6F5F9;border:1px dashed #CFC8E0}
+.vs-skip .vst::before{content:"\2013  ";color:#4B4560}
+.vcls{font-size:12.5px;font-weight:600;color:#1B1530;margin:2px 0}
+.va-calc_error{background:#FDECEC;color:#8F1D14}
+
+</style>
+</helmet>
+<div class="g">
+<div class="rv"><div><h1>DX5 · Generative UI · validated declarative components</h1><p class="lead">The agent never writes UI code. It sends a <code>cenomi.presentation.v1</code> payload that names an approved component and a validated result. The renderer reads every number from that result, so text, card, table and chart cannot disagree. Charts here are HTML stand-ins for layout and states; production renders them with the DX3 ECharts primitives (DR-007).</p></div><div class="tabs" role="tablist"><sc-for list="{{tabs}}" as="t"><button role="tab" class="{{t.cls}}" aria-selected="{{t.on}}" onClick="{{t.go}}">{{t.label}}</button></sc-for></div></div><p class="sr" role="status" aria-live="polite">{{live}}</p><div class="main"><div class="work"><sc-if value="{{isLab}}"><section class="lab">
+<div class="ctl"><div class="sg" role="group" aria-label="Result"><sc-for list="{{labRes}}" as="o"><button class="{{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.go}}">{{o.label}}</button></sc-for></div><div class="sg" role="group" aria-label="Width"><sc-for list="{{labSize}}" as="o"><button class="{{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.go}}">{{o.label}}</button></sc-for></div><div class="sg" role="group" aria-label="Order"><sc-for list="{{sorts}}" as="o"><button class="{{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.go}}">{{o.label}}</button></sc-for></div><button class="btn pri" onClick="{{runCheck}}">Run invariance check</button></div>
+<div class="ctl"><span class="pl inl">User intent</span><div class="sg" role="group" aria-label="Intent"><sc-for list="{{intents}}" as="o"><button class="{{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.go}}">{{o.label}}</button></sc-for></div><span class="pl inl">Accessibility</span><div class="sg" role="group" aria-label="Accessibility preference"><sc-for list="{{a11ys}}" as="o"><button class="{{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.go}}">{{o.label}}</button></sc-for></div></div>
+<div class="labg"><div class="res"><div class="rc"><p class="pl">The result (analysis_result.v1) · authoritative</p><b>{{rTitle}}</b><p class="mid">{{rRef}}</p><pre class="json">{{resultJson}}</pre></div><div class="rc"><p class="pl">Envelope carried by every representation</p><p class="envb">{{rEnv}}</p>
+<div class="pol"><p class="pl">Representation policy (DXD-51) · primary: {{polPrimary}}</p><ol class="ptr"><sc-for list="{{polTrace}}" as="t"><li>{{t}}</li></sc-for></ol><p class="note">Answer composition at this width: {{polCompose}}</p><sc-if value="{{hasPolExcl}}"><p class="note">Not offered: {{polExcl}}</p></sc-if></div>
+<sc-if value="{{hasCheck}}"><div class="{{checkCls}}" role="status"><p class="pl">Invariance check · {{check.at}}</p><p class="ckh">{{check.summary}}</p><sc-for list="{{check.rows}}" as="c"><div class="ckr"><span class="{{c.cls}}">{{c.txt}}</span><b>{{c.rep}}</b><span class="ckd">{{c.detail}}</span></div></sc-for></div></sc-if></div></div>
+<div class="{{repsCls}}"><sc-for list="{{reps}}" as="rp"><div class="rep" data-rep="{{rp.rep}}"><p class="repl">{{rp.lbl}} <sc-if value="{{rp.choice}}"><span class="choice">{{rp.choiceTxt}}</span></sc-if><sc-if value="{{rp.alt}}"><span class="altc">{{rp.choiceTxt}}</span></sc-if></p><div class="{{rp.v.boxCls}}">
+<div class="gch"><div class="gct"><b>{{rp.v.title}}</b><span class="mid">{{rp.v.metric}}</span></div><sc-if value="{{rp.v.hasState}}"><span class="{{rp.v.stateCls}}">{{rp.v.stateLbl}}</span></sc-if></div>
+<sc-if value="{{rp.v.hasFixture}}"><p class="fix">{{rp.v.fixture}}</p></sc-if>
+<sc-if value="{{rp.v.isStale}}"><p class="stale"><span class="stl stl-stale">Stale</span>{{rp.v.staleTxt}}</p></sc-if>
+<sc-if value="{{rp.v.isFallback}}"><p class="fbk"><span class="stl stl-fb">Fallback</span>{{rp.v.fallbackTxt}}</p></sc-if>
+<sc-if value="{{rp.v.isCalcErr}}"><div class="er"><span class="erl">Calculation</span><div><b>{{rp.v.calcTitle}}</b><p>{{rp.v.calcTxt}}</p><sc-for list="{{rp.v.calcItems}}" as="ci"><p class="ve">{{ci}}</p></sc-for></div></div></sc-if>
+<sc-if value="{{rp.v.isLoading}}"><div class="ld" role="status"><span class="sk"></span><span class="sk sk2"></span><span class="sk sk3"></span><p>{{rp.v.loadTxt}}</p></div></sc-if>
+<sc-if value="{{rp.v.isError}}"><div class="er"><span class="erl">Error</span><div><b>{{rp.v.errTitle}}</b><p>{{rp.v.errTxt}}</p><button class="btn xs">Retry this step</button></div></div></sc-if>
+<sc-if value="{{rp.v.isEmpty}}"><div class="em"><span class="eml">Empty</span><div><b>{{rp.v.emptyTitle}}</b><p>{{rp.v.emptyTxt}}</p></div></div></sc-if>
+<sc-if value="{{rp.v.isUna}}"><div class="una"><b class="unv">{{rp.v.unaValue}}</b><div><span class="unl">Unavailable</span><p>{{rp.v.unaTxt}}</p><p class="una2">{{rp.v.unaAlt}}</p></div></div></sc-if>
+<sc-if value="{{rp.v.isKpi}}"><div class="{{rp.v.kpiCls}}"><span class="kl">{{rp.v.kpiLbl}}</span><b class="kv" data-fact="{{rp.v.kpiValFid}}">{{rp.v.kpiVal}}</b><sc-for list="{{rp.v.subs}}" as="sb"><p class="ks"><span class="ksl" data-rep-text>{{sb.l}}</span> <b data-fact="{{sb.af}}">{{sb.a}}</b><sc-if value="{{sb.hasB}}"><span>{{sb.sep}}</span><b data-fact="{{sb.bf}}">{{sb.b}}</b></sc-if></p></sc-for><sc-if value="{{rp.v.hasBadge}}"><span class="{{rp.v.badgeCls}}">{{rp.v.badge}}</span></sc-if></div></sc-if>
+<sc-if value="{{rp.v.isText}}"><div class="txt"><sc-for list="{{rp.v.stmts}}" as="st"><p class="{{st.cls}}"><span class="sxl">{{st.k}}</span><span class="sxt"><sc-for list="{{st.parts}}" as="pt"><sc-if value="{{pt.isF}}"><b class="fv" data-fact="{{pt.fid}}">{{pt.t}}</b></sc-if><sc-if value="{{pt.notF}}"><span data-rep-text>{{pt.t}}</span></sc-if></sc-for></span></p></sc-for></div></sc-if>
+<sc-if value="{{rp.v.isInsight}}"><div class="ins"><sc-for list="{{rp.v.stmts}}" as="st"><p class="{{st.cls}}"><span class="sxl">{{st.k}}</span><span class="sxt"><sc-for list="{{st.parts}}" as="pt"><sc-if value="{{pt.isF}}"><b class="fv" data-fact="{{pt.fid}}">{{pt.t}}</b></sc-if><sc-if value="{{pt.notF}}"><span>{{pt.t}}</span></sc-if></sc-for></span></p></sc-for></div></sc-if>
+<sc-if value="{{rp.v.isNotice}}"><div class="ntc"><span class="ntl">Partial</span><div><b>{{rp.v.ntitle}}</b><p>{{rp.v.ntxt}}</p></div></div></sc-if>
+<sc-if value="{{rp.v.isBar}}"><div class="bars" role="group" aria-label="{{rp.v.title}}" data-dx5-marks><sc-for list="{{rp.v.rows}}" as="r"><button class="{{r.cls}}" data-mark data-key="{{r.k}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}" aria-label="{{r.aria}}"><span class="bl">{{r.label}}</span><span class="bt"><span class="bf" style="width: {{r.w}}"></span></span><span class="bv" data-fact="{{r.fid}}">{{r.v}}</span><sc-if value="{{r.hasDen}}"><span class="bd">{{r.den}}</span></sc-if></button></sc-for></div><p class="subset" data-subset="{{rp.v.subsetJson}}">{{rp.v.subsetTxt}}</p><p class="cap">{{rp.v.axis}}</p><sc-if value="{{rp.v.hasTot}}"><p class="tot">{{rp.v.totLine}}</p></sc-if></sc-if>
+<sc-if value="{{rp.v.isTrend}}"><div class="trd"><p class="cap">{{rp.v.ymax}}</p><div class="plot" style="width: {{rp.v.plotW}}; height: {{rp.v.plotH}}" role="group" aria-label="{{rp.v.title}}" data-dx5-marks><sc-for list="{{rp.v.segs}}" as="sg"><span class="seg" style="{{sg.st}}"></span></sc-for><sc-for list="{{rp.v.pts}}" as="p"><button class="{{p.cls}}" data-mark data-key="{{p.k}}" style="{{p.st}}" onClick="{{p.go}}" aria-pressed="{{p.pressed}}" aria-label="{{p.aria}}"><span class="sr" data-fact="{{p.fid}}">{{p.v}}</span></button></sc-for><sc-for list="{{rp.v.xl}}" as="x"><span class="xl" style="{{x.st}}">{{x.t}}</span></sc-for></div><p class="subset" data-subset="{{rp.v.subsetJson}}">{{rp.v.subsetTxt}}</p><sc-if value="{{rp.v.showVals}}"><div class="tvals"><sc-for list="{{rp.v.vals}}" as="tv"><span><i>{{tv.m}}</i><b data-fact="{{tv.fid}}">{{tv.v}}</b></span></sc-for></div></sc-if><p class="tot">{{rp.v.totLine}}</p></div></sc-if>
+<sc-if value="{{rp.v.isTable}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{rp.v.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody data-dx5-marks><sc-for list="{{rp.v.trows}}" as="r"><tr class="{{r.cls}}"><th scope="row"><button class="rowb" data-mark data-key="{{r.k}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}">{{r.label}}<span class="sr">{{r.sr}}</span></button></th><sc-for list="{{r.cells}}" as="c"><td class="n" data-fact="{{c.fid}}">{{c.v}}</td></sc-for></tr></sc-for></tbody></table></div><p class="subset" data-subset="{{rp.v.subsetJson}}">{{rp.v.subsetTxt}}</p><sc-if value="{{rp.v.hasPager}}"><div class="pager" role="group" aria-label="Pages"><button class="btn xs" aria-disabled="{{rp.v.prevDis}}" onClick="{{rp.v.prev}}">Previous page</button><button class="btn xs" aria-disabled="{{rp.v.nextDis}}" onClick="{{rp.v.next}}">Next page</button></div></sc-if><sc-if value="{{rp.v.hasTot}}"><p class="tot">{{rp.v.totLine}}</p></sc-if></sc-if>
+<sc-if value="{{rp.v.isCompare}}"><div class="tblw"><table class="tbl cmp"><thead><tr><th scope="col">Mall</th><sc-for list="{{rp.v.ccols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody data-dx5-marks><sc-for list="{{rp.v.crows}}" as="r"><tr class="{{r.cls}}"><th scope="row"><button class="rowb" data-mark data-key="{{r.k}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}">{{r.label}}<span class="sr">{{r.sr}}</span></button></th><sc-for list="{{r.cells}}" as="c"><td class="n"><span class="cvl">{{c.col}}</span><span data-fact="{{c.fid}}">{{c.v}}</span><sc-if value="{{c.lead}}"><span class="ldr">Leader</span></sc-if></td></sc-for></tr></sc-for></tbody></table></div><p class="cap">{{rp.v.cnote}}</p></sc-if>
+<sc-if value="{{rp.v.isHeat}}"><div class="hm" role="group" aria-label="{{rp.v.title}}" data-dx5-marks><div class="hr hh"><span></span><sc-for list="{{rp.v.hcols}}" as="h"><span>{{h}}</span></sc-for></div><sc-for list="{{rp.v.hrows}}" as="r"><div class="hr"><span class="hb">{{r.b}}</span><sc-for list="{{r.cells}}" as="c"><button class="{{c.cls}}" data-mark data-key="{{c.k}}" onClick="{{c.go}}" aria-pressed="{{c.pressed}}" aria-label="{{c.aria}}"><span data-fact="{{c.fid}}">{{c.v}}</span></button></sc-for></div></sc-for></div><p class="cap">{{rp.v.hlegend}}</p></sc-if>
+<sc-if value="{{rp.v.isFunnel}}"><div class="fn" role="group" aria-label="{{rp.v.title}}" data-dx5-marks><sc-for list="{{rp.v.stages}}" as="f"><sc-if value="{{f.hasConv}}"><p class="fcv"><b data-fact="{{f.cfid}}">{{f.conv}}</b> {{f.convLbl}}</p></sc-if><button class="{{f.cls}}" data-mark data-key="{{f.k}}" onClick="{{f.go}}" aria-pressed="{{f.pressed}}" aria-label="{{f.aria}}"><span class="fl">{{f.label}}</span><span class="ft"><span class="fb" style="width: {{f.w}}"></span></span><b class="fvv" data-fact="{{f.fid}}">{{f.v}}</b></button></sc-for></div><sc-if value="{{rp.v.hasMissing}}"><p class="fixm">{{rp.v.missing}}</p></sc-if></sc-if>
+<sc-if value="{{rp.v.isTree}}"><div class="tm" style="width: {{rp.v.tw}}; height: {{rp.v.th}}" role="group" aria-label="{{rp.v.title}}" data-dx5-marks><sc-for list="{{rp.v.gl}}" as="g"><span class="tgl" style="{{g.st}}"><b>{{g.label}}</b> <span data-fact="{{g.fid}}">{{g.v}}</span></span></sc-for><sc-for list="{{rp.v.tiles}}" as="t"><button class="{{t.cls}}" data-mark data-key="{{t.k}}" style="{{t.st}}" onClick="{{t.go}}" aria-pressed="{{t.pressed}}" aria-label="{{t.aria}}"><span class="ttl">{{t.label}}</span><span class="ttv" data-fact="{{t.fid}}">{{t.v}}</span></button></sc-for></div><p class="cap">{{rp.v.tnote}}</p></sc-if>
+<sc-if value="{{rp.v.isTreeList}}"><div class="tl" role="group" aria-label="{{rp.v.title}}" data-dx5-marks><sc-for list="{{rp.v.tlist}}" as="t"><button class="{{t.cls}}" data-mark data-key="{{t.k}}" onClick="{{t.go}}" aria-pressed="{{t.pressed}}" aria-label="{{t.aria}}"><span><b>{{t.label}}</b><i>{{t.g}}</i></span><span data-fact="{{t.fid}}">{{t.v}}</span></button></sc-for></div><p class="cap">{{rp.v.tnote}}</p></sc-if>
+<sc-if value="{{rp.v.isEvid}}"><dl class="evd"><sc-for list="{{rp.v.ev}}" as="e"><div><dt>{{e.k}}</dt><dd>{{e.v}}</dd></div></sc-for></dl><div class="tblw"><table class="tbl"><thead><tr><th scope="col">Fact</th><th scope="col">Value</th><th scope="col">Meaning</th></tr></thead><tbody><sc-for list="{{rp.v.evf}}" as="f"><tr><td><code>{{f.id}}</code></td><td data-fact="{{f.fid}}">{{f.v}}</td><td>{{f.l}}</td></tr></sc-for></tbody></table></div><sc-if value="{{rp.v.hasCalcs}}"><p class="pl">Calculations (verified by the analytics layer)</p><sc-for list="{{rp.v.calcs}}" as="cc"><div class="calc"><b>{{cc.id}} {{cc.v}}</b><span>{{cc.m}}</span><span>{{cc.ops}}</span><span class="mid">{{cc.meta}}</span></div></sc-for></sc-if></sc-if>
+<sc-if value="{{rp.v.isMethod}}"><dl class="meth"><sc-for list="{{rp.v.items}}" as="it"><div><dt>{{it.k}}</dt><dd>{{it.v}}</dd></div></sc-for></dl></sc-if>
+<sc-if value="{{rp.v.isRec}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{rp.v.rcols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{rp.v.rrows}}" as="r"><tr><sc-for list="{{r.cells}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="cap">{{rp.v.rnote}}</p></sc-if>
+<sc-if value="{{rp.v.hasSelNote}}"><p class="selnote">{{rp.v.selNote}}</p></sc-if>
+<p class="{{rp.v.envCls}}" data-env><span class="envl">Evidence</span>{{rp.v.env}}</p>
+</div></div></sc-for></div></div>
+</section></sc-if><sc-if value="{{isCat}}"><section class="cat"><nav class="clist" aria-label="Components"><sc-for list="{{comps}}" as="c"><button class="{{c.cls}}" aria-pressed="{{c.on}}" onClick="{{c.go}}"><b>{{c.label}}</b><span><i class="{{c.tierCls}}">{{c.tier}}</i> {{c.n}}</span></button></sc-for></nav>
+<div class="cmain"><div class="ctl"><div class="sg" role="group" aria-label="State"><sc-for list="{{variants}}" as="o"><button class="{{o.cls}}" aria-pressed="{{o.on}}" aria-disabled="{{o.dis}}" aria-label="{{o.aria}}" onClick="{{o.go}}">{{o.label}}</button></sc-for></div><button class="btn" onClick="{{toggleMatrix}}">{{matrixLbl}}</button></div>
+<sc-if value="{{notMatrix}}"><div class="ctl"><div class="sg" role="group" aria-label="Size"><sc-for list="{{sizes}}" as="o"><button class="{{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.go}}">{{o.label}}</button></sc-for></div><sc-if value="{{hasViews}}"><span class="pl inl">View as</span><div class="sg" role="group" aria-label="View as"><sc-for list="{{views}}" as="o"><button class="{{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.go}}">{{o.label}}</button></sc-for></div></sc-if></div>
+<div class="ctl"><span class="pl inl">Move</span><sc-for list="{{moves}}" as="m"><button class="{{m.cls}}" onClick="{{m.go}}">{{m.label}}</button></sc-for><sc-for list="{{resumes}}" as="m"><button class="btn xs" onClick="{{m.go}}">{{m.label}}</button></sc-for><span class="note">{{containerLbl}}</span></div>
+<sc-if value="{{hasNa}}"><p class="note">Not applicable to {{catName}}: {{na}}.</p></sc-if>
+<sc-if value="{{catShow}}"><sc-if value="{{notExpanded}}"><div class="{{catFrame}}"><div class="{{catView.boxCls}}">
+<div class="gch"><div class="gct"><b>{{catView.title}}</b><span class="mid">{{catView.metric}}</span></div><sc-if value="{{catView.hasState}}"><span class="{{catView.stateCls}}">{{catView.stateLbl}}</span></sc-if></div>
+<sc-if value="{{catView.hasFixture}}"><p class="fix">{{catView.fixture}}</p></sc-if>
+<sc-if value="{{catView.isStale}}"><p class="stale"><span class="stl stl-stale">Stale</span>{{catView.staleTxt}}</p></sc-if>
+<sc-if value="{{catView.isFallback}}"><p class="fbk"><span class="stl stl-fb">Fallback</span>{{catView.fallbackTxt}}</p></sc-if>
+<sc-if value="{{catView.isCalcErr}}"><div class="er"><span class="erl">Calculation</span><div><b>{{catView.calcTitle}}</b><p>{{catView.calcTxt}}</p><sc-for list="{{catView.calcItems}}" as="ci"><p class="ve">{{ci}}</p></sc-for></div></div></sc-if>
+<sc-if value="{{catView.isLoading}}"><div class="ld" role="status"><span class="sk"></span><span class="sk sk2"></span><span class="sk sk3"></span><p>{{catView.loadTxt}}</p></div></sc-if>
+<sc-if value="{{catView.isError}}"><div class="er"><span class="erl">Error</span><div><b>{{catView.errTitle}}</b><p>{{catView.errTxt}}</p><button class="btn xs">Retry this step</button></div></div></sc-if>
+<sc-if value="{{catView.isEmpty}}"><div class="em"><span class="eml">Empty</span><div><b>{{catView.emptyTitle}}</b><p>{{catView.emptyTxt}}</p></div></div></sc-if>
+<sc-if value="{{catView.isUna}}"><div class="una"><b class="unv">{{catView.unaValue}}</b><div><span class="unl">Unavailable</span><p>{{catView.unaTxt}}</p><p class="una2">{{catView.unaAlt}}</p></div></div></sc-if>
+<sc-if value="{{catView.isKpi}}"><div class="{{catView.kpiCls}}"><span class="kl">{{catView.kpiLbl}}</span><b class="kv" data-fact="{{catView.kpiValFid}}">{{catView.kpiVal}}</b><sc-for list="{{catView.subs}}" as="sb"><p class="ks"><span class="ksl" data-rep-text>{{sb.l}}</span> <b data-fact="{{sb.af}}">{{sb.a}}</b><sc-if value="{{sb.hasB}}"><span>{{sb.sep}}</span><b data-fact="{{sb.bf}}">{{sb.b}}</b></sc-if></p></sc-for><sc-if value="{{catView.hasBadge}}"><span class="{{catView.badgeCls}}">{{catView.badge}}</span></sc-if></div></sc-if>
+<sc-if value="{{catView.isText}}"><div class="txt"><sc-for list="{{catView.stmts}}" as="st"><p class="{{st.cls}}"><span class="sxl">{{st.k}}</span><span class="sxt"><sc-for list="{{st.parts}}" as="pt"><sc-if value="{{pt.isF}}"><b class="fv" data-fact="{{pt.fid}}">{{pt.t}}</b></sc-if><sc-if value="{{pt.notF}}"><span data-rep-text>{{pt.t}}</span></sc-if></sc-for></span></p></sc-for></div></sc-if>
+<sc-if value="{{catView.isInsight}}"><div class="ins"><sc-for list="{{catView.stmts}}" as="st"><p class="{{st.cls}}"><span class="sxl">{{st.k}}</span><span class="sxt"><sc-for list="{{st.parts}}" as="pt"><sc-if value="{{pt.isF}}"><b class="fv" data-fact="{{pt.fid}}">{{pt.t}}</b></sc-if><sc-if value="{{pt.notF}}"><span>{{pt.t}}</span></sc-if></sc-for></span></p></sc-for></div></sc-if>
+<sc-if value="{{catView.isNotice}}"><div class="ntc"><span class="ntl">Partial</span><div><b>{{catView.ntitle}}</b><p>{{catView.ntxt}}</p></div></div></sc-if>
+<sc-if value="{{catView.isBar}}"><div class="bars" role="group" aria-label="{{catView.title}}" data-dx5-marks><sc-for list="{{catView.rows}}" as="r"><button class="{{r.cls}}" data-mark data-key="{{r.k}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}" aria-label="{{r.aria}}"><span class="bl">{{r.label}}</span><span class="bt"><span class="bf" style="width: {{r.w}}"></span></span><span class="bv" data-fact="{{r.fid}}">{{r.v}}</span><sc-if value="{{r.hasDen}}"><span class="bd">{{r.den}}</span></sc-if></button></sc-for></div><p class="subset" data-subset="{{catView.subsetJson}}">{{catView.subsetTxt}}</p><p class="cap">{{catView.axis}}</p><sc-if value="{{catView.hasTot}}"><p class="tot">{{catView.totLine}}</p></sc-if></sc-if>
+<sc-if value="{{catView.isTrend}}"><div class="trd"><p class="cap">{{catView.ymax}}</p><div class="plot" style="width: {{catView.plotW}}; height: {{catView.plotH}}" role="group" aria-label="{{catView.title}}" data-dx5-marks><sc-for list="{{catView.segs}}" as="sg"><span class="seg" style="{{sg.st}}"></span></sc-for><sc-for list="{{catView.pts}}" as="p"><button class="{{p.cls}}" data-mark data-key="{{p.k}}" style="{{p.st}}" onClick="{{p.go}}" aria-pressed="{{p.pressed}}" aria-label="{{p.aria}}"><span class="sr" data-fact="{{p.fid}}">{{p.v}}</span></button></sc-for><sc-for list="{{catView.xl}}" as="x"><span class="xl" style="{{x.st}}">{{x.t}}</span></sc-for></div><p class="subset" data-subset="{{catView.subsetJson}}">{{catView.subsetTxt}}</p><sc-if value="{{catView.showVals}}"><div class="tvals"><sc-for list="{{catView.vals}}" as="tv"><span><i>{{tv.m}}</i><b data-fact="{{tv.fid}}">{{tv.v}}</b></span></sc-for></div></sc-if><p class="tot">{{catView.totLine}}</p></div></sc-if>
+<sc-if value="{{catView.isTable}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{catView.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody data-dx5-marks><sc-for list="{{catView.trows}}" as="r"><tr class="{{r.cls}}"><th scope="row"><button class="rowb" data-mark data-key="{{r.k}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}">{{r.label}}<span class="sr">{{r.sr}}</span></button></th><sc-for list="{{r.cells}}" as="c"><td class="n" data-fact="{{c.fid}}">{{c.v}}</td></sc-for></tr></sc-for></tbody></table></div><p class="subset" data-subset="{{catView.subsetJson}}">{{catView.subsetTxt}}</p><sc-if value="{{catView.hasPager}}"><div class="pager" role="group" aria-label="Pages"><button class="btn xs" aria-disabled="{{catView.prevDis}}" onClick="{{catView.prev}}">Previous page</button><button class="btn xs" aria-disabled="{{catView.nextDis}}" onClick="{{catView.next}}">Next page</button></div></sc-if><sc-if value="{{catView.hasTot}}"><p class="tot">{{catView.totLine}}</p></sc-if></sc-if>
+<sc-if value="{{catView.isCompare}}"><div class="tblw"><table class="tbl cmp"><thead><tr><th scope="col">Mall</th><sc-for list="{{catView.ccols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody data-dx5-marks><sc-for list="{{catView.crows}}" as="r"><tr class="{{r.cls}}"><th scope="row"><button class="rowb" data-mark data-key="{{r.k}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}">{{r.label}}<span class="sr">{{r.sr}}</span></button></th><sc-for list="{{r.cells}}" as="c"><td class="n"><span class="cvl">{{c.col}}</span><span data-fact="{{c.fid}}">{{c.v}}</span><sc-if value="{{c.lead}}"><span class="ldr">Leader</span></sc-if></td></sc-for></tr></sc-for></tbody></table></div><p class="cap">{{catView.cnote}}</p></sc-if>
+<sc-if value="{{catView.isHeat}}"><div class="hm" role="group" aria-label="{{catView.title}}" data-dx5-marks><div class="hr hh"><span></span><sc-for list="{{catView.hcols}}" as="h"><span>{{h}}</span></sc-for></div><sc-for list="{{catView.hrows}}" as="r"><div class="hr"><span class="hb">{{r.b}}</span><sc-for list="{{r.cells}}" as="c"><button class="{{c.cls}}" data-mark data-key="{{c.k}}" onClick="{{c.go}}" aria-pressed="{{c.pressed}}" aria-label="{{c.aria}}"><span data-fact="{{c.fid}}">{{c.v}}</span></button></sc-for></div></sc-for></div><p class="cap">{{catView.hlegend}}</p></sc-if>
+<sc-if value="{{catView.isFunnel}}"><div class="fn" role="group" aria-label="{{catView.title}}" data-dx5-marks><sc-for list="{{catView.stages}}" as="f"><sc-if value="{{f.hasConv}}"><p class="fcv"><b data-fact="{{f.cfid}}">{{f.conv}}</b> {{f.convLbl}}</p></sc-if><button class="{{f.cls}}" data-mark data-key="{{f.k}}" onClick="{{f.go}}" aria-pressed="{{f.pressed}}" aria-label="{{f.aria}}"><span class="fl">{{f.label}}</span><span class="ft"><span class="fb" style="width: {{f.w}}"></span></span><b class="fvv" data-fact="{{f.fid}}">{{f.v}}</b></button></sc-for></div><sc-if value="{{catView.hasMissing}}"><p class="fixm">{{catView.missing}}</p></sc-if></sc-if>
+<sc-if value="{{catView.isTree}}"><div class="tm" style="width: {{catView.tw}}; height: {{catView.th}}" role="group" aria-label="{{catView.title}}" data-dx5-marks><sc-for list="{{catView.gl}}" as="g"><span class="tgl" style="{{g.st}}"><b>{{g.label}}</b> <span data-fact="{{g.fid}}">{{g.v}}</span></span></sc-for><sc-for list="{{catView.tiles}}" as="t"><button class="{{t.cls}}" data-mark data-key="{{t.k}}" style="{{t.st}}" onClick="{{t.go}}" aria-pressed="{{t.pressed}}" aria-label="{{t.aria}}"><span class="ttl">{{t.label}}</span><span class="ttv" data-fact="{{t.fid}}">{{t.v}}</span></button></sc-for></div><p class="cap">{{catView.tnote}}</p></sc-if>
+<sc-if value="{{catView.isTreeList}}"><div class="tl" role="group" aria-label="{{catView.title}}" data-dx5-marks><sc-for list="{{catView.tlist}}" as="t"><button class="{{t.cls}}" data-mark data-key="{{t.k}}" onClick="{{t.go}}" aria-pressed="{{t.pressed}}" aria-label="{{t.aria}}"><span><b>{{t.label}}</b><i>{{t.g}}</i></span><span data-fact="{{t.fid}}">{{t.v}}</span></button></sc-for></div><p class="cap">{{catView.tnote}}</p></sc-if>
+<sc-if value="{{catView.isEvid}}"><dl class="evd"><sc-for list="{{catView.ev}}" as="e"><div><dt>{{e.k}}</dt><dd>{{e.v}}</dd></div></sc-for></dl><div class="tblw"><table class="tbl"><thead><tr><th scope="col">Fact</th><th scope="col">Value</th><th scope="col">Meaning</th></tr></thead><tbody><sc-for list="{{catView.evf}}" as="f"><tr><td><code>{{f.id}}</code></td><td data-fact="{{f.fid}}">{{f.v}}</td><td>{{f.l}}</td></tr></sc-for></tbody></table></div><sc-if value="{{catView.hasCalcs}}"><p class="pl">Calculations (verified by the analytics layer)</p><sc-for list="{{catView.calcs}}" as="cc"><div class="calc"><b>{{cc.id}} {{cc.v}}</b><span>{{cc.m}}</span><span>{{cc.ops}}</span><span class="mid">{{cc.meta}}</span></div></sc-for></sc-if></sc-if>
+<sc-if value="{{catView.isMethod}}"><dl class="meth"><sc-for list="{{catView.items}}" as="it"><div><dt>{{it.k}}</dt><dd>{{it.v}}</dd></div></sc-for></dl></sc-if>
+<sc-if value="{{catView.isRec}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{catView.rcols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{catView.rrows}}" as="r"><tr><sc-for list="{{r.cells}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="cap">{{catView.rnote}}</p></sc-if>
+<sc-if value="{{catView.hasSelNote}}"><p class="selnote">{{catView.selNote}}</p></sc-if>
+<p class="{{catView.envCls}}" data-env><span class="envl">Evidence</span>{{catView.env}}</p>
+</div></div></sc-if><sc-if value="{{isExpanded}}"><p class="note">The component is open in the expanded view.</p></sc-if></sc-if>
+<sc-if value="{{catWithheld}}"><div class="wh wh-cont"><span class="erl">Withheld</span><p>{{withTxt}}</p></div></sc-if>
+<sc-if value="{{hasCont}}"><div class="cont"><p class="pl">Continuity checks (DXD-60)</p><sc-for list="{{cont}}" as="c"><div class="contr"><span class="{{c.cls}}">{{c.txt}}</span><b>{{c.label}}</b><sc-for list="{{c.checks}}" as="k"><span class="{{k.cls}}">{{k.t}} · {{k.d}}</span></sc-for></div></sc-for></div></sc-if>
+<sc-if value="{{isExpanded}}"><div class="modal" role="dialog" aria-modal="true" aria-label="Expanded component"><div class="mbox"><div class="mhd"><b>Expanded view · same component, same result</b><button class="btn xs" data-dx5-close onClick="{{closeModal}}">Close (Esc)</button></div><div class="{{catView.boxCls}}">
+<div class="gch"><div class="gct"><b>{{catView.title}}</b><span class="mid">{{catView.metric}}</span></div><sc-if value="{{catView.hasState}}"><span class="{{catView.stateCls}}">{{catView.stateLbl}}</span></sc-if></div>
+<sc-if value="{{catView.hasFixture}}"><p class="fix">{{catView.fixture}}</p></sc-if>
+<sc-if value="{{catView.isStale}}"><p class="stale"><span class="stl stl-stale">Stale</span>{{catView.staleTxt}}</p></sc-if>
+<sc-if value="{{catView.isFallback}}"><p class="fbk"><span class="stl stl-fb">Fallback</span>{{catView.fallbackTxt}}</p></sc-if>
+<sc-if value="{{catView.isCalcErr}}"><div class="er"><span class="erl">Calculation</span><div><b>{{catView.calcTitle}}</b><p>{{catView.calcTxt}}</p><sc-for list="{{catView.calcItems}}" as="ci"><p class="ve">{{ci}}</p></sc-for></div></div></sc-if>
+<sc-if value="{{catView.isLoading}}"><div class="ld" role="status"><span class="sk"></span><span class="sk sk2"></span><span class="sk sk3"></span><p>{{catView.loadTxt}}</p></div></sc-if>
+<sc-if value="{{catView.isError}}"><div class="er"><span class="erl">Error</span><div><b>{{catView.errTitle}}</b><p>{{catView.errTxt}}</p><button class="btn xs">Retry this step</button></div></div></sc-if>
+<sc-if value="{{catView.isEmpty}}"><div class="em"><span class="eml">Empty</span><div><b>{{catView.emptyTitle}}</b><p>{{catView.emptyTxt}}</p></div></div></sc-if>
+<sc-if value="{{catView.isUna}}"><div class="una"><b class="unv">{{catView.unaValue}}</b><div><span class="unl">Unavailable</span><p>{{catView.unaTxt}}</p><p class="una2">{{catView.unaAlt}}</p></div></div></sc-if>
+<sc-if value="{{catView.isKpi}}"><div class="{{catView.kpiCls}}"><span class="kl">{{catView.kpiLbl}}</span><b class="kv" data-fact="{{catView.kpiValFid}}">{{catView.kpiVal}}</b><sc-for list="{{catView.subs}}" as="sb"><p class="ks"><span class="ksl" data-rep-text>{{sb.l}}</span> <b data-fact="{{sb.af}}">{{sb.a}}</b><sc-if value="{{sb.hasB}}"><span>{{sb.sep}}</span><b data-fact="{{sb.bf}}">{{sb.b}}</b></sc-if></p></sc-for><sc-if value="{{catView.hasBadge}}"><span class="{{catView.badgeCls}}">{{catView.badge}}</span></sc-if></div></sc-if>
+<sc-if value="{{catView.isText}}"><div class="txt"><sc-for list="{{catView.stmts}}" as="st"><p class="{{st.cls}}"><span class="sxl">{{st.k}}</span><span class="sxt"><sc-for list="{{st.parts}}" as="pt"><sc-if value="{{pt.isF}}"><b class="fv" data-fact="{{pt.fid}}">{{pt.t}}</b></sc-if><sc-if value="{{pt.notF}}"><span data-rep-text>{{pt.t}}</span></sc-if></sc-for></span></p></sc-for></div></sc-if>
+<sc-if value="{{catView.isInsight}}"><div class="ins"><sc-for list="{{catView.stmts}}" as="st"><p class="{{st.cls}}"><span class="sxl">{{st.k}}</span><span class="sxt"><sc-for list="{{st.parts}}" as="pt"><sc-if value="{{pt.isF}}"><b class="fv" data-fact="{{pt.fid}}">{{pt.t}}</b></sc-if><sc-if value="{{pt.notF}}"><span>{{pt.t}}</span></sc-if></sc-for></span></p></sc-for></div></sc-if>
+<sc-if value="{{catView.isNotice}}"><div class="ntc"><span class="ntl">Partial</span><div><b>{{catView.ntitle}}</b><p>{{catView.ntxt}}</p></div></div></sc-if>
+<sc-if value="{{catView.isBar}}"><div class="bars" role="group" aria-label="{{catView.title}}" data-dx5-marks><sc-for list="{{catView.rows}}" as="r"><button class="{{r.cls}}" data-mark data-key="{{r.k}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}" aria-label="{{r.aria}}"><span class="bl">{{r.label}}</span><span class="bt"><span class="bf" style="width: {{r.w}}"></span></span><span class="bv" data-fact="{{r.fid}}">{{r.v}}</span><sc-if value="{{r.hasDen}}"><span class="bd">{{r.den}}</span></sc-if></button></sc-for></div><p class="subset" data-subset="{{catView.subsetJson}}">{{catView.subsetTxt}}</p><p class="cap">{{catView.axis}}</p><sc-if value="{{catView.hasTot}}"><p class="tot">{{catView.totLine}}</p></sc-if></sc-if>
+<sc-if value="{{catView.isTrend}}"><div class="trd"><p class="cap">{{catView.ymax}}</p><div class="plot" style="width: {{catView.plotW}}; height: {{catView.plotH}}" role="group" aria-label="{{catView.title}}" data-dx5-marks><sc-for list="{{catView.segs}}" as="sg"><span class="seg" style="{{sg.st}}"></span></sc-for><sc-for list="{{catView.pts}}" as="p"><button class="{{p.cls}}" data-mark data-key="{{p.k}}" style="{{p.st}}" onClick="{{p.go}}" aria-pressed="{{p.pressed}}" aria-label="{{p.aria}}"><span class="sr" data-fact="{{p.fid}}">{{p.v}}</span></button></sc-for><sc-for list="{{catView.xl}}" as="x"><span class="xl" style="{{x.st}}">{{x.t}}</span></sc-for></div><p class="subset" data-subset="{{catView.subsetJson}}">{{catView.subsetTxt}}</p><sc-if value="{{catView.showVals}}"><div class="tvals"><sc-for list="{{catView.vals}}" as="tv"><span><i>{{tv.m}}</i><b data-fact="{{tv.fid}}">{{tv.v}}</b></span></sc-for></div></sc-if><p class="tot">{{catView.totLine}}</p></div></sc-if>
+<sc-if value="{{catView.isTable}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{catView.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody data-dx5-marks><sc-for list="{{catView.trows}}" as="r"><tr class="{{r.cls}}"><th scope="row"><button class="rowb" data-mark data-key="{{r.k}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}">{{r.label}}<span class="sr">{{r.sr}}</span></button></th><sc-for list="{{r.cells}}" as="c"><td class="n" data-fact="{{c.fid}}">{{c.v}}</td></sc-for></tr></sc-for></tbody></table></div><p class="subset" data-subset="{{catView.subsetJson}}">{{catView.subsetTxt}}</p><sc-if value="{{catView.hasPager}}"><div class="pager" role="group" aria-label="Pages"><button class="btn xs" aria-disabled="{{catView.prevDis}}" onClick="{{catView.prev}}">Previous page</button><button class="btn xs" aria-disabled="{{catView.nextDis}}" onClick="{{catView.next}}">Next page</button></div></sc-if><sc-if value="{{catView.hasTot}}"><p class="tot">{{catView.totLine}}</p></sc-if></sc-if>
+<sc-if value="{{catView.isCompare}}"><div class="tblw"><table class="tbl cmp"><thead><tr><th scope="col">Mall</th><sc-for list="{{catView.ccols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody data-dx5-marks><sc-for list="{{catView.crows}}" as="r"><tr class="{{r.cls}}"><th scope="row"><button class="rowb" data-mark data-key="{{r.k}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}">{{r.label}}<span class="sr">{{r.sr}}</span></button></th><sc-for list="{{r.cells}}" as="c"><td class="n"><span class="cvl">{{c.col}}</span><span data-fact="{{c.fid}}">{{c.v}}</span><sc-if value="{{c.lead}}"><span class="ldr">Leader</span></sc-if></td></sc-for></tr></sc-for></tbody></table></div><p class="cap">{{catView.cnote}}</p></sc-if>
+<sc-if value="{{catView.isHeat}}"><div class="hm" role="group" aria-label="{{catView.title}}" data-dx5-marks><div class="hr hh"><span></span><sc-for list="{{catView.hcols}}" as="h"><span>{{h}}</span></sc-for></div><sc-for list="{{catView.hrows}}" as="r"><div class="hr"><span class="hb">{{r.b}}</span><sc-for list="{{r.cells}}" as="c"><button class="{{c.cls}}" data-mark data-key="{{c.k}}" onClick="{{c.go}}" aria-pressed="{{c.pressed}}" aria-label="{{c.aria}}"><span data-fact="{{c.fid}}">{{c.v}}</span></button></sc-for></div></sc-for></div><p class="cap">{{catView.hlegend}}</p></sc-if>
+<sc-if value="{{catView.isFunnel}}"><div class="fn" role="group" aria-label="{{catView.title}}" data-dx5-marks><sc-for list="{{catView.stages}}" as="f"><sc-if value="{{f.hasConv}}"><p class="fcv"><b data-fact="{{f.cfid}}">{{f.conv}}</b> {{f.convLbl}}</p></sc-if><button class="{{f.cls}}" data-mark data-key="{{f.k}}" onClick="{{f.go}}" aria-pressed="{{f.pressed}}" aria-label="{{f.aria}}"><span class="fl">{{f.label}}</span><span class="ft"><span class="fb" style="width: {{f.w}}"></span></span><b class="fvv" data-fact="{{f.fid}}">{{f.v}}</b></button></sc-for></div><sc-if value="{{catView.hasMissing}}"><p class="fixm">{{catView.missing}}</p></sc-if></sc-if>
+<sc-if value="{{catView.isTree}}"><div class="tm" style="width: {{catView.tw}}; height: {{catView.th}}" role="group" aria-label="{{catView.title}}" data-dx5-marks><sc-for list="{{catView.gl}}" as="g"><span class="tgl" style="{{g.st}}"><b>{{g.label}}</b> <span data-fact="{{g.fid}}">{{g.v}}</span></span></sc-for><sc-for list="{{catView.tiles}}" as="t"><button class="{{t.cls}}" data-mark data-key="{{t.k}}" style="{{t.st}}" onClick="{{t.go}}" aria-pressed="{{t.pressed}}" aria-label="{{t.aria}}"><span class="ttl">{{t.label}}</span><span class="ttv" data-fact="{{t.fid}}">{{t.v}}</span></button></sc-for></div><p class="cap">{{catView.tnote}}</p></sc-if>
+<sc-if value="{{catView.isTreeList}}"><div class="tl" role="group" aria-label="{{catView.title}}" data-dx5-marks><sc-for list="{{catView.tlist}}" as="t"><button class="{{t.cls}}" data-mark data-key="{{t.k}}" onClick="{{t.go}}" aria-pressed="{{t.pressed}}" aria-label="{{t.aria}}"><span><b>{{t.label}}</b><i>{{t.g}}</i></span><span data-fact="{{t.fid}}">{{t.v}}</span></button></sc-for></div><p class="cap">{{catView.tnote}}</p></sc-if>
+<sc-if value="{{catView.isEvid}}"><dl class="evd"><sc-for list="{{catView.ev}}" as="e"><div><dt>{{e.k}}</dt><dd>{{e.v}}</dd></div></sc-for></dl><div class="tblw"><table class="tbl"><thead><tr><th scope="col">Fact</th><th scope="col">Value</th><th scope="col">Meaning</th></tr></thead><tbody><sc-for list="{{catView.evf}}" as="f"><tr><td><code>{{f.id}}</code></td><td data-fact="{{f.fid}}">{{f.v}}</td><td>{{f.l}}</td></tr></sc-for></tbody></table></div><sc-if value="{{catView.hasCalcs}}"><p class="pl">Calculations (verified by the analytics layer)</p><sc-for list="{{catView.calcs}}" as="cc"><div class="calc"><b>{{cc.id}} {{cc.v}}</b><span>{{cc.m}}</span><span>{{cc.ops}}</span><span class="mid">{{cc.meta}}</span></div></sc-for></sc-if></sc-if>
+<sc-if value="{{catView.isMethod}}"><dl class="meth"><sc-for list="{{catView.items}}" as="it"><div><dt>{{it.k}}</dt><dd>{{it.v}}</dd></div></sc-for></dl></sc-if>
+<sc-if value="{{catView.isRec}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{catView.rcols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{catView.rrows}}" as="r"><tr><sc-for list="{{r.cells}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="cap">{{catView.rnote}}</p></sc-if>
+<sc-if value="{{catView.hasSelNote}}"><p class="selnote">{{catView.selNote}}</p></sc-if>
+<p class="{{catView.envCls}}" data-env><span class="envl">Evidence</span>{{catView.env}}</p>
+</div></div></div></sc-if></sc-if>
+<sc-if value="{{isMatrix}}"><div class="mx"><sc-for list="{{matrix}}" as="mxi"><div class="mxc"><p class="repl">{{mxi.lbl}}</p><div class="{{mxi.v.boxCls}}">
+<div class="gch"><div class="gct"><b>{{mxi.v.title}}</b><span class="mid">{{mxi.v.metric}}</span></div><sc-if value="{{mxi.v.hasState}}"><span class="{{mxi.v.stateCls}}">{{mxi.v.stateLbl}}</span></sc-if></div>
+<sc-if value="{{mxi.v.hasFixture}}"><p class="fix">{{mxi.v.fixture}}</p></sc-if>
+<sc-if value="{{mxi.v.isStale}}"><p class="stale"><span class="stl stl-stale">Stale</span>{{mxi.v.staleTxt}}</p></sc-if>
+<sc-if value="{{mxi.v.isFallback}}"><p class="fbk"><span class="stl stl-fb">Fallback</span>{{mxi.v.fallbackTxt}}</p></sc-if>
+<sc-if value="{{mxi.v.isCalcErr}}"><div class="er"><span class="erl">Calculation</span><div><b>{{mxi.v.calcTitle}}</b><p>{{mxi.v.calcTxt}}</p><sc-for list="{{mxi.v.calcItems}}" as="ci"><p class="ve">{{ci}}</p></sc-for></div></div></sc-if>
+<sc-if value="{{mxi.v.isLoading}}"><div class="ld" role="status"><span class="sk"></span><span class="sk sk2"></span><span class="sk sk3"></span><p>{{mxi.v.loadTxt}}</p></div></sc-if>
+<sc-if value="{{mxi.v.isError}}"><div class="er"><span class="erl">Error</span><div><b>{{mxi.v.errTitle}}</b><p>{{mxi.v.errTxt}}</p><button class="btn xs">Retry this step</button></div></div></sc-if>
+<sc-if value="{{mxi.v.isEmpty}}"><div class="em"><span class="eml">Empty</span><div><b>{{mxi.v.emptyTitle}}</b><p>{{mxi.v.emptyTxt}}</p></div></div></sc-if>
+<sc-if value="{{mxi.v.isUna}}"><div class="una"><b class="unv">{{mxi.v.unaValue}}</b><div><span class="unl">Unavailable</span><p>{{mxi.v.unaTxt}}</p><p class="una2">{{mxi.v.unaAlt}}</p></div></div></sc-if>
+<sc-if value="{{mxi.v.isKpi}}"><div class="{{mxi.v.kpiCls}}"><span class="kl">{{mxi.v.kpiLbl}}</span><b class="kv" data-fact="{{mxi.v.kpiValFid}}">{{mxi.v.kpiVal}}</b><sc-for list="{{mxi.v.subs}}" as="sb"><p class="ks"><span class="ksl" data-rep-text>{{sb.l}}</span> <b data-fact="{{sb.af}}">{{sb.a}}</b><sc-if value="{{sb.hasB}}"><span>{{sb.sep}}</span><b data-fact="{{sb.bf}}">{{sb.b}}</b></sc-if></p></sc-for><sc-if value="{{mxi.v.hasBadge}}"><span class="{{mxi.v.badgeCls}}">{{mxi.v.badge}}</span></sc-if></div></sc-if>
+<sc-if value="{{mxi.v.isText}}"><div class="txt"><sc-for list="{{mxi.v.stmts}}" as="st"><p class="{{st.cls}}"><span class="sxl">{{st.k}}</span><span class="sxt"><sc-for list="{{st.parts}}" as="pt"><sc-if value="{{pt.isF}}"><b class="fv" data-fact="{{pt.fid}}">{{pt.t}}</b></sc-if><sc-if value="{{pt.notF}}"><span data-rep-text>{{pt.t}}</span></sc-if></sc-for></span></p></sc-for></div></sc-if>
+<sc-if value="{{mxi.v.isInsight}}"><div class="ins"><sc-for list="{{mxi.v.stmts}}" as="st"><p class="{{st.cls}}"><span class="sxl">{{st.k}}</span><span class="sxt"><sc-for list="{{st.parts}}" as="pt"><sc-if value="{{pt.isF}}"><b class="fv" data-fact="{{pt.fid}}">{{pt.t}}</b></sc-if><sc-if value="{{pt.notF}}"><span>{{pt.t}}</span></sc-if></sc-for></span></p></sc-for></div></sc-if>
+<sc-if value="{{mxi.v.isNotice}}"><div class="ntc"><span class="ntl">Partial</span><div><b>{{mxi.v.ntitle}}</b><p>{{mxi.v.ntxt}}</p></div></div></sc-if>
+<sc-if value="{{mxi.v.isBar}}"><div class="bars" role="group" aria-label="{{mxi.v.title}}" data-dx5-marks><sc-for list="{{mxi.v.rows}}" as="r"><button class="{{r.cls}}" data-mark data-key="{{r.k}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}" aria-label="{{r.aria}}"><span class="bl">{{r.label}}</span><span class="bt"><span class="bf" style="width: {{r.w}}"></span></span><span class="bv" data-fact="{{r.fid}}">{{r.v}}</span><sc-if value="{{r.hasDen}}"><span class="bd">{{r.den}}</span></sc-if></button></sc-for></div><p class="subset" data-subset="{{mxi.v.subsetJson}}">{{mxi.v.subsetTxt}}</p><p class="cap">{{mxi.v.axis}}</p><sc-if value="{{mxi.v.hasTot}}"><p class="tot">{{mxi.v.totLine}}</p></sc-if></sc-if>
+<sc-if value="{{mxi.v.isTrend}}"><div class="trd"><p class="cap">{{mxi.v.ymax}}</p><div class="plot" style="width: {{mxi.v.plotW}}; height: {{mxi.v.plotH}}" role="group" aria-label="{{mxi.v.title}}" data-dx5-marks><sc-for list="{{mxi.v.segs}}" as="sg"><span class="seg" style="{{sg.st}}"></span></sc-for><sc-for list="{{mxi.v.pts}}" as="p"><button class="{{p.cls}}" data-mark data-key="{{p.k}}" style="{{p.st}}" onClick="{{p.go}}" aria-pressed="{{p.pressed}}" aria-label="{{p.aria}}"><span class="sr" data-fact="{{p.fid}}">{{p.v}}</span></button></sc-for><sc-for list="{{mxi.v.xl}}" as="x"><span class="xl" style="{{x.st}}">{{x.t}}</span></sc-for></div><p class="subset" data-subset="{{mxi.v.subsetJson}}">{{mxi.v.subsetTxt}}</p><sc-if value="{{mxi.v.showVals}}"><div class="tvals"><sc-for list="{{mxi.v.vals}}" as="tv"><span><i>{{tv.m}}</i><b data-fact="{{tv.fid}}">{{tv.v}}</b></span></sc-for></div></sc-if><p class="tot">{{mxi.v.totLine}}</p></div></sc-if>
+<sc-if value="{{mxi.v.isTable}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{mxi.v.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody data-dx5-marks><sc-for list="{{mxi.v.trows}}" as="r"><tr class="{{r.cls}}"><th scope="row"><button class="rowb" data-mark data-key="{{r.k}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}">{{r.label}}<span class="sr">{{r.sr}}</span></button></th><sc-for list="{{r.cells}}" as="c"><td class="n" data-fact="{{c.fid}}">{{c.v}}</td></sc-for></tr></sc-for></tbody></table></div><p class="subset" data-subset="{{mxi.v.subsetJson}}">{{mxi.v.subsetTxt}}</p><sc-if value="{{mxi.v.hasPager}}"><div class="pager" role="group" aria-label="Pages"><button class="btn xs" aria-disabled="{{mxi.v.prevDis}}" onClick="{{mxi.v.prev}}">Previous page</button><button class="btn xs" aria-disabled="{{mxi.v.nextDis}}" onClick="{{mxi.v.next}}">Next page</button></div></sc-if><sc-if value="{{mxi.v.hasTot}}"><p class="tot">{{mxi.v.totLine}}</p></sc-if></sc-if>
+<sc-if value="{{mxi.v.isCompare}}"><div class="tblw"><table class="tbl cmp"><thead><tr><th scope="col">Mall</th><sc-for list="{{mxi.v.ccols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody data-dx5-marks><sc-for list="{{mxi.v.crows}}" as="r"><tr class="{{r.cls}}"><th scope="row"><button class="rowb" data-mark data-key="{{r.k}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}">{{r.label}}<span class="sr">{{r.sr}}</span></button></th><sc-for list="{{r.cells}}" as="c"><td class="n"><span class="cvl">{{c.col}}</span><span data-fact="{{c.fid}}">{{c.v}}</span><sc-if value="{{c.lead}}"><span class="ldr">Leader</span></sc-if></td></sc-for></tr></sc-for></tbody></table></div><p class="cap">{{mxi.v.cnote}}</p></sc-if>
+<sc-if value="{{mxi.v.isHeat}}"><div class="hm" role="group" aria-label="{{mxi.v.title}}" data-dx5-marks><div class="hr hh"><span></span><sc-for list="{{mxi.v.hcols}}" as="h"><span>{{h}}</span></sc-for></div><sc-for list="{{mxi.v.hrows}}" as="r"><div class="hr"><span class="hb">{{r.b}}</span><sc-for list="{{r.cells}}" as="c"><button class="{{c.cls}}" data-mark data-key="{{c.k}}" onClick="{{c.go}}" aria-pressed="{{c.pressed}}" aria-label="{{c.aria}}"><span data-fact="{{c.fid}}">{{c.v}}</span></button></sc-for></div></sc-for></div><p class="cap">{{mxi.v.hlegend}}</p></sc-if>
+<sc-if value="{{mxi.v.isFunnel}}"><div class="fn" role="group" aria-label="{{mxi.v.title}}" data-dx5-marks><sc-for list="{{mxi.v.stages}}" as="f"><sc-if value="{{f.hasConv}}"><p class="fcv"><b data-fact="{{f.cfid}}">{{f.conv}}</b> {{f.convLbl}}</p></sc-if><button class="{{f.cls}}" data-mark data-key="{{f.k}}" onClick="{{f.go}}" aria-pressed="{{f.pressed}}" aria-label="{{f.aria}}"><span class="fl">{{f.label}}</span><span class="ft"><span class="fb" style="width: {{f.w}}"></span></span><b class="fvv" data-fact="{{f.fid}}">{{f.v}}</b></button></sc-for></div><sc-if value="{{mxi.v.hasMissing}}"><p class="fixm">{{mxi.v.missing}}</p></sc-if></sc-if>
+<sc-if value="{{mxi.v.isTree}}"><div class="tm" style="width: {{mxi.v.tw}}; height: {{mxi.v.th}}" role="group" aria-label="{{mxi.v.title}}" data-dx5-marks><sc-for list="{{mxi.v.gl}}" as="g"><span class="tgl" style="{{g.st}}"><b>{{g.label}}</b> <span data-fact="{{g.fid}}">{{g.v}}</span></span></sc-for><sc-for list="{{mxi.v.tiles}}" as="t"><button class="{{t.cls}}" data-mark data-key="{{t.k}}" style="{{t.st}}" onClick="{{t.go}}" aria-pressed="{{t.pressed}}" aria-label="{{t.aria}}"><span class="ttl">{{t.label}}</span><span class="ttv" data-fact="{{t.fid}}">{{t.v}}</span></button></sc-for></div><p class="cap">{{mxi.v.tnote}}</p></sc-if>
+<sc-if value="{{mxi.v.isTreeList}}"><div class="tl" role="group" aria-label="{{mxi.v.title}}" data-dx5-marks><sc-for list="{{mxi.v.tlist}}" as="t"><button class="{{t.cls}}" data-mark data-key="{{t.k}}" onClick="{{t.go}}" aria-pressed="{{t.pressed}}" aria-label="{{t.aria}}"><span><b>{{t.label}}</b><i>{{t.g}}</i></span><span data-fact="{{t.fid}}">{{t.v}}</span></button></sc-for></div><p class="cap">{{mxi.v.tnote}}</p></sc-if>
+<sc-if value="{{mxi.v.isEvid}}"><dl class="evd"><sc-for list="{{mxi.v.ev}}" as="e"><div><dt>{{e.k}}</dt><dd>{{e.v}}</dd></div></sc-for></dl><div class="tblw"><table class="tbl"><thead><tr><th scope="col">Fact</th><th scope="col">Value</th><th scope="col">Meaning</th></tr></thead><tbody><sc-for list="{{mxi.v.evf}}" as="f"><tr><td><code>{{f.id}}</code></td><td data-fact="{{f.fid}}">{{f.v}}</td><td>{{f.l}}</td></tr></sc-for></tbody></table></div><sc-if value="{{mxi.v.hasCalcs}}"><p class="pl">Calculations (verified by the analytics layer)</p><sc-for list="{{mxi.v.calcs}}" as="cc"><div class="calc"><b>{{cc.id}} {{cc.v}}</b><span>{{cc.m}}</span><span>{{cc.ops}}</span><span class="mid">{{cc.meta}}</span></div></sc-for></sc-if></sc-if>
+<sc-if value="{{mxi.v.isMethod}}"><dl class="meth"><sc-for list="{{mxi.v.items}}" as="it"><div><dt>{{it.k}}</dt><dd>{{it.v}}</dd></div></sc-for></dl></sc-if>
+<sc-if value="{{mxi.v.isRec}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{mxi.v.rcols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{mxi.v.rrows}}" as="r"><tr><sc-for list="{{r.cells}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="cap">{{mxi.v.rnote}}</p></sc-if>
+<sc-if value="{{mxi.v.hasSelNote}}"><p class="selnote">{{mxi.v.selNote}}</p></sc-if>
+<p class="{{mxi.v.envCls}}" data-env><span class="envl">Evidence</span>{{mxi.v.env}}</p>
+</div></div></sc-for></div></sc-if>
+</div></section></sc-if><sc-if value="{{isVal}}"><section class="val"><nav class="slist" aria-label="Sample payloads"><sc-for list="{{sampleBtns}}" as="b"><button class="{{b.cls}}" aria-pressed="{{b.on}}" onClick="{{b.go}}">{{b.label}}</button></sc-for></nav>
+<div class="vmain"><div class="ctl"><div class="sg" role="group" aria-label="Viewer"><sc-for list="{{viewers}}" as="o"><button class="{{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.go}}">{{o.label}}</button></sc-for></div><button class="btn pri" onClick="{{validate}}">Validate payload</button><span class="note">{{vGrant}} · {{vExpect}}</span></div>
+<div class="vg"><div><p class="pl">cenomi.presentation.v1 payload · editable</p><textarea class="pay" data-dx5-payload aria-label="Presentation payload JSON" spellcheck="false">{{vText}}</textarea></div>
+<div><p class="pl">Result checks · analytical</p><sc-for list="{{vResSteps}}" as="vs"><div class="{{vs.cls}}"><span class="vsl">{{vs.lbl}}</span><span class="vst">{{vs.st}}</span><sc-for list="{{vs.errs}}" as="e"><p class="ve"><code>{{e.code}}</code> <code>{{e.path}}</code> {{e.msg}}</p></sc-for></div></sc-for>
+<p class="pl">Presentation checks</p><sc-for list="{{vPresSteps}}" as="vs"><div class="{{vs.cls}}"><span class="vsl">{{vs.lbl}}</span><span class="vst">{{vs.st}}</span><sc-for list="{{vs.errs}}" as="e"><p class="ve"><code>{{e.code}}</code> <code>{{e.path}}</code> {{e.msg}}</p></sc-for></div></sc-for>
+<p class="{{vActCls}}" role="status">Outcome: {{vAction}}</p><p class="vcls">{{vClass}}</p><sc-if value="{{hasVNotes}}"><sc-for list="{{vNotes}}" as="nn"><p class="note">{{nn.t}}</p></sc-for></sc-if><p class="note">{{vNote}}</p>
+<sc-if value="{{hasV}}"><div class="frame fw-panel"><div class="{{vView.boxCls}}">
+<div class="gch"><div class="gct"><b>{{vView.title}}</b><span class="mid">{{vView.metric}}</span></div><sc-if value="{{vView.hasState}}"><span class="{{vView.stateCls}}">{{vView.stateLbl}}</span></sc-if></div>
+<sc-if value="{{vView.hasFixture}}"><p class="fix">{{vView.fixture}}</p></sc-if>
+<sc-if value="{{vView.isStale}}"><p class="stale"><span class="stl stl-stale">Stale</span>{{vView.staleTxt}}</p></sc-if>
+<sc-if value="{{vView.isFallback}}"><p class="fbk"><span class="stl stl-fb">Fallback</span>{{vView.fallbackTxt}}</p></sc-if>
+<sc-if value="{{vView.isCalcErr}}"><div class="er"><span class="erl">Calculation</span><div><b>{{vView.calcTitle}}</b><p>{{vView.calcTxt}}</p><sc-for list="{{vView.calcItems}}" as="ci"><p class="ve">{{ci}}</p></sc-for></div></div></sc-if>
+<sc-if value="{{vView.isLoading}}"><div class="ld" role="status"><span class="sk"></span><span class="sk sk2"></span><span class="sk sk3"></span><p>{{vView.loadTxt}}</p></div></sc-if>
+<sc-if value="{{vView.isError}}"><div class="er"><span class="erl">Error</span><div><b>{{vView.errTitle}}</b><p>{{vView.errTxt}}</p><button class="btn xs">Retry this step</button></div></div></sc-if>
+<sc-if value="{{vView.isEmpty}}"><div class="em"><span class="eml">Empty</span><div><b>{{vView.emptyTitle}}</b><p>{{vView.emptyTxt}}</p></div></div></sc-if>
+<sc-if value="{{vView.isUna}}"><div class="una"><b class="unv">{{vView.unaValue}}</b><div><span class="unl">Unavailable</span><p>{{vView.unaTxt}}</p><p class="una2">{{vView.unaAlt}}</p></div></div></sc-if>
+<sc-if value="{{vView.isKpi}}"><div class="{{vView.kpiCls}}"><span class="kl">{{vView.kpiLbl}}</span><b class="kv" data-fact="{{vView.kpiValFid}}">{{vView.kpiVal}}</b><sc-for list="{{vView.subs}}" as="sb"><p class="ks"><span class="ksl" data-rep-text>{{sb.l}}</span> <b data-fact="{{sb.af}}">{{sb.a}}</b><sc-if value="{{sb.hasB}}"><span>{{sb.sep}}</span><b data-fact="{{sb.bf}}">{{sb.b}}</b></sc-if></p></sc-for><sc-if value="{{vView.hasBadge}}"><span class="{{vView.badgeCls}}">{{vView.badge}}</span></sc-if></div></sc-if>
+<sc-if value="{{vView.isText}}"><div class="txt"><sc-for list="{{vView.stmts}}" as="st"><p class="{{st.cls}}"><span class="sxl">{{st.k}}</span><span class="sxt"><sc-for list="{{st.parts}}" as="pt"><sc-if value="{{pt.isF}}"><b class="fv" data-fact="{{pt.fid}}">{{pt.t}}</b></sc-if><sc-if value="{{pt.notF}}"><span data-rep-text>{{pt.t}}</span></sc-if></sc-for></span></p></sc-for></div></sc-if>
+<sc-if value="{{vView.isInsight}}"><div class="ins"><sc-for list="{{vView.stmts}}" as="st"><p class="{{st.cls}}"><span class="sxl">{{st.k}}</span><span class="sxt"><sc-for list="{{st.parts}}" as="pt"><sc-if value="{{pt.isF}}"><b class="fv" data-fact="{{pt.fid}}">{{pt.t}}</b></sc-if><sc-if value="{{pt.notF}}"><span>{{pt.t}}</span></sc-if></sc-for></span></p></sc-for></div></sc-if>
+<sc-if value="{{vView.isNotice}}"><div class="ntc"><span class="ntl">Partial</span><div><b>{{vView.ntitle}}</b><p>{{vView.ntxt}}</p></div></div></sc-if>
+<sc-if value="{{vView.isBar}}"><div class="bars" role="group" aria-label="{{vView.title}}" data-dx5-marks><sc-for list="{{vView.rows}}" as="r"><button class="{{r.cls}}" data-mark data-key="{{r.k}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}" aria-label="{{r.aria}}"><span class="bl">{{r.label}}</span><span class="bt"><span class="bf" style="width: {{r.w}}"></span></span><span class="bv" data-fact="{{r.fid}}">{{r.v}}</span><sc-if value="{{r.hasDen}}"><span class="bd">{{r.den}}</span></sc-if></button></sc-for></div><p class="subset" data-subset="{{vView.subsetJson}}">{{vView.subsetTxt}}</p><p class="cap">{{vView.axis}}</p><sc-if value="{{vView.hasTot}}"><p class="tot">{{vView.totLine}}</p></sc-if></sc-if>
+<sc-if value="{{vView.isTrend}}"><div class="trd"><p class="cap">{{vView.ymax}}</p><div class="plot" style="width: {{vView.plotW}}; height: {{vView.plotH}}" role="group" aria-label="{{vView.title}}" data-dx5-marks><sc-for list="{{vView.segs}}" as="sg"><span class="seg" style="{{sg.st}}"></span></sc-for><sc-for list="{{vView.pts}}" as="p"><button class="{{p.cls}}" data-mark data-key="{{p.k}}" style="{{p.st}}" onClick="{{p.go}}" aria-pressed="{{p.pressed}}" aria-label="{{p.aria}}"><span class="sr" data-fact="{{p.fid}}">{{p.v}}</span></button></sc-for><sc-for list="{{vView.xl}}" as="x"><span class="xl" style="{{x.st}}">{{x.t}}</span></sc-for></div><p class="subset" data-subset="{{vView.subsetJson}}">{{vView.subsetTxt}}</p><sc-if value="{{vView.showVals}}"><div class="tvals"><sc-for list="{{vView.vals}}" as="tv"><span><i>{{tv.m}}</i><b data-fact="{{tv.fid}}">{{tv.v}}</b></span></sc-for></div></sc-if><p class="tot">{{vView.totLine}}</p></div></sc-if>
+<sc-if value="{{vView.isTable}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{vView.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody data-dx5-marks><sc-for list="{{vView.trows}}" as="r"><tr class="{{r.cls}}"><th scope="row"><button class="rowb" data-mark data-key="{{r.k}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}">{{r.label}}<span class="sr">{{r.sr}}</span></button></th><sc-for list="{{r.cells}}" as="c"><td class="n" data-fact="{{c.fid}}">{{c.v}}</td></sc-for></tr></sc-for></tbody></table></div><p class="subset" data-subset="{{vView.subsetJson}}">{{vView.subsetTxt}}</p><sc-if value="{{vView.hasPager}}"><div class="pager" role="group" aria-label="Pages"><button class="btn xs" aria-disabled="{{vView.prevDis}}" onClick="{{vView.prev}}">Previous page</button><button class="btn xs" aria-disabled="{{vView.nextDis}}" onClick="{{vView.next}}">Next page</button></div></sc-if><sc-if value="{{vView.hasTot}}"><p class="tot">{{vView.totLine}}</p></sc-if></sc-if>
+<sc-if value="{{vView.isCompare}}"><div class="tblw"><table class="tbl cmp"><thead><tr><th scope="col">Mall</th><sc-for list="{{vView.ccols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody data-dx5-marks><sc-for list="{{vView.crows}}" as="r"><tr class="{{r.cls}}"><th scope="row"><button class="rowb" data-mark data-key="{{r.k}}" onClick="{{r.go}}" aria-pressed="{{r.pressed}}">{{r.label}}<span class="sr">{{r.sr}}</span></button></th><sc-for list="{{r.cells}}" as="c"><td class="n"><span class="cvl">{{c.col}}</span><span data-fact="{{c.fid}}">{{c.v}}</span><sc-if value="{{c.lead}}"><span class="ldr">Leader</span></sc-if></td></sc-for></tr></sc-for></tbody></table></div><p class="cap">{{vView.cnote}}</p></sc-if>
+<sc-if value="{{vView.isHeat}}"><div class="hm" role="group" aria-label="{{vView.title}}" data-dx5-marks><div class="hr hh"><span></span><sc-for list="{{vView.hcols}}" as="h"><span>{{h}}</span></sc-for></div><sc-for list="{{vView.hrows}}" as="r"><div class="hr"><span class="hb">{{r.b}}</span><sc-for list="{{r.cells}}" as="c"><button class="{{c.cls}}" data-mark data-key="{{c.k}}" onClick="{{c.go}}" aria-pressed="{{c.pressed}}" aria-label="{{c.aria}}"><span data-fact="{{c.fid}}">{{c.v}}</span></button></sc-for></div></sc-for></div><p class="cap">{{vView.hlegend}}</p></sc-if>
+<sc-if value="{{vView.isFunnel}}"><div class="fn" role="group" aria-label="{{vView.title}}" data-dx5-marks><sc-for list="{{vView.stages}}" as="f"><sc-if value="{{f.hasConv}}"><p class="fcv"><b data-fact="{{f.cfid}}">{{f.conv}}</b> {{f.convLbl}}</p></sc-if><button class="{{f.cls}}" data-mark data-key="{{f.k}}" onClick="{{f.go}}" aria-pressed="{{f.pressed}}" aria-label="{{f.aria}}"><span class="fl">{{f.label}}</span><span class="ft"><span class="fb" style="width: {{f.w}}"></span></span><b class="fvv" data-fact="{{f.fid}}">{{f.v}}</b></button></sc-for></div><sc-if value="{{vView.hasMissing}}"><p class="fixm">{{vView.missing}}</p></sc-if></sc-if>
+<sc-if value="{{vView.isTree}}"><div class="tm" style="width: {{vView.tw}}; height: {{vView.th}}" role="group" aria-label="{{vView.title}}" data-dx5-marks><sc-for list="{{vView.gl}}" as="g"><span class="tgl" style="{{g.st}}"><b>{{g.label}}</b> <span data-fact="{{g.fid}}">{{g.v}}</span></span></sc-for><sc-for list="{{vView.tiles}}" as="t"><button class="{{t.cls}}" data-mark data-key="{{t.k}}" style="{{t.st}}" onClick="{{t.go}}" aria-pressed="{{t.pressed}}" aria-label="{{t.aria}}"><span class="ttl">{{t.label}}</span><span class="ttv" data-fact="{{t.fid}}">{{t.v}}</span></button></sc-for></div><p class="cap">{{vView.tnote}}</p></sc-if>
+<sc-if value="{{vView.isTreeList}}"><div class="tl" role="group" aria-label="{{vView.title}}" data-dx5-marks><sc-for list="{{vView.tlist}}" as="t"><button class="{{t.cls}}" data-mark data-key="{{t.k}}" onClick="{{t.go}}" aria-pressed="{{t.pressed}}" aria-label="{{t.aria}}"><span><b>{{t.label}}</b><i>{{t.g}}</i></span><span data-fact="{{t.fid}}">{{t.v}}</span></button></sc-for></div><p class="cap">{{vView.tnote}}</p></sc-if>
+<sc-if value="{{vView.isEvid}}"><dl class="evd"><sc-for list="{{vView.ev}}" as="e"><div><dt>{{e.k}}</dt><dd>{{e.v}}</dd></div></sc-for></dl><div class="tblw"><table class="tbl"><thead><tr><th scope="col">Fact</th><th scope="col">Value</th><th scope="col">Meaning</th></tr></thead><tbody><sc-for list="{{vView.evf}}" as="f"><tr><td><code>{{f.id}}</code></td><td data-fact="{{f.fid}}">{{f.v}}</td><td>{{f.l}}</td></tr></sc-for></tbody></table></div><sc-if value="{{vView.hasCalcs}}"><p class="pl">Calculations (verified by the analytics layer)</p><sc-for list="{{vView.calcs}}" as="cc"><div class="calc"><b>{{cc.id}} {{cc.v}}</b><span>{{cc.m}}</span><span>{{cc.ops}}</span><span class="mid">{{cc.meta}}</span></div></sc-for></sc-if></sc-if>
+<sc-if value="{{vView.isMethod}}"><dl class="meth"><sc-for list="{{vView.items}}" as="it"><div><dt>{{it.k}}</dt><dd>{{it.v}}</dd></div></sc-for></dl></sc-if>
+<sc-if value="{{vView.isRec}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{vView.rcols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{vView.rrows}}" as="r"><tr><sc-for list="{{r.cells}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="cap">{{vView.rnote}}</p></sc-if>
+<sc-if value="{{vView.hasSelNote}}"><p class="selnote">{{vView.selNote}}</p></sc-if>
+<p class="{{vView.envCls}}" data-env><span class="envl">Evidence</span>{{vView.env}}</p>
+</div></div></sc-if>
+<sc-if value="{{vWithheld}}"><div class="wh"><span class="erl">Withheld</span><p>{{vWithTxt}}</p></div></sc-if></div></div></div></section></sc-if></div><aside class="insp" aria-label="Selection and drilldown"><p class="pl">Selection · thread-local (DXD-32)</p><sc-if value="{{hasSel}}"><div class="selc"><b>{{selLbl}}</b><button class="btn xs ghost" onClick="{{clearSel}}">Clear</button></div><p class="pl">Emitted selection_ref.v1</p><pre class="json sj">{{selJson}}</pre><sc-if value="{{hasCalc}}"><p class="pl">How this value was produced</p><p class="note">{{calcTxt}}</p></sc-if><p class="pl">Drilldown</p><p class="note"><code>{{drillTarget}}</code></p><sc-if value="{{hasRecs}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{recs.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{recs.rows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="note">{{recs.note}}</p></sc-if><sc-if value="{{noRecs}}"><p class="note">Record rows for this result are not loaded in the prototype. The drilldown target above is what the product calls; it returns rows from the same population as the selected value.</p></sc-if></sc-if><sc-if value="{{notSel}}"><p class="note">Click or press Enter on any bar, point, cell, stage, tile or row. Arrow keys move between marks; Escape clears.</p></sc-if><sc-if value="{{hasKept}}"><p class="pl">Kept on their components · not sent</p><sc-for list="{{kept}}" as="k"><div class="selc skept"><b>{{k.label}}</b><span class="mid">{{k.comp}}</span></div></sc-for></sc-if></aside></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+const DX5_DATA = {"d4": {"rows": [{"mall": "Rawdah Point Mall", "apOld": {"proposal": 19, "contract": 15, "lease": 7}, "apTot": 71, "apOldTot": 41, "am": {"Expansion": [1, 0, 1, 1, 1], "HoldOver": [1, 1, 0, 1, 0], "Renewal": [9, 2, 1, 1, 1], "Termination": [2, 1, 1, 1, 1]}, "am4": 13, "amTot": 27, "renewal4": 9, "units": 527, "vacant": 45, "ud": {"total": 310, "mm": 6, "pending": 3, "match": 301}, "ap": {"proposal": [4, 3, 2, 4, 19], "contract": [3, 2, 1, 2, 15], "lease": [3, 2, 2, 2, 7]}}, {"mall": "Sandstone Galleria", "apOld": {"proposal": 2, "contract": 1, "lease": 1}, "apTot": 14, "apOldTot": 4, "am": {"Expansion": [0, 0, 0, 1, 0], "HoldOver": [1, 0, 0, 0, 0], "Renewal": [6, 1, 1, 0, 1], "Termination": [1, 0, 1, 0, 0]}, "am4": 8, "amTot": 13, "renewal4": 6, "units": 416, "vacant": 54, "ud": {"total": 176, "mm": 5, "pending": 2, "match": 169}, "ap": {"proposal": [1, 1, 1, 1, 2], "contract": [1, 1, 1, 1, 1], "lease": [1, 1, 0, 0, 1]}}, {"mall": "Qasr Plaza", "apOld": {"proposal": 1, "contract": 1, "lease": 0}, "apTot": 7, "apOldTot": 2, "am": {"Expansion": [0, 0, 0, 0, 0], "HoldOver": [0, 0, 0, 0, 0], "Renewal": [3, 0, 0, 0, 0], "Termination": [1, 0, 0, 0, 0]}, "am4": 4, "amTot": 4, "renewal4": 3, "units": 304, "vacant": 33, "ud": {"total": 158, "mm": 4, "pending": 1, "match": 153}, "ap": {"proposal": [1, 1, 1, 1, 1], "contract": [1, 0, 0, 0, 1], "lease": [0, 0, 0, 0, 0]}}, {"mall": "Najd Gate Mall", "apOld": {"proposal": 2, "contract": 1, "lease": 1}, "apTot": 12, "apOldTot": 4, "am": {"Expansion": [0, 0, 0, 0, 0], "HoldOver": [0, 0, 0, 0, 0], "Renewal": [0, 0, 0, 0, 0], "Termination": [0, 0, 0, 0, 0]}, "am4": 0, "amTot": 0, "renewal4": 0, "units": 368, "vacant": 37, "ud": {"total": 190, "mm": 5, "pending": 2, "match": 183}, "ap": {"proposal": [1, 1, 1, 1, 2], "contract": [1, 1, 1, 1, 1], "lease": [0, 0, 0, 0, 1]}}, {"mall": "Wadi Crescent Centre", "apOld": {"proposal": 2, "contract": 1, "lease": 0}, "apTot": 11, "apOldTot": 3, "am": {"Expansion": [0, 0, 0, 0, 0], "HoldOver": [0, 0, 0, 0, 0], "Renewal": [0, 0, 0, 0, 0], "Termination": [0, 0, 0, 0, 0]}, "am4": 0, "amTot": 0, "renewal4": 0, "units": 350, "vacant": 49, "ud": {"total": 164, "mm": 4, "pending": 1, "match": 159}, "ap": {"proposal": [1, 1, 1, 1, 2], "contract": [1, 1, 1, 1, 1], "lease": [0, 0, 0, 0, 0]}}, {"mall": "Falcon Square", "apOld": {"proposal": 1, "contract": 1, "lease": 0}, "apTot": 5, "apOldTot": 2, "am": {"Expansion": [0, 0, 0, 0, 0], "HoldOver": [0, 0, 0, 0, 0], "Renewal": [0, 0, 0, 0, 0], "Termination": [0, 0, 0, 0, 0]}, "am4": 0, "amTot": 0, "renewal4": 0, "units": 300, "vacant": 29, "ud": {"total": 142, "mm": 4, "pending": 2, "match": 136}, "ap": {"proposal": [1, 1, 1, 0, 1], "contract": [0, 0, 0, 0, 1], "lease": [0, 0, 0, 0, 0]}}, {"mall": "Oasis Row", "apOld": {"proposal": 1, "contract": 1, "lease": 0}, "apTot": 3, "apOldTot": 2, "am": {"Expansion": [0, 0, 0, 0, 0], "HoldOver": [0, 0, 0, 0, 0], "Renewal": [0, 0, 0, 0, 0], "Termination": [0, 0, 0, 0, 0]}, "am4": 0, "amTot": 0, "renewal4": 0, "units": 282, "vacant": 41, "ud": null, "ap": {"proposal": [1, 0, 0, 0, 1], "contract": [0, 0, 0, 0, 1], "lease": [0, 0, 0, 0, 0]}}, {"mall": "Cedar Park Mall", "apOld": {"proposal": 1, "contract": 1, "lease": 0}, "apTot": 4, "apOldTot": 2, "am": {"Expansion": [0, 0, 0, 0, 0], "HoldOver": [0, 0, 0, 0, 0], "Renewal": [0, 0, 0, 0, 0], "Termination": [0, 0, 0, 0, 0]}, "am4": 0, "amTot": 0, "renewal4": 0, "units": 296, "vacant": 25, "ud": {"total": 151, "mm": 5, "pending": 1, "match": 145}, "ap": {"proposal": [1, 1, 0, 0, 1], "contract": [0, 0, 0, 0, 1], "lease": [0, 0, 0, 0, 0]}}, {"mall": "Amber Heights", "apOld": {"proposal": 1, "contract": 0, "lease": 0}, "apTot": 2, "apOldTot": 1, "am": {"Expansion": [0, 0, 0, 0, 0], "HoldOver": [0, 0, 0, 0, 0], "Renewal": [0, 0, 0, 0, 0], "Termination": [0, 0, 0, 0, 0]}, "am4": 0, "amTot": 0, "renewal4": 0, "units": 278, "vacant": 37, "ud": null, "ap": {"proposal": [1, 0, 0, 0, 1], "contract": [0, 0, 0, 0, 0], "lease": [0, 0, 0, 0, 0]}}, {"mall": "Mirage Commons", "apOld": {"proposal": 1, "contract": 0, "lease": 0}, "apTot": 1, "apOldTot": 1, "am": {"Expansion": [0, 0, 0, 0, 0], "HoldOver": [0, 0, 0, 0, 0], "Renewal": [0, 0, 0, 0, 0], "Termination": [0, 0, 0, 0, 0]}, "am4": 0, "amTot": 0, "renewal4": 0, "units": 299, "vacant": 58, "ud": null, "ap": {"proposal": [0, 0, 0, 0, 1], "contract": [0, 0, 0, 0, 0], "lease": [0, 0, 0, 0, 0]}}], "apC": {"proposal": [12, 9, 7, 8, 31], "contract": [7, 5, 4, 5, 22], "lease": [4, 3, 2, 2, 9]}, "amC": {"Expansion": [1, 0, 1, 2, 1], "HoldOver": [2, 1, 0, 1, 0], "Renewal": [18, 3, 2, 1, 2], "Termination": [4, 1, 2, 1, 1]}, "am25": {"Expansion": [1, 0, 0, 0, 0], "HoldOver": [2, 0, 0, 0, 0], "Renewal": [5, 0, 0, 0, 0], "Termination": [1, 0, 0, 0, 0]}, "amRecords": {"on": true, "cols": ["Amendment", "Mall", "Lease", "Created", "Age (days)", "Status"], "rows": [["AMD-24086", "Rawdah Point Mall", "T-30477", "2 May 2026", "171", "Ready"], ["AMD-24095", "Sandstone Galleria", "T-31120", "20 May 2026", "153", "In process"], ["AMD-24118", "Rawdah Point Mall", "T-30512", "14 Jun 2026", "128", "Ready"], ["AMD-24133", "Rawdah Point Mall", "T-30877", "2 Jul 2026", "110", "In process"], ["AMD-24190", "Sandstone Galleria", "T-31206", "21 Jul 2026", "91", "Ready"], ["AMD-24207", "Rawdah Point Mall", "T-30940", "5 Aug 2026", "76", "Ready"], ["AMD-24251", "Sandstone Galleria", "T-31388", "28 Aug 2026", "53", "In process"], ["AMD-24302", "Qasr Plaza", "T-31455", "19 Sep 2026", "31", "Ready"]], "note": "Showing 8 of 18 · Rawdah Point Mall 9 · Sandstone Galleria 6 · Qasr Plaza 3 · same population as the cell"}, "ud": [{"mall": "Rawdah Point Mall", "total": 310, "mm": 6, "pending": 3}, {"mall": "Sandstone Galleria", "total": 176, "mm": 5, "pending": 2}, {"mall": "Qasr Plaza", "total": 158, "mm": 4, "pending": 1}, {"mall": "Najd Gate Mall", "total": 190, "mm": 5, "pending": 2}, {"mall": "Wadi Crescent Centre", "total": 164, "mm": 4, "pending": 1}, {"mall": "Falcon Square", "total": 142, "mm": 4, "pending": 2}, {"mall": "Cedar Park Mall", "total": 151, "mm": 5, "pending": 1}, {"mall": "Gulf Gate Mall", "total": 142, "mm": 11, "pending": 3}, {"mall": "Pearl Bay Centre", "total": 188, "mm": 5, "pending": 2}, {"mall": "Dune Harbour Mall", "total": 149, "mm": 4, "pending": 1}, {"mall": "Coral Point", "total": 133, "mm": 3, "pending": 1}, {"mall": "Seabreeze Plaza", "total": 127, "mm": 4, "pending": 2}, {"mall": "Harbor Lights Mall", "total": 214, "mm": 6, "pending": 3}, {"mall": "Tidewater Arcade", "total": 172, "mm": 5, "pending": 2}, {"mall": "Coastline Galleria", "total": 166, "mm": 4, "pending": 1}, {"mall": "Spice Route Mall", "total": 158, "mm": 4, "pending": 2}, {"mall": "Minaret View", "total": 141, "mm": 4, "pending": 1}, {"mall": "Breeze Walk", "total": 119, "mm": 4, "pending": 1}], "quiet": ["Oasis Row", "Amber Heights", "Mirage Commons", "Lantern Quay", "Mangrove Mall", "Marina Square West", "Hijaz Crossing"], "pu": {"Central": [3420, 3012, 408, 612400, 88900, 10], "Eastern": [2180, 1868, 312, 371800, 56200, 7], "Western": [2540, 2234, 306, 428400, 69200, 8]}, "gulf": {"occupied": 336, "vacant": 48, "units": 384, "ud": ["Gulf Gate Mall", 142, 11, 3]}, "tenant": {"cols": [{"m": "Jan", "v": 269600}, {"m": "Feb", "v": 250400}, {"m": "Mar", "v": 312100}, {"m": "Apr", "v": 277500}, {"m": "May", "v": 266500}, {"m": "Jun", "v": 294600}, {"m": "Jul", "v": 260000}, {"m": "Aug", "v": 251500}, {"m": "Sep", "v": 241800}], "lease": "T-31206", "who": "Omar · Lumen Retail Co.", "leaseLine": "1 lease · 2 units"}, "apAll": {"proposal": [25, 18, 14, 15, 45], "contract": [16, 11, 9, 9, 33], "lease": [9, 6, 4, 4, 14]}, "apReg": {"Central": {"proposal": [12, 9, 7, 8, 31], "contract": [7, 5, 4, 5, 22], "lease": [4, 3, 2, 2, 9]}, "Eastern": {"proposal": [6, 4, 3, 3, 6], "contract": [4, 3, 2, 2, 5], "lease": [2, 1, 1, 1, 2]}, "Western": {"proposal": [7, 5, 4, 4, 8], "contract": [5, 3, 3, 2, 6], "lease": [3, 2, 1, 1, 3]}}, "amReg": {"Central": {"Expansion": [1, 0, 1, 2, 1], "HoldOver": [2, 1, 0, 1, 0], "Renewal": [18, 3, 2, 1, 2], "Termination": [4, 1, 2, 1, 1]}, "Eastern": {"Expansion": [1, 0, 0, 1, 0], "HoldOver": [1, 0, 1, 0, 1], "Renewal": [6, 2, 1, 2, 1], "Termination": [3, 1, 0, 1, 1]}, "Western": {"Expansion": [2, 1, 0, 0, 1], "HoldOver": [1, 1, 0, 1, 0], "Renewal": [9, 2, 2, 1, 2], "Termination": [2, 1, 1, 0, 1]}}, "regionOf": {"Rawdah Point Mall": "Central", "Sandstone Galleria": "Central", "Qasr Plaza": "Central", "Najd Gate Mall": "Central", "Wadi Crescent Centre": "Central", "Falcon Square": "Central", "Oasis Row": "Central", "Cedar Park Mall": "Central", "Amber Heights": "Central", "Mirage Commons": "Central", "Gulf Gate Mall": "Eastern", "Pearl Bay Centre": "Eastern", "Dune Harbour Mall": "Eastern", "Coral Point": "Eastern", "Seabreeze Plaza": "Eastern", "Lantern Quay": "Eastern", "Mangrove Mall": "Eastern", "Harbor Lights Mall": "Western", "Tidewater Arcade": "Western", "Coastline Galleria": "Western", "Spice Route Mall": "Western", "Minaret View": "Western", "Breeze Walk": "Western", "Marina Square West": "Western", "Hijaz Crossing": "Western"}, "mallsByRegion": {"Central": ["Rawdah Point Mall", "Sandstone Galleria", "Qasr Plaza", "Najd Gate Mall", "Wadi Crescent Centre", "Falcon Square", "Oasis Row", "Cedar Park Mall", "Amber Heights", "Mirage Commons"], "Eastern": ["Gulf Gate Mall", "Pearl Bay Centre", "Dune Harbour Mall", "Coral Point", "Seabreeze Plaza", "Lantern Quay", "Mangrove Mall"], "Western": ["Harbor Lights Mall", "Tidewater Arcade", "Coastline Galleria", "Spice Route Mall", "Minaret View", "Breeze Walk", "Marina Square West", "Hijaz Crossing"]}}, "d3": {"sf": [{"label": "Lease requests", "value": 1284, "signed": 0, "unsigned": 0, "other": 0}, {"label": "Leads", "value": 702, "signed": 0, "unsigned": 0, "other": 0}, {"label": "Proposals", "value": 418, "signed": 236, "unsigned": 151, "other": 31}, {"label": "Contracts", "value": 296, "signed": 201, "unsigned": 74, "other": 21}], "sr": [{"name": "Inquiry", "leaves": [{"name": "General", "value": 1067, "color": "#6D28D9", "approved": 812, "in_process": 214, "rejected": 41, "pending": 96, "closed": 388}, {"name": "Leasing", "value": 506, "color": "#6D28D9", "approved": 356, "in_process": 122, "rejected": 28, "pending": 40, "closed": 190}, {"name": "Billing", "value": 354, "color": "#6D28D9", "approved": 248, "in_process": 87, "rejected": 19, "pending": 31, "closed": 141}]}, {"name": "Work permits", "leaves": [{"name": "Construction", "value": 841, "color": "#92400E", "approved": 618, "in_process": 171, "rejected": 52, "pending": 35, "closed": 410}, {"name": "Hot work", "value": 557, "color": "#92400E", "approved": 402, "in_process": 118, "rejected": 37, "pending": 22, "closed": 296}, {"name": "After-hours operations", "value": 421, "color": "#FDE68A", "approved": 331, "in_process": 64, "rejected": 26, "pending": 9, "closed": 280}, {"name": "Electrical maintenance", "value": 379, "color": "#F59E0B", "approved": 284, "in_process": 76, "rejected": 19, "pending": 14, "closed": 205}, {"name": "Deliveries", "value": 278, "color": "#FDE68A", "approved": 226, "in_process": 41, "rejected": 11, "pending": 6, "closed": 198}, {"name": "Plumbing maintenance", "value": 270, "color": "#F59E0B", "approved": 197, "in_process": 58, "rejected": 15, "pending": 12, "closed": 151}]}, {"name": "Complaints", "leaves": [{"name": "Cleanliness", "value": 322, "color": "#BE123C", "approved": 214, "in_process": 96, "rejected": 12, "pending": 44, "closed": 231}, {"name": "Air conditioning", "value": 288, "color": "#BE123C", "approved": 176, "in_process": 102, "rejected": 10, "pending": 38, "closed": 133}, {"name": "Parking", "value": 221, "color": "#BE123C", "approved": 141, "in_process": 66, "rejected": 14, "pending": 27, "closed": 120}, {"name": "Noise", "value": 159, "color": "#BE123C", "approved": 97, "in_process": 53, "rejected": 9, "pending": 21, "closed": 88}]}]}};
+/* DX5 · Generative UI design prototype · part 1: formatting, results (analysis_result.v1), facts */
+const DSV = 'sd-2026.10.20-01';
+const ASOF = '20 Oct 2026';
+const D4 = DX5_DATA.d4, D3 = DX5_DATA.d3;
+const SCOPES = { admin: { kind: 'regions', label: 'Access: all regions' }, tenant: { kind: 'lease', label: 'Access: lease T-31206 only' } };
+function hsh(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(16).padStart(8, '0').slice(0, 8); }
+const n0 = (v) => Number(v).toLocaleString('en-US');
+const fmtPct = (v, d) => (v * 100).toFixed(d === undefined ? 1 : d) + '%';
+const fmtSar = (v) => 'SAR ' + n0(v);
+const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+/* One formatting module for every representation (DXD-44). */
+function fmtValue(v, unit, flag) {
+  if (flag === 'no_report') return 'No report';
+  if (flag === 'not_loaded') return 'Not loaded';
+  if (flag === 'undefined') return 'Not defined';
+  if (flag === 'withheld') return 'Not shown';
+  if (v === null || v === undefined) return '—';
+  if (unit === 'rate') return fmtPct(v);
+  if (unit === 'SAR') return fmtSar(v);
+  return n0(v);
+}
+const CENTRAL = D4.mallsByRegion.Central;
+const REGIONS = ['Central', 'Eastern', 'Western'];
+const REGION_OF = D4.regionOf;
+const LEASE_MALL = {}; D4.amRecords.rows.forEach((r) => { LEASE_MALL[r[2]] = r[1]; });
+/* Viewers carry grants, not labels (DXD-56). */
+const VIEWERS = {
+  admin: { id: 'admin', label: 'Portfolio admin', grantLabel: 'Grants: all regions', regions: REGIONS.slice(), tenantLeases: null },
+  central: { id: 'central', label: 'Regional manager · Central', grantLabel: 'Grants: Central region', regions: ['Central'], tenantLeases: null },
+  tenant: { id: 'tenant', label: 'Tenant · lease T-31206', grantLabel: 'Grants: lease T-31206 only', regions: [], tenantLeases: ['T-31206'] }
+};
+function accessOf(r) {
+  if (r.access) return r.access;
+  const f = r.filters || {};
+  if (f.lease) { const mall = LEASE_MALL[f.lease]; return { level: 'lease', regions: [REGION_OF[mall]], malls: [mall], leases: [f.lease] }; }
+  if (f.mall) return { level: 'mall', regions: [REGION_OF[f.mall]], malls: [f.mall], leases: [] };
+  const regions = f.region && f.region !== 'All' ? [f.region] : REGIONS.slice();
+  const malls = regions.reduce((a, g) => a.concat(D4.mallsByRegion[g]), []);
+  if (r.rows && r.grain && r.grain[0] === 'mall') r.rows.forEach((x) => { if (malls.indexOf(x.key) < 0) malls.push(x.key); });
+  return { level: regions.length === REGIONS.length ? 'portfolio' : 'region', regions, malls, leases: [] };
+}
+/* Authorization against the actual result scope, dimensions and records, never by comparing labels. */
+function authorize(viewerId, res, opts) {
+  const v = VIEWERS[viewerId]; const a = res.access; const checks = []; opts = opts || {};
+  const inGrant = (mall) => v.regions.indexOf(REGION_OF[mall]) >= 0;
+  if (v.tenantLeases) {
+    checks.push({ what: 'Result level', ok: a.level === 'lease', detail: a.level === 'lease' ? 'Lease-level result' : 'The result aggregates ' + a.level + ' data; a tenant sees only its own lease' });
+    checks.push({ what: 'Leases', ok: a.leases.length > 0 && a.leases.every((l) => v.tenantLeases.indexOf(l) >= 0), detail: a.leases.length ? 'Leases in result: ' + a.leases.join(', ') : 'No lease in result scope' });
+  } else {
+    const badR = a.regions.filter((g) => v.regions.indexOf(g) < 0);
+    checks.push({ what: 'Regions', ok: badR.length === 0, detail: badR.length ? 'Outside grants: ' + badR.join(', ') : 'All within grants (' + a.regions.join(', ') + ')' });
+    const badM = a.malls.filter((m) => !inGrant(m));
+    checks.push({ what: 'Malls (dimension values)', ok: badM.length === 0, detail: badM.length ? badM.length + ' malls outside grants (names not shown to this viewer)' : 'All ' + a.malls.length + ' malls within grants' });
+    const badL = a.leases.filter((l) => !inGrant(LEASE_MALL[l]));
+    checks.push({ what: 'Leases', ok: badL.length === 0, detail: a.leases.length ? (badL.length ? 'Outside grants: ' + badL.join(', ') : 'Within grants') : 'None in result' });
+  }
+  if (opts.records) { const bad = opts.records.filter((rec) => (v.tenantLeases ? v.tenantLeases.indexOf(rec[2]) < 0 : !inGrant(rec[1]))); checks.push({ what: 'Records', ok: bad.length === 0, detail: bad.length ? bad.length + ' records outside grants' : 'All records within grants' }); }
+  return { ok: checks.every((c) => c.ok), checks, viewer: v };
+}
+const periodOf = (f) => f.month || f.months || f.asOf || (f.year ? String(f.year) : 'as of 2026-10-20');
+/* The evidence verifier recomputes every derived fact from its operands (server side). The renderer never derives. */
+function verifyCalcs(res) {
+  const bad = [];
+  Object.values(res.facts).forEach((f) => {
+    if (f.kind !== 'derived') return;
+    const c = f.calc;
+    if (!c) { bad.push(f.id + ': derived value without a calculation record'); return; }
+    if (c.status !== 'verified') { bad.push(f.id + ': calculation ' + c.status + ' (' + c.verifier + ')'); return; }
+    if (!c.operands || !c.operands.length || !c.evidence || !c.evidence.length || !c.metric) { bad.push(f.id + ': incomplete calculation record'); return; }
+    const ops = c.operands.map((o) => o.value);
+    let want = null;
+    if (c.method === 'ratio') want = ops[1] ? ops[0] / ops[1] : null;
+    if (c.method === 'sum') want = ops.reduce((a, b) => a + b, 0);
+    if (c.method === 'count') want = ops.length;
+    if (c.method === 'ratio' && !ops[1]) { if (f.flag !== 'undefined') bad.push(f.id + ': zero denominator must be “Not defined”'); return; }
+    if (want === null || Math.abs(want - f.v) > 1e-9) bad.push(f.id + ': recomputed ' + want + ' ≠ stored ' + f.v);
+  });
+  return bad;
+}
+const short = (m) => m.replace(/ (Mall|Centre|Galleria|Plaza|Commons|Square|Heights|Row)$/, (x) => x);
+
+/* Build an analysis_result.v1. Every displayable number becomes a fact with an id and a formatted value. */
+function mkResult(o) {
+  const r = Object.assign({ schema: 'analysis_result.v1', kind: 'series', cls: 'Observed', coverage: { status: 'complete', note: '' }, scopeKey: 'admin' }, o);
+  r.scope = SCOPES[r.scopeKey];
+  r.dataset = { version: r.dsv || DSV, asOf: r.asOf || '2026-10-20' };
+  r.ref = 'res_' + hsh(r.id + JSON.stringify(r.filters) + JSON.stringify(r.rows || r.cells || r.groups || r.stages || []));
+  r.facts = {};
+  const put = (id, v, unit, flag, label) => { if (r.facts[id]) throw new Error('duplicate fact id ' + id + ' in ' + r.id); r.facts[id] = { id, v, unit: unit || r.metric.unit, flag: flag || '', fmt: fmtValue(v, unit || r.metric.unit, flag), label: label || id }; return id; };
+  r.put = put;
+  if (r.rows) r.rows.forEach((row, i) => { row.fid = put('r' + i, row.value, row.unit, row.flag, row.label); if (row.num !== undefined) { row.nid = put('r' + i + 'n', row.num, 'count', '', row.label + ' numerator'); row.did = put('r' + i + 'd', row.den, 'count', '', row.label + ' denominator'); } });
+  if (r.cells) r.cells.forEach((c, i) => { c.fid = put('c' + i, c.value, '', c.flag, c.col + ' · ' + c.row); });
+  if (r.groups) r.groups.forEach((g, gi) => { g.fid = put('g' + gi, g.value, '', '', g.label); g.leaves.forEach((l, li) => { l.fid = put('g' + gi + 'l' + li, l.value, '', '', g.label + ' · ' + l.label); }); });
+  if (r.stages) r.stages.forEach((s, i) => { s.fid = put('s' + i, s.value, '', '', s.label); if (i > 0) s.cid = put('s' + i + 'conv', r.stages[i - 1].value ? s.value / r.stages[i - 1].value : null, 'rate', r.stages[i - 1].value ? '' : 'undefined', s.label + ' ÷ ' + r.stages[i - 1].label); });
+  if (r.total) r.total.fid = put('t', r.total.value, r.total.unit, r.total.flag, r.total.label);
+  (r.extra || []).forEach((e) => put(e[0], e[1], e[2], e[3], e[4]));
+  /* provenance: every fact cites the query; derived facts carry a verified calculation record (DXD-55) */
+  const q = { ref: 'q_' + hsh(r.id + '|' + JSON.stringify(r.filters)), tool: r.tool || 'get_breakdown', metric: r.metric.id + ' v1', filters: r.filters };
+  r.queries = [q];
+  Object.values(r.facts).forEach((f) => { f.kind = 'observed'; f.evidence = [q.ref]; });
+  const op = (o) => (typeof o === 'string' ? { fact: o, label: r.facts[o].label, value: r.facts[o].v } : o);
+  const derive = (fid, method, formula, operands) => { const f = r.facts[fid]; f.kind = 'derived'; f.calc = { method, formula, operands: operands.map(op), periods: periodOf(r.filters), metric: r.metric.id + ' v1', evidence: [q.ref], status: r.unverified ? 'unverified' : 'verified', verifier: r.unverified ? 'none — value produced outside the analytics layer' : 'derive v1 · deterministic · recomputed by the evidence verifier' }; };
+  r.derive = derive;
+  if (r.rows) r.rows.forEach((row) => { if (row.nid) derive(row.fid, 'ratio', 'mismatched units ÷ units checked', [row.nid, row.did]); });
+  if (r.stages) r.stages.forEach((s, i) => { if (i) derive(s.cid, 'ratio', s.label + ' ÷ ' + r.stages[i - 1].label, [s.fid, r.stages[i - 1].fid]); });
+  if (r.groups) r.groups.forEach((g) => derive(g.fid, 'sum', 'sum of ' + g.label + ' types', g.leaves.map((l) => l.fid)));
+  if (r.total && r.total.calc === 'sum') derive('t', 'sum', 'sum of ' + (r.cells ? 'cells' : r.groups ? 'categories' : 'rows'), (r.rows || r.cells || r.groups).filter((x) => x.value !== null && x.value !== undefined).map((x) => x.fid));
+  if (r.total && r.total.calc === 'ratio') derive('t', 'ratio', r.total.formula, r.total.ops);
+  (r.calcs || []).forEach((c) => derive(c[0], c[1], c[2], typeof c[3] === 'function' ? c[3](r) : c[3]));
+  r.access = accessOf(r);
+  r.envelope = { cls: r.cls, metric: r.metric.id + ' v1', filters: Object.entries(r.filters).map(([a, b]) => a + ' ' + b).join(', '), scope: r.scope.label, freshness: 'data as of ' + (r.asOfLabel || ASOF), dataset: r.dataset.version, coverage: r.coverage.status === 'partial' ? 'Coverage: partial — ' + r.coverage.note : r.coverage.status === 'none' ? 'Coverage: none — ' + r.coverage.note : 'Coverage: complete' };
+  r.envText = [r.envelope.cls, r.envelope.metric, r.envelope.filters, r.envelope.scope, r.envelope.freshness, r.envelope.dataset, r.envelope.coverage].join(' · ');
+  return r;
+}
+function fillT(t, r) { return t.replace(/\[\[([a-zA-Z0-9_]+)\]\]/g, (_, k) => (r.facts[k] ? r.facts[k].fmt : '⟨missing ' + k + '⟩')); }
+const tokensIn = (t) => (String(t).match(/\[\[([a-zA-Z0-9_]+)\]\]/g) || []).map((x) => x.slice(2, -2));
+
+/* ---------- Results from the shared synthetic dataset ---------- */
+const rowsC = D4.rows.filter((r) => CENTRAL.indexOf(r.mall) >= 0);
+function resAmd() {
+  const rows = rowsC.map((r) => ({ key: r.mall, label: r.mall, value: r.renewal4 })).sort((a, b) => b.value - a.value || a.label.localeCompare(b.label));
+  const zero = rows.filter((x) => x.value === 0).length;
+  return mkResult({ id: 'amd', title: 'Renewal amendments waiting 4 weeks or more · Central', metric: { id: 'amendments.pending_by_age_band', name: 'Pending amendments by age band', unit: 'amendments', kind: 'parity' }, grain: ['mall'], shape: 'categorical', dimLabel: 'Mall', filters: { type: 'Renewal', band: '4 wk+', region: 'Central', year: 2026 }, rows, total: { value: rows.reduce((a, b) => a + b.value, 0), label: 'Central total', calc: 'sum' }, extra: [['zero_n', zero, 'count', '', 'malls with none'], ['malls_n', rows.length, 'count', '', 'Central malls'], ['rec_n', D4.amRecords.rows.length, 'count', '', 'records shown']], calcs: [['zero_n', 'count', 'malls with value 0', (r) => r.rows.filter((x) => x.value === 0).map((x) => x.fid)], ['malls_n', 'count', 'malls in Central', (r) => r.rows.map((x) => x.fid)]] });
+}
+function resMm(o_unv) {
+  const rep = D4.ud.filter((u) => CENTRAL.indexOf(u.mall) >= 0);
+  const rows = CENTRAL.map((m) => { const u = rep.find((x) => x.mall === m); return u ? { key: m, label: m, value: u.mm / u.total, unit: 'rate', num: u.mm, den: u.total } : { key: m, label: m, value: null, unit: 'rate', flag: 'no_report' }; });
+  rows.sort((a, b) => (b.value === null ? -1 : b.value) - (a.value === null ? -1 : a.value) || a.label.localeCompare(b.label));
+  const mm = rep.reduce((a, b) => a + b.mm, 0), den = rep.reduce((a, b) => a + b.total, 0);
+  const missing = rows.filter((x) => x.flag === 'no_report').map((x) => x.label);
+  return mkResult({ id: o_unv ? 'mm_unverified' : 'mm', title: o_unv ? 'Unit mismatch rate · fixture: rates computed outside the analytics layer' : 'Unit mismatch rate · Central malls · September 2026', cls: 'Derived', metric: { id: 'unit_discrepancy.mismatch_rate', name: 'Mismatched units ÷ units checked', unit: 'rate', kind: 'derived' }, grain: ['mall'], shape: 'categorical', dimLabel: 'Mall', filters: o_unv ? { region: 'Central', month: '2026-09', fixture: 'rates not verified' } : { region: 'Central', month: '2026-09' }, rows, coverage: { status: 'partial', note: rep.length + ' of ' + CENTRAL.length + ' Central malls filed a September report', missing }, total: { value: mm / den, unit: 'rate', label: 'Observed subset rate', calc: 'ratio', formula: 'mismatched units ÷ units checked (reporting malls)', ops: ['mm', 'den'] }, calcs: [['mm', 'sum', 'sum of mismatched units, reporting malls', (r) => r.rows.filter((x) => x.nid).map((x) => x.nid)], ['den', 'sum', 'sum of units checked, reporting malls', (r) => r.rows.filter((x) => x.did).map((x) => x.did)], ['rep_n', 'count', 'malls with a September report', (r) => r.rows.filter((x) => x.nid).map((x) => x.fid)], ['miss_n', 'count', 'malls without a report', (r) => r.rows.filter((x) => x.flag === 'no_report').map((x) => x.fid)], ['all_n', 'count', 'Central malls', (r) => r.rows.map((x) => x.fid)]], unverified: o_unv, extra: [['mm', mm, 'count', '', 'mismatched units'], ['den', den, 'count', '', 'units checked'], ['rep_n', rep.length, 'count', '', 'malls reporting'], ['miss_n', missing.length, 'count', '', 'malls without a report'], ['all_n', CENTRAL.length, 'count', '', 'Central malls'], ['central_rate', null, 'rate', 'withheld', 'Central-wide rate']] });
+}
+function resTs() {
+  const rows = D4.tenant.cols.map((c) => ({ key: c.m, label: c.m, value: c.v, unit: 'SAR' }));
+  const hi = rows.reduce((a, b) => (b.value > a.value ? b : a)), lo = rows.reduce((a, b) => (b.value < a.value ? b : a));
+  return mkResult({ id: 'ts', title: 'Reported sales · lease T-31206 · January to September 2026', metric: { id: 'tenant_sales.reported_monthly', name: 'Reported monthly sales', unit: 'SAR', kind: 'parity' }, grain: ['month'], shape: 'time', dimLabel: 'Month', filters: { lease: 'T-31206', year: 2026, months: 'Jan–Sep' }, scopeKey: 'tenant', rows, total: { value: rows.reduce((a, b) => a + b.value, 0), unit: 'SAR', label: 'Total Jan–Sep', calc: 'sum' }, extra: [['hi_m', null, '', 'withheld', hi.label], ['lo_m', null, '', 'withheld', lo.label]], hi: hi.key, lo: lo.key });
+}
+function resHm() {
+  const types = ['Expansion', 'HoldOver', 'Renewal', 'Termination'], bands = ['4 wk+', '4 wk', '3 wk', '2 wk', '1 wk'];
+  const cells = []; bands.forEach((b, bi) => types.forEach((t) => cells.push({ row: b, col: t, value: D4.amC[t][bi] })));
+  return mkResult({ id: 'hm', title: 'Pending amendments by type and age band · Central', metric: { id: 'amendments.pending_by_age_band', name: 'Pending amendments by age band', unit: 'amendments', kind: 'parity' }, grain: ['age_band', 'amendment_type'], shape: 'matrix', rowsL: bands, colsL: types, filters: { region: 'Central', year: 2026 }, cells, total: { value: cells.reduce((a, b) => a + b.value, 0), label: 'Central total', calc: 'sum' } });
+}
+function resFn() {
+  const stages = D3.sf.map((s) => ({ label: s.label, value: s.value }));
+  return mkResult({ id: 'fn', title: 'Leasing funnel · portfolio · 2026', metric: { id: 'leasing.funnel_stage_count', name: 'Records reaching each leasing stage', unit: 'records', kind: 'parity' }, grain: ['stage'], shape: 'stages', filters: { region: 'All', year: 2026 }, stages, total: { value: stages[0].value, label: 'Lease requests' } });
+}
+function resTm() {
+  const groups = D3.sr.map((g) => ({ label: g.name, value: g.leaves.reduce((a, b) => a + b.value, 0), leaves: g.leaves.map((l) => ({ label: l.name, value: l.value })) }));
+  return mkResult({ id: 'tm', title: 'Service requests by category and type · portfolio · 2026', metric: { id: 'service_requests.count_by_type', name: 'Service requests created', unit: 'requests', kind: 'parity' }, grain: ['category', 'type'], shape: 'hierarchy', filters: { region: 'All', year: 2026 }, groups, total: { value: groups.reduce((a, b) => a + b.value, 0), label: 'All requests', calc: 'sum' } });
+}
+function resCmp() {
+  const rows = rowsC.map((r) => { const u = D4.ud.find((x) => x.mall === r.mall); return { key: r.mall, label: r.mall, cells: [r.apOldTot, r.am4, r.vacant / r.units, u ? u.mm / u.total : null], flags: ['', '', '', u ? '' : 'no_report'] }; });
+  rows.sort((a, b) => b.cells[0] - a.cells[0] || a.label.localeCompare(b.label));
+  const cols = [['Approvals 1m+', 'approvals'], ['Amendments 4 wk+', 'amendments'], ['Vacancy', 'rate'], ['Mismatch rate', 'rate']];
+  const r = mkResult({ id: 'cmp', title: 'Central malls · four KPIs side by side · no combined score', metric: { id: 'comparison.multi_kpi', name: 'Multi-KPI comparison', unit: 'mixed', kind: 'derived' }, grain: ['mall'], shape: 'multi', filters: { region: 'Central', asOf: '2026-10-20', discrepancyMonth: '2026-09' }, cmpRows: rows, cmpCols: cols, coverage: { status: 'partial', note: 'mismatch rate covers 7 of 10 Central malls' } });
+  rows.forEach((row, i) => { row.fids = row.cells.map((v, j) => { const id = r.put('m' + i + '_' + j, v, cols[j][1], row.flags[j], row.label + ' · ' + cols[j][0]); r.facts[id].kind = 'observed'; r.facts[id].evidence = [r.queries[0].ref]; return id; }); const src = rowsC.find((x) => x.mall === row.key); const u = D4.ud.find((x) => x.mall === row.key); r.derive(row.fids[2], 'ratio', 'vacant units ÷ units', [{ label: 'vacant units', value: src.vacant, ref: r.queries[0].ref }, { label: 'units', value: src.units, ref: r.queries[0].ref }]); if (u) r.derive(row.fids[3], 'ratio', 'mismatched units ÷ units checked', [{ label: 'mismatched units', value: u.mm, ref: r.queries[0].ref }, { label: 'units checked', value: u.total, ref: r.queries[0].ref }]); });
+  cols.forEach((c, j) => { let best = -1, bi = -1; rows.forEach((row, i) => { if (row.cells[j] !== null && row.cells[j] > best) { best = row.cells[j]; bi = i; } }); rows.forEach((row, i) => { row.lead = row.lead || []; row.lead[j] = i === bi; }); });
+  return r;
+}
+function resRec() {
+  const R = D4.amRecords; return { cols: R.cols, rows: R.rows, note: R.note || 'Showing 8 of 18 records, oldest first.' };
+}
+function resUd25() {
+  const all = REGIONS.reduce((a, g) => a.concat(D4.mallsByRegion[g]), []);
+  const rows = all.map((m) => { const u = D4.ud.find((x) => x.mall === m); return u ? { key: m, label: m, value: u.mm } : { key: m, label: m, value: null, flag: 'no_report' }; });
+  rows.sort((a, b) => (b.value === null ? -1 : b.value) - (a.value === null ? -1 : a.value) || a.label.localeCompare(b.label));
+  const rep = rows.filter((x) => x.value !== null).length;
+  return mkResult({ id: 'ud25', title: 'Mismatched units by mall · portfolio · September 2026', metric: { id: 'unit_discrepancy.units', name: 'Mismatched units in the latest report', unit: 'units', kind: 'parity' }, grain: ['mall'], shape: 'categorical', dimLabel: 'Mall', filters: { region: 'All', month: '2026-09' }, rows, coverage: { status: 'partial', note: rep + ' of ' + all.length + ' malls filed a September report', missing: rows.filter((x) => x.flag).map((x) => x.label) }, total: { value: rows.reduce((a, b) => a + (b.value || 0), 0), label: 'Observed subset total', calc: 'sum' }, extra: [['rep_n', rep, 'count', '', 'malls reporting'], ['miss_n', all.length - rep, 'count', '', 'malls without a report'], ['all_n', all.length, 'count', '', 'malls in the portfolio']], calcs: [['rep_n', 'count', 'malls with a September report', (r) => r.rows.filter((x) => x.value !== null).map((x) => x.fid)], ['miss_n', 'count', 'malls without a report', (r) => r.rows.filter((x) => x.flag).map((x) => x.fid)], ['all_n', 'count', 'malls in the portfolio', (r) => r.rows.map((x) => x.fid)]] });
+}
+function resAmdStale() {
+  const base = resAmd();
+  return mkResult({ id: 'amd_stale', title: 'Renewal amendments 4 wk+ · Central · stored answer (fixture)', metric: base.metric, grain: ['mall'], shape: 'categorical', dimLabel: 'Mall', filters: { type: 'Renewal', band: '4 wk+', region: 'Central', year: 2026, fixture: 'stored one week earlier' }, dsv: 'sd-2026.10.13-01', asOf: '2026-10-13', asOfLabel: '13 Oct 2026', rows: base.rows.map((x, i) => ({ key: x.key, label: x.label, value: i === 0 ? x.value - 1 : x.value })), total: { value: base.facts.t.v - 1, label: 'Central total', calc: 'sum' } });
+}
+const RES = {}; [resAmd(), resMm(), resTs(), resHm(), resFn(), resTm(), resCmp(), resUd25(), resAmdStale(), resMm(true)].forEach((r) => { RES[r.id] = r; RES[r.ref] = r; });
+const RECORDS = resRec();
+
+/* Statement templates (the agent's verified text, as fact tokens) per result */
+const TEXT = {
+  amd: [{ k: 'Observed', t: '[[t]] renewal amendments in Central have waited four weeks or more.' }, { k: 'Observed', t: '[[r0]] are at Rawdah Point Mall, [[r1]] at Sandstone Galleria and [[r2]] at Qasr Plaza. The other [[zero_n]] Central malls have none.' }],
+  mm: [{ k: 'Derived', t: 'Among the [[rep_n]] Central malls that filed a September report, Cedar Park Mall has the highest mismatch rate at [[r0]].' }, { k: 'Derived', t: 'Across that observed subset, [[mm]] of [[den]] checked units were mismatched ([[t]]).' }, { k: 'Unavailable', t: 'A Central-wide rate is not available: [[miss_n]] of [[all_n]] malls filed no report, and they are not estimated.' }],
+  ud25: [{ k: 'Observed', t: '[[t]] mismatched units were reported in September by the [[rep_n]] malls that filed a report.' }, { k: 'Observed', t: 'Gulf Gate Mall has the most at [[r0]].' }, { k: 'Unavailable', t: 'A portfolio total is not available: [[miss_n]] of [[all_n]] malls filed no report, and they are not estimated.' }],
+  ts: [{ k: 'Observed', t: 'Reported sales for lease T-31206 from January to September 2026 total [[t]].' }, { k: 'Observed', t: 'The highest month is March at [[r2]]; the lowest is September at [[r8]].' }]
+};
+const CARD = {
+  amd: { label: 'Renewal amendments 4 wk+', value: 't', subs: [['Rawdah Point Mall', 'r0'], ['Malls with none', 'zero_n']] },
+  mm: { label: 'Observed mismatch rate', value: 't', subs: [['Mismatched / checked', 'mm', 'den'], ['Malls reporting', 'rep_n', 'all_n']], badge: 'Partial' },
+  ud25: { label: 'Mismatched units · observed subset', value: 't', subs: [['Gulf Gate Mall (most)', 'r0'], ['Malls reporting', 'rep_n', 'all_n']], badge: 'Partial' },
+  ts: { label: 'Reported sales Jan–Sep', value: 't', subs: [['March (highest)', 'r2'], ['September (lowest)', 'r8']] }
+};
+
+/* DX5 · part 2: component registry, cenomi.presentation.v1 validator, sample payloads */
+const REGISTRY = {
+  kpi: { name: 'KPI card', shapes: ['categorical', 'time', 'matrix', 'stages', 'hierarchy', 'scalar'], maxRows: 0, needsTotal: true },
+  text: { name: 'Text', shapes: ['categorical', 'time', 'scalar'], maxRows: 0 },
+  table: { name: 'Table', shapes: ['categorical', 'time', 'matrix', 'stages', 'hierarchy', 'multi'], maxRows: 200 },
+  bar: { name: 'Bar chart (ranked)', shapes: ['categorical'], maxRows: 30 },
+  trend: { name: 'Trend (line)', shapes: ['time'], maxRows: 60 },
+  heatmap: { name: 'Heatmap', shapes: ['matrix'], maxRows: 120 },
+  funnel: { name: 'Funnel', shapes: ['stages'], maxRows: 8 },
+  treemap: { name: 'Treemap', shapes: ['hierarchy'], maxRows: 60 },
+  compare: { name: 'Comparison table', shapes: ['multi'], maxRows: 30 },
+  insight: { name: 'Insight panel', shapes: ['categorical', 'time', 'scalar'], maxRows: 0 },
+  notice: { name: 'Warning / partial notice', shapes: ['any'], maxRows: 0 },
+  unavailable: { name: 'Unavailable card', shapes: ['any'], maxRows: 0 },
+  evidence: { name: 'Evidence block', shapes: ['any'], maxRows: 0 },
+  method: { name: 'Method card', shapes: ['any'], maxRows: 0 },
+  records: { name: 'Drilldown records', shapes: ['records'], maxRows: 50 }
+};
+const ALT = { categorical: ['text', 'kpi', 'table', 'bar'], time: ['text', 'kpi', 'table', 'trend'], matrix: ['kpi', 'table', 'heatmap'], stages: ['kpi', 'table', 'funnel'], hierarchy: ['kpi', 'table', 'treemap'], multi: ['compare'] };
+const TEXT_FIELDS = ['title', 'subtitle', 'caption'];
+const LIMIT_BYTES = 65536;
+
+/* Validation (DXD-47 as amended by DXD-57). Result checks run first; only a presentation failure on a
+   resolved, authorized, verified result falls back to the deterministic table. */
+const CURRENT_DSV = DSV;
+function validatePayload(raw, viewer, opts) {
+  opts = opts || {};
+  const errs = []; const add = (step, code, path, msg) => errs.push({ step, code, path, msg });
+  const notes = [];
+  let p = raw;
+  if (typeof raw === 'string') { if (raw.length > LIMIT_BYTES) add('limits', 'payload_too_large', '$', 'Payload is ' + raw.length + ' bytes; the limit is ' + LIMIT_BYTES + '.'); try { p = JSON.parse(raw); } catch (e) { add('schema', 'invalid_json', '$', 'Not valid JSON: ' + e.message); return done(null, null, 'unreadable', 'withhold'); } }
+  if (!p || typeof p !== 'object' || Array.isArray(p)) { add('schema', 'not_object', '$', 'Payload must be an object.'); return done(p, null, 'unreadable', 'withhold'); }
+  function done(pp, res, cls, action) { return { ok: errs.length === 0, errs, notes, res, p: pp, failureClass: cls, action, auth: res ? authorize(viewer, res, { records: opts.records }) : null }; }
+  /* ---- result checks (analytical) ---- */
+  const res = typeof p.resultRef === 'string' ? RES[p.resultRef] : null;
+  if (!res) { add('resolve', 'result_not_found', 'resultRef', 'No validated result with this reference in the run (unknown or expired).'); }
+  let resultClass = null;
+  if (res) {
+    const au = authorize(viewer, res, { records: opts.records });
+    au.checks.filter((c) => !c.ok).forEach((c) => add('authorization', 'not_authorized', c.what, c.detail + '.'));
+    if (opts.stored) notes.push('Stored result revalidated on resume against the viewer’s current grants (' + VIEWERS[viewer].grantLabel + ').');
+    if (!au.ok) resultClass = 'authorization';
+    if (!resultClass) { const bad = verifyCalcs(res); bad.forEach((b) => add('calculation', 'calculation_unverified', b.split(':')[0], b)); if (bad.length) resultClass = 'calculation'; }
+    if (!resultClass && res.dataset.version !== CURRENT_DSV) { notes.push('Stale: generated with ' + res.dataset.version + '; current is ' + CURRENT_DSV + '. Shown as generated (DXD-33) with Re-run with current data.'); }
+    if (!resultClass && res.coverage.status === 'partial') notes.push('Partial data: rendered with partial labels; this is not a failure.');
+  }
+  /* ---- presentation checks ---- */
+  if (p.schema !== 'cenomi.presentation.v1') add('schema', 'schema_id', 'schema', 'Expected "cenomi.presentation.v1".');
+  ['component', 'resultRef', 'title'].forEach((k) => { if (typeof p[k] !== 'string' || !p[k]) add('schema', 'required', k, 'Required string.'); });
+  const allowedKeys = ['schema', 'component', 'resultRef', 'title', 'subtitle', 'caption', 'encoding', 'options', 'envelope', 'factRefs', 'interactions'];
+  Object.keys(p).forEach((k) => { if (allowedKeys.indexOf(k) < 0) add('schema', 'unknown_field', k, 'Field not in the schema' + (/^(values|data|rows|series|numbers)$/.test(k) ? ': numbers must come from the result, not the payload.' : '.')); });
+  const walk = (v, path) => { if (typeof v === 'string') { if (/<\s*[a-z!\/]|javascript:|\bon[a-z]+\s*=|https?:\/\//i.test(v)) add('safety', 'unsafe_string', path, 'Markup, script or links are not allowed in presentation text.'); } else if (v && typeof v === 'object') { Object.keys(v).forEach((k) => { if (k === '__proto__' || k === 'constructor' || k === 'prototype') add('safety', 'forbidden_key', path + '.' + k, 'Forbidden key.'); walk(v[k], path + '.' + k); }); } else if (typeof v === 'function') add('safety', 'function', path, 'Functions are not allowed.'); };
+  walk(p, '$');
+  const reg = REGISTRY[p.component];
+  if (p.component && !reg) add('registry', 'unknown_component', 'component', '“' + p.component + '” is not in the approved component registry.');
+  if (reg && res && reg.shapes.indexOf('any') < 0 && reg.shapes.indexOf(res.shape) < 0) add('registry', 'shape_mismatch', 'component', reg.name + ' cannot show a ' + res.shape + ' result (grain ' + res.grain.join(' × ') + '). Allowed: ' + (ALT[res.shape] || []).map((k) => REGISTRY[k].name).join(', ') + '.');
+  const enc = p.encoding || {};
+  if (res && enc.x && res.grain.indexOf(enc.x) < 0 && enc.x !== 'stage') add('registry', 'encoding_field', 'encoding.x', 'Field “' + enc.x + '” is not a dimension of the result (' + res.grain.join(', ') + ').');
+  if (enc.sort && ['value_desc', 'value_asc', 'label', 'natural'].indexOf(enc.sort) < 0) add('registry', 'encoding_sort', 'encoding.sort', 'Unknown sort.');
+  TEXT_FIELDS.forEach((f) => { if (typeof p[f] !== 'string') return; tokensIn(p[f]).forEach((k) => { if (!res || !res.facts[k]) add('grounding', 'unknown_fact', f, 'Token [[' + k + ']] is not a fact of the result.'); }); const stripped = p[f].replace(/\[\[[a-zA-Z0-9_]+\]\]/g, '').replace(/\b(19|20)\d{2}\b|\b(19|20)\d{2}-\d{2}\b|T-\d{5}|\d+ wk\+?|sd-\d{4}\.\d{2}\.\d{2}-\d{2}/g, ''); if (/\d/.test(stripped)) add('grounding', 'literal_number', f, 'Numbers in text must be fact tokens, e.g. [[t]]. Found a literal number.'); });
+  (p.factRefs || []).forEach((k, i) => { if (!res || !res.facts[k]) add('grounding', 'unknown_fact', 'factRefs[' + i + ']', 'Unknown fact “' + k + '”.'); });
+  if (res && p.envelope && typeof p.envelope === 'object') { const e = p.envelope; [['cls', 'cls'], ['dataset', 'dataset'], ['coverage', 'coverage'], ['scope', 'scope']].forEach(([k, rk]) => { if (e[k] !== undefined && e[k] !== res.envelope[rk]) add('envelope', 'envelope_mismatch', 'envelope.' + k, 'Says “' + e[k] + '”; the result says “' + res.envelope[rk] + '”.'); }); }
+  const o = p.options || {};
+  if (reg && o.maxRows !== undefined && reg.maxRows && o.maxRows > reg.maxRows) add('limits', 'max_rows', 'options.maxRows', reg.name + ' allows at most ' + reg.maxRows + ' rows; asked for ' + o.maxRows + '.');
+  if (typeof p.title === 'string' && p.title.length > 120) add('limits', 'title_length', 'title', 'Title longer than 120 characters.');
+  /* ---- classify ---- */
+  const presFail = errs.some((x) => PRES_STEPS.indexOf(x.step) >= 0);
+  if (!res) return done(p, null, 'unknown_result', 'withhold');
+  if (resultClass === 'authorization') return done(p, res, 'authorization', 'withhold');
+  if (resultClass === 'calculation') return done(p, res, 'calculation', 'calc_error');
+  const stale = res.dataset.version !== CURRENT_DSV;
+  if (presFail) return done(p, res, 'presentation', 'fallback');
+  return done(p, res, stale ? 'stale' : res.coverage.status === 'partial' ? 'partial' : 'none', 'render');
+}
+const RESULT_STEPS = ['resolve', 'authorization', 'calculation'];
+const PRES_STEPS = ['schema', 'registry', 'grounding', 'envelope', 'limits', 'safety'];
+const STEP_ORDER = RESULT_STEPS.concat(PRES_STEPS);
+const STEP_LBL = { resolve: 'R1 · Result resolves', authorization: 'R2 · Authorization (grants vs scope, dimensions, records)', calculation: 'R3 · Calculations verified', schema: 'P1 · Schema', registry: 'P2 · Registry', grounding: 'P3 · Grounding', envelope: 'P4 · Envelope', limits: 'P5 · Limits', safety: 'P6 · Safety' };
+const CLASS_LBL = { none: 'No failure', partial: 'Partial data · rendered with partial labels', stale: 'Stale data · rendered as generated, labelled stale', presentation: 'Presentation failure · deterministic table from the verified, authorized result', calculation: 'Calculation failure · error card, no values, no fallback', authorization: 'Authorization failure · withheld, nothing from the result is shown', unknown_result: 'Unknown or expired result · withheld', unreadable: 'Unreadable payload · no result can be identified · withheld' };
+
+const R_AMD = RES.amd.ref, R_MM = RES.mm.ref, R_TS = RES.ts.ref;
+const SAMPLES = [
+  { id: 'V1', ok: true, label: 'Valid · ranked bar', viewer: 'admin', p: { schema: 'cenomi.presentation.v1', component: 'bar', resultRef: R_AMD, title: 'Renewal amendments 4 wk+ by mall · Central', encoding: { x: 'mall', y: 'value', sort: 'value_desc' }, interactions: { select: true, drilldown: 'records' } } },
+  { id: 'V2', ok: true, label: 'Valid · KPI card, partial', viewer: 'admin', p: { schema: 'cenomi.presentation.v1', component: 'kpi', resultRef: R_MM, title: 'Observed mismatch rate · [[rep_n]] of [[all_n]] malls', envelope: { coverage: RES.mm.envelope.coverage } } },
+  { id: 'V3', ok: true, label: 'Valid · tenant trend', viewer: 'tenant', p: { schema: 'cenomi.presentation.v1', component: 'trend', resultRef: R_TS, title: 'Reported sales · T-31206 · 2026', encoding: { x: 'month', y: 'value', sort: 'natural' } } },
+  { id: 'I1', ok: false, label: 'Unknown component', viewer: 'admin', p: { schema: 'cenomi.presentation.v1', component: 'gauge3d', resultRef: R_AMD, title: 'Renewal backlog gauge' } },
+  { id: 'I2', ok: false, label: 'Line chart on a categorical grain', viewer: 'admin', p: { schema: 'cenomi.presentation.v1', component: 'trend', resultRef: R_AMD, title: 'Renewal amendments by mall', encoding: { x: 'mall', y: 'value' } } },
+  { id: 'I3', ok: false, label: 'Literal number in the title', viewer: 'admin', p: { schema: 'cenomi.presentation.v1', component: 'bar', resultRef: R_AMD, title: 'Rawdah Point has 12 renewals waiting (ungrounded on purpose)', encoding: { x: 'mall', y: 'value' } } },
+  { id: 'I4', ok: false, label: 'Payload carries its own numbers', viewer: 'admin', p: { schema: 'cenomi.presentation.v1', component: 'bar', resultRef: R_AMD, title: 'Renewal amendments by mall', values: [12, 6, 3] } },
+  { id: 'I5', ok: false, label: 'Hides partial coverage', viewer: 'admin', p: { schema: 'cenomi.presentation.v1', component: 'bar', resultRef: R_MM, title: 'Mismatch rate by mall', envelope: { coverage: 'Coverage: complete' } } },
+  { id: 'I6', ok: false, label: 'Outside the viewer’s access', viewer: 'tenant', p: { schema: 'cenomi.presentation.v1', component: 'bar', resultRef: R_AMD, title: 'Renewal amendments by mall' } },
+  { id: 'I7', ok: false, label: 'Markup in a label', viewer: 'admin', p: { schema: 'cenomi.presentation.v1', component: 'bar', resultRef: R_AMD, title: 'Renewals <img src=x onerror=alert(1)>' } },
+  { id: 'I8', ok: false, label: 'Token that is not a fact', viewer: 'admin', p: { schema: 'cenomi.presentation.v1', component: 'kpi', resultRef: R_AMD, title: 'Backlog [[vacancy_rate]]' } },
+  { id: 'I9', ok: false, label: 'Over the row limit', viewer: 'admin', p: { schema: 'cenomi.presentation.v1', component: 'bar', resultRef: R_AMD, title: 'All renewal amendments', options: { maxRows: 500 } } },
+  { id: 'I10', ok: false, label: 'Unknown or expired result', viewer: 'admin', p: { schema: 'cenomi.presentation.v1', component: 'table', resultRef: 'res_deadbeef', title: 'Old result' } },
+  { id: 'A1', ok: true, label: 'Regional manager · Central result', viewer: 'central', p: { schema: 'cenomi.presentation.v1', component: 'bar', resultRef: R_AMD, title: 'Renewal amendments 4 wk+ by mall · Central' }, note: 'Label equality would refuse this (“all regions” ≠ “Central”); the grants check passes because every mall is in Central.' },
+  { id: 'A2', ok: false, label: 'Regional manager · portfolio result', viewer: 'central', p: { schema: 'cenomi.presentation.v1', component: 'funnel', resultRef: RES.fn.ref, title: 'Leasing funnel · portfolio' } },
+  { id: 'A3', ok: false, label: 'Resumed after access narrowed', viewer: 'central', stored: true, p: { schema: 'cenomi.presentation.v1', component: 'bar', resultRef: RES.ud25.ref, title: 'Mismatched units by mall · portfolio' }, note: 'Stored yesterday for a portfolio admin; today the same person has Central grants only.' },
+  { id: 'C1', ok: false, label: 'Calculation not verified', viewer: 'admin', p: { schema: 'cenomi.presentation.v1', component: 'bar', resultRef: RES.mm_unverified.ref, title: 'Mismatch rate by mall' } },
+  { id: 'S1', ok: true, label: 'Stale stored answer', viewer: 'admin', stored: true, p: { schema: 'cenomi.presentation.v1', component: 'bar', resultRef: RES.amd_stale.ref, title: 'Renewal amendments 4 wk+ by mall · Central' } },
+  { id: 'F1', ok: false, label: 'Invalid payload on a 25-row partial result', viewer: 'admin', p: { schema: 'cenomi.presentation.v1', component: 'trend', resultRef: RES.ud25.ref, title: 'Mismatches by mall' }, note: 'Fallback keeps the row limit (paged), partial coverage, evidence and formatting.' }
+];
+
+/* Bounded representation-selection policy (DXD-51). Deterministic; the agent supplies the intent, the policy
+   returns the primary representation, the ordered alternates for View as, and a trace of the rules applied. */
+const INTENTS = { headline: 'How much / how many', ranking: 'Which is highest or lowest', trend: 'How has it changed', exact: 'Exact values', composition: 'What is it made of', concentration: 'Where is it concentrated', conversion: 'How much converts' };
+const INTENT_PREF = { headline: ['kpi', 'text', 'table', 'bar', 'trend'], ranking: ['bar', 'table', 'kpi', 'text'], trend: ['trend', 'table', 'kpi', 'text'], exact: ['table', 'bar', 'trend', 'kpi', 'text'], composition: ['treemap', 'table', 'kpi'], concentration: ['heatmap', 'table', 'kpi'], conversion: ['funnel', 'table', 'kpi'] };
+const BAR_LIMIT = { workspace: 15, expanded: 25, panel: 10, canvas: 8, phone: 8 };
+const PAGE_SIZE = { workspace: 25, expanded: 25, panel: 10, canvas: 8, phone: 8 };
+const COMPONENT_CAP = { panel: 3, workspace: 6, expanded: 6, canvas: 1, phone: 3 };
+function chooseRep(intent, res, opts) {
+  opts = opts || {}; const size = opts.size || 'workspace', a11y = opts.a11y || 'default', w = (SIZES[size] || { w: 760 }).w;
+  const trace = [], excluded = [];
+  let allowed = (ALT[res.shape] || ['table']).slice();
+  if (TEXT[res.id] === undefined) { allowed = allowed.filter((k) => k !== 'text'); excluded.push({ kind: 'text', rule: 'P3', why: 'no verified statements for this result' }); }
+  trace.push('P1 · Registry: ' + res.shape + ' results allow ' + allowed.map((k) => REGISTRY[k].name).join(', ') + '.');
+  let order = (INTENT_PREF[intent] || INTENT_PREF.exact).filter((k) => allowed.indexOf(k) >= 0);
+  allowed.forEach((k) => { if (order.indexOf(k) < 0) order.push(k); });
+  trace.push('P2 · Intent “' + INTENTS[intent] + '” prefers ' + order.map((k) => REGISTRY[k].name).join(' → ') + '.');
+  const nRows = res.rows ? res.rows.length : 0;
+  if (res.shape === 'time' && nRows < 3) { order = order.filter((k) => k !== 'trend'); excluded.push({ kind: 'trend', rule: 'P3', why: 'fewer than three time points' }); }
+  if (order.indexOf('bar') >= 0 && nRows > BAR_LIMIT[size]) trace.push('P3 · Cardinality: ' + nRows + ' rows exceed the bar limit at this width (' + BAR_LIMIT[size] + '); the bar shows a disclosed top-N and the table keeps every row.');
+  else trace.push('P3 · Data: ' + (nRows || (res.cells ? res.cells.length : res.stages ? res.stages.length : res.groups ? res.groups.length : 0)) + ' values; no rule removes a representation.');
+  if (w < 400 && order.indexOf('treemap') >= 0) trace.push('P4 · Width ' + w + ' px: treemap renders as a ranked list (DXD-53).');
+  else if (w <= 360 && order.indexOf('heatmap') >= 0 && res.colsL && res.colsL.length > 4) { order = ['table'].concat(order.filter((k) => k !== 'table')); trace.push('P4 · Width ' + w + ' px: heatmap with ' + res.colsL.length + ' columns is unreadable; table first.'); }
+  else trace.push('P4 · Width ' + w + ' px: no change.');
+  if (a11y === 'screen_reader' && order.indexOf('table') > 0) { order = ['table'].concat(order.filter((k) => k !== 'table')); trace.push('P5 · Accessibility preference: table first; charts stay available under View as.'); }
+  else trace.push('P5 · Accessibility: every representation has text values, names and states; no change.');
+  const cap = COMPONENT_CAP[size] || 3;
+  const compose = []; if (res.coverage.status === 'partial') compose.push('Partial notice'); if (order[0] !== 'kpi' && order.indexOf('kpi') >= 0 && compose.length < cap - 1) compose.push('KPI card'); compose.push(REGISTRY[order[0]].name + ' (primary)'); if (compose.length < cap) compose.push('Evidence block');
+  trace.push('P6 · Budget: ' + cap + ' generated components at this size (DXD-54); further supporting information via Open in workspace and the inspector.');
+  return { primary: order[0], order, excluded, trace, compose: compose.slice(0, cap), cap };
+}
+
+/* DX5 · part 3: state variants, sizes and view models for every registered component */
+const SIZES = { workspace: { label: 'Workspace · 760', w: 760, plot: 600 }, panel: { label: 'Panel · 420', w: 420, plot: 330 }, canvas: { label: 'Canvas tile · 360', w: 360, plot: 280 }, phone: { label: 'Phone · 358', w: 358, plot: 276 }, expanded: { label: 'Expanded · 1000', w: 1000, plot: 820 } };
+const VARIANTS = ['default', 'partial', 'zero', 'empty', 'undef', 'loading', 'error', 'unavailable'];
+const VLBL = { default: 'Default', partial: 'Partial', zero: 'Zero', empty: 'Empty', undef: 'Undefined ratio', loading: 'Loading', error: 'Error', unavailable: 'Unavailable' };
+const MIRAGE = D4.rows.find((r) => r.mall === 'Mirage Commons');
+/* Real zero cases: Mirage Commons has no pending amendments in any type or band. */
+const RES_ZERO_BAR = mkResult({ id: 'amd_zero', title: 'Pending amendments 4 wk+ by type · Mirage Commons', metric: RES.amd.metric, grain: ['amendment_type'], shape: 'categorical', dimLabel: 'Type', filters: { mall: 'Mirage Commons', band: '4 wk+', year: 2026 }, rows: ['Expansion', 'HoldOver', 'Renewal', 'Termination'].map((t) => ({ key: t, label: t, value: MIRAGE.am[t][0] })), total: { value: 0, label: 'Mirage Commons total' } });
+const RES_ZERO_HM = mkResult({ id: 'hm_zero', title: 'Pending amendments by type and age band · Mirage Commons', metric: RES.hm.metric, grain: RES.hm.grain, shape: 'matrix', rowsL: RES.hm.rowsL, colsL: RES.hm.colsL, filters: { mall: 'Mirage Commons', year: 2026 }, cells: RES.hm.rowsL.reduce((a, b, bi) => a.concat(RES.hm.colsL.map((t) => ({ row: b, col: t, value: MIRAGE.am[t][bi] }))), []), total: { value: 0, label: 'Mirage Commons total' } });
+/* Declared state fixtures: derived from the shared dataset and labelled as fixtures wherever the dataset has no natural case. */
+const FIX = {
+  undefRate: mkResult({ id: 'mm_undef', title: 'Unit mismatch rate · fixture with a zero denominator', cls: 'Derived', metric: RES.mm.metric, grain: ['mall'], shape: 'categorical', dimLabel: 'Mall', filters: { region: 'Central', month: '2026-09', fixture: 'zero units checked' }, rows: RES.mm.rows.filter((r) => r.flag !== 'no_report').slice(0, 4).map((r, i) => (i === 1 ? { key: r.key, label: r.label, value: null, unit: 'rate', flag: 'undefined', num: 0, den: 0 } : { key: r.key, label: r.label, value: r.value, unit: 'rate', num: r.num, den: r.den })), total: { value: null, unit: 'rate', flag: 'undefined', label: 'Rate' } }),
+  tsPartial: mkResult({ id: 'ts_partial', title: 'Reported sales · lease T-31206 · fixture: September not reported', metric: RES.ts.metric, grain: ['month'], shape: 'time', dimLabel: 'Month', filters: { lease: 'T-31206', year: 2026, fixture: 'September withheld' }, scopeKey: 'tenant', rows: RES.ts.rows.map((r) => (r.key === 'Sep' ? { key: r.key, label: r.label, value: null, unit: 'SAR', flag: 'no_report' } : { key: r.key, label: r.label, value: r.value, unit: 'SAR' })), coverage: { status: 'partial', note: '8 of 9 months reported (fixture)' }, total: { value: RES.ts.rows.filter((r) => r.key !== 'Sep').reduce((a, b) => a + b.value, 0), unit: 'SAR', label: 'Total Jan–Aug (observed)' } }),
+  hmPartial: mkResult({ id: 'hm_partial', title: 'Pending amendments by type and age band · fixture: 1 wk band not loaded', metric: RES.hm.metric, grain: RES.hm.grain, shape: 'matrix', rowsL: RES.hm.rowsL, colsL: RES.hm.colsL, filters: { region: 'Central', year: 2026, fixture: '1 wk band withheld' }, cells: RES.hm.cells.map((c) => (c.row === '1 wk' ? { row: c.row, col: c.col, value: null, flag: 'not_loaded' } : { row: c.row, col: c.col, value: c.value })), coverage: { status: 'partial', note: '4 of 5 age bands loaded (fixture)' } }),
+  fnPartial: mkResult({ id: 'fn_partial', title: 'Leasing funnel · fixture: contracts stage not loaded', metric: RES.fn.metric, grain: ['stage'], shape: 'stages', filters: { region: 'All', year: 2026, fixture: 'contracts withheld' }, stages: RES.fn.stages.slice(0, 3).map((s) => ({ label: s.label, value: s.value })), coverage: { status: 'partial', note: '3 of 4 stages loaded (fixture)' }, total: { value: RES.fn.stages[0].value, label: 'Lease requests' } }),
+  fnUndef: mkResult({ id: 'fn_undef', title: 'Leasing funnel · fixture: a stage with no records', metric: RES.fn.metric, grain: ['stage'], shape: 'stages', filters: { region: 'All', year: 2026, fixture: 'leads set to zero' }, stages: RES.fn.stages.map((s, i) => ({ label: s.label, value: i === 1 ? 0 : s.value })), total: { value: RES.fn.stages[0].value, label: 'Lease requests' } }),
+  tmPartial: mkResult({ id: 'tm_partial', title: 'Service requests · fixture: Complaints not loaded', metric: RES.tm.metric, grain: RES.tm.grain, shape: 'hierarchy', filters: { region: 'All', year: 2026, fixture: 'Complaints withheld' }, groups: RES.tm.groups.filter((g) => g.label !== 'Complaints').map((g) => ({ label: g.label, value: g.value, leaves: g.leaves.map((l) => ({ label: l.label, value: l.value })) })), coverage: { status: 'partial', note: '2 of 3 categories loaded (fixture)' } })
+};
+[RES_ZERO_BAR, RES_ZERO_HM].concat(Object.values(FIX)).forEach((r) => { RES[r.id] = r; RES[r.ref] = r; });
+const isFixture = (r) => !!(r && r.filters && r.filters.fixture);
+
+/* Which result each component shows for each variant. null = not applicable. */
+const CAT = [
+  ['kpi', 'KPI card', { default: 'amd', partial: 'mm', zero: 'amd_zero', empty: '*', undef: 'mm_undef', loading: '*', error: '*', unavailable: '*' }],
+  ['bar', 'Bar chart (ranked)', { default: 'amd', partial: 'mm', zero: 'amd_zero', empty: '*', undef: 'mm_undef', loading: '*', error: '*', unavailable: '*' }],
+  ['trend', 'Trend (line)', { default: 'ts', partial: 'ts_partial', zero: null, empty: '*', undef: null, loading: '*', error: '*', unavailable: '*' }],
+  ['table', 'Table', { default: 'amd', partial: 'mm', zero: 'amd_zero', empty: '*', undef: 'mm_undef', loading: '*', error: '*', unavailable: '*' }],
+  ['compare', 'Comparison table', { default: 'cmp', partial: 'cmp', zero: null, empty: '*', undef: null, loading: '*', error: '*', unavailable: '*' }],
+  ['heatmap', 'Heatmap', { default: 'hm', partial: 'hm_partial', zero: 'hm_zero', empty: '*', undef: null, loading: '*', error: '*', unavailable: '*' }],
+  ['funnel', 'Funnel', { default: 'fn', partial: 'fn_partial', zero: null, empty: '*', undef: 'fn_undef', loading: '*', error: '*', unavailable: '*' }],
+  ['treemap', 'Treemap', { default: 'tm', partial: 'tm_partial', zero: null, empty: '*', undef: null, loading: '*', error: '*', unavailable: '*' }],
+  ['insight', 'Insight panel', { default: 'amd', partial: 'mm', zero: 'amd_zero', empty: null, undef: null, loading: '*', error: null, unavailable: null }],
+  ['notice', 'Warning · partial coverage', { default: 'mm', partial: 'mm', zero: null, empty: null, undef: null, loading: null, error: null, unavailable: null }],
+  ['unavailable', 'Unavailable card', { default: 'mm', partial: null, zero: null, empty: null, undef: null, loading: null, error: null, unavailable: 'mm' }],
+  ['evidence', 'Evidence block', { default: 'amd', partial: 'mm', zero: null, empty: null, undef: null, loading: null, error: null, unavailable: null }],
+  ['method', 'Method card', { default: 'cmp', partial: null, zero: null, empty: null, undef: null, loading: null, error: null, unavailable: null }],
+  ['records', 'Drilldown records', { default: 'amd', partial: null, zero: null, empty: '*', undef: null, loading: '*', error: '*', unavailable: null }]
+];
+const CATK = {}; CAT.forEach((c) => { CATK[c[0]] = c; });
+
+/* Treemap layout (squarified), shared by groups and leaves. */
+function squarify(items, x, y, w, h) {
+  const out = []; const total = items.reduce((a, b) => a + b.v, 0); if (!total || w <= 0 || h <= 0) return out;
+  const scale = (w * h) / total; let rest = items.map((it) => Object.assign({}, it, { a: it.v * scale })); let X = x, Y = y, W = w, H = h;
+  const worst = (row, side) => { const s = row.reduce((a, b) => a + b.a, 0); const mx = Math.max.apply(null, row.map((r) => r.a)), mn = Math.min.apply(null, row.map((r) => r.a)); return Math.max((side * side * mx) / (s * s), (s * s) / (side * side * mn)); };
+  while (rest.length) {
+    const side = Math.min(W, H); let row = [rest[0]]; let i = 1;
+    while (i < rest.length && worst(row.concat([rest[i]]), side) <= worst(row, side)) { row.push(rest[i]); i++; }
+    const s = row.reduce((a, b) => a + b.a, 0);
+    if (W >= H) { const cw = s / H; let cy = Y; row.forEach((r) => { const ch = r.a / cw; out.push(Object.assign(r, { x: X, y: cy, w: cw, h: ch })); cy += ch; }); X += cw; W -= cw; }
+    else { const ch = s / W; let cx = X; row.forEach((r) => { const cw = r.a / ch; out.push(Object.assign(r, { x: cx, y: Y, w: cw, h: ch })); cx += cw; }); Y += ch; H -= ch; }
+    rest = rest.slice(i);
+  }
+  return out;
+}
+const px = (v) => v.toFixed(1) + 'px';
+const shadeOf = (v, vals) => { if (v === null || v === undefined) return 'hx'; if (!v) return 'h0'; const nz = vals.filter((x) => x > 0).sort((a, b) => a - b); const r = nz.indexOf(v) / Math.max(1, nz.length - 1); return 'h' + (1 + Math.min(4, Math.floor(r * 5))); };
+
+/* Build the view model for one component instance. ctx: { kind, res, size, variant, sort, sel, key, title } */
+function buildView(ctx) {
+  const kind = ctx.kind, sz = SIZES[ctx.size] || SIZES.workspace, narrow = sz.w <= 360, compact = sz.w <= 420;
+  const res = ctx.res; const st = ctx.variant || 'default';
+  const vm = { kind, key: ctx.key, size: ctx.size, title: ctx.title || (res ? res.title : REGISTRY[kind].name), metric: res ? res.metric.id + ' · v1 · ' + res.metric.kind : '', env: res ? res.envText : '', envCls: 'env' + (res && res.coverage.status !== 'complete' ? ' env-p' : ''), fixture: isFixture(res) ? 'State fixture: ' + res.filters.fixture + '. Derived from the shared dataset for design review.' : '', hasFixture: isFixture(res), boxCls: 'gc sz-' + ctx.size + ' k-' + kind + ' st-' + st, narrow, compact, stateLbl: VLBL[st], hasState: st !== 'default', stateCls: 'stl stl-' + st, hasSubset: false, subsetTxt: '', subsetJson: '', hasPager: false, isFallback: !!ctx.fallback, fallbackTxt: ctx.fallback || '', isStale: !!(res && res.dataset.version !== DSV), staleTxt: res && res.dataset.version !== DSV ? 'Stale · generated with ' + res.dataset.version + ' (data as of ' + (res.asOfLabel || res.dataset.asOf) + '). Current is ' + DSV + '. Shown exactly as generated; Re-run with current data creates a new answer.' : '', isCalcErr: false };
+  const act = ctx.sel && ctx.sel.active && ctx.sel.active.comp === ctx.key ? ctx.sel.active : null;
+  vm.hasSelNote = !!act && ['loading', 'error', 'empty'].indexOf(st) < 0; vm.selNote = act ? 'Selected: ' + act.label + ' · this investigation’s context · kept across views, sizes, moves and resume' : '';
+  ['isKpi', 'isBar', 'isTrend', 'isTable', 'isCompare', 'isHeat', 'isFunnel', 'isTree', 'isTreeList', 'isInsight', 'isNotice', 'isUna', 'isEvid', 'isMethod', 'isRec', 'isText', 'isLoading', 'isError', 'isEmpty'].forEach((f) => { vm[f] = false; });
+  const G = (k) => (ctx.onSel ? () => ctx.onSel(k) : () => {});
+  const facts = []; const F = (fid) => { if (fid && res && res.facts[fid]) { facts.push(fid); return res.facts[fid].fmt; } return ''; };
+  vm.factList = facts;
+  const selOf = (k) => (ctx.sel && ctx.sel.active && ctx.sel.active.comp === ctx.key && ctx.sel.active.k === k ? 'active' : ctx.sel && ctx.sel.kept[ctx.key] && ctx.sel.kept[ctx.key].k === k ? 'kept' : '');
+  const selTxt = (s) => (s === 'active' ? ' (selected, investigation context)' : s === 'kept' ? ' (kept selection)' : '');
+  if (ctx.calcErr) { vm.isCalcErr = true; vm.calcTitle = 'This value could not be verified'; vm.calcTxt = 'The evidence verifier could not confirm how the values were calculated, so none are shown and no fallback table is drawn. The analytics step can be re-run; the answer records the failure.'; vm.calcItems = ctx.calcErr.slice(0, 4); vm.env = 'Calculation failure · ' + res.envelope.metric + ' · ' + res.envelope.filters + ' · ' + res.envelope.scope + ' · ' + res.envelope.dataset; vm.envCls = 'env env-p'; return vm; }
+  if (st === 'loading') { vm.isLoading = true; vm.loadTxt = 'Loading · ' + (kind === 'records' ? 'get_underlying_records' : 'get_breakdown') + ' running. No values are shown until the result is validated.'; vm.env = 'Envelope arrives with the validated result'; return vm; }
+  if (st === 'error') { vm.isError = true; vm.errTitle = 'This visual could not be loaded'; vm.errTxt = 'The tool failed twice (service unavailable). Nothing is estimated. Retry this step runs only this tool and adds a new answer version; the current answer is kept.'; vm.env = 'No result · request ref req_' + hsh(ctx.key || kind); return vm; }
+  if (st === 'empty') { vm.isEmpty = true; vm.emptyTitle = 'No records match these filters'; vm.emptyTxt = 'Empty is not zero: no records exist for this combination of filters, so there is nothing to count. Change a filter or ask the agent to widen the scope (within your access).'; vm.env = res ? res.envText.replace(/Coverage: [^·]*$/, 'Coverage: complete · 0 rows') : ''; return vm; }
+  if (kind === 'unavailable' || st === 'unavailable') { vm.isUna = true; vm.unaTitle = kind === 'unavailable' ? 'Central-wide mismatch rate · not available' : 'This value is not available'; vm.unaValue = '—'; vm.unaTxt = kind === 'unavailable' ? 'Not available: ' + F('miss_n') + ' of ' + F('all_n') + ' Central malls filed no September report. Not estimated.' : 'The dataset has no source for this value and no approved proxy. Nothing is estimated.'; vm.unaAlt = kind === 'unavailable' ? 'Available instead: the observed subset rate (' + F('t') + ', ' + F('rep_n') + ' malls).' : 'Related information may follow as a separate, labelled component.'; vm.title = vm.unaTitle; vm.env = kind === 'unavailable' ? ['Unavailable', res.envelope.metric, res.envelope.filters, res.envelope.scope, res.envelope.freshness, res.envelope.dataset, res.envelope.coverage].join(' · ') : ['Unavailable', res.envelope.metric, res.envelope.filters, res.envelope.scope, res.envelope.freshness, res.envelope.dataset, 'Coverage: none — no source for this value'].join(' · '); vm.envCls = 'env env-p'; return vm; }
+  if (kind === 'kpi') {
+    vm.isKpi = true; const tot = res.total || {}; vm.kpiValFid = tot.fid || ''; vm.kpiVal = tot.fid ? F(tot.fid) : '—';
+    vm.kpiLbl = res.total ? res.total.label : ''; vm.kpiCls = 'kpi' + (res.coverage.status === 'partial' ? ' kpi-p' : '') + (tot.flag === 'undefined' ? ' kpi-u' : '');
+    const top = res.rows ? res.rows.filter((r) => r.value !== null && r.value !== undefined)[0] : null;
+    vm.subs = [];
+    if (CARD[res.id]) vm.subs = CARD[res.id].subs.map((x) => ({ l: x[0], a: F(x[1]), af: x[1], b: x[2] ? F(x[2]) : '', bf: x[2] || '', sep: x[2] ? ' of ' : '' }));
+    else if (tot.flag === 'undefined') vm.subs = [{ l: 'Why', a: 'Units checked is 0, so the rate is not defined (not 0%).', af: '', b: '', bf: '', sep: '' }];
+    else if (top && top.value > 0) vm.subs = [{ l: top.label, a: F(top.fid), af: top.fid, b: '', bf: '', sep: '' }];
+    else if (res.rows && res.rows.every((r) => r.value === 0)) vm.subs = [{ l: 'Every type', a: 'none pending (zero, not missing)', af: '', b: '', bf: '', sep: '' }];
+    vm.subs.forEach((s) => { s.hasB = !!s.b; });
+    vm.badge = res.coverage.status === 'partial' ? 'Partial · ' + res.coverage.note : tot.flag === 'undefined' ? 'Not defined' : res.cls === 'Derived' ? 'Derived' : '';
+    vm.hasBadge = !!vm.badge; vm.badgeCls = 'bdg' + (res.coverage.status === 'partial' ? ' bdg-p' : tot.flag === 'undefined' ? ' bdg-u' : ' bdg-d');
+    return vm;
+  }
+  if (kind === 'text') { vm.isText = true; vm.stmts = (TEXT[res.id] || []).map((s) => ({ k: s.k, cls: 'stx sx-' + slug(s.k), parts: s.t.split(/(\[\[[a-zA-Z0-9_]+\]\])/).filter((x) => x).map((x) => { const m = x.match(/^\[\[([a-zA-Z0-9_]+)\]\]$/); return m ? { t: F(m[1]), fid: m[1], isF: true, notF: false } : { t: x, fid: '', isF: false, notF: true }; }) })); return vm; }
+  if (kind === 'insight') {
+    vm.isInsight = true; const id = res.id;
+    const base = TEXT[id] || [];
+    const extra = id === 'amd' ? [{ k: 'Hypothesis', t: 'One approval queue at Rawdah Point may be slowing renewals. The data shows the backlog; it does not show why.' }, { k: 'Recommendation', t: 'Start with the Rawdah Point renewals; the oldest are in the records.' }] : id === 'mm' ? [{ k: 'Recommendation', t: 'Collect the missing September reports before comparing malls.' }] : [{ k: 'Observed', t: 'No renewal amendments are pending at Mirage Commons.' }];
+    vm.stmts = (id === 'amd_zero' ? [] : base).concat(extra).map((s) => ({ k: s.k, cls: 'stx sx-' + slug(s.k), parts: s.t.split(/(\[\[[a-zA-Z0-9_]+\]\])/).filter((x) => x).map((x) => { const m = x.match(/^\[\[([a-zA-Z0-9_]+)\]\]$/); return m ? { t: F(m[1]), fid: m[1], isF: true, notF: false } : { t: x, fid: '', isF: false, notF: true }; }) }));
+    vm.title = 'Insight · ' + (id === 'amd' ? 'renewal backlog' : id === 'mm' ? 'unit discrepancy' : 'Mirage Commons'); return vm;
+  }
+  if (kind === 'notice') { vm.isNotice = true; vm.title = 'Partial coverage'; vm.ntitle = F('rep_n') + ' of ' + F('all_n') + ' Central malls filed a September report'; vm.ntxt = 'Missing: ' + res.coverage.missing.join(', ') + '. Their rates show as “No report”. Totals use the observed subset only; nothing is estimated.'; return vm; }
+  if (kind === 'evidence') {
+    vm.isEvid = true; vm.title = 'Evidence · ' + res.title; vm.ev = [['Class', res.envelope.cls], ['Metric', res.envelope.metric + ' (' + res.metric.kind + ')'], ['Filters', res.envelope.filters], ['Access', res.envelope.scope], ['Freshness', res.envelope.freshness], ['Dataset', res.envelope.dataset], ['Coverage', res.envelope.coverage], ['Result', res.ref]].map(([k, v]) => ({ k, v }));
+    vm.evf = Object.values(res.facts).filter((f) => f.flag !== 'withheld').slice(0, compact ? 4 : 8).map((f) => ({ id: '⟦' + f.id + '⟧', fid: f.id, v: F(f.id), l: f.label + (f.kind === 'derived' ? ' · derived' : ' · observed') }));
+    vm.calcs = Object.values(res.facts).filter((f) => f.kind === 'derived').slice(0, compact ? 2 : 4).map((f) => ({ id: '⟦' + f.id + '⟧', v: f.fmt, m: f.calc.method + ' · ' + f.calc.formula, ops: f.calc.operands.slice(0, 4).map((o) => o.label + ' = ' + fmtValue(o.value, '', '')).join(' · ') + (f.calc.operands.length > 4 ? ' · …' : ''), meta: 'period ' + f.calc.periods + ' · ' + f.calc.metric + ' · evidence ' + f.calc.evidence.join(', ') + ' · ' + f.calc.status })); vm.hasCalcs = vm.calcs.length > 0; return vm;
+  }
+  if (kind === 'method') { vm.isMethod = true; vm.title = 'How this combined score is built (shown only when the user asks for one)'; vm.items = [['Weighting', 'Equal: each KPI counts once.'], ['Normalisation', 'Rank within Central, 1 = most attention needed; ties share the average rank. Magnitudes are discarded.'], ['Missing data', 'Mean of the ranks available; malls without a September report are ranked on three KPIs.'], ['Limitations', 'A large gap and a small gap count the same. Read with the comparison table.']].map(([k, v]) => ({ k, v })); vm.env = res.envText.replace(res.envelope.metric, 'derived.mean_rank v1'); return vm; }
+  if (kind === 'records') {
+    vm.isRec = true; vm.title = 'Records · renewal amendments 4 wk+ · Central';
+    vm.rcols = RECORDS.cols; vm.rrows = RECORDS.rows.map((r) => ({ cells: r, label: r[0] + ', ' + r[1] + ', age ' + r[4] + ' days' })); vm.rnote = 'Showing ' + F('rec_n') + ' of ' + F('t') + ' records, oldest first. Same population as the result (resultRef ' + res.ref + ').'; vm.env = res.envText; return vm;
+  }
+  /* sortable series kinds */
+  const sortRows = (rows) => { const s = ctx.sort || 'value_desc'; const a = rows.slice(); if (s === 'natural') return a; if (s === 'label') return a.sort((x, y) => x.label.localeCompare(y.label)); const val = (r) => (r.value === null || r.value === undefined ? -Infinity : r.value); return a.sort((x, y) => (s === 'value_asc' ? val(x) - val(y) : val(y) - val(x)) || x.label.localeCompare(y.label)); };
+  if (kind === 'bar') {
+    vm.isBar = true; const all = sortRows(res.rows); const lim = ctx.limit || BAR_LIMIT[ctx.size] || 15; const rows = all.slice(0, lim); const mx = Math.max.apply(null, all.map((r) => r.value || 0)) || 1;
+    if (all.length > lim) { vm.hasSubset = true; vm.subsetTxt = 'Subset · top ' + lim + ' of ' + all.length + ' ' + (res.dimLabel || 'item').toLowerCase() + 's by ' + ({ value_desc: 'highest value', value_asc: 'lowest value', label: 'name', natural: 'natural order' }[ctx.sort || 'value_desc']) + '. The other ' + (all.length - lim) + ' are in the table view; totals cover all rows.'; vm.subsetJson = JSON.stringify({ kind: 'top_n', shown: rows.map((x) => x.key), total: all.length, sort: ctx.sort || 'value_desc' }); }
+    else vm.subsetJson = JSON.stringify({ kind: 'complete', shown: rows.map((x) => x.key), total: all.length });
+    vm.rows = rows.map((r) => { const s = selOf(r.key); const off = r.value === null; return { k: r.key, go: off ? () => {} : G(r.key), label: narrow ? short(r.label) : r.label, v: F(r.fid), fid: r.fid, w: off ? '0%' : ((r.value || 0) / mx * 100).toFixed(2) + '%', cls: 'bar' + (s ? ' sel-' + s : '') + (off ? ' bar-off' : '') + (r.value === 0 ? ' bar-zero' : ''), pressed: s === 'active' ? 'true' : 'false', aria: r.label + ': ' + res.facts[r.fid].fmt + (r.flag === 'no_report' ? '. No report, not zero.' : r.flag === 'undefined' ? '. Rate not defined: zero units checked.' : '') + selTxt(s), sr: selTxt(s), hasDen: r.did !== undefined && !compact, den: r.did ? F(r.nid) + ' / ' + F(r.did) : '' }; });
+    vm.axis = res.metric.unit === 'rate' ? 'Share of checked units' : 'Count of ' + res.metric.unit;
+    vm.totLine = res.total ? res.total.label + ': ' + F(res.total.fid) : ''; vm.hasTot = !!res.total;
+    return vm;
+  }
+  if (kind === 'table') {
+    vm.isTable = true; let rows = sortRows(res.rows || []);
+    if (res.stages) rows = res.stages.map((s) => ({ key: s.label, label: s.label, value: s.value, fid: s.fid }));
+    if (res.groups) rows = res.groups.reduce((a, g) => a.concat(g.leaves.map((l) => ({ key: g.label + '|' + l.label, label: g.label + ' · ' + l.label, value: l.value, fid: l.fid }))), []);
+    if (res.cmpRows) rows = res.cmpRows.map((x) => ({ key: x.key, label: x.label, value: null, fid: x.fids[0], cmp: x }));
+    const ps = ctx.pageSize || PAGE_SIZE[ctx.size] || 25; const pages = Math.max(1, Math.ceil(rows.length / ps)); const pg = Math.min(pages - 1, Math.max(0, ctx.page || 0)); const totalRows = rows.length; const pageRows = rows.slice(pg * ps, pg * ps + ps);
+    vm.subsetJson = JSON.stringify({ kind: pages > 1 ? 'page' : 'complete', shown: pageRows.map((x) => x.key), total: totalRows, page: pg + 1, pages });
+    if (pages > 1) { vm.hasPager = true; vm.hasSubset = true; vm.subsetTxt = 'Page ' + (pg + 1) + ' of ' + pages + ' · rows ' + (pg * ps + 1) + '–' + (pg * ps + pageRows.length) + ' of ' + totalRows + '. Totals cover all rows.'; vm.prevDis = pg === 0 ? 'true' : 'false'; vm.nextDis = pg >= pages - 1 ? 'true' : 'false'; vm.prev = ctx.onPage ? () => ctx.onPage(-1) : () => {}; vm.next = ctx.onPage ? () => ctx.onPage(1) : () => {}; }
+    rows = pageRows;
+    vm.cols = [res.dimLabel || (res.stages ? 'Stage' : res.groups ? 'Category · type' : 'Item'), res.metric.unit === 'rate' ? 'Rate' : res.metric.unit === 'SAR' ? 'SAR' : 'Count'].concat(rows.some((r) => r.did !== undefined) ? ['Mismatched', 'Checked'] : []);
+    if (res.cmpRows) vm.cols = ['Mall'].concat(res.cmpCols.map((c) => c[0]));
+    vm.trows = rows.map((r) => { const s = selOf(r.key); const cells = r.cmp ? r.cmp.fids.map((fid) => ({ v: F(fid), fid })) : [{ v: F(r.fid), fid: r.fid }]; if (!r.cmp && vm.cols.length > 2) cells.push({ v: r.nid ? F(r.nid) : '—', fid: r.nid || '' }, { v: r.did ? F(r.did) : '—', fid: r.did || '' }); return { k: r.key, go: G(r.key), label: r.label, cells, cls: 'trw' + (s ? ' sel-' + s : ''), pressed: s === 'active' ? 'true' : 'false', sr: selTxt(s) }; });
+    vm.totLine = res.total ? res.total.label + ': ' + F(res.total.fid) : ''; vm.hasTot = !!res.total; vm.stack = narrow;
+    if (res.cells) { vm.cols = ['Age band'].concat(res.colsL); vm.trows = res.rowsL.map((b) => ({ k: b, label: b, cells: res.colsL.map((c) => { const cc = res.cells.find((x) => x.row === b && x.col === c); return { v: F(cc.fid), fid: cc.fid }; }), cls: 'trw', pressed: 'false', sr: '', go: () => {} })); }
+    return vm;
+  }
+  if (kind === 'trend') {
+    vm.isTrend = true; const rows = res.rows; const W = sz.plot, H = compact ? 120 : 150; const vals = rows.map((r) => r.value).filter((v) => v !== null);
+    const mx = Math.max.apply(null, vals), mn = 0; const step = W / (rows.length - 1);
+    const pts = rows.map((r, i) => ({ r, x: i * step, y: r.value === null ? null : H - ((r.value - mn) / (mx - mn)) * (H - 10) }));
+    vm.plotW = px(W); vm.plotH = px(H);
+    vm.segs = []; for (let i = 1; i < pts.length; i++) { const a = pts[i - 1], b = pts[i]; if (a.y === null || b.y === null) continue; const dx = b.x - a.x, dy = b.y - a.y; vm.segs.push({ st: 'left: ' + px(a.x) + '; top: ' + px(a.y) + '; width: ' + px(Math.sqrt(dx * dx + dy * dy)) + '; transform: rotate(' + (Math.atan2(dy, dx) * 180 / Math.PI).toFixed(2) + 'deg)' }); }
+    vm.pts = pts.map((p) => { const s = selOf(p.r.key); const off = p.y === null; return { k: p.r.key, go: G(p.r.key), st: 'left: ' + px(p.x) + '; top: ' + px(off ? H - 4 : p.y), cls: 'pt' + (s ? ' sel-' + s : '') + (off ? ' pt-off' : '') + (p.r.key === res.hi ? ' pt-hi' : ''), aria: p.r.label + ' 2026: ' + res.facts[p.r.fid].fmt + (off ? '. Not reported, not zero.' : '') + selTxt(s), pressed: s === 'active' ? 'true' : 'false', fid: p.r.fid, v: F(p.r.fid) }; });
+    vm.xl = rows.map((r, i) => ({ t: narrow && i % 2 ? '' : r.label, st: 'left: ' + px(i * step) }));
+    vm.ymax = 'Scale from zero to the highest month'; vm.ymaxNote = '';
+    vm.totLine = res.total.label + ': ' + F(res.total.fid);
+    vm.vals = rows.map((r) => ({ m: r.label, v: F(r.fid), fid: r.fid })); vm.showVals = !compact;
+    vm.subsetJson = JSON.stringify({ kind: 'complete', shown: rows.map((x) => x.key), total: rows.length, sort: 'natural' });
+    return vm;
+  }
+  if (kind === 'heatmap') {
+    vm.isHeat = true; const vals = res.cells.map((c) => c.value).filter((v) => v !== null);
+    vm.hcols = res.colsL.map((c) => (narrow ? c.slice(0, 4) + (c.length > 4 ? '.' : '') : c)); vm.hcolsFull = res.colsL;
+    vm.hrows = res.rowsL.map((b) => ({ b, cells: res.colsL.map((c) => { const cc = res.cells.find((x) => x.row === b && x.col === c); const k = c + '|' + b; const s = selOf(k); return { k, go: G(k), v: F(cc.fid), fid: cc.fid, cls: 'hc ' + shadeOf(cc.value, vals) + (s ? ' sel-' + s : ''), aria: c + ', ' + b + ': ' + res.facts[cc.fid].fmt + (cc.flag === 'not_loaded' ? '. Not loaded, not zero.' : '') + selTxt(s), pressed: s === 'active' ? 'true' : 'false' }; }) }));
+    vm.hlegend = 'Darker = more amendments (rank-based shading; the number is always printed).';
+    return vm;
+  }
+  if (kind === 'funnel') {
+    vm.isFunnel = true; const mx = res.stages[0].value || 1;
+    vm.stages = res.stages.map((s, i) => { const k = s.label; const se = selOf(k); return { k, go: G(k), label: s.label, v: F(s.fid), fid: s.fid, w: Math.max(2, s.value / mx * 100).toFixed(2) + '%', conv: i ? F(s.cid) : '', cfid: i ? s.cid : '', hasConv: i > 0, convLbl: i ? 'of ' + res.stages[i - 1].label.toLowerCase() : '', cls: 'fs' + (se ? ' sel-' + se : '') + (s.value === 0 ? ' fs-zero' : ''), aria: s.label + ': ' + res.facts[s.fid].fmt + (i ? ', ' + res.facts[s.cid].fmt + ' of ' + res.stages[i - 1].label : '') + selTxt(se), pressed: se === 'active' ? 'true' : 'false' }; });
+    vm.missing = res.coverage.status === 'partial' ? 'Stage not loaded: Contracts. The funnel stops at the last loaded stage; nothing is estimated.' : ''; vm.hasMissing = !!vm.missing; vm.left = narrow;
+    return vm;
+  }
+  if (kind === 'treemap') {
+    if (narrow) { vm.isTreeList = true; vm.tlist = res.groups.reduce((a, g) => a.concat(g.leaves.map((l) => ({ g: g.label, l }))), []).sort((a, b) => b.l.value - a.l.value).map((x) => { const k = x.g + '|' + x.l.label; const s = selOf(k); return { k, go: G(k), label: x.l.label, g: x.g, v: F(x.l.fid), fid: x.l.fid, cls: 'tli' + (s ? ' sel-' + s : ''), pressed: s === 'active' ? 'true' : 'false', aria: x.g + ' · ' + x.l.label + ': ' + res.facts[x.l.fid].fmt + selTxt(s) }; }); vm.tnote = 'Below 400 px the treemap becomes a ranked list (same result, same selection keys).'; return vm; }
+    vm.isTree = true; const W = sz.plot, H = compact ? 220 : 300; vm.tw = px(W); vm.th = px(H);
+    const gl = squarify(res.groups.map((g) => ({ v: g.value, g })), 0, 0, W, H); vm.tiles = [];
+    vm.gl = gl.map((r) => ({ label: r.g.label, v: F(r.g.fid), fid: r.g.fid, st: 'left: ' + px(r.x) + '; top: ' + px(r.y) + '; width: ' + px(r.w) + '; height: ' + px(r.h) }));
+    gl.forEach((r, gi) => { const pad = 18; squarify(r.g.leaves.map((l) => ({ v: l.value, l })), r.x + 2, r.y + pad, Math.max(0, r.w - 4), Math.max(0, r.h - pad - 2)).forEach((t) => { const k = r.g.label + '|' + t.l.label; const s = selOf(k); const big = t.w > 70 && t.h > 34; vm.tiles.push({ k, go: G(k), label: big ? t.l.label : '', v: big ? F(t.l.fid) : '', fid: big ? t.l.fid : '', st: 'left: ' + px(t.x) + '; top: ' + px(t.y) + '; width: ' + px(Math.max(0, t.w - 2)) + '; height: ' + px(Math.max(0, t.h - 2)), cls: 'tt tg' + gi + (s ? ' sel-' + s : ''), aria: r.g.label + ' · ' + t.l.label + ': ' + res.facts[t.l.fid].fmt + selTxt(s), pressed: s === 'active' ? 'true' : 'false' }); if (!big) F(t.l.fid); }); });
+    vm.tnote = 'Small tiles print no label; every value is in the table view and the accessible name.'; return vm;
+  }
+  if (kind === 'compare') {
+    vm.isCompare = true; vm.ccols = res.cmpCols.map((c) => c[0]);
+    vm.crows = res.cmpRows.map((r) => { const s = selOf(r.key); return { k: r.key, go: G(r.key), label: r.label, cls: 'trw' + (s ? ' sel-' + s : ''), pressed: s === 'active' ? 'true' : 'false', sr: selTxt(s), cells: r.fids.map((fid, j) => ({ v: F(fid), fid, lead: !!r.lead[j], col: res.cmpCols[j][0] })) }; });
+    vm.cnote = 'No combined score. “Leader” marks the highest value per KPI.'; vm.stack = narrow; return vm;
+  }
+  return vm;
+}
+/* Implementation priority for the five-day POC (DXD-62). All 15 stay in the registry; an unbuilt kind renders through the deterministic table. */
+const TIER = { kpi: ['Core', 'core'], text: ['Core', 'core'], table: ['Core', 'core'], bar: ['Core', 'core'], trend: ['Core', 'core'], notice: ['Core', 'core'], unavailable: ['Core', 'core'], evidence: ['Core', 'core'], records: ['Core', 'core'], insight: ['Core', 'core'], compare: ['Specialized', 'spec'], heatmap: ['Specialized', 'spec'], funnel: ['Specialized', 'spec'], treemap: ['Specialized', 'spec'], method: ['Specialized', 'spec'] };
+
+/* DX5 · part 4: the board component (lab, catalogue, validator, drilldown inspector) */
+function factOfKey(res, k) {
+  let fid = null; if (res.rows) { const r = res.rows.find((x) => x.key === k); if (r) fid = r.fid; } if (res.cells) { const c = res.cells.find((x) => x.col + '|' + x.row === k); if (c) fid = c.fid; } if (res.stages) { const s = res.stages.find((x) => x.label === k); if (s) fid = s.fid; } if (res.groups) res.groups.forEach((g) => g.leaves.forEach((l) => { if (g.label + '|' + l.label === k) fid = l.fid; })); if (res.cmpRows) { const r = res.cmpRows.find((x) => x.key === k); if (r) fid = r.fids[0]; }
+  return fid;
+}
+function selRef5(compKey, res, k) {
+  const dimName = res.grain.length === 2 && k.indexOf('|') > 0 ? res.grain.slice().reverse() : res.grain;
+  const parts = k.split('|'); const dims = dimName.map((d, i) => ({ name: d, value: parts[i] !== undefined ? parts[i] : k }));
+  const fid = factOfKey(res, k); const f = fid ? res.facts[fid] : null;
+  return { schema: 'selection_ref.v1', selectionId: 'sel_' + hsh(compKey + '|' + k), surface: 'genui', componentId: 'genui:dx5/' + compKey, threadId: 't_dx5_review', metric: { id: res.metric.id, version: 'v1', kind: res.metric.kind }, grain: res.grain.join(' × '), dimensions: dims, value: f ? { number: f.v, unit: f.unit, display: f.fmt, flag: f.flag || null, fact: fid, kind: f.kind } : null, filters: res.filters, scope: res.scope, dataset: { version: res.dataset.version, asOf: res.dataset.asOf, resultRef: res.ref, validated: true }, coverage: res.coverage.status, role: 'active' };
+}
+const sortKeys = (res, sort) => { const a = res.rows.slice(); if (sort === 'natural') return a.map((x) => x.key); if (sort === 'label') return a.sort((x, y) => x.label.localeCompare(y.label)).map((x) => x.key); const val = (r) => (r.value === null || r.value === undefined ? -Infinity : r.value); return a.sort((x, y) => (sort === 'value_asc' ? val(x) - val(y) : val(y) - val(x)) || x.label.localeCompare(y.label)).map((x) => x.key); };
+const INTENT_BY_SHAPE = { categorical: ['ranking', 'headline', 'exact'], time: ['trend', 'headline', 'exact'] };
+const CONTAINERS = [['panel', 'Docked panel', 'panel'], ['workspace', 'Workspace', 'workspace'], ['expanded', 'Expanded', 'expanded']];
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    const s0 = SAMPLES[0];
+    this.state = { v: 0, tab: 'lab', lab: { res: 'amd', size: 'workspace', sort: 'value_desc', intent: 'ranking', a11y: 'default' }, cat: { comp: 'bar', variant: 'default', size: 'workspace', view: '', matrix: false, container: 'workspace', resumeAs: 'admin', withheld: false }, val: { sample: s0.id, viewer: s0.viewer, stored: false, out: validatePayload(JSON.parse(JSON.stringify(s0.p)), s0.viewer), text: JSON.stringify(s0.p, null, 2) }, check: null, cont: [] };
+    this.sel = { active: null, kept: {} }; this.insp = null; this.live = ''; this.pages = {}; this.snap = null;
+  }
+  componentDidMount() {
+    this.onKey = (e) => {
+      const t = e.target; if (!t || !t.closest) return;
+      if (e.key === 'Escape') { if (this.state.cat.container === 'expanded' && this.state.tab === 'catalogue') { this.move('workspace'); return; } if (this.sel.active) { this.sel.active = null; this.insp = null; this.live = 'Selection cleared'; this.bump(); } return; }
+      const grp = t.closest('[data-dx5-marks]'); if (!grp || !t.hasAttribute('data-mark')) return;
+      const keys = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1, Home: -999, End: 999 }; if (!(e.key in keys)) return;
+      const marks = Array.from(grp.querySelectorAll('[data-mark]')); const i = marks.indexOf(t); let j = keys[e.key] === -999 ? 0 : keys[e.key] === 999 ? marks.length - 1 : i + keys[e.key]; j = Math.max(0, Math.min(marks.length - 1, j)); if (marks[j]) { marks[j].focus(); e.preventDefault(); }
+    };
+    document.addEventListener('keydown', this.onKey);
+    setTimeout(() => this.runCheck(), 400);
+  }
+  componentWillUnmount() { document.removeEventListener('keydown', this.onKey); }
+  bump(o) { this.setState(Object.assign({ v: this.state.v + 1 }, o || {})); }
+  select(compKey, res, k) {
+    const a = this.sel.active; if (a && a.comp !== compKey) this.sel.kept[a.comp] = a;
+    if (a && a.comp === compKey && a.k === k) { this.sel.active = null; this.insp = null; this.live = 'Selection cleared'; this.bump(); return; }
+    const ref = selRef5(compKey, res, k); this.sel.active = { comp: compKey, k, ref, res, label: k.replace('|', ' · ') + (ref.value ? ' · ' + ref.value.display : '') };
+    delete this.sel.kept[compKey]; this.insp = { ref, res, k }; this.live = 'Selected ' + this.sel.active.label + '. Drilldown open in the inspector.'; this.bump();
+  }
+  onSel(compKey, res) { return (k) => this.select(compKey, res, k); }
+  onPage(key) { return (d) => { this.pages[key] = Math.max(0, (this.pages[key] || 0) + d); this.live = 'Page ' + (this.pages[key] + 1); this.bump(); }; }
+  view(kind, res, opt) { return buildView(Object.assign({ kind, res, sel: this.sel, onSel: this.onSel(opt.key, res), page: this.pages[opt.key] || 0, onPage: this.onPage(opt.key) }, opt)); }
+  /* ---------- lab invariance check (subset-aware) ---------- */
+  runCheck() {
+    const lab = this.state.lab; const res = RES[lab.res]; const out = [];
+    const panes = Array.from(document.querySelectorAll('[data-rep]'));
+    const seen = {}; let allOk = panes.length === 4;
+    panes.forEach((p) => {
+      const rep = p.getAttribute('data-rep'); const els = Array.from(p.querySelectorAll('[data-fact]')).filter((e) => e.getAttribute('data-fact'));
+      let bad = 0, n = 0; const ids = new Set(); const msgs = [];
+      els.forEach((e) => { const fid = e.getAttribute('data-fact'); const txt = e.textContent.trim(); n++; ids.add(fid); const f = res.facts[fid]; if (!f) { bad++; msgs.push('unknown fact ' + fid); return; } if (txt !== f.fmt) { bad++; msgs.push(fid + ' shows “' + txt + '”, result says “' + f.fmt + '”'); } if (seen[fid] !== undefined && seen[fid] !== txt) { bad++; msgs.push(fid + ' differs between representations'); } seen[fid] = txt; });
+      const envEl = p.querySelector('[data-env]'); const env = envEl ? envEl.textContent.replace(/^Evidence\s*/, '').trim() : ''; const envOk = env === res.envText; if (!envOk) msgs.push('envelope differs');
+      let subsetOk = true, subsetDesc = '';
+      if (rep === 'table' || rep === 'chart') {
+        const se = p.querySelector('[data-subset]'); let sub = null; try { sub = JSON.parse(se.getAttribute('data-subset')); } catch (e) { sub = null; }
+        if (!sub) { subsetOk = false; msgs.push('no subset declaration'); }
+        else {
+          const order = sortKeys(res, lab.sort); const want = sub.kind === 'page' ? order.slice((sub.page - 1) * sub.shown.length, (sub.page - 1) * sub.shown.length + sub.shown.length) : sub.kind === 'top_n' ? order.slice(0, sub.shown.length) : order;
+          if (sub.total !== res.rows.length) { subsetOk = false; msgs.push('declared total ' + sub.total + ' ≠ ' + res.rows.length + ' rows'); }
+          if (JSON.stringify(sub.shown) !== JSON.stringify(rep === 'chart' && sub.kind === 'complete' ? sub.shown : want.slice(0, sub.shown.length)) || (sub.kind === 'complete' && sub.shown.length !== res.rows.length)) { subsetOk = false; msgs.push('rows shown do not match the declared subset'); }
+          const shownF = sub.shown.map((k) => res.rows.find((x) => x.key === k).fid); const miss = shownF.filter((x) => !ids.has(x)); if (miss.length) { subsetOk = false; msgs.push('missing rows ' + miss.join(', ')); }
+          const disc = (p.querySelector('.subset') || {}).textContent || ''; if (sub.kind !== 'complete' && !/of \d+/.test(disc)) { subsetOk = false; msgs.push('subset not disclosed'); }
+          subsetDesc = sub.kind === 'complete' ? 'every row present' : sub.kind === 'top_n' ? 'disclosed top ' + sub.shown.length + ' of ' + sub.total : 'disclosed page ' + sub.page + ' of ' + sub.pages;
+        }
+      }
+      const lit = Array.from(p.querySelectorAll('[data-rep-text]')).map((e) => e.textContent).join(' ').replace(/\b(19|20)\d{2}\b|T-\d{5}|\d+ wk\+?/g, ''); const litBad = /\d/.test(lit); if (litBad) msgs.push('a number outside a fact');
+      const ok = !bad && envOk && subsetOk && !litBad && n > 0; if (!ok) allOk = false;
+      out.push({ rep, n: String(n), ok, txt: ok ? 'Invariant' : 'Differs', cls: ok ? 'ck ck-ok' : 'ck ck-bad', detail: ok ? n + ' values, all equal to the result; envelope identical' + (subsetDesc ? '; ' + subsetDesc : '') : msgs.slice(0, 3).join('; ') });
+    });
+    this.setState({ check: { at: lab.res + ' · ' + lab.size + ' · ' + lab.sort, rows: out, allOk, summary: allOk ? 'All four representations show the same facts, calculations, access scope and coverage; any subset is declared and disclosed.' : 'A representation differs from the result.' } });
+  }
+  labSet(k, v) { const lab = Object.assign({}, this.state.lab); lab[k] = v; if (k === 'res') { lab.sort = v === 'ts' ? 'natural' : 'value_desc'; lab.intent = RES[v].shape === 'time' ? 'trend' : 'ranking'; } Object.keys(this.pages).forEach((x) => { if (x.indexOf('lab_') === 0) this.pages[x] = 0; }); if (k !== 'intent' && k !== 'a11y') { this.sel.active = null; this.insp = null; } this.bump({ lab, check: null }); setTimeout(() => this.runCheck(), 120); }
+  catSet(k, v) { const cat = Object.assign({}, this.state.cat); cat[k] = v; if (k === 'comp') { cat.view = ''; cat.withheld = false; if (!CATK[v][2][cat.variant]) cat.variant = 'default'; } if (k === 'size') cat.container = v === 'expanded' ? 'expanded' : v; this.bump({ cat }); }
+  /* ---------- continuity across moves, expansion and resume (DXD-60) ---------- */
+  snapshot(label) {
+    const cat = this.state.cat; const key = 'cat_' + cat.comp + '_' + cat.variant; const root = document.querySelector(cat.container === 'expanded' ? '.modal .gc' : '.cmain .frame .gc');
+    const a = this.sel.active && this.sel.active.comp === key ? this.sel.active.k : null;
+    const pressed = root ? Array.from(root.querySelectorAll('[aria-pressed="true"][data-key]')).map((e) => e.getAttribute('data-key')) : [];
+    return { label, compId: 'genui:dx5/' + key, env: root ? (root.querySelector('[data-env]') || {}).textContent : '', sel: a, pressed, note: root ? !!root.querySelector('.selnote') : false, withheld: !!document.querySelector('.cmain .wh-cont') };
+  }
+  move(where, resumeAs) {
+    const before = this.snapshot('before'); const cat = Object.assign({}, this.state.cat);
+    const label = where === 'resume' ? 'Resume thread as ' + VIEWERS[resumeAs].label : CONTAINERS.find((c) => c[0] === where)[1];
+    let auth = null;
+    if (where === 'resume') {
+      const key = 'cat_' + cat.comp + '_' + cat.variant; const rid = CATK[cat.comp][2][cat.variant]; const res = rid && rid !== '*' ? RES[rid] : RES[CATK[cat.comp][2].default];
+      const stored = JSON.parse(JSON.stringify({ componentId: 'genui:dx5/' + key, resultRef: res.ref, selection: this.sel.active && this.sel.active.comp === key ? this.sel.active.k : null }));
+      auth = authorize(resumeAs, res); cat.resumeAs = resumeAs; cat.container = 'workspace'; cat.size = 'workspace';
+      if (!auth.ok) { cat.withheld = true; if (this.sel.active && this.sel.active.comp === key) { this.sel.active = null; this.insp = null; } }
+      else { cat.withheld = false; if (stored.selection && !(this.sel.active && this.sel.active.comp === key)) this.select(key, res, stored.selection); }
+    } else { cat.container = where; cat.size = CONTAINERS.find((c) => c[0] === where)[2]; cat.withheld = false; }
+    this.bump({ cat });
+    setTimeout(() => {
+      const after = this.snapshot(label); const checks = [];
+      if (auth && !auth.ok) { checks.push(['Authorization revalidated on resume', true, 'Withheld: ' + auth.checks.filter((c) => !c.ok).map((c) => c.detail).join('; ')]); checks.push(['Selection not restored outside grants', !after.sel, after.sel ? 'still selected' : 'dropped']); }
+      else {
+        if (auth) checks.push(['Authorization revalidated on resume', true, 'Within grants (' + VIEWERS[resumeAs].grantLabel + ')']);
+        checks.push(['Component id unchanged', after.compId === before.compId, after.compId]);
+        checks.push(['Evidence envelope identical', !before.env || after.env === before.env, after.env ? 'same envelope' : 'no envelope']);
+        checks.push(['Selection preserved', after.sel === before.sel, before.sel ? before.sel : 'no selection to keep']);
+        if (before.sel) checks.push(['Selection visible after the move', after.note && (after.pressed.length === 0 || after.pressed.indexOf(before.sel) >= 0), after.pressed.length ? 'mark pressed: ' + after.pressed.join(', ') : 'selection note shown']);
+      }
+      const ok = checks.every((c) => c[1]);
+      const cont = [{ label, ok, cls: 'ck ' + (ok ? 'ck-ok' : 'ck-bad'), txt: ok ? 'Kept' : 'Broken', checks: checks.map((c) => ({ t: c[0], ok: c[1], d: c[2], cls: c[1] ? 'cok' : 'cbad' })) }].concat(this.state.cont).slice(0, 4);
+      this.live = label + ': ' + (ok ? 'evidence and selection kept' : 'continuity check failed'); this.bump({ cont });
+      if (where === 'expanded') { const m = document.querySelector('.modal [data-dx5-close]'); if (m) m.focus(); }
+    }, 120);
+  }
+  /* ---------- validator ---------- */
+  pickSample(id) { const s = SAMPLES.find((x) => x.id === id); this.pages['val_fb_' + id] = 0; this.bump({ val: { sample: id, viewer: s.viewer, stored: !!s.stored, text: JSON.stringify(s.p, null, 2), out: validatePayload(JSON.parse(JSON.stringify(s.p)), s.viewer, { stored: s.stored }) } }); setTimeout(() => { const ta = document.querySelector('[data-dx5-payload]'); if (ta) ta.value = this.state.val.text; }, 30); }
+  validateNow() { const ta = document.querySelector('[data-dx5-payload]'); const txt = ta ? ta.value : this.state.val.text; const val = Object.assign({}, this.state.val, { text: txt, out: validatePayload(txt, this.state.val.viewer, { stored: this.state.val.stored }) }); this.live = 'Outcome: ' + ({ render: 'rendered', fallback: 'fallback table', calc_error: 'calculation error', withhold: 'withheld' }[val.out.action]) + ' · ' + CLASS_LBL[val.out.failureClass]; this.bump({ val }); }
+  setViewer(v) { const val = Object.assign({}, this.state.val, { viewer: v }); this.bump({ val }); setTimeout(() => this.validateNow(), 20); }
+  renderVals() {
+    const s = this.state; const lab = s.lab, cat = s.cat;
+    const tabs = [['lab', 'One result, four representations'], ['catalogue', 'Component catalogue'], ['validator', 'Payload validator']].map(([k, l]) => ({ label: l, cls: 'tb' + (s.tab === k ? ' tb-on' : ''), on: s.tab === k ? 'true' : 'false', go: () => this.bump({ tab: k }) }));
+    /* lab */
+    const R = RES[lab.res]; const chartKind = R.shape === 'time' ? 'trend' : 'bar';
+    const pol = chooseRep(lab.intent, R, { size: lab.size, a11y: lab.a11y });
+    const opt = (k) => ({ key: 'lab_' + k, size: lab.size, sort: lab.sort, variant: 'default' });
+    const reps = [['text', 'Text', 'text'], ['card', 'Card', 'kpi'], ['table', 'Table', 'table'], ['chart', 'Chart', chartKind]].map(([rep, lbl, kind]) => { const idx = pol.order.indexOf(kind); return { rep, lbl, choice: idx === 0, alt: idx > 0, choiceTxt: idx === 0 ? 'Agent’s choice · primary' : idx > 0 ? 'View as option ' + (idx + 1) : 'Not offered', v: this.view(kind, R, Object.assign(opt(rep), { title: R.title })) }; });
+    const labRes = [['amd', 'Renewal backlog · complete'], ['mm', 'Mismatch rate · partial'], ['ud25', 'Mismatches · 25 malls · subsets'], ['ts', 'Tenant sales · tenant scope']].map(([k, l]) => ({ label: l, cls: 'sgb' + (lab.res === k ? ' sg-on' : ''), on: lab.res === k ? 'true' : 'false', go: () => this.labSet('res', k) }));
+    const labSize = ['workspace', 'panel', 'phone'].map((k) => ({ label: SIZES[k].label, cls: 'sgb' + (lab.size === k ? ' sg-on' : ''), on: lab.size === k ? 'true' : 'false', go: () => this.labSet('size', k) }));
+    const sorts = (R.shape === 'time' ? [['natural', 'Month order'], ['value_desc', 'Highest first']] : [['value_desc', 'Highest first'], ['value_asc', 'Lowest first'], ['label', 'A–Z']]).map(([k, l]) => ({ label: l, cls: 'sgb' + (lab.sort === k ? ' sg-on' : ''), on: lab.sort === k ? 'true' : 'false', go: () => this.labSet('sort', k) }));
+    const intents = (INTENT_BY_SHAPE[R.shape] || ['exact']).map((k) => ({ label: INTENTS[k], cls: 'sgb' + (lab.intent === k ? ' sg-on' : ''), on: lab.intent === k ? 'true' : 'false', go: () => this.labSet('intent', k) }));
+    const a11ys = [['default', 'Default'], ['screen_reader', 'Screen reader preference']].map(([k, l]) => ({ label: l, cls: 'sgb' + (lab.a11y === k ? ' sg-on' : ''), on: lab.a11y === k ? 'true' : 'false', go: () => this.labSet('a11y', k) }));
+    const resultJson = JSON.stringify({ schema: R.schema, ref: R.ref, metric: R.metric, grain: R.grain, filters: R.filters, scope: R.scope, access: R.access.level + ' · ' + R.access.regions.join(', '), dataset: R.dataset, coverage: { status: R.coverage.status, note: R.coverage.note }, rows: R.rows.map((r) => [r.key, r.value === null ? null : +Number(r.value).toFixed(4), r.flag || undefined].filter((x) => x !== undefined)) }, null, 1).replace(/\n\s+(?=[\]\d"n-])/g, ' ');
+    /* catalogue */
+    const C = CATK[cat.comp]; const resId = C[2][cat.variant]; const baseRes = resId && resId !== '*' ? RES[resId] : RES[C[2].default];
+    const altKinds = baseRes && ALT[baseRes.shape] && ['kpi', 'bar', 'table', 'trend', 'heatmap', 'funnel', 'treemap', 'text'].indexOf(cat.comp) >= 0 ? ALT[baseRes.shape] : [];
+    const kindNow = cat.view || cat.comp; const catKey = 'cat_' + cat.comp + '_' + cat.variant;
+    const catView = this.view(kindNow === 'text' && !TEXT[baseRes.id] ? 'table' : kindNow, baseRes, { key: catKey, size: cat.size, variant: cat.variant, sort: baseRes && baseRes.shape === 'time' ? 'natural' : 'value_desc' });
+    const comps = CAT.map((c) => ({ label: c[1], tier: TIER[c[0]] ? TIER[c[0]][0] : '', tierCls: 'tier tier-' + (TIER[c[0]] ? TIER[c[0]][1] : ''), cls: 'cl' + (cat.comp === c[0] ? ' cl-on' : ''), on: cat.comp === c[0] ? 'true' : 'false', go: () => this.catSet('comp', c[0]), n: (() => { const k = Object.values(c[2]).filter((x) => x).length; return k + (k === 1 ? ' state' : ' states'); })() }));
+    const variants = VARIANTS.map((k) => { const ok = !!C[2][k]; return { label: VLBL[k], cls: 'sgb' + (cat.variant === k ? ' sg-on' : '') + (ok ? '' : ' sg-na'), on: cat.variant === k ? 'true' : 'false', dis: !ok, go: ok ? () => this.catSet('variant', k) : () => {}, aria: VLBL[k] + (ok ? '' : ' (not applicable to this component)') }; });
+    const sizes = ['workspace', 'panel', 'canvas', 'phone'].map((k) => ({ label: SIZES[k].label, cls: 'sgb' + (cat.size === k && cat.container !== 'expanded' ? ' sg-on' : ''), on: cat.size === k ? 'true' : 'false', go: () => this.catSet('size', k) }));
+    const moves = CONTAINERS.map(([k, l]) => ({ label: (k === 'expanded' ? 'Expand' : 'Move to ' + l.toLowerCase()), cls: 'btn xs' + (cat.container === k ? ' mv-on' : ''), go: () => this.move(k) }));
+    const resumes = ['admin', 'central'].map((v) => ({ label: 'Resume as ' + VIEWERS[v].label.toLowerCase(), go: () => this.move('resume', v) }));
+    const views = altKinds.map((k) => ({ label: REGISTRY[k].name.replace(' (ranked)', '').replace(' (line)', ''), cls: 'sgb' + (kindNow === k ? ' sg-on' : ''), on: kindNow === k ? 'true' : 'false', go: () => this.catSet('view', k === cat.comp ? '' : k) }));
+    const matrix = cat.matrix ? VARIANTS.filter((k) => C[2][k]).map((k) => { const rid = C[2][k]; const rr = rid === '*' ? RES[C[2].default] : RES[rid]; return { lbl: VLBL[k], v: this.view(cat.comp, rr, { key: 'mx_' + cat.comp + '_' + k, size: 'canvas', variant: k, sort: rr.shape === 'time' ? 'natural' : 'value_desc' }) }; }) : [];
+    const na = VARIANTS.filter((k) => !C[2][k]).map((k) => VLBL[k]).join(', ');
+    const resumeAuth = cat.withheld ? authorize(cat.resumeAs, baseRes) : null;
+    /* validator */
+    const vo = s.val.out; const vs = SAMPLES.find((x) => x.id === s.val.sample);
+    const stepRow = (st) => { const e = (vo.errs || []).filter((x) => x.step === st); const skipped = vo.failureClass && ['authorization', 'unknown_result'].indexOf(vo.failureClass) >= 0 && RESULT_STEPS.indexOf(st) > RESULT_STEPS.indexOf(vo.failureClass === 'unknown_result' ? 'resolve' : 'authorization') && !e.length; return { lbl: STEP_LBL[st], ok: e.length === 0, cls: 'vs ' + (e.length ? 'vs-bad' : skipped ? 'vs-skip' : 'vs-ok'), st: e.length ? e.length + ' problem' + (e.length > 1 ? 's' : '') : skipped ? 'Not run (blocked earlier)' : 'Passed', errs: e.slice(0, 4).map((x) => ({ code: x.code, path: x.path, msg: x.msg })).concat(e.length > 4 ? [{ code: '…', path: '', msg: (e.length - 4) + ' more of the same kind' }] : []) }; };
+    let vView = null; let vNote = '';
+    const fbKey = 'val_fb_' + s.val.sample;
+    if (vo.action === 'render') { vView = this.view(vo.p.component, vo.res, { key: 'val_' + s.val.sample, size: 'panel', variant: 'default', title: fillT(vo.p.title, vo.res), sort: vo.p.encoding && vo.p.encoding.sort ? vo.p.encoding.sort : vo.res.shape === 'time' ? 'natural' : 'value_desc' }); vNote = 'Rendered from the result (' + vo.res.ref + '). The payload chose the component and title only.'; }
+    else if (vo.action === 'fallback') { vView = this.view('table', vo.res, { key: fbKey, size: 'panel', variant: 'default', title: vo.res.title, sort: vo.res.shape === 'time' ? 'natural' : 'value_desc', fallback: 'Fallback table · the presentation payload was rejected and logged. Values, row limit, paging, coverage, evidence and formatting come from the verified, authorized result.' }); vNote = 'Deterministic fallback: same result, plain table, the result’s own title and envelope.'; }
+    else if (vo.action === 'calc_error') { vView = this.view(vo.p.component, vo.res, { key: 'val_ce_' + s.val.sample, size: 'panel', variant: 'default', title: vo.res.title, calcErr: verifyCalcs(vo.res) }); vNote = 'Calculation failure: no table fallback, because the values themselves are not verified.'; }
+    const sampleBtns = SAMPLES.map((x) => ({ label: x.id + ' · ' + x.label, cls: 'smp' + (s.val.sample === x.id ? ' smp-on' : '') + (x.ok ? ' smp-v' : ' smp-i'), on: s.val.sample === x.id ? 'true' : 'false', go: () => this.pickSample(x.id) }));
+    const viewers = ['admin', 'central', 'tenant'].map((k) => ({ label: VIEWERS[k].label, cls: 'sgb' + (s.val.viewer === k ? ' sg-on' : ''), on: s.val.viewer === k ? 'true' : 'false', go: () => this.setViewer(k) }));
+    /* inspector */
+    const a = this.sel.active; const ins = this.insp;
+    let recs = null; if (ins && (ins.res.id === 'amd')) { const rows = RECORDS.rows.filter((r) => r[1] === ins.k); recs = { cols: RECORDS.cols, rows, note: rows.length ? 'Rows from the same population as the selected value, oldest first. The prototype holds a sample; the product returns every matching row.' : 'No pending renewal amendments over four weeks at ' + ins.k + ' (the selected value is zero, so there are no records).' }; }
+    const kept = Object.values(this.sel.kept).map((k) => ({ label: k.label, comp: k.ref.componentId }));
+    let calcTxt = ''; if (ins && ins.ref.value) { const f = ins.res.facts[ins.ref.value.fact]; calcTxt = f.kind === 'derived' ? 'Derived · ' + f.calc.method + ' · ' + f.calc.formula + ' · ' + f.calc.operands.map((o) => o.label + ' = ' + fmtValue(o.value, '', '')).join(', ') + ' · period ' + f.calc.periods + ' · ' + f.calc.status : 'Observed · from query ' + f.evidence.join(', ') + ' (' + ins.res.queries[0].tool + ', ' + ins.res.queries[0].metric + ')'; }
+    return {
+      tabs, isLab: s.tab === 'lab', isCat: s.tab === 'catalogue', isVal: s.tab === 'validator', live: this.live,
+      labRes, labSize, sorts, intents, a11ys, reps, repsCls: 'reps rz-' + lab.size, resultJson, rTitle: R.title, rEnv: R.envText, rRef: R.ref, runCheck: () => this.runCheck(),
+      polTrace: pol.trace, polPrimary: REGISTRY[pol.primary].name, polCompose: pol.compose.join(' → '), polExcl: pol.excluded.map((x) => REGISTRY[x.kind].name + ' (' + x.rule + ': ' + x.why + ')').join('; '), hasPolExcl: pol.excluded.length > 0,
+      hasCheck: !!s.check, check: s.check || { rows: [], summary: '', at: '' }, checkCls: s.check ? 'cks ' + (s.check.allOk ? 'cks-ok' : 'cks-bad') : 'cks',
+      comps, variants, sizes, views, hasViews: views.length > 1, catView, catName: C[1], catVariant: VLBL[cat.variant], na, hasNa: !!na, matrix, isMatrix: cat.matrix, notMatrix: !cat.matrix, matrixLbl: cat.matrix ? 'Show one state' : 'Show all states side by side', toggleMatrix: () => this.catSet('matrix', !cat.matrix), catFrame: 'frame fw-' + (cat.container === 'expanded' ? 'workspace' : cat.size),
+      moves, resumes, isExpanded: cat.container === 'expanded' && !cat.matrix, notExpanded: cat.container !== 'expanded', closeModal: () => this.move('workspace'), catWithheld: cat.withheld, catShow: !cat.withheld, withTxt: resumeAuth ? 'Withheld on resume: ' + resumeAuth.checks.filter((c) => !c.ok).map((c) => c.what + ' — ' + c.detail).join('; ') + '. The stored selection was not restored.' : '', cont: s.cont, hasCont: s.cont.length > 0, containerLbl: 'Container: ' + (cat.container === 'expanded' ? 'Expanded' : CONTAINERS.find((c) => c[0] === cat.container) ? CONTAINERS.find((c) => c[0] === cat.container)[1] : SIZES[cat.size].label),
+      sampleBtns, viewers, vText: s.val.text, validate: () => this.validateNow(), vOk: vo.ok, vResSteps: RESULT_STEPS.map(stepRow), vPresSteps: PRES_STEPS.map(stepRow), vClass: CLASS_LBL[vo.failureClass] || '', vNotes: (vo.notes || []).map((t) => ({ t })), hasVNotes: (vo.notes || []).length > 0,
+      vAction: { render: vo.failureClass === 'stale' ? 'Rendered as generated · stale' : 'Rendered', fallback: 'Fallback table', calc_error: 'Calculation error · no values', withhold: 'Visual withheld' }[vo.action], vActCls: 'va va-' + vo.action, vNote, hasV: !!vView, vView: vView || {}, vWithheld: vo.action === 'withhold', vWithTxt: vo.failureClass === 'authorization' ? 'Withheld: the result is outside the viewer’s current grants. No values, labels or counts from it are shown.' : 'Withheld: there is no validated result to render. Nothing is shown rather than a guess.', vExpect: vs ? (vs.ok ? 'Expected: renders' : 'Expected: rejected') + (vs.note ? ' · ' + vs.note : '') : '', vGrant: VIEWERS[s.val.viewer].grantLabel + (s.val.stored ? ' · stored result being resumed' : ''),
+      notSel: !a, hasSel: !!a, selLbl: a ? a.label : '', selJson: ins ? JSON.stringify(ins.ref, null, 1) : '', calcTxt, hasCalc: !!calcTxt, hasRecs: !!recs, recs: recs || { cols: [], rows: [], note: '' }, noRecs: !!ins && !recs, drillTarget: ins ? 'get_underlying_records(resultRef ' + ins.res.ref + ', ' + ins.ref.dimensions.map((d) => d.name + ' = ' + d.value).join(', ') + ')' : '', kept, hasKept: kept.length > 0,
+      clearSel: () => { this.sel.active = null; this.insp = null; this.live = 'Selection cleared'; this.bump(); }
+    };
+  }
+}
+
+</script>
+</body>
+</html>

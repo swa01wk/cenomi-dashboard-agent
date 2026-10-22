@@ -1,0 +1,1229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Admin dashboard</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;color:#1B1530;background:#F6F5F9;font-feature-settings:'tnum' 1}
+a{color:#5B21B6}a:hover{color:#3B0F8C}
+button,select,input{font-family:inherit}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.btn{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 12px;border-radius:8px;border:1px solid #D9D4E6;background:#fff;color:#1B1530;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
+.btn:hover{background:#F3F0FA}
+.btn-p{background:#5B21B6;border-color:#5B21B6;color:#fff}.btn-p:hover{background:#4C1D95;color:#fff}
+.ibtn{width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid transparent;background:transparent;color:#4B4560;cursor:pointer;padding:0}
+.ibtn:hover{background:#F3F0FA;border-color:#E4E1EC}
+.ibtn-ai{color:#5B21B6}
+.syn{display:inline-flex;align-items:center;min-height:26px;padding:0 10px;border-radius:6px;background:#FFF4D6;border:1px solid #E9C46A;color:#6B4200;font-size:11px;font-weight:700;letter-spacing:.04em}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+.span-12{grid-column:span 12}.span-8{grid-column:span 8}.span-7{grid-column:span 7}.span-6{grid-column:span 6}.span-5{grid-column:span 5}.span-4{grid-column:span 4}
+.rows-2{grid-row:span 2}
+@media (max-width:1279px){.span-4,.span-5,.span-6,.span-7,.span-8{grid-column:span 6}.rows-2{grid-row:auto}.wide-t{grid-column:span 12}}
+@media (max-width:820px){.grid>.card{grid-column:span 12}}
+.card{background:#fff;border:1px solid #E4E1EC;border-radius:12px;display:flex;flex-direction:column;min-width:0}
+.is-focus{position:fixed;z-index:70;top:72px;left:50%;transform:translateX(-50%);width:min(1100px,calc(100vw - 32px));max-height:calc(100vh - 96px);overflow:auto;box-shadow:0 24px 64px rgba(27,21,48,.3)}
+@media (max-width:820px){.is-focus{top:0;left:0;transform:none;width:100%;max-height:100vh;height:100vh;border-radius:0}}
+.backdrop{position:fixed;inset:0;background:rgba(27,21,48,.42);z-index:65;border:0;cursor:pointer;padding:0}
+.ch{display:flex;align-items:flex-start;gap:8px;padding:14px 10px 8px 16px}
+.cht{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:8px}
+.ttl{display:flex;align-items:center;gap:6px}
+.ct{font-size:15px;font-weight:600;margin:0;line-height:22px}
+.cha{display:flex;gap:2px}
+.frow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.fsel select{min-height:28px;padding:0 6px;border-radius:7px;border:1px solid #D9D4E6;background:#fff;font-size:12px;color:#1B1530;cursor:pointer}
+.fsel select:hover{border-color:#B9B0D3}
+.fnone{font-size:12px;color:#5E5873}
+.tw{position:relative}
+.tt{display:none;position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%);background:#1B1530;color:#fff;font-size:12px;font-weight:500;line-height:17px;padding:7px 10px;border-radius:7px;white-space:nowrap;z-index:40;pointer-events:none;text-align:left;box-shadow:0 6px 16px rgba(27,21,48,.2)}
+.ttw{white-space:pre-line;width:260px}
+.tw:hover>.tt,.tw:focus>.tt,.tw:focus-within>.tt{display:block}
+.ti{display:inline-flex;color:#6E6789;cursor:help;border-radius:999px}
+.ti .tt{left:-8px;transform:none}
+.tabs{display:flex;gap:20px;padding:0 16px;border-bottom:1px solid #E4E1EC}
+.tab{border:0;border-bottom:2px solid transparent;background:transparent;padding:8px 2px;font-size:13px;font-weight:500;color:#5E5873;cursor:pointer}
+.tab-on{border-bottom-color:#5B21B6;color:#1B1530;font-weight:600}
+.cb{padding:4px 16px 12px;display:flex;flex-direction:column;gap:10px;flex:1 1 auto}
+.cf{margin-top:auto;padding:8px 16px 12px;font-size:11px;color:#5E5873;border-top:1px solid #F0EEF4}
+.skel{padding:8px 16px 16px;display:flex;flex-direction:column;gap:10px;flex:1 1 auto}
+.skel span{display:block;height:14px;border-radius:6px;background:linear-gradient(90deg,#EEEBF4 0%,#F7F5FA 50%,#EEEBF4 100%);background-size:200% 100%;animation:sh 1.4s infinite}
+.skel span:nth-child(1){width:40%}.skel span:nth-child(2){height:90px}.skel span:nth-child(3){width:70%}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.stbox{margin:6px 16px 16px;padding:18px;border:1px dashed #CFC8E0;border-radius:10px;background:#FAF9FC;display:flex;flex-direction:column;gap:6px;align-items:flex-start;font-size:13px;line-height:19px;color:#4B4560;flex:1 1 auto}
+.stbox b{color:#1B1530}
+.st-err{border-color:#F3B4AF;background:#FFF7F6}
+.selbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 16px 12px;padding:8px 10px;border-radius:10px;background:#F5F1FE;border:1px solid #DCD2F5;font-size:13px}
+.selchip{font-size:11px;font-weight:700;color:#4C1D95;text-transform:uppercase;letter-spacing:.05em}
+.selt{font-weight:600;flex:1 1 160px}
+.selact{display:flex;gap:6px;align-items:center}
+.note{margin:0;font-size:12px;line-height:17px;color:#5E5873}
+.lg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:#4B4560;margin:0;padding:0;list-style:none}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;flex:0 0 auto}
+.lgi{display:inline-flex;align-items:center;gap:6px}
+.seg{display:inline-flex;border:1px solid #D9D4E6;border-radius:8px;overflow:hidden;align-self:flex-start}
+.seg button{border:0;background:#fff;padding:0 10px;min-height:28px;font-size:12px;font-weight:500;color:#4B4560;cursor:pointer}
+.seg button+button{border-left:1px solid #D9D4E6}
+.seg .seg-on{background:#1B1530;color:#fff}
+.stats3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:600px){.stats3{grid-template-columns:minmax(0,1fr)}}
+.stat{display:flex;flex-direction:column;gap:2px;align-items:flex-start;text-align:left;border-radius:10px;padding:12px 14px;border:1px solid transparent;cursor:pointer;color:#1B1530}
+.stat:hover{filter:brightness(.98)}
+.stl{font-size:12px;font-weight:600}
+.stv{font-size:28px;font-weight:700;line-height:34px;font-family:'Inter Tight','Inter',sans-serif}
+.sts{font-size:12px;color:#4B4560}
+.st-v{background:#F3EEFD}.st-t{background:#E3F5F2}.st-o{background:#FDF0E1}.st-r{background:#FDECEF}
+.stat-on{border-color:#1B1530;box-shadow:inset 0 0 0 1px #1B1530}
+.meter{display:flex;height:14px;border-radius:7px;overflow:visible;gap:2px}
+.meter>span{display:block;height:14px}
+.seg-occ{background:#14B8A6;border-radius:7px 0 0 7px}
+.seg-vac{background:#F59E0B;border-radius:0 7px 7px 0}
+.mh{display:flex;justify-content:space-between;font-size:12px;color:#4B4560;margin-bottom:6px}
+.arh{display:flex;align-items:center;gap:8px;font-size:13px;color:#4B4560}
+.badge{display:inline-flex;min-width:24px;height:24px;padding:0 6px;border-radius:12px;background:#B42318;color:#fff;font-size:12px;font-weight:700;align-items:center;justify-content:center}
+.ari{display:flex;flex-direction:column;gap:6px;padding:10px 0;border-top:1px solid #F0EEF4}
+.pill{align-self:flex-start;font-size:10px;font-weight:700;letter-spacing:.05em;padding:2px 8px;border-radius:5px;background:#E6EEFB;color:#1E3A8A}
+.art{margin:0;font-size:13px;line-height:19px}
+.arm{display:flex;justify-content:space-between;font-size:12px;color:#5E5873}
+.donutw{position:relative;width:176px;height:176px;flex:0 0 auto}
+.donutc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;padding:0 40px}
+.dcv{font-size:24px;font-weight:700;font-family:'Inter Tight','Inter',sans-serif}
+.dcl{font-size:11px;color:#4B4560;line-height:14px}
+.lrw{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.lgl{display:flex;flex-direction:column;gap:4px;flex:1 1 150px;min-width:0}
+.lgb{display:grid;grid-template-columns:12px minmax(0,1fr) auto 44px;gap:8px;align-items:center;border:1px solid transparent;background:transparent;padding:5px 6px;border-radius:7px;font-size:12px;text-align:left;cursor:pointer;color:#1B1530}
+.lgb:hover{background:#F6F4FA}
+.lgb-on{border-color:#1B1530;background:#F5F1FE}
+.lgo{cursor:default;color:#4B4560}
+.lgo:hover{background:transparent}
+.flow{display:flex;align-items:stretch;gap:4px}
+@media (max-width:600px){.flow{flex-direction:column}}
+.stage{flex:1 1 0;min-width:0;border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.stgb{display:flex;flex-direction:column;gap:2px;align-items:flex-start;border:1px solid transparent;background:transparent;padding:4px;border-radius:8px;cursor:pointer;text-align:left;color:#1B1530}
+.stgb:hover{background:rgba(255,255,255,.6)}
+.stgl{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+.dot{width:8px;height:8px;border-radius:4px;display:inline-block}
+.stgv{font-size:26px;font-weight:700;font-family:'Inter Tight','Inter',sans-serif;line-height:32px}
+.splits{display:flex;gap:4px;flex-wrap:wrap}
+.spl{border:1px solid rgba(27,21,48,.14);background:rgba(255,255,255,.75);border-radius:6px;padding:3px 7px;font-size:11px;cursor:pointer;color:#1B1530}
+.spl-on{border-color:#1B1530;box-shadow:inset 0 0 0 1px #1B1530}
+.oth{font-size:11px;color:#4B4560}
+.chev{display:flex;align-items:center;color:#9A93AD;font-size:20px}
+@media (max-width:600px){.chev{display:none}}
+.gauges{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.gauge{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid transparent;background:transparent;border-radius:10px;padding:6px 4px 8px;cursor:pointer;color:#1B1530}
+.gauge:hover{background:#F8F7FB}
+.gauge svg{width:100%;max-width:180px;height:auto}
+.gv{font-size:22px;font-weight:700;font-family:'Inter Tight','Inter',sans-serif;margin-top:-34px}
+.gl{font-size:13px;font-weight:600;margin-top:4px}
+.gc{font-size:12px;color:#4B4560}
+.gb{font-size:11px;color:#5E5873;text-align:center}
+.g-on{border-color:#1B1530;box-shadow:inset 0 0 0 1px #1B1530}
+.banner{display:flex;gap:8px;align-items:center;padding:8px 10px;border-radius:8px;background:#FDE2E1;color:#8E1B16;font-size:12px;font-weight:600}
+.hm{display:grid;grid-template-columns:64px repeat(4,minmax(0,1fr));gap:4px;align-items:center}
+.hmc{border:0;border-radius:5px;height:34px;font-size:12px;font-weight:600;cursor:pointer}
+.hml{font-size:11px;color:#4B4560}
+.hmh{font-size:11px;color:#4B4560;text-align:center}
+.tm{display:flex;gap:3px;height:280px}
+.tmc{display:flex;flex-direction:column;gap:3px;min-width:0;flex-basis:0}
+.tml{display:flex;flex-basis:0;min-height:0;border:0;border-radius:4px;padding:0;cursor:pointer;text-align:left}
+.tmt{display:flex;flex-direction:column;gap:1px;padding:6px 8px;overflow:hidden;min-width:0;width:100%}
+.tmn{font-size:11px;font-weight:600;line-height:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tmv{font-size:12px;font-weight:700}
+.tmh{visibility:hidden}
+.tmv-only .tmn{display:none}
+.tmv-only{padding:3px 8px}
+.strip{display:flex;flex-direction:column;gap:6px}
+.stb{display:flex;height:12px;border-radius:6px;gap:2px}
+.stb>span{display:block;height:12px}
+.rings{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+@media (max-width:600px){.rings{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ring{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid transparent;background:transparent;border-radius:10px;padding:6px 2px;cursor:pointer;color:#1B1530;text-align:center}
+.ring:hover{background:#F8F7FB}
+.rv{position:absolute;top:42px;left:0;right:0;font-size:17px;font-weight:700}
+.rl{font-size:12px;font-weight:600;margin-top:4px}
+.rs{font-size:11px;color:#4B4560}
+.r-on{border-color:#1B1530;box-shadow:inset 0 0 0 1px #1B1530}
+.callout{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;padding:10px 12px;border-radius:10px;background:#FDF0E1;font-size:13px}
+.cov{font-size:20px;font-weight:700;margin-right:4px}
+.hbars{display:grid;grid-template-columns:96px minmax(0,1fr) 40px;gap:12px 10px;align-items:center;font-size:13px}
+.hbt{display:flex;gap:2px;height:22px}
+.hbs{display:flex;align-items:center;justify-content:center;border:0;padding:0;height:22px;cursor:pointer;min-width:0}
+.hbs:first-child{border-radius:4px 0 0 4px}.hbs:last-child{border-radius:0 4px 4px 0}
+.hbn{font-size:11px;font-weight:700}
+.hbtot{text-align:right;font-weight:600}
+.dsh{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between}
+.cols{display:flex;align-items:flex-end;gap:4px;height:250px;padding-top:8px}
+.colb{flex:1 1 0;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;border:0;background:transparent;cursor:pointer;padding:0 0 2px;border-radius:4px}
+.colb:hover{background:#F6F4FA}
+.colstack{display:flex;flex-direction:column;width:100%;max-width:34px;border-radius:3px 3px 0 0;overflow:hidden}
+.colstack>span{display:block;flex-basis:0}
+.coll{font-size:10px;color:#4B4560;height:62px;writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.col-on{box-shadow:inset 0 0 0 2px #1B1530}
+.dvh{display:grid;grid-template-columns:132px minmax(0,1fr) 2px minmax(0,1fr);font-size:11px;font-weight:600;color:#4B4560}
+.dv{display:flex;flex-direction:column;gap:3px}
+.dvr{display:grid;grid-template-columns:132px minmax(0,1fr) 2px minmax(0,1fr);align-items:center;border:0;background:transparent;padding:3px 0;border-radius:5px;cursor:pointer;font-size:12px;color:#1B1530;text-align:left}
+.dvr:hover{background:#F6F4FA}
+.dvr-on{box-shadow:inset 0 0 0 2px #1B1530;background:#F5F1FE}
+.dvl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px}
+.dvm{display:flex;flex-direction:row-reverse;align-items:center;gap:4px}
+.dvp{display:flex;align-items:center;gap:4px}
+.dvx{height:20px;background:#9A93AD}
+.dvbar{display:block;height:14px}
+.dvbm{background:#DC2626;border-radius:3px 0 0 3px}
+.dvbp{background:#8B5CF6;border-radius:0 3px 3px 0}
+.dvn{font-size:11px;font-weight:600}
+.dvq{font-size:11px;color:#5E5873}
+.tblw{overflow-x:auto;border:1px solid #EEECF3;border-radius:8px}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{text-align:left;color:#4B4560;font-weight:600;padding:8px 10px;border-bottom:1px solid #E4E1EC;background:#FAF9FC;white-space:nowrap}
+.tbl td{padding:8px 10px;border-bottom:1px solid #F0EEF4;white-space:nowrap}
+.fp{padding:12px 16px;display:flex;flex-direction:column;gap:10px}
+.defl{display:grid;grid-template-columns:140px minmax(0,1fr);gap:8px 14px;margin:0;font-size:13px;line-height:19px}
+.defl dt{color:#5E5873}
+.defl dd{margin:0}
+.cav{display:flex;gap:8px;align-items:flex-start;margin:0;font-size:13px;line-height:19px}
+.cavl{flex:0 0 auto;font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 7px;border-radius:5px;background:#EEECEF;color:#3F3B46}
+.agent{flex:0 0 400px;max-width:100%;background:#fff;border-left:1px solid #E4E1EC;display:flex;flex-direction:column;min-height:640px}
+@media (max-width:1279px){.agent{position:fixed;top:0;right:0;bottom:0;width:420px;z-index:80;box-shadow:-16px 0 40px rgba(27,21,48,.18)}}
+@media (max-width:820px){.agent{width:100%;flex-basis:auto}}
+.ctxs{display:flex;flex-direction:column;gap:12px;padding:12px 14px;border-bottom:1px solid #E4E1EC}
+.ctxh{margin:0;font-size:11px;font-weight:700;color:#4B4560;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:6px}
+.ctxn{margin:2px 0 6px;font-size:12px;line-height:17px;color:#5E5873}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:26px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:500}
+.c-filter{background:#F4F2F8;color:#3F3B46;border:1px solid #E4E1EC}
+.c-scope{background:#EFEAFB;color:#3B1E7A;border:1px solid #DCD2F5}
+.c-sel{background:#5B21B6;color:#fff;border:1px solid #5B21B6}
+.c-fixed{background:#F4F3F7;color:#3A3550;border:1px dashed #A9A2BF;gap:5px}
+.bnd-h{margin:10px 0 6px;font-size:11.5px;font-weight:600;color:#5E5873}
+.chip-x{border:0;background:transparent;color:inherit;cursor:pointer;padding:0;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px}
+.msgs{flex:1 1 auto;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:#FAF9FC}
+.mu{align-self:flex-end;max-width:85%;background:#1B1530;color:#fff;border-radius:12px 12px 4px 12px;padding:9px 12px;font-size:14px;line-height:20px}
+.ma{background:#fff;border:1px solid #E4E1EC;border-radius:12px;padding:12px;font-size:13px;line-height:19px;color:#4B4560}
+.sugg{border:1px solid #D9D4E6;background:#fff;border-radius:8px;padding:8px 10px;text-align:left;font-size:13px;cursor:pointer;color:#1B1530}
+.sugg:hover{background:#F3F0FA}
+.review{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:10px 12px;border:1px dashed #B9B0D3;border-radius:10px;background:#FFFFFF;font-size:12px;color:#4B4560}
+.rail-a{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;border-radius:10px;color:#CFC6E6;font-size:11px;font-weight:500;width:64px;text-decoration:none}
+.rail-on{background:#3A2D63;color:#fff}
+.btn-ws{min-height:30px;font-size:12.5px;margin-right:4px}
+.wstoast{position:fixed;z-index:90;left:50%;bottom:24px;transform:translateX(-50%);width:min(560px,calc(100vw - 32px));box-sizing:border-box;display:flex;gap:12px;align-items:center;padding:12px 14px;background:#1B1530;color:#fff;border-radius:12px;font-size:13px;line-height:18px;box-shadow:0 16px 40px rgba(27,21,48,.3)}
+.wstoast .btn{flex:0 0 auto}
+@media (max-width:820px){.pnav{position:fixed!important;left:0;right:0;bottom:0;z-index:60;flex-direction:row!important;justify-content:space-around;padding:4px 8px calc(4px + env(safe-area-inset-bottom))!important;box-shadow:0 -6px 18px rgba(27,21,48,.16)}.pnav .rail-a{flex:1 1 0;width:auto;padding:6px 4px}main{padding:16px 16px 92px!important}.fsel select{max-width:100%}}
+</style>
+</helmet>
+<div style="position: relative; min-height: 100vh; display: flex; flex-direction: column; background: #F6F5F9">
+<header style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap; min-height: 56px; padding: 8px 16px; background: #FFFFFF; border-bottom: 1px solid #E4E1EC">
+<div style="display: flex; align-items: baseline; gap: 8px"><span style="font-family: 'Inter Tight', 'Inter', sans-serif; font-weight: 700; font-size: 17px">Cenomi Dashboard Agent</span><span style="font-size: 11px; font-weight: 600; color: #5E5873">POC</span></div>
+<span class="syn">SYNTHETIC DATA · AS OF 20 OCT 2026</span>
+<button class="btn" onClick="{{askTop}}" style="flex: 1 1 240px; max-width: 440px; justify-content: flex-start; color: #5E5873; font-weight: 400">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5B21B6" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>
+<span>Ask about your portfolio…</span>
+</button>
+<div style="margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 13px; color: #4B4560">
+<button class="ibtn" aria-label="Notifications" style="position: relative"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8"></path><path d="M10 21h4"></path></svg><span style="position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; border-radius: 8px; background: #B42318; color: #fff; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">4</span></button>
+<span>{{roleName}}</span>
+</div>
+</header>
+<div style="display: flex; flex: 1 1 auto; align-items: stretch">
+<nav class="pnav" aria-label="Primary" style="flex: 0 0 76px; background: #1B1530; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 0">
+<a href="#" class="rail-a rail-on" aria-current="page"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg><span>Dashboard</span></a>
+<a href="#" class="rail-a"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M9 4v16"></path><path d="M13 9h5M13 13h5"></path></svg><span>Workspace</span></a>
+<a href="#" class="rail-a"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"></path></svg><span>Insights</span></a>
+</nav>
+<main style="flex: 999 1 560px; min-width: 0; padding: 20px 24px 48px; display: flex; flex-direction: column; gap: 16px">
+<div class="review" role="group" aria-label="Design review controls">
+<b style="color: #1B1530">Design review controls</b><span>not part of the product</span>
+<label style="display: inline-flex; align-items: center; gap: 6px"><span>View as</span><span class="fsel"><select value="{{role}}" onChange="{{setRole}}" aria-label="View as role"><option value="admin">Portfolio admin · all regions</option><option value="leasing">Leasing manager · all regions</option><option value="fitout">Fit-out manager · Central only</option></select></span></label>
+<span>Data state</span>
+<div class="seg" role="group" aria-label="Data state"><sc-for list="{{dsOpts}}" as="o" hint-placeholder-count="4"><button class="{{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.go}}">{{o.label}}</button></sc-for></div>
+</div>
+<div style="display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+<div><h1 style="margin: 0; font-family: 'Inter Tight', 'Inter', sans-serif; font-size: 24px">Portfolio overview</h1><div style="font-size: 13px; color: #4B4560; margin-top: 4px">{{roleSub}}</div></div>
+<div style="margin-left: auto; font-size: 12px; color: #4B4560">{{hiddenNote}}</div>
+</div>
+<sc-if value="{{hasFocus}}" hint-placeholder-val="{{false}}"><button class="backdrop" onClick="{{closeFocus}}" aria-label="Close expanded card"></button></sc-if>
+<sc-if value="{{hasWs}}" hint-placeholder-val="{{false}}"><div class="wstoast" role="status"><span><b>Open in workspace</b> moves “{{wsTitle}}” into the analytical workspace with its filters, selection and tab intact. Designed in DX4.</span><button class="btn" onClick="{{closeWs}}">OK</button></div></sc-if>
+<div class="grid">
+
+<sc-if value="{{P.vis}}" hint-placeholder-val="{{true}}">
+<section class="{{P.cls}}" aria-label="{{P.title}}">
+<div class="ch"><div class="cht"><div class="ttl"><h2 class="ct">{{P.title}}</h2><span class="tw ti" tabindex="0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg><span class="sr">Definition</span><span class="tt ttw">{{P.info}}</span></span></div><div class="frow"><span class="fnone">{{P.nofilters}}</span></div></div>
+<div class="cha"><button class="ibtn ibtn-ai" onClick="{{P.ask}}" aria-label="Ask the agent about {{P.title}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></button><sc-if value="{{P.focused}}"><button class="btn btn-ws" onClick="{{P.openWs}}">Open in workspace</button></sc-if><button class="ibtn" onClick="{{P.expand}}" aria-label="{{P.expandLabel}}"><sc-if value="{{P.focused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></sc-if><sc-if value="{{P.notFocused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg></sc-if></button></div></div>
+<sc-if value="{{P.focused}}"><div class="tabs" role="tablist" aria-label="Card views"><sc-for list="{{P.tabs}}" as="t"><button role="tab" class="{{t.cls}}" aria-selected="{{t.on}}" onClick="{{t.go}}">{{t.label}}</button></sc-for></div></sc-if>
+<sc-if value="{{P.loading}}"><div class="skel" aria-label="Loading"><span></span><span></span><span></span></div></sc-if>
+<sc-if value="{{P.error}}"><div class="stbox st-err"><b>Couldn’t load this card.</b><span>The rest of the dashboard is unaffected. Reference req_8f21c4.</span><button class="btn" onClick="{{P.retry}}">Retry</button></div></sc-if>
+<sc-if value="{{P.empty}}"><div class="stbox"><b>{{P.emptyTitle}}</b><span>{{P.emptyMsg}}</span></div></sc-if>
+<sc-if value="{{P.showBody}}">
+<div class="cb">
+<div class="stats3"><sc-for list="{{P.tiles}}" as="t" hint-placeholder-count="3"><button class="{{t.cls}}" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}"><span class="stl">{{t.label}}</span><span class="stv">{{t.value}}</span><span class="sts">{{t.sub}}</span></button></sc-for></div>
+<div><div class="mh"><span>Unit occupancy</span><span><b style="color: #0F5048">{{P.occPct}}</b> occupied · {{P.vacPct}} vacant</span></div>
+<div class="meter" role="img" aria-label="{{P.meterAria}}"><span class="tw seg-occ" tabindex="0" style="width: {{P.occW}}"><span class="tt">{{P.occTip}}</span></span><span class="tw seg-vac" tabindex="0" style="width: {{P.vacW}}"><span class="tt">{{P.vacTip}}</span></span></div></div>
+</div>
+</sc-if>
+<sc-if value="{{P.showPanel}}"><div class="fp"><sc-if value="{{P.pg.on}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{P.pg.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{P.pg.rows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="note">{{P.pg.note}}</p></sc-if><sc-if value="{{P.pd.on}}"><dl class="defl"><sc-for list="{{P.pd.items}}" as="dd"><dt>{{dd.k}}</dt><dd>{{dd.v}}</dd></sc-for></dl><sc-for list="{{P.pd.cav}}" as="cv"><p class="cav"><span class="cavl">CAVEAT</span><span>{{cv}}</span></p></sc-for></sc-if></div></sc-if>
+<sc-if value="{{P.selOn}}"><div class="selbar"><span class="selchip">Selected</span><span class="selt">{{P.selLabel}}</span><div class="selact"><button class="btn" onClick="{{P.viewRec}}">View records</button><button class="btn btn-p" onClick="{{P.askSel}}">Ask about this</button><button class="ibtn" onClick="{{P.clearSel}}" aria-label="Clear selection"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div></div></sc-if>
+<div class="cf">{{P.foot}}</div>
+</section>
+</sc-if>
+
+<sc-if value="{{AR.vis}}" hint-placeholder-val="{{true}}">
+<section class="{{AR.cls}}" aria-label="{{AR.title}}">
+<div class="ch"><div class="cht"><div class="ttl"><h2 class="ct">{{AR.title}}</h2><span class="tw ti" tabindex="0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg><span class="sr">Definition</span><span class="tt ttw">{{AR.info}}</span></span></div><div class="frow"><span class="fnone">{{AR.nofilters}}</span></div></div>
+<div class="cha"><button class="ibtn ibtn-ai" onClick="{{AR.ask}}" aria-label="Ask the agent about {{AR.title}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></button><sc-if value="{{AR.focused}}"><button class="btn btn-ws" onClick="{{AR.openWs}}">Open in workspace</button></sc-if><button class="ibtn" onClick="{{AR.expand}}" aria-label="{{AR.expandLabel}}"><sc-if value="{{AR.focused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></sc-if><sc-if value="{{AR.notFocused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg></sc-if></button></div></div>
+<sc-if value="{{AR.focused}}"><div class="tabs" role="tablist" aria-label="Card views"><sc-for list="{{AR.tabs}}" as="t"><button role="tab" class="{{t.cls}}" aria-selected="{{t.on}}" onClick="{{t.go}}">{{t.label}}</button></sc-for></div></sc-if>
+<sc-if value="{{AR.loading}}"><div class="skel" aria-label="Loading"><span></span><span></span><span></span></div></sc-if>
+<sc-if value="{{AR.error}}"><div class="stbox st-err"><b>Couldn’t load this card.</b><span>The rest of the dashboard is unaffected. Reference req_8f21c4.</span><button class="btn" onClick="{{AR.retry}}">Retry</button></div></sc-if>
+<sc-if value="{{AR.empty}}"><div class="stbox"><b>{{AR.emptyTitle}}</b><span>{{AR.emptyMsg}}</span></div></sc-if>
+<sc-if value="{{AR.showBody}}">
+<div class="cb" style="gap: 0">
+<div class="arh"><span class="badge">{{AR.count}}</span><span>unread notifications need your action</span></div>
+<sc-for list="{{AR.items}}" as="it" hint-placeholder-count="3"><div class="ari"><span class="pill">{{it.type}}</span><p class="art">{{it.pre}}<b>{{it.id}}</b>{{it.post}}</p><div class="arm"><span>{{it.date}}</span><a href="#" onClick="{{it.open}}">Open request</a></div></div></sc-for>
+<div style="padding-top: 10px; border-top: 1px solid #F0EEF4"><a href="#" onClick="{{AR.viewAll}}" style="font-size: 13px; font-weight: 600">View all {{AR.count}}</a></div>
+</div>
+</sc-if>
+<sc-if value="{{AR.showPanel}}"><div class="fp"><sc-if value="{{AR.pg.on}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{AR.pg.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{AR.pg.rows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="note">{{AR.pg.note}}</p></sc-if><sc-if value="{{AR.pd.on}}"><dl class="defl"><sc-for list="{{AR.pd.items}}" as="dd"><dt>{{dd.k}}</dt><dd>{{dd.v}}</dd></sc-for></dl><sc-for list="{{AR.pd.cav}}" as="cv"><p class="cav"><span class="cavl">CAVEAT</span><span>{{cv}}</span></p></sc-for></sc-if></div></sc-if>
+<sc-if value="{{AR.selOn}}"><div class="selbar"><span class="selchip">Selected</span><span class="selt">{{AR.selLabel}}</span><div class="selact"><button class="btn" onClick="{{AR.viewRec}}">View records</button><button class="btn btn-p" onClick="{{AR.askSel}}">Ask about this</button><button class="ibtn" onClick="{{AR.clearSel}}" aria-label="Clear selection"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div></div></sc-if>
+<div class="cf">{{AR.foot}}</div>
+</section>
+</sc-if>
+
+<sc-if value="{{SF.vis}}" hint-placeholder-val="{{true}}">
+<section class="{{SF.cls}}" aria-label="{{SF.title}}">
+<div class="ch"><div class="cht"><div class="ttl"><h2 class="ct">{{SF.title}}</h2><span class="tw ti" tabindex="0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg><span class="sr">Definition</span><span class="tt ttw">{{SF.info}}</span></span></div><div class="frow"><sc-for list="{{SF.filters}}" as="ff"><label class="fsel"><span class="sr">{{ff.label}}</span><select value="{{ff.value}}" onChange="{{ff.on}}" aria-label="{{ff.label}}"><sc-for list="{{ff.opts}}" as="o"><option value="{{o.v}}">{{o.l}}</option></sc-for></select></label></sc-for></div></div>
+<div class="cha"><button class="ibtn ibtn-ai" onClick="{{SF.ask}}" aria-label="Ask the agent about {{SF.title}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></button><sc-if value="{{SF.focused}}"><button class="btn btn-ws" onClick="{{SF.openWs}}">Open in workspace</button></sc-if><button class="ibtn" onClick="{{SF.expand}}" aria-label="{{SF.expandLabel}}"><sc-if value="{{SF.focused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></sc-if><sc-if value="{{SF.notFocused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg></sc-if></button></div></div>
+<sc-if value="{{SF.focused}}"><div class="tabs" role="tablist" aria-label="Card views"><sc-for list="{{SF.tabs}}" as="t"><button role="tab" class="{{t.cls}}" aria-selected="{{t.on}}" onClick="{{t.go}}">{{t.label}}</button></sc-for></div></sc-if>
+<sc-if value="{{SF.loading}}"><div class="skel" aria-label="Loading"><span></span><span></span><span></span></div></sc-if>
+<sc-if value="{{SF.error}}"><div class="stbox st-err"><b>Couldn’t load this card.</b><span>The rest of the dashboard is unaffected. Reference req_8f21c4.</span><button class="btn" onClick="{{SF.retry}}">Retry</button></div></sc-if>
+<sc-if value="{{SF.empty}}"><div class="stbox"><b>{{SF.emptyTitle}}</b><span>{{SF.emptyMsg}}</span></div></sc-if>
+<sc-if value="{{SF.showBody}}">
+<div class="cb">
+<div class="flow"><sc-for list="{{SF.stages}}" as="st" hint-placeholder-count="4"><div class="stage" style="background: {{st.bg}}"><button class="{{st.bcls}}" onClick="{{st.pick}}" aria-pressed="{{st.pressed}}" aria-label="{{st.aria}}"><span class="stgl"><span class="dot" style="background: {{st.dot}}"></span>{{st.label}}</span><span class="stgv">{{st.value}}</span></button><sc-if value="{{st.split}}"><div class="splits"><button class="{{st.scls}}" onClick="{{st.pickS}}">Signed <b>{{st.signed}}</b></button><button class="{{st.ucls}}" onClick="{{st.pickU}}">Unsigned <b>{{st.unsigned}}</b></button></div><span class="oth">{{st.other}}</span></sc-if></div><sc-if value="{{st.arrow}}"><span class="chev" aria-hidden="true">›</span></sc-if></sc-for></div>
+<p class="note">Counts records created in the period at each stage — not a cohort, so stages are not conversion rates.</p>
+</div>
+</sc-if>
+<sc-if value="{{SF.showPanel}}"><div class="fp"><sc-if value="{{SF.pg.on}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{SF.pg.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{SF.pg.rows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="note">{{SF.pg.note}}</p></sc-if><sc-if value="{{SF.pd.on}}"><dl class="defl"><sc-for list="{{SF.pd.items}}" as="dd"><dt>{{dd.k}}</dt><dd>{{dd.v}}</dd></sc-for></dl><sc-for list="{{SF.pd.cav}}" as="cv"><p class="cav"><span class="cavl">CAVEAT</span><span>{{cv}}</span></p></sc-for></sc-if></div></sc-if>
+<sc-if value="{{SF.selOn}}"><div class="selbar"><span class="selchip">Selected</span><span class="selt">{{SF.selLabel}}</span><div class="selact"><button class="btn" onClick="{{SF.viewRec}}">View records</button><button class="btn btn-p" onClick="{{SF.askSel}}">Ask about this</button><button class="ibtn" onClick="{{SF.clearSel}}" aria-label="Clear selection"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div></div></sc-if>
+<div class="cf">{{SF.foot}}</div>
+</section>
+</sc-if>
+
+<sc-if value="{{K.vis}}" hint-placeholder-val="{{true}}">
+<section class="{{K.cls}}" aria-label="{{K.title}}">
+<div class="ch"><div class="cht"><div class="ttl"><h2 class="ct">{{K.title}}</h2><span class="tw ti" tabindex="0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg><span class="sr">Definition</span><span class="tt ttw">{{K.info}}</span></span></div><div class="frow"><span class="fnone">{{K.nofilters}}</span></div></div>
+<div class="cha"><button class="ibtn ibtn-ai" onClick="{{K.ask}}" aria-label="Ask the agent about {{K.title}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></button><sc-if value="{{K.focused}}"><button class="btn btn-ws" onClick="{{K.openWs}}">Open in workspace</button></sc-if><button class="ibtn" onClick="{{K.expand}}" aria-label="{{K.expandLabel}}"><sc-if value="{{K.focused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></sc-if><sc-if value="{{K.notFocused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg></sc-if></button></div></div>
+<sc-if value="{{K.focused}}"><div class="tabs" role="tablist" aria-label="Card views"><sc-for list="{{K.tabs}}" as="t"><button role="tab" class="{{t.cls}}" aria-selected="{{t.on}}" onClick="{{t.go}}">{{t.label}}</button></sc-for></div></sc-if>
+<sc-if value="{{K.loading}}"><div class="skel" aria-label="Loading"><span></span><span></span><span></span></div></sc-if>
+<sc-if value="{{K.error}}"><div class="stbox st-err"><b>Couldn’t load this card.</b><span>The rest of the dashboard is unaffected. Reference req_8f21c4.</span><button class="btn" onClick="{{K.retry}}">Retry</button></div></sc-if>
+<sc-if value="{{K.empty}}"><div class="stbox"><b>{{K.emptyTitle}}</b><span>{{K.emptyMsg}}</span></div></sc-if>
+<sc-if value="{{K.showBody}}">
+<div class="cb"><div class="stats3"><sc-for list="{{K.tiles}}" as="t" hint-placeholder-count="3"><button class="{{t.cls}}" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}"><span class="stl">{{t.label}}</span><span class="stv">{{t.value}}</span><span class="sts">{{t.sub}}</span></button></sc-for></div></div>
+</sc-if>
+<sc-if value="{{K.showPanel}}"><div class="fp"><sc-if value="{{K.pg.on}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{K.pg.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{K.pg.rows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="note">{{K.pg.note}}</p></sc-if><sc-if value="{{K.pd.on}}"><dl class="defl"><sc-for list="{{K.pd.items}}" as="dd"><dt>{{dd.k}}</dt><dd>{{dd.v}}</dd></sc-for></dl><sc-for list="{{K.pd.cav}}" as="cv"><p class="cav"><span class="cavl">CAVEAT</span><span>{{cv}}</span></p></sc-for></sc-if></div></sc-if>
+<sc-if value="{{K.selOn}}"><div class="selbar"><span class="selchip">Selected</span><span class="selt">{{K.selLabel}}</span><div class="selact"><button class="btn" onClick="{{K.viewRec}}">View records</button><button class="btn btn-p" onClick="{{K.askSel}}">Ask about this</button><button class="ibtn" onClick="{{K.clearSel}}" aria-label="Clear selection"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div></div></sc-if>
+<div class="cf">{{K.foot}}</div>
+</section>
+</sc-if>
+
+<sc-if value="{{LR.vis}}" hint-placeholder-val="{{true}}">
+<section class="{{LR.cls}}" aria-label="{{LR.title}}">
+<div class="ch"><div class="cht"><div class="ttl"><h2 class="ct">{{LR.title}}</h2><span class="tw ti" tabindex="0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg><span class="sr">Definition</span><span class="tt ttw">{{LR.info}}</span></span></div><div class="frow"><sc-for list="{{LR.filters}}" as="ff"><label class="fsel"><span class="sr">{{ff.label}}</span><select value="{{ff.value}}" onChange="{{ff.on}}" aria-label="{{ff.label}}"><sc-for list="{{ff.opts}}" as="o"><option value="{{o.v}}">{{o.l}}</option></sc-for></select></label></sc-for></div></div>
+<div class="cha"><button class="ibtn ibtn-ai" onClick="{{LR.ask}}" aria-label="Ask the agent about {{LR.title}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></button><sc-if value="{{LR.focused}}"><button class="btn btn-ws" onClick="{{LR.openWs}}">Open in workspace</button></sc-if><button class="ibtn" onClick="{{LR.expand}}" aria-label="{{LR.expandLabel}}"><sc-if value="{{LR.focused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></sc-if><sc-if value="{{LR.notFocused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg></sc-if></button></div></div>
+<sc-if value="{{LR.focused}}"><div class="tabs" role="tablist" aria-label="Card views"><sc-for list="{{LR.tabs}}" as="t"><button role="tab" class="{{t.cls}}" aria-selected="{{t.on}}" onClick="{{t.go}}">{{t.label}}</button></sc-for></div></sc-if>
+<sc-if value="{{LR.loading}}"><div class="skel" aria-label="Loading"><span></span><span></span><span></span></div></sc-if>
+<sc-if value="{{LR.error}}"><div class="stbox st-err"><b>Couldn’t load this card.</b><span>The rest of the dashboard is unaffected. Reference req_8f21c4.</span><button class="btn" onClick="{{LR.retry}}">Retry</button></div></sc-if>
+<sc-if value="{{LR.empty}}"><div class="stbox"><b>{{LR.emptyTitle}}</b><span>{{LR.emptyMsg}}</span></div></sc-if>
+<sc-if value="{{LR.showBody}}">
+<div class="cb">
+<div class="seg" role="group" aria-label="Group lease requests by"><button class="{{LR.segU}}" aria-pressed="{{LR.onU}}" onClick="{{LR.toUnit}}">By unit type</button><button class="{{LR.segS}}" aria-pressed="{{LR.onS}}" onClick="{{LR.toSrc}}">By source</button></div>
+<div class="lrw">
+<div class="donutw">
+<svg width="176" height="176" viewBox="0 0 176 176" role="img" aria-label="{{LR.aria}}"><g transform="rotate(-90 88 88)"><circle cx="88" cy="88" r="64" fill="none" stroke="#F1EFF5" stroke-width="22"></circle>
+<circle cx="88" cy="88" r="64" fill="none" stroke="{{LR.s0.color}}" stroke-width="{{LR.s0.sw}}" stroke-dasharray="{{LR.s0.da}}" stroke-dashoffset="{{LR.s0.dof}}" onClick="{{LR.s0.pick}}" onMouseEnter="{{LR.s0.hov}}" onMouseLeave="{{LR.unhov}}" style="cursor: pointer"></circle>
+<circle cx="88" cy="88" r="64" fill="none" stroke="{{LR.s1.color}}" stroke-width="{{LR.s1.sw}}" stroke-dasharray="{{LR.s1.da}}" stroke-dashoffset="{{LR.s1.dof}}" onClick="{{LR.s1.pick}}" onMouseEnter="{{LR.s1.hov}}" onMouseLeave="{{LR.unhov}}" style="cursor: pointer"></circle>
+<circle cx="88" cy="88" r="64" fill="none" stroke="{{LR.s2.color}}" stroke-width="{{LR.s2.sw}}" stroke-dasharray="{{LR.s2.da}}" stroke-dashoffset="{{LR.s2.dof}}" onClick="{{LR.s2.pick}}" onMouseEnter="{{LR.s2.hov}}" onMouseLeave="{{LR.unhov}}" style="cursor: pointer"></circle>
+<circle cx="88" cy="88" r="64" fill="none" stroke="{{LR.s3.color}}" stroke-width="{{LR.s3.sw}}" stroke-dasharray="{{LR.s3.da}}" stroke-dashoffset="{{LR.s3.dof}}" onClick="{{LR.s3.pick}}" onMouseEnter="{{LR.s3.hov}}" onMouseLeave="{{LR.unhov}}" style="cursor: pointer"></circle>
+<circle cx="88" cy="88" r="64" fill="none" stroke="{{LR.s4.color}}" stroke-width="{{LR.s4.sw}}" stroke-dasharray="{{LR.s4.da}}" stroke-dashoffset="{{LR.s4.dof}}" onMouseEnter="{{LR.s4.hov}}" onMouseLeave="{{LR.unhov}}"></circle>
+</g></svg>
+<div class="donutc"><span class="dcv">{{LR.cv}}</span><span class="dcl">{{LR.cl}}</span></div>
+</div>
+<div class="lgl"><sc-for list="{{LR.legend}}" as="l" hint-placeholder-count="5"><sc-if value="{{l.click}}"><button class="{{l.cls}}" onClick="{{l.pick}}" onMouseEnter="{{l.hov}}" onMouseLeave="{{LR.unhov}}" onFocus="{{l.hov}}" onBlur="{{LR.unhov}}" aria-pressed="{{l.pressed}}"><span class="sw" style="background: {{l.color}}"></span><span>{{l.label}}</span><b>{{l.v}}</b><span style="text-align: right; color: #4B4560">{{l.pct}}</span></button></sc-if><sc-if value="{{l.noclick}}"><div class="lgb lgo" onMouseEnter="{{l.hov}}" onMouseLeave="{{LR.unhov}}"><span class="sw" style="background: {{l.color}}"></span><span>{{l.label}}</span><b>{{l.v}}</b><span style="text-align: right">{{l.pct}}</span></div></sc-if></sc-for></div>
+</div>
+<p class="note">{{LR.note}}</p>
+</div>
+</sc-if>
+<sc-if value="{{LR.showPanel}}"><div class="fp"><sc-if value="{{LR.pg.on}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{LR.pg.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{LR.pg.rows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="note">{{LR.pg.note}}</p></sc-if><sc-if value="{{LR.pd.on}}"><dl class="defl"><sc-for list="{{LR.pd.items}}" as="dd"><dt>{{dd.k}}</dt><dd>{{dd.v}}</dd></sc-for></dl><sc-for list="{{LR.pd.cav}}" as="cv"><p class="cav"><span class="cavl">CAVEAT</span><span>{{cv}}</span></p></sc-for></sc-if></div></sc-if>
+<sc-if value="{{LR.selOn}}"><div class="selbar"><span class="selchip">Selected</span><span class="selt">{{LR.selLabel}}</span><div class="selact"><button class="btn" onClick="{{LR.viewRec}}">View records</button><button class="btn btn-p" onClick="{{LR.askSel}}">Ask about this</button><button class="ibtn" onClick="{{LR.clearSel}}" aria-label="Clear selection"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div></div></sc-if>
+<div class="cf">{{LR.foot}}</div>
+</section>
+</sc-if>
+
+<sc-if value="{{DS.vis}}" hint-placeholder-val="{{true}}">
+<section class="{{DS.cls}}" aria-label="{{DS.title}}">
+<div class="ch"><div class="cht"><div class="ttl"><h2 class="ct">{{DS.title}}</h2><span class="tw ti" tabindex="0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg><span class="sr">Definition</span><span class="tt ttw">{{DS.info}}</span></span></div><div class="frow"><sc-for list="{{DS.filters}}" as="ff"><label class="fsel"><span class="sr">{{ff.label}}</span><select value="{{ff.value}}" onChange="{{ff.on}}" aria-label="{{ff.label}}"><sc-for list="{{ff.opts}}" as="o"><option value="{{o.v}}">{{o.l}}</option></sc-for></select></label></sc-for></div></div>
+<div class="cha"><button class="ibtn ibtn-ai" onClick="{{DS.ask}}" aria-label="Ask the agent about {{DS.title}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></button><sc-if value="{{DS.focused}}"><button class="btn btn-ws" onClick="{{DS.openWs}}">Open in workspace</button></sc-if><button class="ibtn" onClick="{{DS.expand}}" aria-label="{{DS.expandLabel}}"><sc-if value="{{DS.focused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></sc-if><sc-if value="{{DS.notFocused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg></sc-if></button></div></div>
+<sc-if value="{{DS.focused}}"><div class="tabs" role="tablist" aria-label="Card views"><sc-for list="{{DS.tabs}}" as="t"><button role="tab" class="{{t.cls}}" aria-selected="{{t.on}}" onClick="{{t.go}}">{{t.label}}</button></sc-for></div></sc-if>
+<sc-if value="{{DS.loading}}"><div class="skel" aria-label="Loading"><span></span><span></span><span></span></div></sc-if>
+<sc-if value="{{DS.error}}"><div class="stbox st-err"><b>Couldn’t load this card.</b><span>The rest of the dashboard is unaffected. Reference req_8f21c4.</span><button class="btn" onClick="{{DS.retry}}">Retry</button></div></sc-if>
+<sc-if value="{{DS.empty}}"><div class="stbox"><b>{{DS.emptyTitle}}</b><span>{{DS.emptyMsg}}</span></div></sc-if>
+<sc-if value="{{DS.showBody}}">
+<div class="cb">
+<div class="dsh"><div class="seg" role="group" aria-label="Discipline"><sc-for list="{{DS.discs}}" as="dc" hint-placeholder-count="3"><button class="{{dc.cls}}" aria-pressed="{{dc.on}}" onClick="{{dc.go}}">{{dc.label}}</button></sc-for></div><div class="seg" role="group" aria-label="View"><button class="{{DS.vChart}}" aria-pressed="{{DS.isChartS}}" onClick="{{DS.toChart}}">Chart</button><button class="{{DS.vTable}}" aria-pressed="{{DS.isTableS}}" onClick="{{DS.toTable}}">Table</button></div></div>
+<ul class="lg"><li class="lgi"><span class="sw" style="background: #059669"></span>A · Approved</li><li class="lgi"><span class="sw" style="background: #8B5CF6"></span>B · Approved with comments</li><li class="lgi"><span class="sw" style="background: #F59E0B"></span>C · Change request</li><li class="lgi"><span class="sw" style="background: #DC2626"></span>D · Rejected</li></ul>
+<sc-if value="{{DS.isChart}}"><div class="cols" role="group" aria-label="{{DS.aria}}"><sc-for list="{{DS.cols}}" as="c" hint-placeholder-count="10"><button class="{{c.cls}}" onClick="{{c.pick}}" aria-label="{{c.aria}}" aria-pressed="{{c.pressed}}"><span class="tw" style="display: flex; flex-direction: column; justify-content: flex-end; align-items: center; width: 100%; height: {{c.h}}"><span class="colstack" style="height: 100%"><span style="flex-grow: {{c.d}}; background: #DC2626"></span><span style="flex-grow: {{c.cc}}; background: #F59E0B"></span><span style="flex-grow: {{c.b}}; background: #8B5CF6"></span><span style="flex-grow: {{c.a}}; background: #059669"></span></span><span class="tt ttw">{{c.tip}}</span></span><span class="coll">{{c.short}}</span></button></sc-for></div></sc-if>
+<sc-if value="{{DS.isTable}}"><div class="tblw"><table class="tbl"><thead><tr><th scope="col">Mall</th><th scope="col">A</th><th scope="col">B</th><th scope="col">C</th><th scope="col">D</th><th scope="col">Total</th></tr></thead><tbody><sc-for list="{{DS.trows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div></sc-if>
+<p class="note">{{DS.foot2}}</p>
+</div>
+</sc-if>
+<sc-if value="{{DS.showPanel}}"><div class="fp"><sc-if value="{{DS.pg.on}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{DS.pg.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{DS.pg.rows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="note">{{DS.pg.note}}</p></sc-if><sc-if value="{{DS.pd.on}}"><dl class="defl"><sc-for list="{{DS.pd.items}}" as="dd"><dt>{{dd.k}}</dt><dd>{{dd.v}}</dd></sc-for></dl><sc-for list="{{DS.pd.cav}}" as="cv"><p class="cav"><span class="cavl">CAVEAT</span><span>{{cv}}</span></p></sc-for></sc-if></div></sc-if>
+<sc-if value="{{DS.selOn}}"><div class="selbar"><span class="selchip">Selected</span><span class="selt">{{DS.selLabel}}</span><div class="selact"><button class="btn" onClick="{{DS.viewRec}}">View by document type</button><button class="btn btn-p" onClick="{{DS.askSel}}">Ask about this</button><button class="ibtn" onClick="{{DS.clearSel}}" aria-label="Clear selection"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div></div></sc-if>
+<div class="cf">{{DS.foot}}</div>
+</section>
+</sc-if>
+
+<sc-if value="{{FH.vis}}" hint-placeholder-val="{{true}}">
+<section class="{{FH.cls}}" aria-label="{{FH.title}}">
+<div class="ch"><div class="cht"><div class="ttl"><h2 class="ct">{{FH.title}}</h2><span class="tw ti" tabindex="0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg><span class="sr">Definition</span><span class="tt ttw">{{FH.info}}</span></span></div><div class="frow"><sc-for list="{{FH.filters}}" as="ff"><label class="fsel"><span class="sr">{{ff.label}}</span><select value="{{ff.value}}" onChange="{{ff.on}}" aria-label="{{ff.label}}"><sc-for list="{{ff.opts}}" as="o"><option value="{{o.v}}">{{o.l}}</option></sc-for></select></label></sc-for></div></div>
+<div class="cha"><button class="ibtn ibtn-ai" onClick="{{FH.ask}}" aria-label="Ask the agent about {{FH.title}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></button><sc-if value="{{FH.focused}}"><button class="btn btn-ws" onClick="{{FH.openWs}}">Open in workspace</button></sc-if><button class="ibtn" onClick="{{FH.expand}}" aria-label="{{FH.expandLabel}}"><sc-if value="{{FH.focused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></sc-if><sc-if value="{{FH.notFocused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg></sc-if></button></div></div>
+<sc-if value="{{FH.focused}}"><div class="tabs" role="tablist" aria-label="Card views"><sc-for list="{{FH.tabs}}" as="t"><button role="tab" class="{{t.cls}}" aria-selected="{{t.on}}" onClick="{{t.go}}">{{t.label}}</button></sc-for></div></sc-if>
+<sc-if value="{{FH.loading}}"><div class="skel" aria-label="Loading"><span></span><span></span><span></span></div></sc-if>
+<sc-if value="{{FH.error}}"><div class="stbox st-err"><b>Couldn’t load this card.</b><span>The rest of the dashboard is unaffected. Reference req_8f21c4.</span><button class="btn" onClick="{{FH.retry}}">Retry</button></div></sc-if>
+<sc-if value="{{FH.empty}}"><div class="stbox"><b>{{FH.emptyTitle}}</b><span>{{FH.emptyMsg}}</span></div></sc-if>
+<sc-if value="{{FH.showBody}}">
+<div class="cb">
+<div class="rings">
+<button class="{{FH.r0.cls}}" onClick="{{FH.r0.pick}}" aria-pressed="{{FH.r0.pressed}}" aria-label="{{FH.r0.aria}}"><svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true"><g transform="rotate(-90 48 48)"><circle cx="48" cy="48" r="38" fill="none" stroke="#F1EFF5" stroke-width="10"></circle><circle cx="48" cy="48" r="38" fill="none" stroke="{{FH.r0.color}}" stroke-width="10" stroke-linecap="{{FH.r0.lc}}" stroke-dasharray="{{FH.r0.da}}"></circle></g></svg><span class="rv">{{FH.r0.pct}}</span><span class="rl">{{FH.r0.label}}</span><span class="rs">{{FH.r0.sub}}</span></button>
+<button class="{{FH.r1.cls}}" onClick="{{FH.r1.pick}}" aria-pressed="{{FH.r1.pressed}}" aria-label="{{FH.r1.aria}}"><svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true"><g transform="rotate(-90 48 48)"><circle cx="48" cy="48" r="38" fill="none" stroke="#F1EFF5" stroke-width="10"></circle><circle cx="48" cy="48" r="38" fill="none" stroke="{{FH.r1.color}}" stroke-width="10" stroke-linecap="{{FH.r1.lc}}" stroke-dasharray="{{FH.r1.da}}"></circle></g></svg><span class="rv">{{FH.r1.pct}}</span><span class="rl">{{FH.r1.label}}</span><span class="rs">{{FH.r1.sub}}</span></button>
+<button class="{{FH.r2.cls}}" onClick="{{FH.r2.pick}}" aria-pressed="{{FH.r2.pressed}}" aria-label="{{FH.r2.aria}}"><svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true"><g transform="rotate(-90 48 48)"><circle cx="48" cy="48" r="38" fill="none" stroke="#F1EFF5" stroke-width="10"></circle><circle cx="48" cy="48" r="38" fill="none" stroke="{{FH.r2.color}}" stroke-width="10" stroke-linecap="{{FH.r2.lc}}" stroke-dasharray="{{FH.r2.da}}"></circle></g></svg><span class="rv">{{FH.r2.pct}}</span><span class="rl">{{FH.r2.label}}</span><span class="rs">{{FH.r2.sub}}</span></button>
+<button class="{{FH.r3.cls}}" onClick="{{FH.r3.pick}}" aria-pressed="{{FH.r3.pressed}}" aria-label="{{FH.r3.aria}}"><svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true"><g transform="rotate(-90 48 48)"><circle cx="48" cy="48" r="38" fill="none" stroke="#F1EFF5" stroke-width="10"></circle><circle cx="48" cy="48" r="38" fill="none" stroke="{{FH.r3.color}}" stroke-width="10" stroke-linecap="{{FH.r3.lc}}" stroke-dasharray="{{FH.r3.da}}"></circle></g></svg><span class="rv">{{FH.r3.pct}}</span><span class="rl">{{FH.r3.label}}</span><span class="rs">{{FH.r3.sub}}</span></button>
+</div>
+<div class="callout"><div><span class="cov">{{FH.ho}}</span>handovers pending tenant acceptance</div><button class="btn" onClick="{{FH.pickHo}}">Review</button></div>
+<p class="note">Ring = reviewed ÷ (received + remaining + reviewed). Reviewed includes rejected, so it is not an approval rate.</p>
+</div>
+</sc-if>
+<sc-if value="{{FH.showPanel}}"><div class="fp"><sc-if value="{{FH.pg.on}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{FH.pg.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{FH.pg.rows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="note">{{FH.pg.note}}</p></sc-if><sc-if value="{{FH.pd.on}}"><dl class="defl"><sc-for list="{{FH.pd.items}}" as="dd"><dt>{{dd.k}}</dt><dd>{{dd.v}}</dd></sc-for></dl><sc-for list="{{FH.pd.cav}}" as="cv"><p class="cav"><span class="cavl">CAVEAT</span><span>{{cv}}</span></p></sc-for></sc-if></div></sc-if>
+<sc-if value="{{FH.selOn}}"><div class="selbar"><span class="selchip">Selected</span><span class="selt">{{FH.selLabel}}</span><div class="selact"><button class="btn" onClick="{{FH.viewRec}}">View records</button><button class="btn btn-p" onClick="{{FH.askSel}}">Ask about this</button><button class="ibtn" onClick="{{FH.clearSel}}" aria-label="Clear selection"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div></div></sc-if>
+<div class="cf">{{FH.foot}}</div>
+</section>
+</sc-if>
+
+<sc-if value="{{FD.vis}}" hint-placeholder-val="{{true}}">
+<section class="{{FD.cls}}" aria-label="{{FD.title}}">
+<div class="ch"><div class="cht"><div class="ttl"><h2 class="ct">{{FD.title}}</h2><span class="tw ti" tabindex="0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg><span class="sr">Definition</span><span class="tt ttw">{{FD.info}}</span></span></div><div class="frow"><sc-for list="{{FD.filters}}" as="ff"><label class="fsel"><span class="sr">{{ff.label}}</span><select value="{{ff.value}}" onChange="{{ff.on}}" aria-label="{{ff.label}}"><sc-for list="{{ff.opts}}" as="o"><option value="{{o.v}}">{{o.l}}</option></sc-for></select></label></sc-for></div></div>
+<div class="cha"><button class="ibtn ibtn-ai" onClick="{{FD.ask}}" aria-label="Ask the agent about {{FD.title}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></button><sc-if value="{{FD.focused}}"><button class="btn btn-ws" onClick="{{FD.openWs}}">Open in workspace</button></sc-if><button class="ibtn" onClick="{{FD.expand}}" aria-label="{{FD.expandLabel}}"><sc-if value="{{FD.focused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></sc-if><sc-if value="{{FD.notFocused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg></sc-if></button></div></div>
+<sc-if value="{{FD.focused}}"><div class="tabs" role="tablist" aria-label="Card views"><sc-for list="{{FD.tabs}}" as="t"><button role="tab" class="{{t.cls}}" aria-selected="{{t.on}}" onClick="{{t.go}}">{{t.label}}</button></sc-for></div></sc-if>
+<sc-if value="{{FD.loading}}"><div class="skel" aria-label="Loading"><span></span><span></span><span></span></div></sc-if>
+<sc-if value="{{FD.error}}"><div class="stbox st-err"><b>Couldn’t load this card.</b><span>The rest of the dashboard is unaffected. Reference req_8f21c4.</span><button class="btn" onClick="{{FD.retry}}">Retry</button></div></sc-if>
+<sc-if value="{{FD.empty}}"><div class="stbox"><b>{{FD.emptyTitle}}</b><span>{{FD.emptyMsg}}</span></div></sc-if>
+<sc-if value="{{FD.showBody}}">
+<div class="cb">
+<ul class="lg"><li class="lgi"><span class="sw" style="background: #0284C7"></span>Submitted</li><li class="lgi"><span class="sw" style="background: #F59E0B"></span>Pending</li><li class="lgi"><span class="sw" style="background: #059669"></span>Approved</li></ul>
+<div class="hbars"><sc-for list="{{FD.rows}}" as="r" hint-placeholder-count="3"><span>{{r.label}}</span><div class="hbt"><sc-for list="{{r.segs}}" as="sg"><button class="hbs tw" onClick="{{sg.pick}}" aria-label="{{sg.aria}}" aria-pressed="{{sg.pressed}}" style="width: {{sg.w}}; background: {{sg.bg}}; {{sg.selcss}}"><span class="hbn" style="color: {{sg.fg}}">{{sg.txt}}</span><span class="tt">{{sg.tip}}</span></button></sc-for></div><span class="hbtot">{{r.total}}</span></sc-for></div>
+<p class="note">“Approved” is the dashboard’s reviewed bucket: approved, rejected or completed.</p>
+</div>
+</sc-if>
+<sc-if value="{{FD.showPanel}}"><div class="fp"><sc-if value="{{FD.pg.on}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{FD.pg.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{FD.pg.rows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="note">{{FD.pg.note}}</p></sc-if><sc-if value="{{FD.pd.on}}"><dl class="defl"><sc-for list="{{FD.pd.items}}" as="dd"><dt>{{dd.k}}</dt><dd>{{dd.v}}</dd></sc-for></dl><sc-for list="{{FD.pd.cav}}" as="cv"><p class="cav"><span class="cavl">CAVEAT</span><span>{{cv}}</span></p></sc-for></sc-if></div></sc-if>
+<sc-if value="{{FD.selOn}}"><div class="selbar"><span class="selchip">Selected</span><span class="selt">{{FD.selLabel}}</span><div class="selact"><button class="btn" onClick="{{FD.viewRec}}">View records</button><button class="btn btn-p" onClick="{{FD.askSel}}">Ask about this</button><button class="ibtn" onClick="{{FD.clearSel}}" aria-label="Clear selection"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div></div></sc-if>
+<div class="cf">{{FD.foot}}</div>
+</section>
+</sc-if>
+
+<sc-if value="{{PA.vis}}" hint-placeholder-val="{{true}}">
+<section class="{{PA.cls}}" aria-label="{{PA.title}}">
+<div class="ch"><div class="cht"><div class="ttl"><h2 class="ct">{{PA.title}}</h2><span class="tw ti" tabindex="0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg><span class="sr">Definition</span><span class="tt ttw">{{PA.info}}</span></span></div><div class="frow"><sc-for list="{{PA.filters}}" as="ff"><label class="fsel"><span class="sr">{{ff.label}}</span><select value="{{ff.value}}" onChange="{{ff.on}}" aria-label="{{ff.label}}"><sc-for list="{{ff.opts}}" as="o"><option value="{{o.v}}">{{o.l}}</option></sc-for></select></label></sc-for></div></div>
+<div class="cha"><button class="ibtn ibtn-ai" onClick="{{PA.ask}}" aria-label="Ask the agent about {{PA.title}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></button><sc-if value="{{PA.focused}}"><button class="btn btn-ws" onClick="{{PA.openWs}}">Open in workspace</button></sc-if><button class="ibtn" onClick="{{PA.expand}}" aria-label="{{PA.expandLabel}}"><sc-if value="{{PA.focused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></sc-if><sc-if value="{{PA.notFocused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg></sc-if></button></div></div>
+<sc-if value="{{PA.focused}}"><div class="tabs" role="tablist" aria-label="Card views"><sc-for list="{{PA.tabs}}" as="t"><button role="tab" class="{{t.cls}}" aria-selected="{{t.on}}" onClick="{{t.go}}">{{t.label}}</button></sc-for></div></sc-if>
+<sc-if value="{{PA.loading}}"><div class="skel" aria-label="Loading"><span></span><span></span><span></span></div></sc-if>
+<sc-if value="{{PA.error}}"><div class="stbox st-err"><b>Couldn’t load this card.</b><span>The rest of the dashboard is unaffected. Reference req_8f21c4.</span><button class="btn" onClick="{{PA.retry}}">Retry</button></div></sc-if>
+<sc-if value="{{PA.empty}}"><div class="stbox"><b>{{PA.emptyTitle}}</b><span>{{PA.emptyMsg}}</span></div></sc-if>
+<sc-if value="{{PA.showBody}}">
+<div class="cb">
+<sc-if value="{{PA.banner}}"><div class="banner" role="status">Every approval type has 90% or more of its items older than a month.</div></sc-if>
+<div class="gauges">
+<button class="{{PA.g0.cls}}" onClick="{{PA.g0.pick}}" aria-pressed="{{PA.g0.pressed}}" aria-label="{{PA.g0.aria}}"><svg width="192" height="108" viewBox="0 0 192 108" aria-hidden="true"><path d="M 16 96 A 80 80 0 0 1 176 96" fill="none" stroke="#EEEAF6" stroke-width="16" stroke-linecap="round"></path><path d="M 16 96 A 80 80 0 0 1 176 96" fill="none" stroke="#7C3AED" stroke-width="16" stroke-linecap="{{PA.g0.lc}}" stroke-dasharray="{{PA.g0.da}}"></path></svg><span class="gv">{{PA.g0.pct}}</span><span class="gl">{{PA.g0.label}}</span><span class="gc">{{PA.g0.cap}}</span><span class="gb">{{PA.g0.bands}}</span></button>
+<button class="{{PA.g1.cls}}" onClick="{{PA.g1.pick}}" aria-pressed="{{PA.g1.pressed}}" aria-label="{{PA.g1.aria}}"><svg width="192" height="108" viewBox="0 0 192 108" aria-hidden="true"><path d="M 16 96 A 80 80 0 0 1 176 96" fill="none" stroke="#EEEAF6" stroke-width="16" stroke-linecap="round"></path><path d="M 16 96 A 80 80 0 0 1 176 96" fill="none" stroke="#7C3AED" stroke-width="16" stroke-linecap="{{PA.g1.lc}}" stroke-dasharray="{{PA.g1.da}}"></path></svg><span class="gv">{{PA.g1.pct}}</span><span class="gl">{{PA.g1.label}}</span><span class="gc">{{PA.g1.cap}}</span><span class="gb">{{PA.g1.bands}}</span></button>
+<button class="{{PA.g2.cls}}" onClick="{{PA.g2.pick}}" aria-pressed="{{PA.g2.pressed}}" aria-label="{{PA.g2.aria}}"><svg width="192" height="108" viewBox="0 0 192 108" aria-hidden="true"><path d="M 16 96 A 80 80 0 0 1 176 96" fill="none" stroke="#EEEAF6" stroke-width="16" stroke-linecap="round"></path><path d="M 16 96 A 80 80 0 0 1 176 96" fill="none" stroke="#7C3AED" stroke-width="16" stroke-linecap="{{PA.g2.lc}}" stroke-dasharray="{{PA.g2.da}}"></path></svg><span class="gv">{{PA.g2.pct}}</span><span class="gl">{{PA.g2.label}}</span><span class="gc">{{PA.g2.cap}}</span><span class="gb">{{PA.g2.bands}}</span></button>
+</div>
+<p class="note">Gauge = share of pending items older than one month (31+ days). Bands: 1w 0–6 · 2w 7–13 · 3w 14–20 · 1m 21–30 · 1m+ 31+ days.</p>
+</div>
+</sc-if>
+<sc-if value="{{PA.showPanel}}"><div class="fp"><sc-if value="{{PA.pg.on}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{PA.pg.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{PA.pg.rows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="note">{{PA.pg.note}}</p></sc-if><sc-if value="{{PA.pd.on}}"><dl class="defl"><sc-for list="{{PA.pd.items}}" as="dd"><dt>{{dd.k}}</dt><dd>{{dd.v}}</dd></sc-for></dl><sc-for list="{{PA.pd.cav}}" as="cv"><p class="cav"><span class="cavl">CAVEAT</span><span>{{cv}}</span></p></sc-for></sc-if></div></sc-if>
+<sc-if value="{{PA.selOn}}"><div class="selbar"><span class="selchip">Selected</span><span class="selt">{{PA.selLabel}}</span><div class="selact"><button class="btn" onClick="{{PA.viewRec}}">View records</button><button class="btn btn-p" onClick="{{PA.askSel}}">Ask about this</button><button class="ibtn" onClick="{{PA.clearSel}}" aria-label="Clear selection"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div></div></sc-if>
+<div class="cf">{{PA.foot}}</div>
+</section>
+</sc-if>
+
+<sc-if value="{{AM.vis}}" hint-placeholder-val="{{true}}">
+<section class="{{AM.cls}}" aria-label="{{AM.title}}">
+<div class="ch"><div class="cht"><div class="ttl"><h2 class="ct">{{AM.title}}</h2><span class="tw ti" tabindex="0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg><span class="sr">Definition</span><span class="tt ttw">{{AM.info}}</span></span></div><div class="frow"><sc-for list="{{AM.filters}}" as="ff"><label class="fsel"><span class="sr">{{ff.label}}</span><select value="{{ff.value}}" onChange="{{ff.on}}" aria-label="{{ff.label}}"><sc-for list="{{ff.opts}}" as="o"><option value="{{o.v}}">{{o.l}}</option></sc-for></select></label></sc-for></div></div>
+<div class="cha"><button class="ibtn ibtn-ai" onClick="{{AM.ask}}" aria-label="Ask the agent about {{AM.title}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></button><sc-if value="{{AM.focused}}"><button class="btn btn-ws" onClick="{{AM.openWs}}">Open in workspace</button></sc-if><button class="ibtn" onClick="{{AM.expand}}" aria-label="{{AM.expandLabel}}"><sc-if value="{{AM.focused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></sc-if><sc-if value="{{AM.notFocused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg></sc-if></button></div></div>
+<sc-if value="{{AM.focused}}"><div class="tabs" role="tablist" aria-label="Card views"><sc-for list="{{AM.tabs}}" as="t"><button role="tab" class="{{t.cls}}" aria-selected="{{t.on}}" onClick="{{t.go}}">{{t.label}}</button></sc-for></div></sc-if>
+<sc-if value="{{AM.loading}}"><div class="skel" aria-label="Loading"><span></span><span></span><span></span></div></sc-if>
+<sc-if value="{{AM.error}}"><div class="stbox st-err"><b>Couldn’t load this card.</b><span>The rest of the dashboard is unaffected. Reference req_8f21c4.</span><button class="btn" onClick="{{AM.retry}}">Retry</button></div></sc-if>
+<sc-if value="{{AM.empty}}"><div class="stbox"><b>{{AM.emptyTitle}}</b><span>{{AM.emptyMsg}}</span></div></sc-if>
+<sc-if value="{{AM.showBody}}">
+<div class="cb">
+<div class="hm" role="group" aria-label="{{AM.aria}}">
+<span></span><sc-for list="{{AM.cols}}" as="hc" hint-placeholder-count="4"><span class="hmh">{{hc}}</span></sc-for>
+<sc-for list="{{AM.rows}}" as="hr" hint-placeholder-count="5"><span class="hml">{{hr.band}}</span><sc-for list="{{hr.cells}}" as="cell" hint-placeholder-count="4"><button class="hmc tw" onClick="{{cell.pick}}" aria-label="{{cell.aria}}" aria-pressed="{{cell.pressed}}" style="background: {{cell.bg}}; color: {{cell.fg}}; {{cell.selcss}}">{{cell.v}}<span class="tt">{{cell.tip}}</span></button></sc-for></sc-for>
+</div>
+<div style="display: flex; align-items: center; gap: 6px; font-size: 11px; color: #4B4560; flex-wrap: wrap"><span class="sw" style="background: #F4F2F8; border: 1px solid #E4E1EC"></span><span>0</span><span style="margin-left: 8px">Fewer</span><span class="sw" style="background: #EDE7FB"></span><span class="sw" style="background: #CDBDF5"></span><span class="sw" style="background: #A68BEA"></span><span class="sw" style="background: #7C55D6"></span><span class="sw" style="background: #4C1D95"></span><span>More</span><span style="margin-left: 8px">Shading by quintile of non-zero cells</span></div>
+</div>
+</sc-if>
+<sc-if value="{{AM.showPanel}}"><div class="fp"><sc-if value="{{AM.pg.on}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{AM.pg.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{AM.pg.rows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="note">{{AM.pg.note}}</p></sc-if><sc-if value="{{AM.pd.on}}"><dl class="defl"><sc-for list="{{AM.pd.items}}" as="dd"><dt>{{dd.k}}</dt><dd>{{dd.v}}</dd></sc-for></dl><sc-for list="{{AM.pd.cav}}" as="cv"><p class="cav"><span class="cavl">CAVEAT</span><span>{{cv}}</span></p></sc-for></sc-if></div></sc-if>
+<sc-if value="{{AM.selOn}}"><div class="selbar"><span class="selchip">Selected</span><span class="selt">{{AM.selLabel}}</span><div class="selact"><button class="btn" onClick="{{AM.viewRec}}">View records</button><button class="btn btn-p" onClick="{{AM.askSel}}">Ask about this</button><button class="ibtn" onClick="{{AM.clearSel}}" aria-label="Clear selection"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div></div></sc-if>
+<div class="cf">{{AM.foot}}</div>
+</section>
+</sc-if>
+
+<sc-if value="{{SR.vis}}" hint-placeholder-val="{{true}}">
+<section class="{{SR.cls}}" aria-label="{{SR.title}}">
+<div class="ch"><div class="cht"><div class="ttl"><h2 class="ct">{{SR.title}}</h2><span class="tw ti" tabindex="0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg><span class="sr">Definition</span><span class="tt ttw">{{SR.info}}</span></span></div><div class="frow"><sc-for list="{{SR.filters}}" as="ff"><label class="fsel"><span class="sr">{{ff.label}}</span><select value="{{ff.value}}" onChange="{{ff.on}}" aria-label="{{ff.label}}"><sc-for list="{{ff.opts}}" as="o"><option value="{{o.v}}">{{o.l}}</option></sc-for></select></label></sc-for></div></div>
+<div class="cha"><button class="ibtn ibtn-ai" onClick="{{SR.ask}}" aria-label="Ask the agent about {{SR.title}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></button><sc-if value="{{SR.focused}}"><button class="btn btn-ws" onClick="{{SR.openWs}}">Open in workspace</button></sc-if><button class="ibtn" onClick="{{SR.expand}}" aria-label="{{SR.expandLabel}}"><sc-if value="{{SR.focused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></sc-if><sc-if value="{{SR.notFocused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg></sc-if></button></div></div>
+<sc-if value="{{SR.focused}}"><div class="tabs" role="tablist" aria-label="Card views"><sc-for list="{{SR.tabs}}" as="t"><button role="tab" class="{{t.cls}}" aria-selected="{{t.on}}" onClick="{{t.go}}">{{t.label}}</button></sc-for></div></sc-if>
+<sc-if value="{{SR.loading}}"><div class="skel" aria-label="Loading"><span></span><span></span><span></span></div></sc-if>
+<sc-if value="{{SR.error}}"><div class="stbox st-err"><b>Couldn’t load this card.</b><span>The rest of the dashboard is unaffected. Reference req_8f21c4.</span><button class="btn" onClick="{{SR.retry}}">Retry</button></div></sc-if>
+<sc-if value="{{SR.empty}}"><div class="stbox"><b>{{SR.emptyTitle}}</b><span>{{SR.emptyMsg}}</span></div></sc-if>
+<sc-if value="{{SR.showBody}}">
+<div class="cb">
+<sc-if value="{{SR.wpOnly}}"><span class="pill" style="background: #FDF0E1; color: #7C3A06">Work-permit view for your role</span></sc-if>
+<ul class="lg"><sc-for list="{{SR.catLegend}}" as="cl" hint-placeholder-count="3"><li class="lgi"><span class="sw" style="background: {{cl.color}}"></span>{{cl.name}} <b>{{cl.total}}</b></li></sc-for></ul>
+<div class="tm" role="group" aria-label="{{SR.aria}}"><sc-for list="{{SR.cats}}" as="c" hint-placeholder-count="3"><div class="tmc" style="flex-grow: {{c.grow}}"><sc-for list="{{c.leaves}}" as="l" hint-placeholder-count="3"><button class="tml tw" onClick="{{l.pick}}" aria-label="{{l.aria}}" aria-pressed="{{l.pressed}}" style="flex-grow: {{l.grow}}; background: {{l.bg}}; color: {{l.fg}}; {{l.selcss}}"><span class="{{l.tcls}}"><span class="tmn">{{l.name}}</span><span class="tmv">{{l.vtxt}}</span></span><span class="tt ttw">{{l.tip}}</span></button></sc-for></div></sc-for></div>
+<div class="strip"><div style="display: flex; justify-content: space-between; font-size: 12px; color: #4B4560"><b style="color: #1B1530">Work permits by status</b><span>{{SR.wpTotal}} permits</span></div><div class="stb"><sc-for list="{{SR.wp}}" as="w" hint-placeholder-count="5"><span class="tw" tabindex="0" style="width: {{w.w}}; background: {{w.color}}"><span class="tt">{{w.tip}}</span></span></sc-for></div><ul class="lg"><sc-for list="{{SR.wp}}" as="w"><li class="lgi"><span class="sw" style="background: {{w.color}}"></span>{{w.label}} <b>{{w.vtxt}}</b></li></sc-for></ul></div>
+<p class="note">Tile size = approved + in process + rejected. Pending and closed requests appear in tooltips but are not sized (V2 definition).</p>
+</div>
+</sc-if>
+<sc-if value="{{SR.showPanel}}"><div class="fp"><sc-if value="{{SR.pg.on}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{SR.pg.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{SR.pg.rows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="note">{{SR.pg.note}}</p></sc-if><sc-if value="{{SR.pd.on}}"><dl class="defl"><sc-for list="{{SR.pd.items}}" as="dd"><dt>{{dd.k}}</dt><dd>{{dd.v}}</dd></sc-for></dl><sc-for list="{{SR.pd.cav}}" as="cv"><p class="cav"><span class="cavl">CAVEAT</span><span>{{cv}}</span></p></sc-for></sc-if></div></sc-if>
+<sc-if value="{{SR.selOn}}"><div class="selbar"><span class="selchip">Selected</span><span class="selt">{{SR.selLabel}}</span><div class="selact"><button class="btn" onClick="{{SR.viewRec}}">View records</button><button class="btn btn-p" onClick="{{SR.askSel}}">Ask about this</button><button class="ibtn" onClick="{{SR.clearSel}}" aria-label="Clear selection"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div></div></sc-if>
+<div class="cf">{{SR.foot}}</div>
+</section>
+</sc-if>
+
+<sc-if value="{{UD.vis}}" hint-placeholder-val="{{true}}">
+<section class="{{UD.cls}}" aria-label="{{UD.title}}">
+<div class="ch"><div class="cht"><div class="ttl"><h2 class="ct">{{UD.title}}</h2><span class="tw ti" tabindex="0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg><span class="sr">Definition</span><span class="tt ttw">{{UD.info}}</span></span></div><div class="frow"><sc-for list="{{UD.filters}}" as="ff"><label class="fsel"><span class="sr">{{ff.label}}</span><select value="{{ff.value}}" onChange="{{ff.on}}" aria-label="{{ff.label}}"><sc-for list="{{ff.opts}}" as="o"><option value="{{o.v}}">{{o.l}}</option></sc-for></select></label></sc-for></div></div>
+<div class="cha"><button class="ibtn ibtn-ai" onClick="{{UD.ask}}" aria-label="Ask the agent about {{UD.title}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></button><sc-if value="{{UD.focused}}"><button class="btn btn-ws" onClick="{{UD.openWs}}">Open in workspace</button></sc-if><button class="ibtn" onClick="{{UD.expand}}" aria-label="{{UD.expandLabel}}"><sc-if value="{{UD.focused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></sc-if><sc-if value="{{UD.notFocused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg></sc-if></button></div></div>
+<sc-if value="{{UD.focused}}"><div class="tabs" role="tablist" aria-label="Card views"><sc-for list="{{UD.tabs}}" as="t"><button role="tab" class="{{t.cls}}" aria-selected="{{t.on}}" onClick="{{t.go}}">{{t.label}}</button></sc-for></div></sc-if>
+<sc-if value="{{UD.loading}}"><div class="skel" aria-label="Loading"><span></span><span></span><span></span></div></sc-if>
+<sc-if value="{{UD.error}}"><div class="stbox st-err"><b>Couldn’t load this card.</b><span>The rest of the dashboard is unaffected. Reference req_8f21c4.</span><button class="btn" onClick="{{UD.retry}}">Retry</button></div></sc-if>
+<sc-if value="{{UD.empty}}"><div class="stbox"><b>{{UD.emptyTitle}}</b><span>{{UD.emptyMsg}}</span></div></sc-if>
+<sc-if value="{{UD.showBody}}">
+<div class="cb">
+<div class="seg" role="group" aria-label="Group by"><button class="{{UD.segM}}" aria-pressed="{{UD.onM}}" onClick="{{UD.toMall}}">Mall-wise</button><button class="{{UD.segT}}" aria-pressed="{{UD.onT}}" onClick="{{UD.toMonth}}">Month-wise</button></div>
+<div class="dvh"><span>{{UD.rowHead}}</span><span style="text-align: right; padding-right: 6px; color: #B42318">◂ Mismatch</span><span></span><span style="padding-left: 6px; color: #5B21B6">Match ▸</span></div>
+<div class="dv" role="group" aria-label="{{UD.aria}}"><sc-for list="{{UD.rows}}" as="r" hint-placeholder-count="8"><button class="{{r.cls}} tw" onClick="{{r.pick}}" aria-label="{{r.aria}}" aria-pressed="{{r.pressed}}" disabled="{{r.disabled}}"><span class="dvl">{{r.label}}</span><span class="dvm"><span class="dvbar dvbm" style="width: {{r.mw}}"></span><span class="dvn">{{r.mmTxt}}</span></span><span class="dvx"></span><span class="dvp"><span class="dvbar dvbp" style="width: {{r.pw}}"></span><span class="dvn">{{r.matchTxt}}</span><span class="dvq">{{r.q}}</span></span><span class="tt">{{r.tip}}</span></button></sc-for></div>
+<p class="note">{{UD.foot2}}</p>
+</div>
+</sc-if>
+<sc-if value="{{UD.showPanel}}"><div class="fp"><sc-if value="{{UD.pg.on}}"><div class="tblw"><table class="tbl"><thead><tr><sc-for list="{{UD.pg.cols}}" as="h"><th scope="col">{{h}}</th></sc-for></tr></thead><tbody><sc-for list="{{UD.pg.rows}}" as="r"><tr><sc-for list="{{r}}" as="c"><td>{{c}}</td></sc-for></tr></sc-for></tbody></table></div><p class="note">{{UD.pg.note}}</p></sc-if><sc-if value="{{UD.pd.on}}"><dl class="defl"><sc-for list="{{UD.pd.items}}" as="dd"><dt>{{dd.k}}</dt><dd>{{dd.v}}</dd></sc-for></dl><sc-for list="{{UD.pd.cav}}" as="cv"><p class="cav"><span class="cavl">CAVEAT</span><span>{{cv}}</span></p></sc-for></sc-if></div></sc-if>
+<sc-if value="{{UD.selOn}}"><div class="selbar"><span class="selchip">Selected</span><span class="selt">{{UD.selLabel}}</span><div class="selact"><button class="btn" onClick="{{UD.viewRec}}">View units</button><button class="btn btn-p" onClick="{{UD.askSel}}">Ask about this</button><button class="ibtn" onClick="{{UD.clearSel}}" aria-label="Clear selection"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div></div></sc-if>
+<div class="cf">{{UD.foot}}</div>
+</section>
+</sc-if>
+
+</div>
+</main>
+
+<sc-if value="{{panel}}" hint-placeholder-val="{{false}}">
+<aside class="agent" aria-label="Agent panel">
+<div style="display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid #E4E1EC">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5B21B6" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>
+<span style="font-weight: 600">Agent</span>
+<button class="btn" style="margin-left: auto; border-color: transparent">Open in workspace</button>
+<button class="ibtn" onClick="{{closePanel}}" aria-label="Close agent panel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+<div class="ctxs">
+<section>
+<h3 class="ctxh"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 5h18l-7 8v6l-4-2v-4z"></path></svg>Dashboard filters · {{ctxTitle}}</h3>
+<p class="ctxn">Set on the card. The agent reads them and never changes them on its own.</p>
+<div class="chips"><sc-for list="{{cardChips}}" as="x" hint-placeholder-count="3"><span class="chip c-filter">{{x}}</span></sc-for><span class="fnone">{{cardChipsNone}}</span></div>
+</section>
+<section>
+<h3 class="ctxh"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>Agent query scope</h3>
+<p class="ctxn">Exactly what the next answer will use. Removing an item widens the question here only — the dashboard stays as it is.</p>
+<div class="chips"><sc-for list="{{scope}}" as="x" hint-placeholder-count="4"><span class="{{x.cls}}">{{x.label}}<sc-if value="{{x.removable}}"><button class="chip-x" onClick="{{x.remove}}" aria-label="Remove {{x.label}} from the agent scope"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></sc-if></span></sc-for></div><p class="bnd-h">Boundaries · set by your role and the dataset · cannot be removed or widened here</p><div class="chips"><sc-for list="{{bounds}}" as="x" hint-placeholder-count="2"><span class="chip c-fixed" title="{{x.why}}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>{{x.label}}</span></sc-for></div>
+<sc-if value="{{scopeChanged}}"><button class="btn" onClick="{{resetScope}}" style="margin-top: 6px; min-height: 26px; font-size: 12px">Reset scope to the card</button></sc-if>
+</section>
+<section>
+<h3 class="ctxh"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Proposed dashboard changes</h3>
+<p class="ctxn" style="margin-bottom: 0">None. When the agent suggests a filter change it appears here to apply or dismiss — never automatically.</p>
+</section>
+</div>
+<div class="msgs">
+<sc-if value="{{asked}}"><div class="mu">{{askedText}}</div><div class="ma">The answer layout is designed in DX4 and DX5. It will use exactly the query scope above, and will not change any dashboard filter unless you confirm a suggestion.</div></sc-if>
+<sc-if value="{{notAsked}}"><div style="font-size: 12px; color: #4B4560">Suggested questions</div><sc-for list="{{sugg}}" as="q" hint-placeholder-count="3"><button class="sugg" onClick="{{q.go}}">{{q.text}}</button></sc-for></sc-if>
+</div>
+<div style="padding: 12px 14px; border-top: 1px solid #E4E1EC; display: flex; gap: 8px">
+<label for="agent-q" class="sr">Ask a question</label>
+<input id="agent-q" placeholder="Ask about {{ctxTitleLower}}…" style="flex: 1 1 auto; min-height: 36px; border: 1px solid #D9D4E6; border-radius: 8px; padding: 0 10px; font-size: 14px">
+<button class="btn btn-p">Send</button>
+</div>
+</aside>
+</sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3200}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { role: 'admin', ds: 'live', f: this.defaults(), sel: null, focus: null, ftab: 'Chart', panel: false, ctx: null, removed: {}, asked: null, hv: null, ok: {} };
+  }
+  defaults() {
+    return {
+      leaseRequests: { year: '2026', view: 'unit' },
+      salesFunnel: { year: '2026', month: 'All', region: 'All', mall: 'All' },
+      pendingApprovals: { region: 'All', mall: 'All' },
+      pendingAmendments: { year: '2026', month: 'All', region: 'Central', mall: 'All' },
+      serviceRequests: { year: '2026', month: 'All', region: 'All', mall: 'All' },
+      fitoutHandover: { year: '2026', month: 'All', region: 'All', mall: 'All' },
+      fitoutDrawings: { year: '2026', month: 'All', region: 'All', mall: 'All' },
+      documentStatus: { year: '2026', region: 'All', disc: 'ARCHITECTURAL', view: 'chart' },
+      unitDiscrepancy: { year: '2026', month: 'Sep', mode: 'mall', mall: 'Gulf Gate Mall' }
+    };
+  }
+  D() {
+    if (this._d) return this._d;
+    const MALLS = {
+      Central: ['Rawdah Point Mall', 'Sandstone Galleria', 'Qasr Plaza', 'Najd Gate Mall', 'Wadi Crescent Centre', 'Falcon Square', 'Oasis Row', 'Cedar Park Mall', 'Amber Heights', 'Mirage Commons'],
+      Eastern: ['Gulf Gate Mall', 'Pearl Bay Centre', 'Dune Harbour Mall', 'Coral Point', 'Seabreeze Plaza', 'Lantern Quay', 'Mangrove Mall'],
+      Western: ['Harbor Lights Mall', 'Tidewater Arcade', 'Coastline Galleria', 'Spice Route Mall', 'Minaret View', 'Breeze Walk', 'Marina Square West', 'Hijaz Crossing']
+    };
+    const d = {
+      MONTHS: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      REGIONS: ['Central', 'Eastern', 'Western'],
+      MALLS: MALLS,
+      ALL: [].concat(MALLS.Central, MALLS.Eastern, MALLS.Western),
+      MALLW: { Central: [16, 12, 9, 11, 10, 9, 8, 9, 8, 8], Eastern: [18, 16, 14, 13, 13, 13, 13], Western: [17, 14, 13, 12, 12, 11, 11, 10] },
+      VACW: { Central: [11, 13, 8, 9, 12, 7, 10, 6, 9, 14], Eastern: [12, 15, 10, 9, 13, 8, 11], Western: [13, 11, 9, 12, 10, 8, 9, 10] },
+      DOCW: { Central: [16, 12, 0, 11, 10, 9, 8, 0, 8, 8], Eastern: [18, 0, 14, 13, 13, 13, 13], Western: [17, 14, 13, 0, 12, 11, 11, 10] },
+      AMW: { Central: [3, 2, 1, 0, 0, 0, 0, 0, 0, 0] },
+      RW: [43, 26, 31],
+      BRANDS: ['Arcadia Shoes', 'Saffron Kitchen', 'Nova Optics', 'Dune Outdoor', 'Pearl & Pine', 'Kite Kids', 'Marlo Home', 'Atlas Sports', 'Velvet Lane', 'Cedar Café', 'Orbit Electronics', 'Lumen'],
+      ROLES: {
+        admin: { name: 'Portfolio admin', sub: 'Portfolio admin · 3 regions · 25 malls', access: 'Access: all regions', regions: ['All', 'Central', 'Eastern', 'Western'], hide: [], arCount: 27 },
+        leasing: { name: 'Leasing manager', sub: 'Leasing manager · 3 regions · 25 malls', access: 'Access: all regions', regions: ['All', 'Central', 'Eastern', 'Western'], hide: ['serviceRequests', 'fitoutHandover', 'fitoutDrawings', 'documentStatus', 'unitDiscrepancy'], arCount: 14 },
+        fitout: { name: 'Fit-out manager', sub: 'Fit-out manager · Central region · 10 malls', access: 'Access: Central region only', regions: ['Central'], hide: ['kpis', 'salesFunnel', 'leaseRequests', 'pendingApprovals', 'pendingAmendments', 'unitDiscrepancy'], wpOnly: true, arCount: 9 }
+      },
+      PU: { Central: [3420, 3012, 408, 612400, 88900, 10], Eastern: [2180, 1868, 312, 371800, 56200, 7], Western: [2540, 2234, 306, 428400, 69200, 8] },
+      LR: {
+        '2026': { unit: [['Store', 612], ['Kiosk', 188], ['Food Court', 164], ['Office', 121], ['Media', 97], ['Specialty', 74], ['Entertainment', 28]], source: [['Website', 538], ['Mobile App', 291], ['Leasing Team', 247], ['Walk-in', 102], ['Referral', 64], ['Broker', 31]], nullSrc: 11 },
+        '2025': { unit: [['Store', 559], ['Kiosk', 171], ['Food Court', 143], ['Office', 118], ['Media', 82], ['Specialty', 69], ['Entertainment', 31]], source: [['Website', 471], ['Leasing Team', 251], ['Mobile App', 244], ['Walk-in', 109], ['Referral', 58], ['Broker', 29]], nullSrc: 11 },
+        '2024': { unit: [['Store', 498], ['Kiosk', 152], ['Food Court', 131], ['Office', 109], ['Media', 74], ['Specialty', 61], ['Entertainment', 27]], source: [['Website', 402], ['Leasing Team', 247], ['Mobile App', 198], ['Walk-in', 112], ['Referral', 55], ['Broker', 27]], nullSrc: 11 }
+      },
+      FUN: {
+        '2026': { Central: [560, 309, 186, 108, 66, 133, 92, 33], Eastern: [331, 176, 104, 57, 39, 72, 48, 19], Western: [393, 217, 128, 71, 46, 91, 61, 22] },
+        '2025': { Central: [512, 287, 176, 105, 61, 129, 92, 29], Eastern: [302, 165, 101, 61, 35, 70, 50, 16], Western: [359, 203, 124, 75, 43, 89, 63, 21] },
+        '2024': { all: [1052, 571, 352, 209, 121, 251, 176, 58] }
+      },
+      AP: {
+        Central: { proposal: [12, 9, 7, 8, 31], contract: [7, 5, 4, 5, 22], lease: [4, 3, 2, 2, 9] },
+        Eastern: { proposal: [6, 4, 3, 3, 6], contract: [4, 3, 2, 2, 5], lease: [2, 1, 1, 1, 2] },
+        Western: { proposal: [7, 5, 4, 4, 8], contract: [5, 3, 3, 2, 6], lease: [3, 2, 1, 1, 3] }
+      },
+      RAW: { proposal: [4, 3, 2, 4, 19], contract: [3, 2, 1, 2, 15], lease: [3, 2, 2, 2, 7] },
+      AM: {
+        '2026': {
+          Central: { Expansion: [1, 0, 1, 2, 1], HoldOver: [2, 1, 0, 1, 0], Renewal: [18, 3, 2, 1, 2], Termination: [4, 1, 2, 1, 1] },
+          Eastern: { Expansion: [1, 0, 0, 1, 0], HoldOver: [1, 0, 1, 0, 1], Renewal: [6, 2, 1, 2, 1], Termination: [3, 1, 0, 1, 1] },
+          Western: { Expansion: [2, 1, 0, 0, 1], HoldOver: [1, 1, 0, 1, 0], Renewal: [9, 2, 2, 1, 2], Termination: [2, 1, 1, 0, 1] }
+        },
+        '2025': {
+          Central: { Expansion: [1, 0, 0, 0, 0], HoldOver: [2, 0, 0, 0, 0], Renewal: [5, 0, 0, 0, 0], Termination: [1, 0, 0, 0, 0] },
+          Eastern: { Expansion: [0, 0, 0, 0, 0], HoldOver: [1, 0, 0, 0, 0], Renewal: [3, 0, 0, 0, 0], Termination: [1, 0, 0, 0, 0] },
+          Western: { Expansion: [1, 0, 0, 0, 0], HoldOver: [0, 0, 0, 0, 0], Renewal: [4, 0, 0, 0, 0], Termination: [2, 0, 0, 0, 0] }
+        },
+        '2024': {
+          Central: { Expansion: [0, 0, 0, 0, 0], HoldOver: [0, 0, 0, 0, 0], Renewal: [2, 0, 0, 0, 0], Termination: [1, 0, 0, 0, 0] },
+          Eastern: { Expansion: [0, 0, 0, 0, 0], HoldOver: [0, 0, 0, 0, 0], Renewal: [1, 0, 0, 0, 0], Termination: [0, 0, 0, 0, 0] },
+          Western: { Expansion: [0, 0, 0, 0, 0], HoldOver: [1, 0, 0, 0, 0], Renewal: [1, 0, 0, 0, 0], Termination: [0, 0, 0, 0, 0] }
+        }
+      },
+      SR: [
+        { code: 'INQUIRY', name: 'Inquiry', color: '#6D28D9', subs: [['GENERAL_INQUIRY', 'General', [812, 214, 96, 41, 388]], ['LEASING_INQUIRY', 'Leasing', [356, 122, 40, 28, 190]], ['BILLING_INQUIRY', 'Billing', [248, 87, 31, 19, 141]]] },
+        { code: 'WORK_PERMIT', name: 'Work permits', color: '#B45309', subs: [['CONSTRUCTION_GENERAL', 'Construction', [618, 171, 35, 52, 410]], ['CONSTRUCTION_HOT_WORK', 'Hot work', [402, 118, 22, 37, 296]], ['OPERATIONS_AFTER_HOURS', 'After-hours operations', [331, 64, 9, 26, 280]], ['MAINTENANCE_ELECTRICAL', 'Electrical maintenance', [284, 76, 14, 19, 205]], ['OPERATIONS_DELIVERY', 'Deliveries', [226, 41, 6, 11, 198]], ['MAINTENANCE_PLUMBING', 'Plumbing maintenance', [197, 58, 12, 15, 151]]] },
+        { code: 'COMPLAINTS', name: 'Complaints', color: '#BE123C', subs: [['CLEANLINESS', 'Cleanliness', [214, 96, 44, 12, 231]], ['HVAC', 'Air conditioning', [176, 102, 38, 10, 133]], ['PARKING', 'Parking', [141, 66, 27, 14, 120]], ['NOISE', 'Noise', [97, 53, 21, 9, 88]]] }
+      ],
+      SRF: { '2026': [1, 1, 1, 1, 1], '2025': [1.24, 0.04, 0.02, 1.15, 1.3], '2024': [1.12, 0.01, 0.01, 1.05, 1.22] },
+      FO: {
+        '2026': { MEP: [0, 29, 74], ARCH: [0, 34, 69], OCI: [2, 18, 91], CCI: [1, 22, 80], HANDOVER: [0, 17, 86] },
+        '2025': { MEP: [0, 4, 131], ARCH: [0, 5, 124], OCI: [0, 2, 140], CCI: [0, 3, 133], HANDOVER: [0, 2, 121] },
+        '2024': { MEP: [0, 1, 118], ARCH: [0, 1, 109], OCI: [0, 0, 126], CCI: [0, 1, 119], HANDOVER: [0, 0, 108] }
+      },
+      DR: {
+        '2026': { MEP: [48, 19, 112], ARCHITECTURAL: [61, 27, 134], ELECTRICAL: [37, 12, 88] },
+        '2025': { MEP: [3, 2, 188], ARCHITECTURAL: [4, 3, 221], ELECTRICAL: [2, 1, 149] },
+        '2024': { MEP: [0, 1, 171], ARCHITECTURAL: [1, 1, 198], ELECTRICAL: [0, 0, 133] }
+      },
+      DSG: {
+        '2026': { ARCHITECTURAL: [210, 88, 41, 17], MEP: [176, 74, 33, 15], ELECTRICAL: [132, 51, 22, 9] },
+        '2025': { ARCHITECTURAL: [264, 97, 38, 14], MEP: [221, 80, 30, 12], ELECTRICAL: [160, 58, 19, 8] },
+        '2024': { ARCHITECTURAL: [240, 90, 35, 15], MEP: [198, 71, 28, 10], ELECTRICAL: [141, 49, 17, 6] }
+      },
+      DOCTYPES: { ARCHITECTURAL: ['Floor plan', 'Reflected ceiling plan', 'Elevations', 'Shopfront details', 'Finishes schedule', 'Signage'], MEP: ['HVAC layout', 'Plumbing layout', 'Fire protection', 'Drainage', 'Ventilation'], ELECTRICAL: ['Lighting layout', 'Power layout', 'Single-line diagram', 'Load schedule'] },
+      UDSEP: [['Rawdah Point Mall', 310, 6, 3], ['Sandstone Galleria', 176, 5, 2], ['Qasr Plaza', 158, 4, 1], ['Najd Gate Mall', 190, 5, 2], ['Wadi Crescent Centre', 164, 4, 1], ['Falcon Square', 142, 4, 2], ['Cedar Park Mall', 151, 5, 1], ['Gulf Gate Mall', 142, 11, 3], ['Pearl Bay Centre', 188, 5, 2], ['Dune Harbour Mall', 149, 4, 1], ['Coral Point', 133, 3, 1], ['Seabreeze Plaza', 127, 4, 2], ['Harbor Lights Mall', 214, 6, 3], ['Tidewater Arcade', 172, 5, 2], ['Coastline Galleria', 166, 4, 1], ['Spice Route Mall', 158, 4, 2], ['Minaret View', 141, 4, 1], ['Breeze Walk', 119, 4, 1]],
+      GULF: { 6: [138, 3, 1], 7: [140, 4, 2], 8: [141, 6, 2] }
+    };
+    this._d = d;
+    return d;
+  }
+  fmt(n) { return Number(n).toLocaleString('en-US'); }
+  pct1(a, b) { return b ? (Math.round(a / b * 1000) / 10).toFixed(1) + '%' : '—'; }
+  split(total, w) {
+    const s = w.reduce((a, b) => a + b, 0);
+    if (!s || !total) return w.map(() => 0);
+    const raw = w.map((x) => total * x / s);
+    const fl = raw.map((x) => Math.floor(x));
+    const rem = total - fl.reduce((a, b) => a + b, 0);
+    const order = raw.map((x, i) => [x - fl[i], i]).sort((a, b) => (b[0] - a[0]) || (a[1] - b[1]));
+    for (let k = 0; k < rem; k++) fl[order[k][1]]++;
+    return fl;
+  }
+  monthW(year) { return year === 2026 ? [9, 8, 9, 10, 9, 8, 9, 10, 11, 7, 0, 0] : [8, 8, 9, 9, 8, 7, 8, 9, 9, 9, 8, 8]; }
+  regionOf(mall) { const d = this.D(); for (const r of d.REGIONS) { if (d.MALLS[r].indexOf(mall) >= 0) return r; } return 'All'; }
+  hash(str) { let x = 2166136261; for (let i = 0; i < str.length; i++) { x ^= str.charCodeAt(i); x = Math.imul(x, 16777619); } return x >>> 0; }
+  rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  dstr(ms) { const x = new Date(ms); return x.getUTCDate() + ' ' + this.D().MONTHS[x.getUTCMonth()] + ' ' + x.getUTCFullYear(); }
+  ref() { return Date.UTC(2026, 9, 20); }
+  afterRef(f) { return f.year === '2026' && f.month && f.month !== 'All' && this.D().MONTHS.indexOf(f.month) > 9; }
+  noYear(f) { return ['2023', '2022'].indexOf(f.year) >= 0; }
+  emptyFor(f, what) {
+    if (this.noYear(f)) return { t: 'No ' + what + ' in ' + f.year, m: 'The synthetic dataset starts in January 2024. Earlier years are kept in the year filter to match V2.' };
+    if (this.afterRef(f)) return { t: f.month + ' 2026 is after the reference date', m: 'Synthetic data runs to 20 Oct 2026, so later months have no records.' };
+    return { t: 'No ' + what + ' for these filters', m: 'Try a different month, region or mall.' };
+  }
+  alloc(total, f, mwOverride) {
+    const d = this.D();
+    let region = f.region || 'All';
+    const mall = f.mall || 'All';
+    if (mall !== 'All') { region = this.regionOf(mall); if (region === 'All') return 0; }
+    let v = total;
+    if (region !== 'All') {
+      v = this.split(v, d.RW)[d.REGIONS.indexOf(region)];
+      if (mall !== 'All') { const mw = (mwOverride && mwOverride[region]) || d.MALLW[region]; v = this.split(v, mw)[d.MALLS[region].indexOf(mall)]; }
+    }
+    if (f.month && f.month !== 'All') v = this.split(v, this.monthW(+f.year))[d.MONTHS.indexOf(f.month)];
+    return v;
+  }
+  regsOf(f) { const d = this.D(); if (f.mall && f.mall !== 'All') { const r = this.regionOf(f.mall); return r === 'All' ? [] : [r]; } if (!f.region || f.region === 'All') return d.REGIONS; return [f.region]; }
+  ef(card) {
+    const d = this.D(); const role = d.ROLES[this.state.role];
+    const c = Object.assign({}, this.state.f[card]);
+    if (c.region !== undefined && role.regions.indexOf(c.region) < 0) c.region = role.regions[0];
+    if (c.mall && c.mall !== 'All' && c.region && c.region !== 'All' && this.regionOf(c.mall) !== c.region && card !== 'unitDiscrepancy') c.mall = 'All';
+    return c;
+  }
+  setF(card, key, val) {
+    const f = Object.assign({}, this.state.f);
+    const c = Object.assign({}, f[card]);
+    c[key] = val;
+    if (key === 'region') c.mall = 'All';
+    f[card] = c;
+    const sel = this.state.sel && this.state.sel.card === card ? null : this.state.sel;
+    this.setState({ f: f, sel: sel });
+  }
+  apFor(f) {
+    const d = this.D();
+    const out = { proposal: [0, 0, 0, 0, 0], contract: [0, 0, 0, 0, 0], lease: [0, 0, 0, 0, 0] };
+    this.regsOf(f).forEach((r) => {
+      ['proposal', 'contract', 'lease'].forEach((t) => {
+        for (let b = 0; b < 5; b++) {
+          let v = d.AP[r][t][b];
+          if (f.mall && f.mall !== 'All') {
+            if (r === 'Central') {
+              if (f.mall === 'Rawdah Point Mall') v = d.RAW[t][b];
+              else { const others = d.MALLS.Central.slice(1); v = this.split(v - d.RAW[t][b], d.MALLW.Central.slice(1))[others.indexOf(f.mall)]; }
+            } else v = this.split(v, d.MALLW[r])[d.MALLS[r].indexOf(f.mall)];
+          }
+          out[t][b] += v;
+        }
+      });
+    });
+    return out;
+  }
+  amMonth(v, y, m) {
+    if (y === 2026) {
+      if (m > 10) return [0, 0, 0, 0, 0];
+      if (m === 10) return [0, 0, v[2], v[3], v[4]];
+      const s = this.split(v[0], [1, 1, 1, 1, 1, 1, 1, 1, 2]);
+      if (m === 9) return [s[8], v[1], 0, 0, 0];
+      return [s[m - 1], 0, 0, 0, 0];
+    }
+    const s = this.split(v[0], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]);
+    return [s[m - 1], 0, 0, 0, 0];
+  }
+  amFor(f) {
+    const d = this.D();
+    const T = ['Expansion', 'HoldOver', 'Renewal', 'Termination'];
+    const res = {}; T.forEach((t) => { res[t] = [0, 0, 0, 0, 0]; });
+    const Y = d.AM[f.year];
+    if (!Y) return res;
+    this.regsOf(f).forEach((r) => {
+      T.forEach((t) => {
+        let v = Y[r][t].slice();
+        if (f.mall && f.mall !== 'All') { const mw = (d.AMW[r]) || d.MALLW[r]; const idx = d.MALLS[r].indexOf(f.mall); v = v.map((x) => this.split(x, mw)[idx]); }
+        if (f.month && f.month !== 'All') v = this.amMonth(v, +f.year, d.MONTHS.indexOf(f.month) + 1);
+        for (let i = 0; i < 5; i++) res[t][i] += v[i];
+      });
+    });
+    return res;
+  }
+  sfFor(f) {
+    const d = this.D();
+    const Y = d.FUN[f.year];
+    if (!Y) return [0, 0, 0, 0, 0, 0, 0, 0];
+    const out = [0, 0, 0, 0, 0, 0, 0, 0];
+    this.regsOf(f).forEach((r) => {
+      const base = Y[r] || Y.all.map((x) => this.split(x, d.RW)[d.REGIONS.indexOf(r)]);
+      base.forEach((x, i) => {
+        let v = x;
+        if (f.mall && f.mall !== 'All') v = this.split(v, d.MALLW[r])[d.MALLS[r].indexOf(f.mall)];
+        if (f.month && f.month !== 'All') v = this.split(v, this.monthW(+f.year))[d.MONTHS.indexOf(f.month)];
+        out[i] += v;
+      });
+    });
+    return out;
+  }
+  udRows(year, m) {
+    const d = this.D();
+    if (+year < 2024) return null;
+    if (+year === 2026 && m > 10) return 'after';
+    if (+year === 2026 && m === 9) return d.UDSEP.map((x) => ({ mall: x[0], total: x[1], mm: x[2], pending: x[3], match: x[1] - x[2] - x[3] }));
+    const rows = [];
+    d.ALL.forEach((mall) => {
+      if (mall === 'Gulf Gate Mall' && +year === 2026 && d.GULF[m]) { const g = d.GULF[m]; rows.push({ mall: mall, total: g[0], mm: g[1], pending: g[2], match: g[0] - g[1] - g[2] }); return; }
+      const h = this.hash(mall + '|' + year + '|' + m);
+      if (h % 100 >= 72) return;
+      const total = 110 + ((h >>> 8) % 160);
+      const mm = 2 + ((h >>> 16) % 5);
+      const pending = (h >>> 20) % 3;
+      rows.push({ mall: mall, total: total, mm: mm, pending: pending, match: total - mm - pending });
+    });
+    return rows;
+  }
+  renderVals() {
+    const s = this.state, d = this.D(), role = d.ROLES[s.role];
+    const fmt = (n) => this.fmt(n);
+    const ids = ['properties', 'actionRequired', 'salesFunnel', 'kpis', 'leaseRequests', 'documentStatus', 'fitoutHandover', 'fitoutDrawings', 'pendingApprovals', 'pendingAmendments', 'serviceRequests', 'unitDiscrepancy'];
+    const V = {}; ids.forEach((id) => { V[id] = role.hide.indexOf(id) < 0; });
+    const span = { properties: 12 };
+    let rows2 = false;
+    if (V.actionRequired) { const pn = (V.salesFunnel ? 1 : 0) + (V.kpis ? 1 : 0); span.actionRequired = pn ? 4 : 12; span.salesFunnel = 8; span.kpis = 8; if (!V.salesFunnel) span.kpis = 8; if (!V.kpis) span.salesFunnel = 8; rows2 = pn === 2; }
+    else { span.salesFunnel = 12; span.kpis = 12; span.actionRequired = 12; }
+    const pair = (a, b, wa, wb) => { span[a] = V[b] ? wa : 12; span[b] = V[a] ? wb : 12; };
+    pair('leaseRequests', 'documentStatus', 4, 8); pair('fitoutHandover', 'fitoutDrawings', 7, 5); pair('pendingApprovals', 'pendingAmendments', 6, 6); pair('serviceRequests', 'unitDiscrepancy', 7, 5);
+    const wideT = { salesFunnel: 1, documentStatus: 1, serviceRequests: 1 };
+    const isSel = (id, key) => !!(s.sel && s.sel.card === id && s.sel.key === key);
+    const pick = (id, key, label) => () => this.setState({ sel: isSel(id, key) ? null : { card: id, key: key, label: label } });
+    const SELCSS = 'outline: 3px solid #1B1530; outline-offset: -1px; box-shadow: inset 0 0 0 2px #FFFFFF; z-index: 2';
+    const YEARS = ['2026', '2025', '2024', '2023', '2022'].map((y) => ({ v: y, l: y }));
+    const MONTHO = [{ v: 'All', l: 'All months' }].concat(d.MONTHS.map((m) => ({ v: m, l: m })));
+    const regionO = role.regions.map((r) => ({ v: r, l: r === 'All' ? 'All regions' : r }));
+    const mallO = (region) => [{ v: 'All', l: 'All malls' }].concat((region === 'All' ? d.ALL : d.MALLS[region]).map((m) => ({ v: m, l: m })));
+    const fd = (card, key, label, opts) => { const c = this.ef(card); return { label: label, value: String(c[key]), opts: opts, on: (e) => this.setF(card, key, e.target.value) }; };
+    const stdF = (card) => { const c = this.ef(card); return [fd(card, 'year', 'Year', YEARS), fd(card, 'month', 'Month', MONTHO), fd(card, 'region', 'Region', regionO), fd(card, 'mall', 'Mall', mallO(c.region))]; };
+    const scopeRegs = role.regions.indexOf('All') >= 0 ? d.REGIONS : role.regions;
+    const mallsInScope = (f) => { if (f.mall && f.mall !== 'All') return [f.mall]; const regs = (!f.region || f.region === 'All') ? scopeRegs : [f.region]; let a = []; regs.forEach((r) => { a = a.concat(d.MALLS[r]); }); return a; };
+    const REF = this.ref(), DAY = 86400000;
+    const pickA = (r, arr) => arr[Math.floor(r() * arr.length)];
+    const rows8 = (seed, n, fn) => { const r = this.rng(this.hash(seed)); const a = []; for (let i = 0; i < n; i++) a.push(fn(r, i)); return a; };
+    const unit = (r) => pickA(r, ['G', 'L1', 'L2']) + '-' + String(10 + Math.floor(r() * 180)).padStart(3, '0');
+    const inYear = (r, f) => { const y = +f.year; let start = Date.UTC(y, 0, 1), end = y === 2026 ? REF : Date.UTC(y, 11, 31); if (f.month && f.month !== 'All') { const m = d.MONTHS.indexOf(f.month); start = Date.UTC(y, m, 1); end = Math.min(Date.UTC(y, m + 1, 0), REF); } return start + Math.floor(r() * Math.max(1, (end - start) / DAY)) * DAY; };
+
+    const mk = (id, title, info, filters, m) => {
+      const focused = s.focus === id, okk = !!s.ok[id];
+      const loading = s.ds === 'loading' && !okk, error = s.ds === 'error' && !okk, forced = s.ds === 'empty' && !okk;
+      const dataEmpty = !loading && !error && !forced && !!m.empty;
+      const empty = forced || dataEmpty;
+      const tab = focused ? s.ftab : 'Chart';
+      const selOn = !!(s.sel && s.sel.card === id);
+      let pg = { on: false, cols: [], rows: [], note: '' }, pd = { on: false, items: [], cav: [] };
+      if (focused && tab === 'Table' && m.table) pg = Object.assign({ on: true }, m.table());
+      if (focused && tab === 'Records' && m.records) pg = Object.assign({ on: true }, m.records(selOn ? s.sel : null));
+      if (focused && tab === 'Definition') pd = { on: true, items: m.def.items, cav: m.def.cav };
+      return Object.assign({
+        title: title, info: info, filters: filters, nofilters: filters.length ? '' : 'No card filters', vis: V[id],
+        cls: 'card span-' + span[id] + (id === 'actionRequired' && rows2 ? ' rows-2' : '') + (wideT[id] ? ' wide-t' : '') + (focused ? ' is-focus' : ''),
+        focused: focused, notFocused: !focused, expandLabel: focused ? 'Close expanded card' : 'Expand ' + title,
+        loading: loading, error: error, empty: empty,
+        emptyTitle: forced ? 'No records for these filters' : (m.emptyT || ''), emptyMsg: forced ? 'Try a different year, month, region or mall.' : (m.emptyM || ''),
+        showBody: !loading && !error && !empty && tab === 'Chart', showPanel: focused && tab !== 'Chart' && !loading && !error,
+        pg: pg, pd: pd,
+        tabs: ['Chart', 'Table', 'Records', 'Definition'].map((t) => ({ label: t, on: tab === t ? 'true' : 'false', cls: 'tab' + (tab === t ? ' tab-on' : ''), go: () => this.setState({ ftab: t }) })),
+        selOn: selOn, selLabel: selOn ? s.sel.label : '', foot: m.foot || 'As of 20 Oct 2026 · synthetic data',
+        ask: () => this.setState({ panel: true, ctx: id, removed: {}, asked: null }),
+        expand: () => this.setState(focused ? { focus: null, ws: null } : { focus: id, ftab: 'Chart' }),
+        retry: () => this.setState({ ok: Object.assign({}, s.ok, { [id]: true }) }),
+        viewRec: () => this.setState({ focus: id, ftab: 'Records' }),
+        askSel: () => this.setState({ panel: true, ctx: id, removed: {}, asked: null }),
+        clearSel: () => this.setState({ sel: null }),
+        openWs: () => this.setState({ ws: title })
+      }, m.extra || {});
+    };
+
+    /* ---------- Properties ---------- */
+    const T = [0, 0, 0, 0, 0, 0];
+    scopeRegs.forEach((r) => d.PU[r].forEach((v, i) => { T[i] += v; }));
+    const ptiles = [
+      { key: 'all', label: 'Properties', value: fmt(T[5]), sub: fmt(T[0]) + ' units', c: 'st-v' },
+      { key: 'occupied', label: 'Occupied units', value: fmt(T[1]), sub: fmt(T[3]) + ' sqm occupied GLA', c: 'st-t' },
+      { key: 'vacant', label: 'Vacant units', value: fmt(T[2]), sub: fmt(T[4]) + ' sqm vacant GLA', c: 'st-o' }
+    ].map((t) => Object.assign({}, t, { cls: 'stat ' + t.c + (isSel('properties', t.key) ? ' stat-on' : ''), pressed: isSel('properties', t.key) ? 'true' : 'false', pick: pick('properties', t.key, t.label + ' · ' + t.value) }));
+    const occP = this.pct1(T[1], T[0]), vacP = this.pct1(T[2], T[0]);
+    const propRows = () => { const out = []; scopeRegs.forEach((r) => { const o = this.split(d.PU[r][1], d.MALLW[r]); const v = this.split(d.PU[r][2], d.VACW[r]); d.MALLS[r].forEach((mm, i) => out.push({ m: mm, r: r, u: o[i] + v[i], o: o[i], v: v[i] })); }); return out; };
+    const P = mk('properties', 'Portfolio properties', 'Primary, tenant-visible malls. A unit is occupied when its best current lease is active on the reference date. GLA comes from mall-level synced figures.', [], {
+      table: () => ({ cols: ['Measure', 'Units', 'GLA (sqm)', 'Share of units'], rows: [['Total', fmt(T[0]), fmt(T[3] + T[4]), '100%'], ['Occupied', fmt(T[1]), fmt(T[3]), occP], ['Vacant', fmt(T[2]), fmt(T[4]), vacP]], note: 'GLA occupancy (derived): ' + this.pct1(T[3], T[3] + T[4]) + ' — computed from mall-level GLA, so it differs from unit occupancy.' }),
+      records: (sl) => { const key = sl ? sl.key : 'all'; const a = propRows(); a.sort((x, y) => key === 'vacant' ? y.v - x.v : key === 'occupied' ? y.o - x.o : y.u - x.u); return { cols: ['Mall', 'Region', 'Units', 'Occupied', 'Vacant', 'Occupancy'], rows: a.slice(0, 8).map((x) => [x.m, x.r, fmt(x.u), fmt(x.o), fmt(x.v), this.pct1(x.o, x.u)]), note: 'Showing 8 of ' + a.length + ' malls · sorted by ' + (key === 'vacant' ? 'vacant units' : key === 'occupied' ? 'occupied units' : 'units') }; },
+      def: { items: [{ k: 'Metrics', v: 'Mall count · total, occupied and vacant units · occupied and vacant GLA (parity)' }, { k: 'Calculation', v: 'Occupancy % = occupied ÷ total units × 100, rounded to 1 decimal' }, { k: 'Time basis', v: 'As of the reference date, 20 Oct 2026' }, { k: 'Filters', v: 'None on this card (V2)' }, { k: 'Access', v: role.access }, { k: 'Parity', v: 'Reproduces V2. A corrected metric derives GLA from units instead of mall-level figures.' }], cav: ['Unit occupancy comes from leases; GLA comes from mall-level synced figures, so the two percentages can differ.'] },
+      extra: { tiles: ptiles, occPct: occP, vacPct: vacP, occW: (T[1] / T[0] * 100) + '%', vacW: (T[2] / T[0] * 100) + '%', occTip: 'Occupied · ' + fmt(T[1]) + ' units · ' + occP, vacTip: 'Vacant · ' + fmt(T[2]) + ' units · ' + vacP, meterAria: 'Unit occupancy: ' + occP + ' occupied, ' + vacP + ' vacant' }
+    });
+
+    /* ---------- KPI tiles ---------- */
+    const ktiles = [
+      { key: 'expiring', label: 'Expiring leases', value: '412', sub: 'Ending 20 Jul 2026 – 27 Jul 2027', c: 'st-r' },
+      { key: 'active', label: 'Active leases', value: '5,286', sub: 'Dashboard definition · includes grace period', c: 'st-v' },
+      { key: 'sales', label: 'Pending sales data', value: '846', sub: 'Pending, re-upload or documents needed', c: 'st-t' }
+    ].map((t) => Object.assign({}, t, { cls: 'stat ' + t.c + (isSel('kpis', t.key) ? ' stat-on' : ''), pressed: isSel('kpis', t.key) ? 'true' : 'false', pick: pick('kpis', t.key, t.label + ' · ' + t.value) }));
+    const K = mk('kpis', 'Leasing and sales KPIs', 'Expiring and active leases use the dashboard’s lease visibility rules. Pending sales data counts submissions still waiting on the tenant or review.', [], {
+      table: () => ({ cols: ['KPI', 'Value', 'Definition'], rows: [['Expiring leases', '412', 'Activated or superseded, ending −3 to +9 months 7 days'], ['Active leases', '5,286', 'Activated, plus expired within 30 days, plus superseded'], ['Pending sales data', '846', 'Pending · Need re-upload · Need supporting document · Need audited sales']], note: 'All three are as of 20 Oct 2026.' }),
+      records: (sl) => {
+        const key = sl ? sl.key : 'expiring';
+        if (key === 'sales') return { cols: ['Lease', 'Brand', 'Mall', 'Period', 'Status'], rows: rows8('k-sales', 8, (r) => ['T-' + (30000 + Math.floor(r() * 4000)), pickA(r, d.BRANDS), pickA(r, d.ALL), pickA(r, d.MONTHS.slice(0, 9)) + ' 2026', pickA(r, ['Pending', 'Need re-upload', 'Need supporting document', 'Need audited sales'])]), note: 'Showing 8 of 846' };
+        if (key === 'active') return { cols: ['Lease', 'Brand', 'Mall', 'Ends', 'Status'], rows: rows8('k-active', 8, (r) => { const st = pickA(r, ['Activated', 'Activated', 'Activated', 'Activated', 'Expired · in grace', 'Superseded']); const end = st === 'Expired · in grace' ? REF - (1 + Math.floor(r() * 28)) * DAY : REF + (60 + Math.floor(r() * 1400)) * DAY; return ['T-' + (30000 + Math.floor(r() * 4000)), pickA(r, d.BRANDS), pickA(r, d.ALL), this.dstr(end), st]; }), note: 'Showing 8 of 5,286 · includes leases in the 30-day grace period and superseded leases' };
+        const list = rows8('k-exp', 8, (r) => ({ off: -92 + Math.floor(r() * 373), l: 'T-' + (30000 + Math.floor(r() * 4000)), b: pickA(r, d.BRANDS), m: pickA(r, d.ALL), st: pickA(r, ['Activated', 'Activated', 'Activated', 'Superseded']) }));
+        list.sort((a, b) => a.off - b.off);
+        return { cols: ['Lease', 'Brand', 'Mall', 'Ends', 'Status'], rows: list.map((x) => [x.l, x.b, x.m, this.dstr(REF + x.off * DAY), x.st]), note: 'Showing 8 of 412 · soonest first' };
+      },
+      def: { items: [{ k: 'Expiring leases', v: 'Activated or superseded leases ending between 3 months before and 9 months and 7 days after the reference date, excluding leases with an activated termination or renewal' }, { k: 'Active leases', v: 'Status Activated — this dashboard definition also counts expired leases within a 30-day grace period and superseded leases' }, { k: 'Pending sales data', v: 'Submissions with status Pending, Need re-upload, Need supporting document or Need audited sales' }, { k: 'Filters', v: 'None on this card (V2)' }, { k: 'Access', v: role.access }], cav: ['Active and expiring leases overlap, so the tiles must not be added together.', 'The tenant summary uses a different pending set that includes “Uploaded supporting document”. Both are kept as separately named metrics.'] },
+      extra: { tiles: ktiles }
+    });
+
+    /* ---------- Action required ---------- */
+    const AR_ITEMS = {
+      admin: [['PROPOSAL', 'Proposal ', 'P-24117', ' for Arcadia Shoes at Rawdah Point Mall awaits your approval', '19 Oct 2026'], ['AMENDMENT', 'Renewal amendment ', 'AMD-24118', ' for lease T-30512 is ready for review', '18 Oct 2026'], ['SALES DATA', 'Sales data for Sep 2026 on lease ', 'T-32044', ' needs re-upload', '17 Oct 2026']],
+      leasing: [['PROPOSAL', 'Proposal ', 'P-24117', ' for Arcadia Shoes at Rawdah Point Mall awaits your approval', '19 Oct 2026'], ['CONTRACT', 'Contract ', 'C-19022', ' for Saffron Kitchen at Qasr Plaza was sent for signature', '18 Oct 2026'], ['AMENDMENT', 'Renewal amendment ', 'AMD-24118', ' for lease T-30512 is ready for review', '18 Oct 2026']],
+      fitout: [['SERVICE REQUEST', 'Handover ', 'HO-5512', ' at Najd Gate Mall awaits tenant acceptance', '20 Oct 2026'], ['SERVICE REQUEST', 'Pre-opening MEP inspection ', 'INSP-8841', ' at Rawdah Point Mall is due', '19 Oct 2026'], ['SERVICE REQUEST', 'Architectural drawing ', 'DRW-30118', ' was resubmitted for review', '18 Oct 2026']]
+    }[s.role];
+    const AR = mk('actionRequired', 'Action required', 'Unread notifications that need your action, de-duplicated by notification group. Shows the latest three.', [], {
+      table: () => ({ cols: ['Type', 'Unread'], rows: s.role === 'fitout' ? [['Service request', '9']] : s.role === 'leasing' ? [['Proposal', '6'], ['Contract', '4'], ['Amendment', '4']] : [['Proposal', '9'], ['Amendment', '7'], ['Sales data', '6'], ['Contract', '3'], ['Service request', '2']], note: 'Unread, action-required, not yet actioned' }),
+      records: () => ({ cols: ['Type', 'Notification', 'Created'], rows: AR_ITEMS.map((x) => [x[0], x[1] + x[2] + x[3], x[4]]).concat(rows8('ar', 5, (r, i) => [pickA(r, ['PROPOSAL', 'AMENDMENT', 'SALES DATA', 'CONTRACT']), 'Item ' + (24090 - i * 7) + ' at ' + pickA(r, d.ALL) + ' needs action', (16 - i) + ' Oct 2026'])), note: 'Showing 8 of ' + role.arCount + ' unread' }),
+      def: { items: [{ k: 'Metric', v: 'Unread action-required notifications (parity)' }, { k: 'Rule', v: 'Targeted to you, your roles or your permissions; within your malls or leases; not marked as done; one row per notification group' }, { k: 'Access', v: role.access }], cav: ['Grouped notifications show the latest message in the group.'] },
+      extra: { count: role.arCount, items: AR_ITEMS.map((x) => ({ type: x[0], pre: x[1], id: x[2], post: x[3], date: x[4], open: pick('actionRequired', x[2], 'Notification ' + x[2]) })), viewAll: () => this.setState({ focus: 'actionRequired', ftab: 'Records' }) }
+    });
+
+    /* ---------- Lease requests ---------- */
+    const lf = this.ef('leaseRequests');
+    const LRD = d.LR[lf.year];
+    let lrExtra = {}, lrEmpty = null;
+    if (!LRD) lrEmpty = this.emptyFor(lf, 'lease requests');
+    else {
+      const list = LRD[lf.view].slice().sort((a, b) => b[1] - a[1]);
+      const total = list.reduce((a, x) => a + x[1], 0);
+      const top = list.slice(0, 4), rest = list.slice(4);
+      const other = rest.reduce((a, x) => a + x[1], 0);
+      const COL = ['#8B5CF6', '#14B8A6', '#F59E0B', '#F43F5E', '#9A93AD'];
+      const slices = top.map((x, i) => ({ key: x[0], label: x[0], v: x[1], color: COL[i], click: true })).concat([{ key: 'Other', label: 'Other (' + rest.length + ')', v: other, color: COL[4], click: false }]);
+      const C = 2 * Math.PI * 64;
+      let cum = 0;
+      const hvKey = s.hv && s.hv.card === 'leaseRequests' ? s.hv.key : null;
+      const selKey = s.sel && s.sel.card === 'leaseRequests' ? s.sel.key : null;
+      const sl = slices.map((x) => {
+        const f = total ? x.v / total : 0;
+        const dash = f > 0 ? Math.max(0, f * C - 2) : 0;
+        const o = { color: x.color, sw: (selKey === x.key) ? 30 : (hvKey === x.key ? 26 : 22), da: dash + ' ' + (C - dash), dof: String(-cum * C), pick: x.click ? pick('leaseRequests', x.key, x.label + ' · ' + fmt(x.v) + ' requests (' + lf.year + ')') : null, hov: () => this.setState({ hv: { card: 'leaseRequests', key: x.key } }) };
+        cum += f;
+        return o;
+      });
+      const focusK = hvKey || selKey;
+      const fx = slices.find((x) => x.key === focusK);
+      lrExtra = {
+        segU: lf.view === 'unit' ? 'seg-on' : '', segS: lf.view === 'source' ? 'seg-on' : '', onU: lf.view === 'unit' ? 'true' : 'false', onS: lf.view === 'source' ? 'true' : 'false',
+        toUnit: () => this.setF('leaseRequests', 'view', 'unit'), toSrc: () => this.setF('leaseRequests', 'view', 'source'),
+        s0: sl[0], s1: sl[1], s2: sl[2], s3: sl[3], s4: sl[4], unhov: () => this.setState({ hv: null }),
+        cv: fx ? fmt(fx.v) : fmt(total), cl: fx ? fx.label + ' · ' + this.pct1(fx.v, total) : 'lease requests in ' + lf.year,
+        aria: 'Lease requests in ' + lf.year + ' by ' + (lf.view === 'unit' ? 'unit type' : 'source') + ': ' + slices.map((x) => x.label + ' ' + x.v).join(', '),
+        legend: slices.map((x) => ({ label: x.label, v: fmt(x.v), pct: this.pct1(x.v, total), color: x.color, click: x.click, noclick: !x.click, cls: 'lgb' + (selKey === x.key ? ' lgb-on' : ''), pressed: selKey === x.key ? 'true' : 'false', pick: x.click ? pick('leaseRequests', x.key, x.label + ' · ' + fmt(x.v) + ' requests (' + lf.year + ')') : null, hov: () => this.setState({ hv: { card: 'leaseRequests', key: x.key } }) })),
+        note: lf.view === 'source' ? fmt(LRD.nullSrc) + ' requests without a registration source are not shown. Other = ' + rest.map((x) => x[0]).join(', ') + '.' : 'Other = ' + rest.map((x) => x[0]).join(', ') + '. Other is not clickable (V2).',
+        _total: total, _list: list
+      };
+    }
+    const LR = mk('leaseRequests', 'Lease requests', 'Lead enquiries created in the selected year (Asia/Riyadh), by unit type or registration source. The top four are shown; the rest fold into Other.', [fd('leaseRequests', 'year', 'Year', YEARS)], {
+      empty: !!lrEmpty, emptyT: lrEmpty ? lrEmpty.t : '', emptyM: lrEmpty ? lrEmpty.m : '',
+      table: () => ({ cols: [lf.view === 'unit' ? 'Unit type' : 'Source', 'Requests', 'Share'], rows: LRD ? lrExtra._list.map((x) => [x[0], fmt(x[1]), this.pct1(x[1], lrExtra._total)]) : [], note: LRD ? 'All ' + lrExtra._list.length + ' groups, ' + lf.year : 'No data' }),
+      records: (sel) => ({ cols: ['Enquiry', 'Company', 'Unit type', 'Source', 'Created', 'Status'], rows: LRD ? rows8('lr' + lf.year + (sel ? sel.key : ''), 8, (r, i) => ['LE-' + (10230 + i * 7 + Math.floor(r() * 5)), pickA(r, d.BRANDS) + ' Co.', lf.view === 'unit' && sel ? sel.key : pickA(r, ['Store', 'Kiosk', 'Food Court', 'Office']), lf.view === 'source' && sel ? sel.key : pickA(r, ['Website', 'Mobile App', 'Leasing Team', 'Walk-in']), this.dstr(inYear(r, lf)), pickA(r, ['New request', 'Under review', 'Lead approved', 'Lead approved', 'Rejected'])]) : [], note: sel ? 'Showing 8 of ' + sel.label.split(' · ')[1] : 'Showing 8 of ' + (LRD ? fmt(lrExtra._total) : 0) + ' · created in ' + lf.year }),
+      def: { items: [{ k: 'Metric', v: 'Lease requests by unit type / by registration source (parity)' }, { k: 'Population', v: 'All lead enquiries created in the year — no status filter' }, { k: 'Time basis', v: 'Enquiry created date, Asia/Riyadh calendar' }, { k: 'Filters', v: 'Year (V2)' }, { k: 'Access', v: role.access }], cav: ['Rejected enquiries are counted — this is demand volume, not qualified leads.', 'Requests without a source are excluded from the source view only.'] },
+      extra: lrExtra
+    });
+
+    /* ---------- Sales funnel ---------- */
+    const sff = this.ef('salesFunnel');
+    const sv = this.sfFor(sff);
+    const sfEmpty = sv[0] === 0 ? this.emptyFor(sff, 'funnel records') : null;
+    const clampSU = (t, a, b) => { const aa = Math.min(a, t); const bb = Math.min(b, t - aa); return [aa, bb, Math.max(0, t - aa - bb)]; };
+    const pS = clampSU(sv[2], sv[3], sv[4]), cS = clampSU(sv[5], sv[6], sv[7]);
+    const stagesDef = [
+      { key: 'req', label: 'Lease requests', value: sv[0], bg: '#F3EEFD', dot: '#7C3AED' },
+      { key: 'lead', label: 'Leads', value: sv[1], bg: '#FDEEF2', dot: '#BE123C' },
+      { key: 'prop', label: 'Proposals', value: sv[2], s: pS, bg: '#E3F5F2', dot: '#0F766E' },
+      { key: 'con', label: 'Contracts', value: sv[5], s: cS, bg: '#FDF0E1', dot: '#B45309' }
+    ];
+    const stages = stagesDef.map((x, i) => ({
+      label: x.label, value: fmt(x.value), bg: x.bg, dot: x.dot, arrow: i < 3, split: !!x.s,
+      bcls: 'stgb' + (isSel('salesFunnel', x.key) ? ' spl-on' : ''), pressed: isSel('salesFunnel', x.key) ? 'true' : 'false', aria: x.label + ': ' + fmt(x.value),
+      pick: pick('salesFunnel', x.key, x.label + ' · ' + fmt(x.value)),
+      signed: x.s ? fmt(x.s[0]) : '', unsigned: x.s ? fmt(x.s[1]) : '', other: x.s ? (x.s[2] ? fmt(x.s[2]) + ' in other statuses' : 'No other statuses') : '',
+      scls: 'spl' + (isSel('salesFunnel', x.key + 'S') ? ' spl-on' : ''), ucls: 'spl' + (isSel('salesFunnel', x.key + 'U') ? ' spl-on' : ''),
+      pickS: x.s ? pick('salesFunnel', x.key + 'S', x.label + ' signed · ' + fmt(x.s[0])) : null, pickU: x.s ? pick('salesFunnel', x.key + 'U', x.label + ' unsigned · ' + fmt(x.s[1])) : null
+    }));
+    const sfStatus = { req: ['New request', 'Under review', 'Lead approved', 'Rejected'], lead: ['Lead approved'], prop: ['Proposal signed', 'Pending proposal', 'Proposal sent', 'Proposal review', 'Proposal rejected', 'AMC initiated'], propS: ['Proposal signed'], propU: ['Pending proposal', 'Proposal sent', 'Proposal review', 'Proposal rejected'], con: ['Contract signed', 'Contract active', 'Contract terminated', 'Contract sent', 'Pending contract'], conS: ['Contract signed', 'Contract active', 'Contract terminated'], conU: ['Contract sent', 'Pending contract', 'Contract rejected'] };
+    const SF = mk('salesFunnel', 'Sales funnel', 'Live counts of records created in the period at each stage: lease requests and leads from enquiries, then proposals and contracts. Signed and unsigned use fixed status lists.', stdF('salesFunnel'), {
+      empty: !!sfEmpty, emptyT: sfEmpty ? sfEmpty.t : '', emptyM: sfEmpty ? sfEmpty.m : '',
+      foot: 'As of 20 Oct 2026 · synthetic data · live counts (snapshot table synced 20 Oct 02:00 is not shown)',
+      table: () => ({ cols: ['Stage', 'Total', 'Signed', 'Unsigned', 'Other statuses'], rows: [['Lease requests', fmt(sv[0]), '—', '—', '—'], ['Leads', fmt(sv[1]), '—', '—', '—'], ['Proposals', fmt(sv[2]), fmt(pS[0]), fmt(pS[1]), fmt(pS[2])], ['Contracts', fmt(sv[5]), fmt(cS[0]), fmt(cS[1]), fmt(cS[2])]], note: 'Live counts for the filters on this card' }),
+      records: (sel) => { const key = sel ? sel.key : 'req'; const pre = key.indexOf('prop') === 0 ? 'P-24' : key.indexOf('con') === 0 ? 'C-19' : 'LE-10'; return { cols: ['Record', 'Brand', 'Mall', 'Created', 'Status'], rows: rows8('sf' + key + JSON.stringify(sff), 8, (r, i) => [pre + String(100 + i * 13 + Math.floor(r() * 9)), pickA(r, d.BRANDS), pickA(r, mallsInScope(sff)), this.dstr(inYear(r, sff)), pickA(r, sfStatus[key])]), note: sel ? 'Showing 8 of ' + sel.label.split(' · ')[1] : 'Showing 8 of ' + fmt(sv[0]) + ' lease requests' }; },
+      def: { items: [{ k: 'Metrics', v: 'Lease requests · leads · proposals (signed / unsigned) · contracts (signed / unsigned) — parity' }, { k: 'Population', v: 'Records created in the period at each stage. Leads = enquiries mapped to “Lead approved”.' }, { k: 'Signed lists', v: 'Proposal signed · Contract signed, Contract active, Contract terminated' }, { k: 'Unsigned lists', v: 'Pending proposal, Proposal sent, Proposal review, Proposal rejected · Contract sent, Pending contract, Contract rejected' }, { k: 'Time basis', v: 'Created date, Asia/Riyadh calendar for every stage (V2 mixed time zones)' }, { k: 'Filters', v: 'Year · month · region · mall (V2)' }, { k: 'Access', v: role.access }], cav: ['Stage counts are records created in the period, not a cohort. Do not read stage-to-stage ratios as conversion rates.', 'Signed + unsigned can be less than the total; the rest are shown as other statuses.', 'A nightly snapshot table also exists and can differ from these live counts. The agent can compare them; the card does not show it.', 'For lease requests and leads, region is the enquirer’s stated region, not the mall’s region.'] },
+      extra: { stages: stages }
+    });
+
+    /* ---------- Pending approvals ---------- */
+    const paf = this.ef('pendingApprovals');
+    const ap = this.apFor(paf);
+    const L = Math.PI * 80;
+    const typeDef = [['proposal', 'Proposals', 'Pending proposal'], ['contract', 'Contracts', 'Contract sent'], ['lease', 'Leases', 'Contract signed']];
+    const g = typeDef.map((t) => {
+      const b = ap[t[0]], tot = b.reduce((a, x) => a + x, 0), share = tot ? b[4] / tot : 0;
+      const cap = !tot ? 'nothing pending' : (b[0] > 0 ? fmt(b[0]) + ' within a week' : (b[0] + b[1] + b[2] + b[3] === 0 ? 'none within a month' : 'none within a week'));
+      return { cls: 'gauge' + (isSel('pendingApprovals', t[0]) ? ' g-on' : ''), pressed: isSel('pendingApprovals', t[0]) ? 'true' : 'false', label: t[1] + ' · ' + fmt(tot) + ' pending', pct: tot ? Math.round(share * 100) + '%' : '—', cap: cap, bands: '1w ' + b[0] + ' · 2w ' + b[1] + ' · 3w ' + b[2] + ' · 1m ' + b[3] + ' · 1m+ ' + b[4], da: share > 0 ? (share * L) + ' ' + (L + 20) : '0 400', lc: share > 0 ? 'round' : 'butt', aria: t[1] + ': ' + fmt(tot) + ' pending, ' + (tot ? Math.round(share * 100) : 0) + '% older than one month', pick: pick('pendingApprovals', t[0], t[1] + ' · ' + fmt(tot) + ' pending · ' + fmt(b[4]) + ' older than a month'), _tot: tot, _share: share, _b: b, _t: t };
+    });
+    const nonEmpty = g.filter((x) => x._tot > 0);
+    const paEmpty = nonEmpty.length === 0 ? { t: 'Nothing pending in this scope', m: 'No proposals, contracts or leases are waiting for approval in the selected region or mall.' } : null;
+    const PA = mk('pendingApprovals', 'Pending approvals', 'Proposals, contracts and leases waiting for approval, grouped by how long they have waited. The gauge shows the share older than one month.', [fd('pendingApprovals', 'region', 'Region', regionO), fd('pendingApprovals', 'mall', 'Mall', mallO(paf.region))], {
+      empty: !!paEmpty, emptyT: paEmpty ? paEmpty.t : '', emptyM: paEmpty ? paEmpty.m : '',
+      table: () => ({ cols: ['Type', '1 week', '2 weeks', '3 weeks', '1 month', '1 month+', 'Total', '1 month+ share'], rows: g.map((x) => [x._t[1]].concat(x._b.map((v) => fmt(v))).concat([fmt(x._tot), x._tot ? Math.round(x._share * 100) + '%' : '—'])), note: 'As of 20 Oct 2026 · age bands in days: 0–6, 7–13, 14–20, 21–30, 31+' }),
+      records: (sel) => {
+        const types = sel ? [sel.key] : ['proposal', 'contract', 'lease'];
+        const items = [];
+        types.forEach((t) => { const b = ap[t]; const malls = mallsInScope(paf); const r = this.rng(this.hash('pa' + t + JSON.stringify(paf))); const ranges = [[0, 6], [7, 13], [14, 20], [21, 30], [31, 140]]; b.forEach((n, bi) => { for (let k = 0; k < Math.min(n, 6); k++) { const age = ranges[bi][0] + Math.floor(r() * (ranges[bi][1] - ranges[bi][0] + 1)); const mall = (t !== 'x' && malls.indexOf('Rawdah Point Mall') >= 0 && r() < 0.45) ? 'Rawdah Point Mall' : pickA(r, malls); items.push([(t === 'proposal' ? 'P-24' : t === 'contract' ? 'C-19' : 'T-3') + String(100 + Math.floor(r() * 899)), mall, t === 'proposal' ? 'Pending proposal' : t === 'contract' ? 'Contract sent' : 'Contract signed', age, this.dstr(REF - age * DAY)]); } }); });
+        items.sort((a, b) => b[3] - a[3]);
+        const total = types.reduce((a, t) => a + ap[t].reduce((x, y) => x + y, 0), 0);
+        return { cols: ['Item', 'Mall', 'Status', 'Age (days)', 'Waiting since'], rows: items.slice(0, 8).map((x) => [x[0], x[1], x[2], String(x[3]), x[4]]), note: 'Showing 8 of ' + fmt(total) + ' · oldest first' };
+      },
+      def: { items: [{ k: 'Metric', v: 'Pending approvals by age band (parity); gauge = share older than one month (derived)' }, { k: 'Population', v: 'Proposals with status Pending proposal; contracts with Contract sent; leases with Contract signed — within the lease visibility rule' }, { k: 'Age', v: 'Reference date − last change (contracts, leases) or creation (proposals)' }, { k: 'Bands', v: '1 week 0–6 · 2 weeks 7–13 · 3 weeks 14–20 · 1 month 21–30 · 1 month+ 31+ days' }, { k: 'Filters', v: 'Region · mall (V2 — no year or month)' }, { k: 'Access', v: role.access }], cav: ['Age bands are not SLA breaches.', 'Items with future or missing dates are excluded.', 'These bands differ from Pending amendments (21–27 and 28+ days).', 'A red banner appears when every non-empty type has 90% or more older than a month.'] },
+      extra: { g0: g[0], g1: g[1], g2: g[2], banner: nonEmpty.length > 0 && nonEmpty.every((x) => x._share >= 0.9) }
+    });
+
+    /* ---------- Pending amendments ---------- */
+    const amf = this.ef('pendingAmendments');
+    const am = this.amFor(amf);
+    const TYPES = ['Expansion', 'HoldOver', 'Renewal', 'Termination'];
+    const BANDS = ['4 wk+', '4 wk', '3 wk', '2 wk', '1 wk'];
+    const allV = []; TYPES.forEach((t) => am[t].forEach((v) => { if (v > 0) allV.push(v); }));
+    allV.sort((a, b) => a - b);
+    const level = (v) => { if (!v) return -1; const below = allV.filter((x) => x < v).length; return Math.min(4, Math.floor(below / allV.length * 5)); };
+    const SH = [['#EDE7FB', '#1B1530'], ['#CDBDF5', '#1B1530'], ['#A68BEA', '#1B1530'], ['#7C55D6', '#FFFFFF'], ['#4C1D95', '#FFFFFF']];
+    const amTotal = allV.reduce((a, x) => a + x, 0);
+    const amRows = BANDS.map((band, bi) => ({ band: band, cells: TYPES.map((t) => { const v = am[t][bi]; const lv = level(v); const key = t + '|' + band; return { v: v, bg: lv < 0 ? '#F4F2F8' : SH[lv][0], fg: lv < 0 ? '#5E5873' : SH[lv][1], selcss: isSel('pendingAmendments', key) ? SELCSS : '', pressed: isSel('pendingAmendments', key) ? 'true' : 'false', aria: t + ', ' + band + ': ' + v + ' amendments', tip: t + ' · ' + band + ' · ' + v + ' amendment' + (v === 1 ? '' : 's'), pick: pick('pendingAmendments', key, t + ' × ' + band + ' · ' + v + ' amendment' + (v === 1 ? '' : 's')) }; }) }));
+    const amEmpty = amTotal === 0 ? this.emptyFor(amf, 'pending amendments') : null;
+    const AM = mk('pendingAmendments', 'Pending amendments', 'Lease amendments with status Ready or In process, by amendment type and weeks since creation.', stdF('pendingAmendments'), {
+      empty: !!amEmpty, emptyT: amEmpty ? amEmpty.t : '', emptyM: amEmpty ? amEmpty.m : '',
+      table: () => ({ cols: ['Delay', 'Expansion', 'HoldOver', 'Renewal', 'Termination', 'Total'], rows: BANDS.map((b, bi) => [b].concat(TYPES.map((t) => String(am[t][bi]))).concat([String(TYPES.reduce((a, t) => a + am[t][bi], 0))])), note: fmt(amTotal) + ' pending amendments · bands: 1 wk 0–6, 2 wk 7–13, 3 wk 14–20, 4 wk 21–27, 4 wk+ 28+ days' }),
+      records: (sel) => {
+        const isCanon = sel && sel.key === 'Renewal|4 wk+' && amf.year === '2026' && amf.month === 'All' && amf.region === 'Central' && amf.mall === 'All';
+        if (isCanon) return { cols: ['Amendment', 'Mall', 'Lease', 'Created', 'Age (days)', 'Status'], rows: [['AMD-24086', 'Rawdah Point Mall', 'T-30477', '2 May 2026', '171', 'Ready'], ['AMD-24095', 'Sandstone Galleria', 'T-31120', '20 May 2026', '153', 'In process'], ['AMD-24118', 'Rawdah Point Mall', 'T-30512', '14 Jun 2026', '128', 'Ready'], ['AMD-24133', 'Rawdah Point Mall', 'T-30877', '2 Jul 2026', '110', 'In process'], ['AMD-24190', 'Sandstone Galleria', 'T-31206', '21 Jul 2026', '91', 'Ready'], ['AMD-24207', 'Rawdah Point Mall', 'T-30940', '5 Aug 2026', '76', 'Ready'], ['AMD-24251', 'Sandstone Galleria', 'T-31388', '28 Aug 2026', '53', 'In process'], ['AMD-24302', 'Qasr Plaza', 'T-31455', '19 Sep 2026', '31', 'Ready']], note: 'Showing 8 of 18 · Rawdah Point Mall 9 · Sandstone Galleria 6 · Qasr Plaza 3 · same population as the cell' };
+        const parts = sel ? sel.key.split('|') : null;
+        const ranges = { '4 wk+': [28, 200], '4 wk': [21, 27], '3 wk': [14, 20], '2 wk': [7, 13], '1 wk': [0, 6] };
+        const n = sel ? am[parts[0]][BANDS.indexOf(parts[1])] : amTotal;
+        const malls = amf.region === 'Central' && amf.mall === 'All' ? ['Rawdah Point Mall', 'Sandstone Galleria', 'Qasr Plaza'] : mallsInScope(amf);
+        const rws = rows8('am' + (sel ? sel.key : '') + JSON.stringify(amf), Math.min(8, n), (r, i) => { const band = parts ? parts[1] : pickA(r, BANDS); const rg = ranges[band]; const age = rg[0] + Math.floor(r() * (rg[1] - rg[0] + 1)); return ['AMD-' + (24300 - i * 11), pickA(r, malls), 'T-' + (30400 + Math.floor(r() * 1200)), this.dstr(REF - age * DAY), String(age), pickA(r, ['Ready', 'In process'])]; });
+        rws.sort((a, b) => +b[4] - +a[4]);
+        return { cols: ['Amendment', 'Mall', 'Lease', 'Created', 'Age (days)', 'Status'], rows: rws, note: 'Showing ' + rws.length + ' of ' + n };
+      },
+      def: { items: [{ k: 'Metric', v: 'Pending amendments by type and age band (parity)' }, { k: 'Population', v: 'Lease amendments with status Ready or In process, created in the selected year and month' }, { k: 'Age', v: 'Reference date − amendment created date' }, { k: 'Bands', v: '1 wk 0–6 · 2 wk 7–13 · 3 wk 14–20 · 4 wk 21–27 · 4 wk+ 28+ days' }, { k: 'Layout', v: 'Rows oldest first; columns alphabetical (V2); shading by quintile of non-zero cells' }, { k: 'Filters', v: 'Year · month · region · mall (V2)' }, { k: 'Access', v: role.access }], cav: ['Age bands are not SLA breaches.', 'Amendments dated in the future are counted in 4 wk+. This reproduces V2; the synthetic data holds one such record in Western 2026.', 'Year and month filter the creation date, so older years only contain 4 wk+ items.'] },
+      extra: { cols: TYPES, rows: amRows, aria: 'Pending amendments heatmap, ' + fmt(amTotal) + ' amendments' }
+    });
+
+    /* ---------- Service requests ---------- */
+    const srf = this.ef('serviceRequests');
+    const fac = d.SRF[srf.year];
+    let srExtra = { cats: [], catLegend: [], wp: [], wpTotal: '0', wpOnly: !!role.wpOnly, aria: '' }, srEmpty = null, srCats = [];
+    if (!fac || this.afterRef(srf)) srEmpty = this.emptyFor(srf, 'service requests');
+    else {
+      srCats = d.SR.filter((c) => !role.wpOnly || c.code === 'WORK_PERMIT').map((c) => ({ code: c.code, name: c.name, color: c.color, leaves: c.subs.map((sb) => ({ code: sb[0], name: sb[1], v: sb[2].map((x, i) => this.alloc(Math.round(x * fac[i]), srf)) })) }));
+      const tileOf = (v) => v[0] + v[1] + v[3];
+      const grand = srCats.reduce((a, c) => a + c.leaves.reduce((x, l) => x + tileOf(l.v), 0), 0);
+      if (grand === 0) srEmpty = this.emptyFor(srf, 'service requests');
+      const fam = (code) => code.indexOf('CONSTRUCTION') === 0 ? ['#92400E', '#FFFFFF'] : code.indexOf('MAINTENANCE') === 0 ? ['#F59E0B', '#1B1530'] : ['#FDE68A', '#1B1530'];
+      srExtra.cats = srCats.map((c) => { const ct = c.leaves.reduce((x, l) => x + tileOf(l.v), 0); return { grow: ct, leaves: c.leaves.slice().sort((a, b) => tileOf(b.v) - tileOf(a.v)).map((l) => { const tv = tileOf(l.v); const col = c.code === 'WORK_PERMIT' ? fam(l.code) : [c.color, '#FFFFFF']; const key = c.code + '|' + l.code; const cs = ct ? tv / ct : 0; return { grow: tv, bg: col[0], fg: col[1], name: l.name, vtxt: fmt(tv), tcls: 'tmt' + (cs >= 0.17 ? '' : cs >= 0.07 ? ' tmv-only' : ' tmh'), selcss: isSel('serviceRequests', key) ? SELCSS : '', pressed: isSel('serviceRequests', key) ? 'true' : 'false', aria: c.name + ', ' + l.name + ': ' + tv + ' requests', tip: c.name + ' › ' + l.name + '\nApproved ' + fmt(l.v[0]) + ' · In process ' + fmt(l.v[1]) + ' · Rejected ' + fmt(l.v[3]) + '\nTile ' + fmt(tv) + ' — not sized: pending ' + fmt(l.v[2]) + ', closed ' + fmt(l.v[4]), pick: pick('serviceRequests', key, c.name + ' › ' + l.name + ' · ' + fmt(tv) + ' requests') }; }) }; });
+      srExtra.catLegend = srCats.map((c) => ({ name: c.name, color: c.code === 'WORK_PERMIT' ? '#B45309' : c.color, total: fmt(c.leaves.reduce((x, l) => x + tileOf(l.v), 0)) }));
+      const wpc = srCats.find((c) => c.code === 'WORK_PERMIT');
+      const agg = [0, 0, 0, 0, 0]; if (wpc) wpc.leaves.forEach((l) => l.v.forEach((x, i) => { agg[i] += x; }));
+      const wpt = agg.reduce((a, x) => a + x, 0);
+      const wpDef = [['Approved', 0, '#059669'], ['In process', 1, '#0284C7'], ['Rejected', 3, '#DC2626'], ['Pending', 2, '#F59E0B'], ['Closed', 4, '#9A93AD']];
+      srExtra.wp = wpDef.map((w) => ({ label: w[0], vtxt: fmt(agg[w[1]]), color: w[2], w: (wpt ? agg[w[1]] / wpt * 100 : 0) + '%', tip: w[0] + ' · ' + fmt(agg[w[1]]) + ' · ' + this.pct1(agg[w[1]], wpt) }));
+      srExtra.wpTotal = fmt(wpt);
+      srExtra.aria = 'Service requests treemap, ' + fmt(grand) + ' requests sized';
+      srExtra._cats = srCats;
+    }
+    const SR = mk('serviceRequests', 'Service requests', 'Inquiries, work permits and complaints created in the period. Tile size = approved + in process + rejected; pending and closed are not sized.', stdF('serviceRequests'), {
+      empty: !!srEmpty, emptyT: srEmpty ? srEmpty.t : '', emptyM: srEmpty ? srEmpty.m : '',
+      table: () => { const rows = []; srCats.forEach((c) => c.leaves.forEach((l) => rows.push([c.name, l.name, fmt(l.v[0]), fmt(l.v[1]), fmt(l.v[3]), fmt(l.v[0] + l.v[1] + l.v[3]), fmt(l.v[2]), fmt(l.v[4])]))); return { cols: ['Category', 'Sub-category', 'Approved', 'In process', 'Rejected', 'Tile', 'Pending', 'Closed'], rows: rows, note: 'Tile = approved + in process + rejected' }; },
+      records: (sel) => { const parts = sel ? sel.key.split('|') : null; const cat = parts ? srCats.find((c) => c.code === parts[0]) : null; const leaf = cat ? cat.leaves.find((l) => l.code === parts[1]) : null; const n = leaf ? leaf.v[0] + leaf.v[1] + leaf.v[3] : 0; return { cols: ['Request', 'Mall', 'Sub-category', 'Status', 'Updated'], rows: rows8('sr' + (sel ? sel.key : '') + JSON.stringify(srf), 8, (r, i) => ['SR-' + (318800 - i * 37 - Math.floor(r() * 20)), pickA(r, mallsInScope(srf)), leaf ? leaf.name : pickA(r, ['General', 'Construction', 'Cleanliness', 'Hot work']), pickA(r, ['Approved', 'Approved', 'In process', 'Action required', 'Submitted', 'Rejected']), this.dstr(inYear(r, srf))]), note: leaf ? 'Showing 8 of ' + fmt(n) + ' · statuses approved, in process or rejected — the tile’s population' : 'Showing 8 recent requests · select a tile to narrow' }; },
+      def: { items: [{ k: 'Metric', v: 'Service requests by status bucket (parity); tile size = approved + in process + rejected' }, { k: 'Buckets', v: 'Approved: Approved, Active · In process: In process, In progress, Action required, Submitted, Re-submitted, Reviewed with comments · Pending · Rejected · Closed: Closed, Expired, Completed, Cancelled' }, { k: 'Time basis', v: 'Created date, Asia/Riyadh calendar' }, { k: 'Filters', v: 'Year · month · region · mall (V2)' }, { k: 'Access', v: role.access + (role.wpOnly ? ' · work-permit view' : '') }], cav: ['Pending and closed requests are not sized — tiles show request activity, not backlog.', 'Statuses outside the five buckets, such as Report submitted, are not counted.', 'This is not an SLA measure.'] },
+      extra: srExtra
+    });
+
+    /* ---------- Fit-out and handover ---------- */
+    const fhf = this.ef('fitoutHandover');
+    const FOY = d.FO[fhf.year];
+    let fhExtra = {}, fhEmpty = null;
+    const ringDef = [['MEP', 'Pre-opening MEP', '#8B5CF6'], ['ARCH', 'Pre-opening Arch.', '#14B8A6'], ['OCI', 'Open ceiling', '#F59E0B'], ['CCI', 'Close ceiling', '#F43F5E']];
+    let fo = null;
+    if (!FOY || this.afterRef(fhf)) fhEmpty = this.emptyFor(fhf, 'fit-out inspections');
+    else {
+      fo = {}; Object.keys(FOY).forEach((k) => { fo[k] = FOY[k].map((x) => this.alloc(x, fhf)); });
+      const RC = 2 * Math.PI * 38;
+      const rings = ringDef.map((rd) => { const v = fo[rd[0]], tot = v[0] + v[1] + v[2], sh = tot ? v[2] / tot : null; return { cls: 'ring' + (isSel('fitoutHandover', rd[0]) ? ' r-on' : ''), pressed: isSel('fitoutHandover', rd[0]) ? 'true' : 'false', color: rd[2], pct: sh === null ? '—' : Math.round(sh * 100) + '%', label: rd[1], sub: fmt(v[2]) + ' of ' + fmt(tot) + ' reviewed', da: sh ? (sh * RC) + ' ' + (RC + 10) : '0 300', lc: sh ? 'round' : 'butt', aria: rd[1] + ': ' + fmt(v[2]) + ' of ' + fmt(tot) + ' reviewed, ' + fmt(v[1]) + ' remaining', pick: pick('fitoutHandover', rd[0], rd[1] + ' · ' + fmt(v[1]) + ' remaining') }; });
+      const allZero = ringDef.every((rd) => fo[rd[0]].reduce((a, x) => a + x, 0) === 0) && fo.HANDOVER.reduce((a, x) => a + x, 0) === 0;
+      if (allZero) fhEmpty = this.emptyFor(fhf, 'fit-out inspections');
+      fhExtra = { r0: rings[0], r1: rings[1], r2: rings[2], r3: rings[3], ho: fmt(fo.HANDOVER[1]), pickHo: pick('fitoutHandover', 'HANDOVER', 'Handovers pending tenant acceptance · ' + fmt(fo.HANDOVER[1])) };
+    }
+    const FH = mk('fitoutHandover', 'Fit-out and handover', 'Fit-out inspection requests created in the period. Received = submitted; reviewed = approved, rejected or completed; remaining = everything else except drafts.', stdF('fitoutHandover'), {
+      empty: !!fhEmpty, emptyT: fhEmpty ? fhEmpty.t : '', emptyM: fhEmpty ? fhEmpty.m : '',
+      table: () => ({ cols: ['Inspection', 'Received', 'Remaining', 'Reviewed', 'Reviewed share'], rows: fo ? ringDef.map((rd) => { const v = fo[rd[0]]; return [rd[1], fmt(v[0]), fmt(v[1]), fmt(v[2]), this.pct1(v[2], v[0] + v[1] + v[2])]; }).concat([['Handover', fmt(fo.HANDOVER[0]), fmt(fo.HANDOVER[1]), fmt(fo.HANDOVER[2]), this.pct1(fo.HANDOVER[2], fo.HANDOVER[0] + fo.HANDOVER[1] + fo.HANDOVER[2])]]) : [], note: 'Remaining on Handover = pending tenant acceptance' }),
+      records: (sel) => { const key = sel ? sel.key : 'MEP'; const isHo = key === 'HANDOVER'; const lbl = (ringDef.find((x) => x[0] === key) || [0, 'Handover'])[1]; const n = fo ? fo[key][1] : 0; return { cols: isHo ? ['Request', 'Unit', 'Mall', 'Lease', 'Status', 'Created'] : ['Request', 'Unit', 'Mall', 'Inspection', 'Status', 'Created'], rows: rows8('fh' + key + JSON.stringify(fhf), Math.min(8, n), (r, i) => [(isHo ? 'HO-' + (5512 - i * 9) : 'INSP-' + (8841 - i * 13)), unit(r), pickA(r, mallsInScope(fhf)), isHo ? 'T-' + (30400 + Math.floor(r() * 1500)) : lbl, isHo ? 'Pending tenant acceptance' : pickA(r, ['In process', 'Action required', 'Pending', 'Reviewed with comments', 'Requested re-upload', 'Report submitted']), this.dstr(inYear(r, fhf))]), note: 'Showing ' + Math.min(8, n) + ' of ' + fmt(n) + ' remaining · includes soft-deleted requests (parity)' }; },
+      def: { items: [{ k: 'Metric', v: 'Fit-out inspection progress (parity); ring = reviewed ÷ (received + remaining + reviewed)' }, { k: 'Buckets', v: 'Received: Submitted · Reviewed: Approved, Rejected, Completed · Remaining: all other non-draft statuses' }, { k: 'Callout', v: 'Handover requests remaining = pending tenant acceptance' }, { k: 'Time basis', v: 'Created date, Asia/Riyadh calendar' }, { k: 'Filters', v: 'Year · month · region · mall (V2)' }, { k: 'Access', v: role.access }], cav: ['Reviewed includes rejected — the ring is not an approval rate.', 'Parity counts include soft-deleted requests (3 in 2026). Insights and recommendations use the separately labelled active-only metric.'] },
+      extra: fhExtra
+    });
+
+    /* ---------- Fit-out drawings ---------- */
+    const fdf = this.ef('fitoutDrawings');
+    const DRY = d.DR[fdf.year];
+    let fdExtra = { rows: [] }, fdEmpty = null, dr = null;
+    const discDef = [['MEP', 'Mechanical'], ['ARCHITECTURAL', 'Architectural'], ['ELECTRICAL', 'Electrical']];
+    if (!DRY || this.afterRef(fdf)) fdEmpty = this.emptyFor(fdf, 'fit-out drawings');
+    else {
+      dr = {}; Object.keys(DRY).forEach((k) => { dr[k] = DRY[k].map((x) => this.alloc(x, fdf)); });
+      const mx = Math.max.apply(null, discDef.map((x) => dr[x[0]][0] + dr[x[0]][1] + dr[x[0]][2]));
+      if (!mx) fdEmpty = this.emptyFor(fdf, 'fit-out drawings');
+      const segDef = [['Submitted', 0, '#0284C7', '#FFFFFF'], ['Pending', 1, '#F59E0B', '#1B1530'], ['Approved', 2, '#059669', '#FFFFFF']];
+      fdExtra.rows = discDef.map((x) => { const v = dr[x[0]]; return { label: x[1], total: fmt(v[0] + v[1] + v[2]), segs: segDef.map((sd) => { const key = x[0] + '|' + sd[0]; const w = mx ? v[sd[1]] / mx * 100 : 0; return { w: w + '%', bg: sd[2], fg: sd[3], txt: w >= 7 ? fmt(v[sd[1]]) : '', tip: x[1] + ' · ' + sd[0] + ' · ' + fmt(v[sd[1]]), aria: x[1] + ' drawings ' + sd[0].toLowerCase() + ': ' + v[sd[1]], selcss: isSel('fitoutDrawings', key) ? SELCSS : '', pressed: isSel('fitoutDrawings', key) ? 'true' : 'false', pick: pick('fitoutDrawings', key, x[1] + ' · ' + sd[0] + ' · ' + fmt(v[sd[1]])) }; }) }; });
+    }
+    const FD = mk('fitoutDrawings', 'Fit-out drawings', 'Fit-out drawing requests created in the period, by discipline. Submitted = received; pending = remaining; approved = reviewed (approved, rejected or completed).', stdF('fitoutDrawings'), {
+      empty: !!fdEmpty, emptyT: fdEmpty ? fdEmpty.t : '', emptyM: fdEmpty ? fdEmpty.m : '',
+      table: () => ({ cols: ['Discipline', 'Submitted', 'Pending', 'Approved', 'Total'], rows: dr ? discDef.map((x) => [x[1], fmt(dr[x[0]][0]), fmt(dr[x[0]][1]), fmt(dr[x[0]][2]), fmt(dr[x[0]][0] + dr[x[0]][1] + dr[x[0]][2])]) : [], note: 'Rows filtered by your drawing permissions' }),
+      records: (sel) => { const parts = sel ? sel.key.split('|') : ['ARCHITECTURAL', 'Pending']; const disc = discDef.find((x) => x[0] === parts[0]); const idx = ['Submitted', 'Pending', 'Approved'].indexOf(parts[1]); const n = dr ? dr[parts[0]][idx] : 0; const st = idx === 0 ? ['Submitted'] : idx === 1 ? ['In process', 'Requested re-upload', 'Reviewed with comments'] : ['Approved', 'Approved', 'Completed', 'Rejected']; return { cols: ['Request', 'Unit', 'Mall', 'Discipline', 'Status', 'Created'], rows: rows8('fd' + parts.join() + JSON.stringify(fdf), Math.min(8, n), (r, i) => ['DRW-' + (30118 - i * 17), unit(r), pickA(r, mallsInScope(fdf)), disc[1], pickA(r, st), this.dstr(inYear(r, fdf))]), note: 'Showing ' + Math.min(8, n) + ' of ' + fmt(n) + ' · ' + disc[1] + ' · ' + parts[1].toLowerCase() }; },
+      def: { items: [{ k: 'Metric', v: 'Fit-out drawing progress by discipline (parity)' }, { k: 'Buckets', v: 'Submitted = received · Pending = remaining · Approved = reviewed (Approved, Rejected, Completed)' }, { k: 'Time basis', v: 'Created date, Asia/Riyadh calendar' }, { k: 'Filters', v: 'Year · month · region · mall (V2)' }, { k: 'Access', v: role.access + ' · rows limited to permitted disciplines' }], cav: ['“Approved” includes rejected drawings — the label is kept for V2 parity.', 'Parity counts include soft-deleted requests; insights use the active-only metric.'] },
+      extra: fdExtra
+    });
+
+    /* ---------- Drawing document status ---------- */
+    const dsf = this.ef('documentStatus');
+    const DSY = d.DSG[dsf.year];
+    let dsExtra = { cols: [], trows: [] }, dsEmpty = null, dsMalls = [];
+    const DISCS = [['ARCHITECTURAL', 'Architectural'], ['MEP', 'MEP'], ['ELECTRICAL', 'Electrical']];
+    if (!DSY) dsEmpty = this.emptyFor(dsf, 'graded drawings');
+    else {
+      const tot = DSY[dsf.disc];
+      const w = [].concat(d.DOCW.Central, d.DOCW.Eastern, d.DOCW.Western);
+      const gr = tot.map((x) => this.split(x, w));
+      const regs = dsf.region === 'All' ? scopeRegs : [dsf.region];
+      d.ALL.forEach((mall, i) => { const r = this.regionOf(mall); if (regs.indexOf(r) < 0) return; dsMalls.push({ mall: mall, a: gr[0][i], b: gr[1][i], c: gr[2][i], d: gr[3][i], t: gr[0][i] + gr[1][i] + gr[2][i] + gr[3][i] }); });
+      const withD = dsMalls.filter((x) => x.t > 0).sort((x, y) => (y.t - x.t) || (x.mall < y.mall ? -1 : 1));
+      const quiet = dsMalls.filter((x) => x.t === 0);
+      const mx = withD.length ? withD[0].t : 1;
+      dsExtra = {
+        discs: DISCS.map((x) => ({ label: x[1], cls: dsf.disc === x[0] ? 'seg-on' : '', on: dsf.disc === x[0] ? 'true' : 'false', go: () => this.setF('documentStatus', 'disc', x[0]) })),
+        isChart: dsf.view === 'chart', isTable: dsf.view === 'table', isChartS: dsf.view === 'chart' ? 'true' : 'false', isTableS: dsf.view === 'table' ? 'true' : 'false',
+        vChart: dsf.view === 'chart' ? 'seg-on' : '', vTable: dsf.view === 'table' ? 'seg-on' : '', toChart: () => this.setF('documentStatus', 'view', 'chart'), toTable: () => this.setF('documentStatus', 'view', 'table'),
+        cols: withD.map((x) => ({ cls: 'colb' + (isSel('documentStatus', x.mall) ? ' col-on' : ''), pressed: isSel('documentStatus', x.mall) ? 'true' : 'false', h: Math.max(4, Math.round(x.t / mx * 100)) + '%', a: x.a, b: x.b, cc: x.c, d: x.d, short: x.mall.replace(/ (Mall|Centre|Plaza|Galleria|Commons|Square|Walk|Arcade|Crossing|Quay|Row|Heights|Point|View|Park Mall)$/, ''), tip: x.mall + '\nA ' + x.a + ' · B ' + x.b + ' · C ' + x.c + ' · D ' + x.d + '\nTotal ' + x.t + ' graded documents', aria: x.mall + ': A ' + x.a + ', B ' + x.b + ', C ' + x.c + ', D ' + x.d, pick: pick('documentStatus', x.mall, x.mall + ' · ' + DISCS.find((y) => y[0] === dsf.disc)[1] + ' · ' + x.t + ' graded documents') })),
+        trows: withD.map((x) => [x.mall, String(x.a), String(x.b), String(x.c), String(x.d), String(x.t)]),
+        foot2: quiet.length ? 'No drawings yet from ' + quiet.length + ' mall' + (quiet.length === 1 ? '' : 's') + ': ' + quiet.map((x) => x.mall).join(', ') + '.' : 'Every mall in scope has graded drawings.',
+        aria: 'Drawing grades by mall, ' + withD.length + ' malls'
+      };
+      if (!withD.length) dsEmpty = { t: 'No graded drawings in this scope', m: 'Try another region or discipline.' };
+    }
+    const DS = mk('documentStatus', 'Drawing document status', 'Fit-out drawing documents by their latest grade, per primary mall. A approved · B approved with comments · C change request · D rejected.', [fd('documentStatus', 'year', 'Year', YEARS), fd('documentStatus', 'region', 'Region', regionO)], {
+      empty: !!dsEmpty, emptyT: dsEmpty ? dsEmpty.t : '', emptyM: dsEmpty ? dsEmpty.m : '',
+      table: () => ({ cols: ['Mall', 'A', 'B', 'C', 'D', 'Total'], rows: dsExtra.trows, note: 'Discipline: ' + DISCS.find((y) => y[0] === dsf.disc)[1] }),
+      records: (sel) => { const m = sel ? dsMalls.find((x) => x.mall === sel.key) : null; const types = d.DOCTYPES[dsf.disc]; const src = m || dsMalls.reduce((acc, x) => ({ a: acc.a + x.a, b: acc.b + x.b, c: acc.c + x.c, d: acc.d + x.d }), { a: 0, b: 0, c: 0, d: 0 }); const wt = types.map((t, i) => types.length - i + 2); const sa = this.split(src.a, wt), sb = this.split(src.b, wt), sc = this.split(src.c, wt.slice().reverse()), sd = this.split(src.d, wt.slice().reverse()); return { cols: ['Document type', 'A', 'B', 'C', 'D'], rows: types.map((t, i) => [t, String(sa[i]), String(sb[i]), String(sc[i]), String(sd[i])]).concat([['Total', String(src.a), String(src.b), String(src.c), String(src.d)]]), note: (m ? m.mall : 'All malls in scope') + ' · ' + DISCS.find((y) => y[0] === dsf.disc)[1] + ' · totals match the column' }; },
+      def: { items: [{ k: 'Metric', v: 'Drawing grades by mall and discipline (parity)' }, { k: 'Count', v: 'Distinct (request, document type) pairs whose latest grade is A, B, C or D' }, { k: 'Grades', v: 'A approved · B approved with comments · C change request · D rejected' }, { k: 'Time basis', v: 'Request created date, Asia/Riyadh calendar' }, { k: 'Filters', v: 'Year · region · discipline (V2)' }, { k: 'Access', v: role.access }], cav: ['Sub-properties roll up to their primary mall.', 'Malls with no graded drawings are listed under the chart rather than drawn as empty columns.'] },
+      extra: dsExtra
+    });
+
+    /* ---------- Unit discrepancy ---------- */
+    const udf = this.ef('unitDiscrepancy');
+    let udExtra = { rows: [] }, udEmpty = null, udRowsCur = [];
+    const mIdx = d.MONTHS.indexOf(udf.month) + 1;
+    if (udf.mode === 'mall') {
+      const rws = this.udRows(udf.year, mIdx);
+      if (rws === null) udEmpty = this.emptyFor({ year: udf.year }, 'discrepancy reports');
+      else if (rws === 'after') udEmpty = { t: udf.month + ' 2026 is after the reference date', m: 'Synthetic data runs to 20 Oct 2026.' };
+      else {
+        udRowsCur = rws.slice().sort((a, b) => (b.mm - a.mm) || (b.match - a.match));
+        const mx = Math.max.apply(null, udRowsCur.map((x) => Math.max(x.match, x.mm)));
+        const tot = udRowsCur.reduce((a, x) => a + x.total, 0), mmT = udRowsCur.reduce((a, x) => a + x.mm, 0);
+        udExtra.rows = udRowsCur.map((x) => ({ cls: 'dvr' + (isSel('unitDiscrepancy', x.mall) ? ' dvr-on' : ''), pressed: isSel('unitDiscrepancy', x.mall) ? 'true' : 'false', disabled: false, label: x.mall, mw: (x.mm / mx * 100) + '%', pw: (x.match / mx * 100) + '%', mmTxt: String(x.mm), matchTxt: String(x.match), q: '', tip: x.mall + ' · ' + udf.month + ' ' + udf.year + ' · match ' + x.match + ' · mismatch ' + x.mm + ' · pending ' + x.pending, aria: x.mall + ': ' + x.mm + ' mismatched, ' + x.match + ' matched units', pick: pick('unitDiscrepancy', x.mall, x.mall + ' · ' + udf.month + ' ' + udf.year + ' · ' + x.mm + ' mismatches') }));
+        udExtra.foot2 = 'Portfolio mismatch rate ' + this.pct1(mmT, tot) + ' (' + mmT + ' of ' + fmt(tot) + ' units). No report this month from ' + (d.ALL.length - udRowsCur.length) + ' other malls. Bars share one scale.';
+      }
+      udExtra.rowHead = 'Mall';
+    } else {
+      udExtra.rowHead = 'Month';
+      const rws = d.MONTHS.map((mn, i) => { const r = this.udRows(udf.year, i + 1); if (r === null) return { mn: mn, none: 'nodata' }; if (r === 'after') return { mn: mn, none: 'after' }; const x = r.find((y) => y.mall === udf.mall); return x ? Object.assign({ mn: mn }, x) : { mn: mn, none: 'noreport' }; });
+      if (rws.every((x) => x.none === 'nodata')) udEmpty = this.emptyFor({ year: udf.year }, 'discrepancy reports');
+      else {
+        const mx = Math.max.apply(null, rws.filter((x) => !x.none).map((x) => Math.max(x.match, x.mm)).concat([1]));
+        udRowsCur = rws;
+        udExtra.rows = rws.map((x) => x.none ? { cls: 'dvr', pressed: 'false', disabled: true, label: x.mn + ' ' + udf.year, mw: '0%', pw: '0%', mmTxt: '', matchTxt: '', q: x.none === 'after' ? 'After the reference date' : 'No report', tip: x.mn + ' ' + udf.year + ' · ' + (x.none === 'after' ? 'after the reference date' : 'no report'), aria: x.mn + ': no report', pick: null } : { cls: 'dvr' + (isSel('unitDiscrepancy', x.mn) ? ' dvr-on' : ''), pressed: isSel('unitDiscrepancy', x.mn) ? 'true' : 'false', disabled: false, label: x.mn + ' ' + udf.year, mw: (x.mm / mx * 100) + '%', pw: (x.match / mx * 100) + '%', mmTxt: String(x.mm), matchTxt: String(x.match), q: '', tip: udf.mall + ' · ' + x.mn + ' · match ' + x.match + ' · mismatch ' + x.mm + ' · pending ' + x.pending, aria: x.mn + ': ' + x.mm + ' mismatched, ' + x.match + ' matched', pick: pick('unitDiscrepancy', x.mn, udf.mall + ' · ' + x.mn + ' ' + udf.year + ' · ' + x.mm + ' mismatches') });
+        udExtra.foot2 = udf.mall + ' · latest report each month · bars share one scale.';
+      }
+    }
+    udExtra.segM = udf.mode === 'mall' ? 'seg-on' : ''; udExtra.segT = udf.mode === 'month' ? 'seg-on' : ''; udExtra.onM = udf.mode === 'mall' ? 'true' : 'false'; udExtra.onT = udf.mode === 'month' ? 'true' : 'false';
+    udExtra.toMall = () => this.setF('unitDiscrepancy', 'mode', 'mall'); udExtra.toMonth = () => this.setF('unitDiscrepancy', 'mode', 'month');
+    udExtra.aria = 'Unit discrepancy diverging bars';
+    const udFilters = [fd('unitDiscrepancy', 'year', 'Year', YEARS)].concat(udf.mode === 'mall' ? [fd('unitDiscrepancy', 'month', 'Month', d.MONTHS.map((m) => ({ v: m, l: m })))] : [fd('unitDiscrepancy', 'mall', 'Mall', d.ALL.map((m) => ({ v: m, l: m })))]);
+    const UD = mk('unitDiscrepancy', 'Unit discrepancy', 'Latest unit-discrepancy report per mall per month. Mismatch = status mismatch or any flag: store closed, wrong location, open without contract, brand changed.', udFilters, {
+      empty: !!udEmpty, emptyT: udEmpty ? udEmpty.t : '', emptyM: udEmpty ? udEmpty.m : '',
+      table: () => ({ cols: [udf.mode === 'mall' ? 'Mall' : 'Month', 'Match', 'Mismatch', 'Pending', 'Total'], rows: udRowsCur.filter((x) => !x.none).map((x) => [udf.mode === 'mall' ? x.mall : x.mn, String(x.match), String(x.mm), String(x.pending), String(x.total)]), note: udf.mode === 'mall' ? udf.month + ' ' + udf.year : udf.mall + ' · ' + udf.year }),
+      records: (sel) => { const row = sel ? udRowsCur.find((x) => (udf.mode === 'mall' ? x.mall : x.mn) === sel.key) : (udf.mode === 'mall' ? udRowsCur[0] : udRowsCur.find((x) => !x.none)); if (!row) return { cols: ['Unit'], rows: [], note: 'No units' }; const rr = rows8('ud' + (sel ? sel.key : '') + JSON.stringify(udf), 8, (r, i) => { const mmRow = i < row.mm; return [unit(r), pickA(r, ['Retail', 'Kiosk', 'F&B', 'Office']), pickA(r, ['Occupied', 'Occupied', 'Vacant']), mmRow ? 'Mismatch · ' + pickA(r, ['store closed', 'wrong location', 'open without contract', 'brand changed']) : 'Match', mmRow ? 'SR-' + (459990 + i * 7) : '—']; }); return { cols: ['Unit', 'Unit type', 'Unit status', 'Discrepancy', 'Mismatch SR'], rows: rr, note: 'Showing 8 of ' + row.total + ' units · ' + row.mm + ' mismatches listed first' }; },
+      def: { items: [{ k: 'Metric', v: 'Unit discrepancy matches and mismatches (parity); mismatch rate (derived)' }, { k: 'Population', v: 'The latest discrepancy report per mall in each calendar month' }, { k: 'Mismatch', v: 'Status mismatch, or any of store closed, wrong location, open without contract, brand changed' }, { k: 'Time basis', v: 'Report created date, Asia/Riyadh calendar month (V2 used UTC)' }, { k: 'Filters', v: 'Year · month (mall-wise) or mall (month-wise) (V2)' }, { k: 'Access', v: role.access }], cav: ['Pending units count only toward the total.', 'Months use Asia/Riyadh boundaries; V2 used UTC, so a report filed just after midnight can move month.'] },
+      extra: udExtra
+    });
+
+    /* ---------- Agent panel ---------- */
+    const META = { properties: ['Portfolio properties and occupancy', P], kpis: ['Expiring leases, active leases, pending sales data', K], actionRequired: ['Action-required notifications', AR], leaseRequests: ['Lease requests by ' + (lf.view === 'unit' ? 'unit type' : 'source'), LR], salesFunnel: ['Sales funnel stage counts', SF], pendingApprovals: ['Pending approvals by age band', PA], pendingAmendments: ['Pending amendments by age band', AM], serviceRequests: ['Service requests by status', SR], fitoutHandover: ['Fit-out inspection progress', FH], fitoutDrawings: ['Fit-out drawing progress', FD], documentStatus: ['Drawing grades by mall', DS], unitDiscrepancy: ['Unit discrepancy matches', UD] };
+    const filterChips = (id) => { if (!id) return []; const c = this.ef(id); const out = []; if (c.year) out.push(['year', c.year]); if (c.month !== undefined && id !== 'unitDiscrepancy') out.push(['month', c.month === 'All' ? 'All months' : c.month + ' ' + c.year]); if (id === 'unitDiscrepancy') out.push(['mode', c.mode === 'mall' ? 'Mall-wise · ' + c.month : 'Month-wise · ' + c.mall]); if (c.region !== undefined) out.push(['region', c.region === 'All' ? 'All regions' : c.region]); if (c.mall !== undefined && id !== 'unitDiscrepancy') out.push(['mall', c.mall === 'All' ? 'All malls' : c.mall]); if (id === 'leaseRequests') out.push(['view', c.view === 'unit' ? 'By unit type' : 'By source']); if (id === 'documentStatus') out.push(['disc', DISCS.find((y) => y[0] === c.disc)[1]]); return out; };
+    const ctx = s.ctx;
+    const fc = filterChips(ctx);
+    let scope = [{ k: 'metric', label: ctx ? META[ctx][0] : 'Whole portfolio — no card selected', cls: 'chip c-scope', removable: false }];
+    fc.forEach((x) => { if (!s.removed['f:' + x[0]]) scope.push({ k: 'f:' + x[0], label: x[1], cls: 'chip c-scope', removable: true }); });
+    if (ctx && s.sel && s.sel.card === ctx && !s.removed.sel) scope.push({ k: 'sel', label: 'Selected: ' + s.sel.label, cls: 'chip c-sel', removable: true });
+    const bounds = [{ label: role.access, why: 'Authorization boundary, enforced on the server' }, { label: 'As of 20 Oct 2026 · synthetic', why: 'Frozen reference date of the synthetic dataset' }];
+    scope = scope.map((x) => Object.assign({}, x, { remove: () => this.setState({ removed: Object.assign({}, s.removed, { [x.k]: true }) }) }));
+    const SUG = { properties: ['Which malls have the most vacant units?', 'How has unit occupancy changed this year?', 'Why do unit and GLA occupancy differ?'], kpis: ['Which malls have the most leases expiring in the next 90 days?', 'Explain how active leases are counted', 'Which tenants have pending sales data?'], actionRequired: ['What should I deal with first?', 'Group my notifications by mall'], leaseRequests: ['How do 2026 lease requests compare with 2025?', 'Which source is growing fastest?', 'Show store requests by mall'], salesFunnel: ['Where are opportunities dropping?', 'Compare the funnel across regions', 'Why don’t signed and unsigned add up?'], pendingApprovals: ['Which mall has the highest pending approval backlog?', 'Show the oldest pending contracts', 'Is the backlog growing?'], pendingAmendments: ['Why is this so high?', 'Where are the longest delays?', 'How does this compare with 2025?'], serviceRequests: ['Why is this so high?', 'Which mall is worst for complaints?', 'Show the trend over the last 6 months'], fitoutHandover: ['Are delayed inspections associated with delayed handovers?', 'Which units are waiting longest for handover?'], fitoutDrawings: ['Which malls have the most pending drawings?', 'How long do architectural drawings take?'], documentStatus: ['Which malls have the most rejected drawings?', 'Which document types get change requests?'], unitDiscrepancy: ['Why is this mall’s mismatch rate high?', 'Which reasons drive mismatches?'] };
+    const sugg = (ctx ? SUG[ctx] : ['Which mall has the highest pending approval backlog?', 'Where are service requests accumulating?', 'What changed since last month?']).map((q) => ({ text: q, go: () => this.setState({ asked: q }) }));
+    const hiddenIds = ids.filter((id) => !V[id]);
+    const DSO = [['live', 'Live'], ['loading', 'Loading'], ['empty', 'Empty'], ['error', 'Error']];
+    return {
+      role: s.role, roleName: role.name, roleSub: role.sub + ' · synthetic data as of 20 Oct 2026',
+      setRole: (e) => this.setState({ role: e.target.value, sel: null, focus: null, ctx: null, panel: false, removed: {} }),
+      dsOpts: DSO.map((o) => ({ label: o[1], cls: s.ds === o[0] ? 'seg-on' : '', on: s.ds === o[0] ? 'true' : 'false', go: () => this.setState({ ds: o[0], ok: {} }) })),
+      hiddenNote: hiddenIds.length ? hiddenIds.length + ' cards hidden by this role’s permissions' : 'All 12 cards visible for this role',
+      hasFocus: !!s.focus, closeFocus: () => this.setState({ focus: null, ws: null }),
+      hasWs: !!s.ws, wsTitle: s.ws || '', closeWs: () => this.setState({ ws: null }),
+      P: P, K: K, AR: AR, LR: LR, SF: SF, PA: PA, AM: AM, SR: SR, FH: FH, FD: FD, DS: DS, UD: UD,
+      askTop: () => this.setState({ panel: true, ctx: null, removed: {}, asked: null }),
+      panel: s.panel, closePanel: () => this.setState({ panel: false }),
+      ctxTitle: ctx ? META[ctx][1].title : 'no card', ctxTitleLower: ctx ? META[ctx][1].title.toLowerCase() : 'your portfolio',
+      cardChips: fc.map((x) => x[1]), cardChipsNone: ctx ? (fc.length ? '' : 'This card has no filters') : 'Opened from the top bar — not tied to a card',
+      scope: scope, bounds: bounds, scopeChanged: Object.keys(s.removed).length > 0, resetScope: () => this.setState({ removed: {} }),
+      asked: !!s.asked, notAsked: !s.asked, askedText: s.asked || '', sugg: sugg
+    };
+  }
+}
+</script>
+</body>
+</html>

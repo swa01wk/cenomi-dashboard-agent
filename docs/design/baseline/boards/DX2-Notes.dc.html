@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DX2 parity notes</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-size:12px;font-weight:600;color:#4B4560;text-transform:uppercase;letter-spacing:.05em;padding:9px 10px;border-bottom:2px solid #E4E1EC}
+td{font-size:12.5px;line-height:18px;padding:8px 10px;border-bottom:1px solid #EEECF3;vertical-align:top}
+h2{margin:0;font-size:18px}
+</style>
+</helmet>
+<div style="width: 1936px; box-sizing: border-box; padding: 56px 64px; background: #FFFFFF; font-family: 'Inter', system-ui, sans-serif; color: #1B1530; display: flex; flex-direction: column; gap: 22px">
+<div>
+<h1 style="margin: 0; font-family: 'Inter Tight', 'Inter', sans-serif; font-size: 28px">DX2 · Parity notes and intentional differences</h1>
+<p style="margin: 8px 0 0; font-size: 15px; color: #4B4560; max-width: 1500px">What each card keeps from V2, and where the design deliberately differs. Every difference traces to an approved decision (DR = G0 register, DXD = DX1 register).</p>
+</div>
+<h2>Admin cards</h2>
+<table>
+<thead><tr><th style="width: 170px">Card</th><th>Kept from V2</th><th>Intentional differences</th><th style="width: 130px">Basis</th></tr></thead>
+<tbody>
+<tr><td><b>Portfolio properties</b></td><td>Three tiles (count/units, occupied units/GLA, vacant units/GLA), occupancy meter weighted by units, 1-decimal percentages</td><td>All-region admins see totals (V2 returned empty). Tiles select and drill into mall records in place.</td><td>DR-001, DR-020</td></tr>
+<tr><td><b>Leasing and sales KPIs</b></td><td>Expiring, active (with grace period and superseded), pending sales status set</td><td>Overlap and pending-set caveats in the definition. Tiles drill into records rather than navigating away.</td><td>DR-002</td></tr>
+<tr><td><b>Lease requests</b></td><td>Donut, unit type / source switch, top four + Other, Other not clickable, year filter</td><td>Percentages always use the displayed total (legacy bug fixed). Requests without a source are counted in a note. “Last synced” replaced by the reference date.</td><td>DR-001, DXD-09</td></tr>
+<tr><td><b>Sales funnel</b></td><td>Four-stage flow appearance, live counts, signed/unsigned lists, year/month/region/mall filters</td><td>“Other statuses” shown so signed + unsigned visibly ≠ total. One calendar (Asia/Riyadh) for every stage. Mall filter always intersected with access (V2 widened or dropped it). Footer names the snapshot table it does not show.</td><td>DR-006, DR-008, DR-018</td></tr>
+<tr><td><b>Action required</b></td><td>Latest three unread action-required items, badge count, type pills, bold IDs</td><td>Deterministic latest row per notification group.</td><td>DR-001</td></tr>
+<tr><td><b>Pending approvals</b></td><td>Three half gauges, five bands (0–6 … 31+ days), captions, the 90% red-banner rule, region/mall filters</td><td>Band counts printed under each gauge so the value is readable without hover. Mall rows aggregated on the server. An empty scope gives an explained empty state, not a 500.</td><td>DR-020, DXD-07</td></tr>
+<tr><td><b>Pending amendments</b></td><td>Type × delay-week heatmap, rows oldest first, alphabetical columns, quintile shading, future-dated rows in 4 wk+ (as a caveat)</td><td>Year and month in Asia/Riyadh (V2 mixed UTC). Selecting a cell makes it the agent’s context.</td><td>DR-006, DXD-05</td></tr>
+<tr><td><b>Service requests</b></td><td>Treemap grouped Inquiry / Work permits / Complaints, tile = approved + in process + rejected, work-permit strip, work-permit-only mode for limited roles</td><td>Lease-less requests counted; region matching case-insensitive; the drilldown uses the same scope so counts reconcile. Layout in this mock is slice-and-dice; squarified layout is validated in DX3.</td><td>DR-001, DR-007</td></tr>
+<tr><td><b>Fit-out and handover</b></td><td>Four rings, ring = reviewed ÷ (received + remaining + reviewed), pending-handover callout</td><td>Zero denominator shows a dash. Soft-deleted rows stay in the parity count (caveat); insights use the active-only metric.</td><td>DR-002</td></tr>
+<tr><td><b>Fit-out drawings</b></td><td>Horizontal stacked bars per discipline, submitted / pending / approved, rows filtered by discipline permission</td><td>“Approved includes rejected” stated under the chart.</td><td>DR-002</td></tr>
+<tr><td><b>Drawing document status</b></td><td>Stacked A–D columns by mall, discipline switch, chart ↔ table toggle, malls without drawings listed under the chart</td><td>One mall hierarchy shared with the fit-out cards (V2 attributed malls differently between cards).</td><td>DR-047</td></tr>
+<tr><td><b>Unit discrepancy</b></td><td>Diverging bars, mall-wise / month-wise, latest report per mall per month, pending only in totals, own month select</td><td>Asia/Riyadh months (V2 used UTC). One shared scale, stated. Portfolio mismatch rate in the footnote.</td><td>DR-006</td></tr>
+</tbody>
+</table>
+<h2>Tenant cards</h2>
+<table>
+<thead><tr><th style="width: 170px">Card</th><th>Kept from V2</th><th>Intentional differences</th><th style="width: 130px">Basis</th></tr></thead>
+<tbody>
+<tr><td><b>Overview tiles</b></td><td>Leases · units · brands, pending documents, open service requests, sales pending/approved, lease requests, profile, payments placeholder</td><td>Every tile limited to the user’s permitted leases (V2 limited only some). Open requests counted on the server (V2 counted the first 200 rows in the browser). Payments shown as Unavailable, never 0.</td><td>DR-019, DR-020</td></tr>
+<tr><td><b>Reported sales</b></td><td>Monthly columns, submitted + approved only, month of period end, only months with data, year and lease selects, SAR total band</td><td>Excluded submissions are named in the footnote.</td><td>DR-001</td></tr>
+<tr><td><b>Service requests</b></td><td>Donut by status with V2 status order and colours, treemap by category, mall select</td><td>No truncation; same population as the open-requests tile.</td><td>DR-001</td></tr>
+<tr><td><b>Documents, announcements, opportunities</b></td><td>Grouped document links with deep links for single items; merged event feed; mall list with available units</td><td>Today/upcoming duplicates removed on the server. Mall map omitted (out of POC scope). Mall images replaced by initials, since there are no brand assets.</td><td>DR-040</td></tr>
+</tbody>
+</table>
+<h2>Across both dashboards</h2>
+<table>
+<thead><tr><th style="width: 260px">Change</th><th>Why</th><th style="width: 130px">Basis</th></tr></thead>
+<tbody>
+<tr><td>Card filters stay per card — no global filter bar</td><td>V2 parity. The agent panel shows the active card’s filters separately from its own query scope.</td><td>DXD-05</td></tr>
+<tr><td>“Last synced” replaced by “As of 20 Oct 2026 · synthetic data”</td><td>V2 sync labels were unreliable and the dataset is frozen.</td><td>DR-003, DXD-09</td></tr>
+<tr><td>One permission controls a card’s visibility and its data</td><td>V2 could show a card whose data then returned 403. Hidden cards are counted in the page header.</td><td>DR-019</td></tr>
+<tr><td>Every card gains Ask, Expand (Chart / Table / Records / Definition) and data-point selection</td><td>Entry points into the agent; accessible table alternative for every chart.</td><td>DXD-03, DXD-04</td></tr>
+<tr><td>Ink and Violet visual language</td><td>Approved direction. V2 palette roles are kept as tokens so chart colours keep their meaning.</td><td>DXD-01</td></tr>
+</tbody>
+</table>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1936,"height":1700}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

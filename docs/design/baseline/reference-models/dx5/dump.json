@@ -1,0 +1,1073 @@
+{
+ "registry": {
+  "kpi": {
+   "name": "KPI card",
+   "shapes": [
+    "categorical",
+    "time",
+    "matrix",
+    "stages",
+    "hierarchy",
+    "scalar"
+   ],
+   "maxRows": 0,
+   "needsTotal": true
+  },
+  "text": {
+   "name": "Text",
+   "shapes": [
+    "categorical",
+    "time",
+    "scalar"
+   ],
+   "maxRows": 0
+  },
+  "table": {
+   "name": "Table",
+   "shapes": [
+    "categorical",
+    "time",
+    "matrix",
+    "stages",
+    "hierarchy",
+    "multi"
+   ],
+   "maxRows": 200
+  },
+  "bar": {
+   "name": "Bar chart (ranked)",
+   "shapes": [
+    "categorical"
+   ],
+   "maxRows": 30
+  },
+  "trend": {
+   "name": "Trend (line)",
+   "shapes": [
+    "time"
+   ],
+   "maxRows": 60
+  },
+  "heatmap": {
+   "name": "Heatmap",
+   "shapes": [
+    "matrix"
+   ],
+   "maxRows": 120
+  },
+  "funnel": {
+   "name": "Funnel",
+   "shapes": [
+    "stages"
+   ],
+   "maxRows": 8
+  },
+  "treemap": {
+   "name": "Treemap",
+   "shapes": [
+    "hierarchy"
+   ],
+   "maxRows": 60
+  },
+  "compare": {
+   "name": "Comparison table",
+   "shapes": [
+    "multi"
+   ],
+   "maxRows": 30
+  },
+  "insight": {
+   "name": "Insight panel",
+   "shapes": [
+    "categorical",
+    "time",
+    "scalar"
+   ],
+   "maxRows": 0
+  },
+  "notice": {
+   "name": "Warning / partial notice",
+   "shapes": [
+    "any"
+   ],
+   "maxRows": 0
+  },
+  "unavailable": {
+   "name": "Unavailable card",
+   "shapes": [
+    "any"
+   ],
+   "maxRows": 0
+  },
+  "evidence": {
+   "name": "Evidence block",
+   "shapes": [
+    "any"
+   ],
+   "maxRows": 0
+  },
+  "method": {
+   "name": "Method card",
+   "shapes": [
+    "any"
+   ],
+   "maxRows": 0
+  },
+  "records": {
+   "name": "Drilldown records",
+   "shapes": [
+    "records"
+   ],
+   "maxRows": 50
+  }
+ },
+ "alt": {
+  "categorical": [
+   "text",
+   "kpi",
+   "table",
+   "bar"
+  ],
+  "time": [
+   "text",
+   "kpi",
+   "table",
+   "trend"
+  ],
+  "matrix": [
+   "kpi",
+   "table",
+   "heatmap"
+  ],
+  "stages": [
+   "kpi",
+   "table",
+   "funnel"
+  ],
+  "hierarchy": [
+   "kpi",
+   "table",
+   "treemap"
+  ],
+  "multi": [
+   "compare"
+  ]
+ },
+ "cat": [
+  [
+   "kpi",
+   "KPI card",
+   {
+    "default": "amd",
+    "partial": "mm",
+    "zero": "amd_zero",
+    "empty": "*",
+    "undef": "mm_undef",
+    "loading": "*",
+    "error": "*",
+    "unavailable": "*"
+   }
+  ],
+  [
+   "bar",
+   "Bar chart (ranked)",
+   {
+    "default": "amd",
+    "partial": "mm",
+    "zero": "amd_zero",
+    "empty": "*",
+    "undef": "mm_undef",
+    "loading": "*",
+    "error": "*",
+    "unavailable": "*"
+   }
+  ],
+  [
+   "trend",
+   "Trend (line)",
+   {
+    "default": "ts",
+    "partial": "ts_partial",
+    "zero": null,
+    "empty": "*",
+    "undef": null,
+    "loading": "*",
+    "error": "*",
+    "unavailable": "*"
+   }
+  ],
+  [
+   "table",
+   "Table",
+   {
+    "default": "amd",
+    "partial": "mm",
+    "zero": "amd_zero",
+    "empty": "*",
+    "undef": "mm_undef",
+    "loading": "*",
+    "error": "*",
+    "unavailable": "*"
+   }
+  ],
+  [
+   "compare",
+   "Comparison table",
+   {
+    "default": "cmp",
+    "partial": "cmp",
+    "zero": null,
+    "empty": "*",
+    "undef": null,
+    "loading": "*",
+    "error": "*",
+    "unavailable": "*"
+   }
+  ],
+  [
+   "heatmap",
+   "Heatmap",
+   {
+    "default": "hm",
+    "partial": "hm_partial",
+    "zero": "hm_zero",
+    "empty": "*",
+    "undef": null,
+    "loading": "*",
+    "error": "*",
+    "unavailable": "*"
+   }
+  ],
+  [
+   "funnel",
+   "Funnel",
+   {
+    "default": "fn",
+    "partial": "fn_partial",
+    "zero": null,
+    "empty": "*",
+    "undef": "fn_undef",
+    "loading": "*",
+    "error": "*",
+    "unavailable": "*"
+   }
+  ],
+  [
+   "treemap",
+   "Treemap",
+   {
+    "default": "tm",
+    "partial": "tm_partial",
+    "zero": null,
+    "empty": "*",
+    "undef": null,
+    "loading": "*",
+    "error": "*",
+    "unavailable": "*"
+   }
+  ],
+  [
+   "insight",
+   "Insight panel",
+   {
+    "default": "amd",
+    "partial": "mm",
+    "zero": "amd_zero",
+    "empty": null,
+    "undef": null,
+    "loading": "*",
+    "error": null,
+    "unavailable": null
+   }
+  ],
+  [
+   "notice",
+   "Warning · partial coverage",
+   {
+    "default": "mm",
+    "partial": "mm",
+    "zero": null,
+    "empty": null,
+    "undef": null,
+    "loading": null,
+    "error": null,
+    "unavailable": null
+   }
+  ],
+  [
+   "unavailable",
+   "Unavailable card",
+   {
+    "default": "mm",
+    "partial": null,
+    "zero": null,
+    "empty": null,
+    "undef": null,
+    "loading": null,
+    "error": null,
+    "unavailable": "mm"
+   }
+  ],
+  [
+   "evidence",
+   "Evidence block",
+   {
+    "default": "amd",
+    "partial": "mm",
+    "zero": null,
+    "empty": null,
+    "undef": null,
+    "loading": null,
+    "error": null,
+    "unavailable": null
+   }
+  ],
+  [
+   "method",
+   "Method card",
+   {
+    "default": "cmp",
+    "partial": null,
+    "zero": null,
+    "empty": null,
+    "undef": null,
+    "loading": null,
+    "error": null,
+    "unavailable": null
+   }
+  ],
+  [
+   "records",
+   "Drilldown records",
+   {
+    "default": "amd",
+    "partial": null,
+    "zero": null,
+    "empty": "*",
+    "undef": null,
+    "loading": "*",
+    "error": "*",
+    "unavailable": null
+   }
+  ]
+ ],
+ "variants": [
+  "default",
+  "partial",
+  "zero",
+  "empty",
+  "undef",
+  "loading",
+  "error",
+  "unavailable"
+ ],
+ "vlbl": {
+  "default": "Default",
+  "partial": "Partial",
+  "zero": "Zero",
+  "empty": "Empty",
+  "undef": "Undefined ratio",
+  "loading": "Loading",
+  "error": "Error",
+  "unavailable": "Unavailable"
+ },
+ "sizes": {
+  "workspace": {
+   "label": "Workspace · 760",
+   "w": 760,
+   "plot": 600
+  },
+  "panel": {
+   "label": "Panel · 420",
+   "w": 420,
+   "plot": 330
+  },
+  "canvas": {
+   "label": "Canvas tile · 360",
+   "w": 360,
+   "plot": 280
+  },
+  "phone": {
+   "label": "Phone · 358",
+   "w": 358,
+   "plot": 276
+  },
+  "expanded": {
+   "label": "Expanded · 1000",
+   "w": 1000,
+   "plot": 820
+  }
+ },
+ "steps": {
+  "resolve": "R1 · Result resolves",
+  "authorization": "R2 · Authorization (grants vs scope, dimensions, records)",
+  "calculation": "R3 · Calculations verified",
+  "schema": "P1 · Schema",
+  "registry": "P2 · Registry",
+  "grounding": "P3 · Grounding",
+  "envelope": "P4 · Envelope",
+  "limits": "P5 · Limits",
+  "safety": "P6 · Safety"
+ },
+ "classes": {
+  "none": "No failure",
+  "partial": "Partial data · rendered with partial labels",
+  "stale": "Stale data · rendered as generated, labelled stale",
+  "presentation": "Presentation failure · deterministic table from the verified, authorized result",
+  "calculation": "Calculation failure · error card, no values, no fallback",
+  "authorization": "Authorization failure · withheld, nothing from the result is shown",
+  "unknown_result": "Unknown or expired result · withheld",
+  "unreadable": "Unreadable payload · no result can be identified · withheld"
+ },
+ "tier": {
+  "kpi": [
+   "Core",
+   "core"
+  ],
+  "text": [
+   "Core",
+   "core"
+  ],
+  "table": [
+   "Core",
+   "core"
+  ],
+  "bar": [
+   "Core",
+   "core"
+  ],
+  "trend": [
+   "Core",
+   "core"
+  ],
+  "notice": [
+   "Core",
+   "core"
+  ],
+  "unavailable": [
+   "Core",
+   "core"
+  ],
+  "evidence": [
+   "Core",
+   "core"
+  ],
+  "records": [
+   "Core",
+   "core"
+  ],
+  "insight": [
+   "Core",
+   "core"
+  ],
+  "compare": [
+   "Specialized",
+   "spec"
+  ],
+  "heatmap": [
+   "Specialized",
+   "spec"
+  ],
+  "funnel": [
+   "Specialized",
+   "spec"
+  ],
+  "treemap": [
+   "Specialized",
+   "spec"
+  ],
+  "method": [
+   "Specialized",
+   "spec"
+  ]
+ },
+ "example": {
+  "schema": "cenomi.presentation.v1",
+  "component": "bar",
+  "resultRef": "res_8d5121cf",
+  "title": "Renewal amendments 4 wk+ by mall · Central",
+  "subtitle": "[[t]] in Central · [[r0]] at Rawdah Point Mall",
+  "encoding": {
+   "x": "mall",
+   "y": "value",
+   "sort": "value_desc"
+  },
+  "envelope": {
+   "cls": "Observed",
+   "scope": "Access: all regions",
+   "dataset": "sd-2026.10.20-01",
+   "coverage": "Coverage: complete"
+  },
+  "interactions": {
+   "select": true,
+   "drilldown": "records"
+  }
+ },
+ "resultExample": {
+  "schema": "analysis_result.v1",
+  "ref": "res_8d5121cf",
+  "metric": {
+   "id": "amendments.pending_by_age_band",
+   "name": "Pending amendments by age band",
+   "unit": "amendments",
+   "kind": "parity"
+  },
+  "cls": "Observed",
+  "grain": [
+   "mall"
+  ],
+  "shape": "categorical",
+  "filters": {
+   "type": "Renewal",
+   "band": "4 wk+",
+   "region": "Central",
+   "year": 2026
+  },
+  "scope": {
+   "kind": "regions",
+   "label": "Access: all regions"
+  },
+  "dataset": {
+   "version": "sd-2026.10.20-01",
+   "asOf": "2026-10-20"
+  },
+  "coverage": {
+   "status": "complete",
+   "note": ""
+  },
+  "rows": [
+   [
+    "Rawdah Point Mall",
+    9,
+    "fact r0"
+   ],
+   [
+    "Sandstone Galleria",
+    6,
+    "fact r1"
+   ],
+   [
+    "Qasr Plaza",
+    3,
+    "fact r2"
+   ],
+   [
+    "… 7 more rows"
+   ]
+  ],
+  "total": {
+   "value": 18,
+   "fact": "t"
+  },
+  "facts": {
+   "t": "18",
+   "r0": "9",
+   "zero_n": "7"
+  }
+ },
+ "samples": [
+  {
+   "id": "V1",
+   "label": "Valid · ranked bar",
+   "viewer": "admin",
+   "stored": false,
+   "ok": true,
+   "action": "render",
+   "cls": "none",
+   "codes": []
+  },
+  {
+   "id": "V2",
+   "label": "Valid · KPI card, partial",
+   "viewer": "admin",
+   "stored": false,
+   "ok": true,
+   "action": "render",
+   "cls": "partial",
+   "codes": []
+  },
+  {
+   "id": "V3",
+   "label": "Valid · tenant trend",
+   "viewer": "tenant",
+   "stored": false,
+   "ok": true,
+   "action": "render",
+   "cls": "none",
+   "codes": []
+  },
+  {
+   "id": "I1",
+   "label": "Unknown component",
+   "viewer": "admin",
+   "stored": false,
+   "ok": false,
+   "action": "fallback",
+   "cls": "presentation",
+   "codes": [
+    "registry:unknown_component"
+   ]
+  },
+  {
+   "id": "I2",
+   "label": "Line chart on a categorical grain",
+   "viewer": "admin",
+   "stored": false,
+   "ok": false,
+   "action": "fallback",
+   "cls": "presentation",
+   "codes": [
+    "registry:shape_mismatch"
+   ]
+  },
+  {
+   "id": "I3",
+   "label": "Literal number in the title",
+   "viewer": "admin",
+   "stored": false,
+   "ok": false,
+   "action": "fallback",
+   "cls": "presentation",
+   "codes": [
+    "grounding:literal_number"
+   ]
+  },
+  {
+   "id": "I4",
+   "label": "Payload carries its own numbers",
+   "viewer": "admin",
+   "stored": false,
+   "ok": false,
+   "action": "fallback",
+   "cls": "presentation",
+   "codes": [
+    "schema:unknown_field"
+   ]
+  },
+  {
+   "id": "I5",
+   "label": "Hides partial coverage",
+   "viewer": "admin",
+   "stored": false,
+   "ok": false,
+   "action": "fallback",
+   "cls": "presentation",
+   "codes": [
+    "envelope:envelope_mismatch"
+   ]
+  },
+  {
+   "id": "I6",
+   "label": "Outside the viewer’s access",
+   "viewer": "tenant",
+   "stored": false,
+   "ok": false,
+   "action": "withhold",
+   "cls": "authorization",
+   "codes": [
+    "authorization:not_authorized"
+   ]
+  },
+  {
+   "id": "I7",
+   "label": "Markup in a label",
+   "viewer": "admin",
+   "stored": false,
+   "ok": false,
+   "action": "fallback",
+   "cls": "presentation",
+   "codes": [
+    "safety:unsafe_string",
+    "grounding:literal_number"
+   ]
+  },
+  {
+   "id": "I8",
+   "label": "Token that is not a fact",
+   "viewer": "admin",
+   "stored": false,
+   "ok": false,
+   "action": "fallback",
+   "cls": "presentation",
+   "codes": [
+    "grounding:unknown_fact"
+   ]
+  },
+  {
+   "id": "I9",
+   "label": "Over the row limit",
+   "viewer": "admin",
+   "stored": false,
+   "ok": false,
+   "action": "fallback",
+   "cls": "presentation",
+   "codes": [
+    "limits:max_rows"
+   ]
+  },
+  {
+   "id": "I10",
+   "label": "Unknown or expired result",
+   "viewer": "admin",
+   "stored": false,
+   "ok": false,
+   "action": "withhold",
+   "cls": "unknown_result",
+   "codes": [
+    "resolve:result_not_found"
+   ]
+  },
+  {
+   "id": "A1",
+   "label": "Regional manager · Central result",
+   "viewer": "central",
+   "stored": false,
+   "ok": true,
+   "action": "render",
+   "cls": "none",
+   "codes": []
+  },
+  {
+   "id": "A2",
+   "label": "Regional manager · portfolio result",
+   "viewer": "central",
+   "stored": false,
+   "ok": false,
+   "action": "withhold",
+   "cls": "authorization",
+   "codes": [
+    "authorization:not_authorized"
+   ]
+  },
+  {
+   "id": "A3",
+   "label": "Resumed after access narrowed",
+   "viewer": "central",
+   "stored": true,
+   "ok": false,
+   "action": "withhold",
+   "cls": "authorization",
+   "codes": [
+    "authorization:not_authorized"
+   ]
+  },
+  {
+   "id": "C1",
+   "label": "Calculation not verified",
+   "viewer": "admin",
+   "stored": false,
+   "ok": false,
+   "action": "calc_error",
+   "cls": "calculation",
+   "codes": [
+    "calculation:calculation_unverified"
+   ]
+  },
+  {
+   "id": "S1",
+   "label": "Stale stored answer",
+   "viewer": "admin",
+   "stored": true,
+   "ok": true,
+   "action": "render",
+   "cls": "stale",
+   "codes": []
+  },
+  {
+   "id": "F1",
+   "label": "Invalid payload on a 25-row partial result",
+   "viewer": "admin",
+   "stored": false,
+   "ok": false,
+   "action": "fallback",
+   "cls": "presentation",
+   "codes": [
+    "registry:shape_mismatch"
+   ]
+  }
+ ],
+ "calcEx": {
+  "method": "ratio",
+  "formula": "mismatched units ÷ units checked (reporting malls)",
+  "operands": [
+   {
+    "fact": "mm",
+    "label": "mismatched units",
+    "value": 33
+   },
+   {
+    "fact": "den",
+    "label": "units checked",
+    "value": 1291
+   }
+  ],
+  "periods": "2026-09",
+  "metric": "unit_discrepancy.mismatch_rate v1",
+  "evidence": [
+   "q_d65e3f50"
+  ],
+  "status": "verified",
+  "verifier": "derive v1 · deterministic · recomputed by the evidence verifier"
+ },
+ "authM": {
+  "amd": {
+   "title": "Renewal amendments waiting 4 weeks or more · Central",
+   "level": "region",
+   "regions": [
+    "Central"
+   ],
+   "admin": true,
+   "central": true,
+   "tenant": false
+  },
+  "mm": {
+   "title": "Unit mismatch rate · Central malls · September 2026",
+   "level": "region",
+   "regions": [
+    "Central"
+   ],
+   "admin": true,
+   "central": true,
+   "tenant": false
+  },
+  "ts": {
+   "title": "Reported sales · lease T-31206 · January to September 2026",
+   "level": "lease",
+   "regions": [
+    "Central"
+   ],
+   "admin": true,
+   "central": true,
+   "tenant": true
+  },
+  "hm": {
+   "title": "Pending amendments by type and age band · Central",
+   "level": "region",
+   "regions": [
+    "Central"
+   ],
+   "admin": true,
+   "central": true,
+   "tenant": false
+  },
+  "fn": {
+   "title": "Leasing funnel · portfolio · 2026",
+   "level": "portfolio",
+   "regions": [
+    "Central",
+    "Eastern",
+    "Western"
+   ],
+   "admin": true,
+   "central": false,
+   "tenant": false
+  },
+  "tm": {
+   "title": "Service requests by category and type · portfolio · 2026",
+   "level": "portfolio",
+   "regions": [
+    "Central",
+    "Eastern",
+    "Western"
+   ],
+   "admin": true,
+   "central": false,
+   "tenant": false
+  },
+  "cmp": {
+   "title": "Central malls · four KPIs side by side · no combined score",
+   "level": "region",
+   "regions": [
+    "Central"
+   ],
+   "admin": true,
+   "central": true,
+   "tenant": false
+  },
+  "ud25": {
+   "title": "Mismatched units by mall · portfolio · September 2026",
+   "level": "portfolio",
+   "regions": [
+    "Central",
+    "Eastern",
+    "Western"
+   ],
+   "admin": true,
+   "central": false,
+   "tenant": false
+  }
+ },
+ "pol": [
+  {
+   "intent": "ranking",
+   "res": "Renewal amendments waiting 4 weeks or more · Central",
+   "size": "workspace",
+   "a11y": "default",
+   "primary": "Bar chart (ranked)",
+   "order": [
+    "Bar chart (ranked)",
+    "Table",
+    "KPI card",
+    "Text"
+   ],
+   "compose": [
+    "KPI card",
+    "Bar chart (ranked) (primary)",
+    "Evidence block"
+   ]
+  },
+  {
+   "intent": "headline",
+   "res": "Renewal amendments waiting 4 weeks or more · Central",
+   "size": "panel",
+   "a11y": "default",
+   "primary": "KPI card",
+   "order": [
+    "KPI card",
+    "Text",
+    "Table",
+    "Bar chart (ranked)"
+   ],
+   "compose": [
+    "KPI card (primary)",
+    "Evidence block"
+   ]
+  },
+  {
+   "intent": "ranking",
+   "res": "Renewal amendments waiting 4 weeks or more · Central",
+   "size": "workspace",
+   "a11y": "screen_reader",
+   "primary": "Table",
+   "order": [
+    "Table",
+    "Bar chart (ranked)",
+    "KPI card",
+    "Text"
+   ],
+   "compose": [
+    "KPI card",
+    "Table (primary)",
+    "Evidence block"
+   ]
+  },
+  {
+   "intent": "ranking",
+   "res": "Mismatched units by mall · portfolio · September 2026",
+   "size": "panel",
+   "a11y": "default",
+   "primary": "Bar chart (ranked)",
+   "order": [
+    "Bar chart (ranked)",
+    "Table",
+    "KPI card",
+    "Text"
+   ],
+   "compose": [
+    "Partial notice",
+    "KPI card",
+    "Bar chart (ranked) (primary)"
+   ]
+  },
+  {
+   "intent": "trend",
+   "res": "Reported sales · lease T-31206 · January to September 2026",
+   "size": "phone",
+   "a11y": "default",
+   "primary": "Trend (line)",
+   "order": [
+    "Trend (line)",
+    "Table",
+    "KPI card",
+    "Text"
+   ],
+   "compose": [
+    "KPI card",
+    "Trend (line) (primary)",
+    "Evidence block"
+   ]
+  },
+  {
+   "intent": "composition",
+   "res": "Service requests by category and type · portfolio · 2026",
+   "size": "phone",
+   "a11y": "default",
+   "primary": "Treemap",
+   "order": [
+    "Treemap",
+    "Table",
+    "KPI card"
+   ],
+   "compose": [
+    "KPI card",
+    "Treemap (primary)",
+    "Evidence block"
+   ]
+  },
+  {
+   "intent": "concentration",
+   "res": "Pending amendments by type and age band · Central",
+   "size": "workspace",
+   "a11y": "default",
+   "primary": "Heatmap",
+   "order": [
+    "Heatmap",
+    "Table",
+    "KPI card"
+   ],
+   "compose": [
+    "KPI card",
+    "Heatmap (primary)",
+    "Evidence block"
+   ]
+  },
+  {
+   "intent": "conversion",
+   "res": "Leasing funnel · portfolio · 2026",
+   "size": "panel",
+   "a11y": "default",
+   "primary": "Funnel",
+   "order": [
+    "Funnel",
+    "Table",
+    "KPI card"
+   ],
+   "compose": [
+    "KPI card",
+    "Funnel (primary)",
+    "Evidence block"
+   ]
+  }
+ ],
+ "viewers": {
+  "admin": {
+   "id": "admin",
+   "label": "Portfolio admin",
+   "grantLabel": "Grants: all regions",
+   "regions": [
+    "Central",
+    "Eastern",
+    "Western"
+   ],
+   "tenantLeases": null
+  },
+  "central": {
+   "id": "central",
+   "label": "Regional manager · Central",
+   "grantLabel": "Grants: Central region",
+   "regions": [
+    "Central"
+   ],
+   "tenantLeases": null
+  },
+  "tenant": {
+   "id": "tenant",
+   "label": "Tenant · lease T-31206",
+   "grantLabel": "Grants: lease T-31206 only",
+   "regions": [],
+   "tenantLeases": [
+    "T-31206"
+   ]
+  }
+ }
+}

@@ -1,0 +1,493 @@
+{
+ "v": 3,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-10-21T07:58:00Z"
+ },
+ "title": "Cenomi Dashboard Agent — POC Design",
+ "launch": {
+  "view": "canvas",
+  "page": "dx6"
+ },
+ "pages": [
+  {
+   "id": "dx1",
+   "name": "DX1 · Information architecture"
+  },
+  {
+   "id": "dx2",
+   "name": "DX2 · Admin and Tenant dashboards (approved)"
+  },
+  {
+   "id": "dx3",
+   "name": "DX3 · Chart parity gallery (conditionally approved)"
+  },
+  {
+   "id": "dx4",
+   "name": "DX4 · Agent workspace (conditionally approved)"
+  },
+  {
+   "id": "dx5",
+   "name": "DX5 · Generative UI (approved · refinements complete)"
+  },
+  {
+   "id": "dx6",
+   "name": "DX6 · Proactive intelligence and Insight Inbox (conditionally approved · refinements complete)"
+  }
+ ],
+ "boards": {
+  "Main.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 1900,
+   "title": "DX1 · App shell prototype (interactive, mid-fidelity)",
+   "page": "dx1",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "IA.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1936,
+   "h": 860,
+   "title": "DX1 · Navigation map — core analytical loop",
+   "page": "dx1"
+  },
+  "Inventory.dc.html": {
+   "x": 1520,
+   "y": 980,
+   "w": 1936,
+   "h": 1100,
+   "title": "DX1 · Canonical screen inventory",
+   "page": "dx1"
+  },
+  "Direction-A.dc.html": {
+   "x": 0,
+   "y": 2320,
+   "w": 1200,
+   "h": 880,
+   "title": "Direction A · Ink & Violet (selected)",
+   "page": "dx1"
+  },
+  "Direction-B.dc.html": {
+   "x": 1280,
+   "y": 2320,
+   "w": 1200,
+   "h": 880,
+   "title": "Direction B · Night Operations (optional dark theme later)",
+   "page": "dx1"
+  },
+  "Direction-C.dc.html": {
+   "x": 2560,
+   "y": 2320,
+   "w": 1200,
+   "h": 880,
+   "title": "Direction C · Warm Editorial (not selected)",
+   "page": "dx1"
+  },
+  "DX1-Decisions.dc.html": {
+   "x": 0,
+   "y": 3440,
+   "w": 1936,
+   "h": 1000,
+   "title": "DX1 · Design decision register (approved)",
+   "page": "dx1"
+  },
+  "Admin.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 3200,
+   "title": "DX2 · Admin dashboard (interactive)",
+   "page": "dx2",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "Tenant.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1440,
+   "h": 2300,
+   "title": "DX2 · Tenant dashboard (interactive)",
+   "page": "dx2",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "States.dc.html": {
+   "x": 3040,
+   "y": 0,
+   "w": 1936,
+   "h": 1460,
+   "title": "DX2 · Card states",
+   "page": "dx2"
+  },
+  "DX2-Notes.dc.html": {
+   "x": 3040,
+   "y": 1580,
+   "w": 1936,
+   "h": 1700,
+   "title": "DX2 · Parity notes and intentional differences",
+   "page": "dx2"
+  },
+  "Responsive.dc.html": {
+   "x": 0,
+   "y": 3440,
+   "w": 2620,
+   "h": 1140,
+   "title": "DX2 · Tablet and mobile",
+   "page": "dx2"
+  },
+  "DX2-Decisions.dc.html": {
+   "x": 0,
+   "y": 4800,
+   "w": 1936,
+   "h": 1140,
+   "title": "DX2 · Design decision register (approved)",
+   "page": "dx2"
+  },
+  "DX2-Verify.dc.html": {
+   "x": 5120,
+   "y": 0,
+   "w": 1936,
+   "h": 10478,
+   "title": "DX2 · Verification record — 64/64 checks, all 12 Admin cards",
+   "page": "dx2"
+  },
+  "DX3-Gallery.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 8600,
+   "title": "DX3 · Chart parity gallery (interactive, live ECharts)",
+   "page": "dx3",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "DX3-Parity.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1936,
+   "h": 2260,
+   "title": "DX3 · Parity assessment, findings and decisions",
+   "page": "dx3"
+  },
+  "DX3-Decisions.dc.html": {
+   "x": 1520,
+   "y": 2380,
+   "w": 1936,
+   "h": 1400,
+   "title": "DX3 · Design decision register (conditionally approved)",
+   "page": "dx3"
+  },
+  "DX4-Workspace.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 1220,
+   "title": "DX4 · Agent workspace (interactive, 10 journeys)",
+   "page": "dx4",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "DX4-Spec.dc.html": {
+   "x": 2016,
+   "y": 0,
+   "w": 1936,
+   "h": 2230,
+   "title": "DX4 · Interaction specification (revised after review)",
+   "page": "dx4"
+  },
+  "DX4-Journeys.dc.html": {
+   "x": 0,
+   "y": 1400,
+   "w": 1936,
+   "h": 8960,
+   "title": "DX4 · Journeys step by step (verified captures)",
+   "page": "dx4"
+  },
+  "DX4-Decisions.dc.html": {
+   "x": 2016,
+   "y": 2310,
+   "w": 1936,
+   "h": 3150,
+   "title": "DX4 · Decision register DXD-31…40",
+   "page": "dx4"
+  },
+  "DX4-AGUI.dc.html": {
+   "x": 4032,
+   "y": 0,
+   "w": 1936,
+   "h": 2840,
+   "title": "DX4 · AG-UI handoff contracts",
+   "page": "dx4"
+  },
+  "DX5-GenUI.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 1500,
+   "title": "DX5 · Generative UI lab, catalogue and validator (interactive, refined)",
+   "page": "dx5",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "DX5-Contract.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1936,
+   "h": 5760,
+   "title": "DX5 · Generative UI contract (revised)",
+   "page": "dx5"
+  },
+  "DX5-Verify.dc.html": {
+   "x": 3536,
+   "y": 0,
+   "w": 1936,
+   "h": 10010,
+   "title": "DX5 · Verification record",
+   "page": "dx5"
+  },
+  "DX5-Decisions.dc.html": {
+   "x": 1520,
+   "y": 5840,
+   "w": 1936,
+   "h": 1730,
+   "title": "DX5 · Decision register DXD-41…62",
+   "page": "dx5"
+  },
+  "DX6-Inbox.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 1300,
+   "title": "DX6 · Insight Inbox v2 (interactive, 12 journeys, 3 roles, replayed detectors)",
+   "page": "dx6",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "DX6-Contract.dc.html": {
+   "x": 2016,
+   "y": 0,
+   "w": 1936,
+   "h": 3920,
+   "title": "DX6 · Contract v2: detectors-1.1, privacy, API, tables, decisions DXD-63…93",
+   "page": "dx6"
+  },
+  "DX6-Scenarios.dc.html": {
+   "x": 0,
+   "y": 1380,
+   "w": 1936,
+   "h": 1819,
+   "title": "DX6 · Golden scenarios v2 (S1–S9, N1–N11; S6 and S7 corrected)",
+   "page": "dx6"
+  },
+  "DX6-Verify.dc.html": {
+   "x": 4032,
+   "y": 0,
+   "w": 1936,
+   "h": 11808,
+   "title": "DX6 · Verification record v2",
+   "page": "dx6"
+  },
+  "DX6-Refinements.dc.html": {
+   "x": 0,
+   "y": 3280,
+   "w": 1936,
+   "h": 4122,
+   "title": "DX6 · Review refinements: KPI reconciliation, privacy, idempotency, priorities",
+   "page": "dx6"
+  }
+ },
+ "order": [
+  "Main.dc.html",
+  "IA.dc.html",
+  "Inventory.dc.html",
+  "Direction-A.dc.html",
+  "Direction-B.dc.html",
+  "Direction-C.dc.html",
+  "DX1-Decisions.dc.html",
+  "Admin.dc.html",
+  "Tenant.dc.html",
+  "States.dc.html",
+  "DX2-Notes.dc.html",
+  "Responsive.dc.html",
+  "DX2-Decisions.dc.html",
+  "DX2-Verify.dc.html",
+  "DX3-Gallery.dc.html",
+  "DX3-Parity.dc.html",
+  "DX3-Decisions.dc.html",
+  "DX4-Workspace.dc.html",
+  "DX4-Spec.dc.html",
+  "DX4-Journeys.dc.html",
+  "DX4-Decisions.dc.html",
+  "DX4-AGUI.dc.html",
+  "DX5-GenUI.dc.html",
+  "DX5-Contract.dc.html",
+  "DX5-Decisions.dc.html",
+  "DX5-Verify.dc.html",
+  "DX6-Inbox.dc.html",
+  "DX6-Contract.dc.html",
+  "DX6-Scenarios.dc.html",
+  "DX6-Refinements.dc.html",
+  "DX6-Verify.dc.html"
+ ],
+ "notes": {
+  "dx1title": {
+   "x": 0,
+   "y": -420,
+   "text": "DX1 · Information architecture and app shell",
+   "kind": "title1",
+   "maxW": 3456,
+   "page": "dx1"
+  },
+  "midfi": {
+   "x": 0,
+   "y": -300,
+   "text": "Mid-fidelity on purpose: card bodies are labelled placeholders. Exact card designs, states and chart parity arrive in DX2 and DX3. Try: Ask on any card · click a Pending amendments heatmap cell · Evidence · the bell · Insights · switch persona.",
+   "w": 700,
+   "maxH": 220,
+   "fill": "orange",
+   "page": "dx1"
+  },
+  "dirtitle": {
+   "x": 0,
+   "y": 2060,
+   "text": "Visual direction — pick one",
+   "kind": "title1",
+   "maxW": 1180,
+   "page": "dx1"
+  },
+  "dx2title": {
+   "x": 0,
+   "y": -420,
+   "text": "DX2 · Admin and Tenant dashboards",
+   "kind": "title1",
+   "maxW": 7056,
+   "page": "dx2"
+  },
+  "dx2try": {
+   "x": 0,
+   "y": -300,
+   "text": "Press Play on the Admin or Tenant board (or open it full window). Try: change any card's filters · hover a chart for its tooltip · click a segment, cell, tile or bar to select it · View records · Expand a card (Chart / Table / Records / Definition) · Ask on a card to see filters vs agent scope · the review controls at the top switch role and data state.",
+   "w": 900,
+   "maxH": 220,
+   "fill": "purple",
+   "page": "dx2"
+  },
+  "dx2approved": {
+   "x": 960,
+   "y": -300,
+   "text": "DX2 approved 22 Oct 2026 after verification. The Admin board's blank charts and raw placeholders came from a script syntax error, now fixed. Evidence: the Verification record board (right). New decisions DXD-10…20: register below the Responsive board.",
+   "w": 760,
+   "maxH": 220,
+   "fill": "purple",
+   "page": "dx2"
+  },
+  "dx3title": {
+   "x": 0,
+   "y": -420,
+   "text": "DX3 · Chart parity gallery",
+   "kind": "title1",
+   "maxW": 3456,
+   "page": "dx3"
+  },
+  "dx3try": {
+   "x": 0,
+   "y": -300,
+   "text": "Press Play on the gallery. It loads ECharts 5.6.0 in your browser. Try: Tab into any chart and use the arrow keys · Enter to select, Escape to clear · select on two cards to see the active and kept selections · View records for the drilldown target and payload · switch Desktop / Tablet / Phone · Treemap lab · Run self-test at the top and paste the result back.",
+   "w": 980,
+   "maxH": 220,
+   "fill": "purple",
+   "page": "dx3"
+  },
+  "dx3approved": {
+   "x": 1000,
+   "y": -300,
+   "text": "DX3 conditionally approved 22 Oct 2026. Real ECharts rendering and interaction validation (gallery self-test with ECharts 5.6.0) remains a GD requirement; test-double results are not evidence. Decisions DXD-21…30 in the register below the parity board.",
+   "w": 900,
+   "maxH": 220,
+   "fill": "orange",
+   "page": "dx3"
+  },
+  "dx4title": {
+   "x": 0,
+   "y": -420,
+   "text": "DX4 · Dashboard Intelligence Agent workspace",
+   "kind": "title1",
+   "maxW": 3456,
+   "page": "dx4"
+  },
+  "dx4try": {
+   "x": 0,
+   "y": -300,
+   "text": "Press Play on the workspace board. Pick a journey (J1–J10), then Play, Step or Skip to end. Or click freely: select heatmap cells, open Evidence / Records / Execution, select and pin table rows, Compare pinned, import a selection, remove a scope chip, switch threads or roles, and try Tablet / Phone.",
+   "w": 1000,
+   "maxH": 220,
+   "fill": "purple",
+   "page": "dx4"
+  },
+  "dx4review": {
+   "x": 1080,
+   "y": -300,
+   "text": "DX4 conditionally approved 22 Oct 2026. DXQ-05 → DXD-31 (composite only on request), DXQ-06 → DXD-32 (thread-local selections, revises DXD-29), DXQ-07 → DXD-33 (immutable history). Review corrections 1–7 completed: DXD-34…40, with the AG-UI contracts on their own board.",
+   "w": 900,
+   "maxH": 220,
+   "fill": "orange",
+   "page": "dx4"
+  },
+  "dx5title": {
+   "x": 0,
+   "y": -420,
+   "text": "DX5 · Generative UI · validated declarative components",
+   "kind": "title1",
+   "maxW": 5472,
+   "page": "dx5"
+  },
+  "dx5try": {
+   "x": 0,
+   "y": -300,
+   "text": "Press Play on the DX5 board. Lab: switch result (including the 25-mall subset case), width, order, intent and accessibility preference; the policy and invariance checks re-run. Catalogue: states, sizes, View as, Move / Expand / Resume with continuity checks. Validator: 19 samples across presentation, calculation, authorization, stale and partial cases.",
+   "w": 1060,
+   "maxH": 240,
+   "fill": "purple",
+   "page": "dx5"
+  },
+  "dx5gate": {
+   "x": 1140,
+   "y": -300,
+   "text": "DX5 approved 22 Oct 2026 with refinements. DXQ-08…11 → DXD-51…54 (Option A). Refinements DXD-55…62 completed: verified calculations, grants-based authorization, failure taxonomy, fallback boundaries, subset disclosure, representation policy, continuity, ECharts at the Design Gate, implementation priority.",
+   "w": 900,
+   "maxH": 220,
+   "fill": "orange",
+   "page": "dx5"
+  },
+  "dx6title": {
+   "x": 0,
+   "y": -420,
+   "text": "DX6 · Proactive intelligence and Insight Inbox",
+   "kind": "title1",
+   "maxW": 5472,
+   "page": "dx6"
+  },
+  "dx6try": {
+   "x": 0,
+   "y": -300,
+   "text": "Press Play on the Insight Inbox. Pick a journey (K1–K12) and use Next step, or click freely. New in v2: private investigations and shared summaries (K10), stale evidence and grant changes (K11), duplicate triggers, re-runs and crash recovery (K12), version history with band rises (K9). Everything shown comes from replaying detectors-1.1 at each checkpoint.",
+   "w": 1060,
+   "maxH": 240,
+   "fill": "purple",
+   "page": "dx6"
+  },
+  "dx6gate": {
+   "x": 1140,
+   "y": -300,
+   "text": "DX6 conditionally approved 22 Oct 2026. DXQ-12…16 recorded as DXD-75…79 (Option A); refinements recorded as DXD-80…93 and built. Two scenario corrections need confirmation at GD: S6 (seasonal, no insight) and S7 (lease-scoped drawings). The DX1 shell insights were replaced with the canonical DX6 values.",
+   "w": 760,
+   "maxH": 200,
+   "fill": "orange",
+   "page": "dx6"
+  }
+ },
+ "designSystems": []
+}
