@@ -40,14 +40,14 @@
 | D-01 | A (ADR-0006) |
 | ED-03 | A, approved earlier the same day; scope unchanged |
 | DR-035 | Superseded by ADR-0001 |
+| ED-07 | A, approved later on 2026-10-22 (ADR-0016) |
+| ED-08 | A, approved later on 2026-10-22 (ADR-0017) |
+| ED-09 | A, approved later on 2026-10-22 (ADR-0018) |
 
 **Not approved, and not decided by this plan:**
 
 | Item | Needed before |
 |---|---|
-| ED-07 | M0 build |
-| ED-08 | M0 build |
-| ED-09 | M0 build |
 | ED-10 | PR-M4 |
 | ED-11 / DR-036 | PR-M5 |
 | GDQ-12 configuration | Slice day 3; the M0-T09 latency sample |
@@ -80,10 +80,12 @@ Their current status lives only in `plans/STATUS.md`.
 | A-18 | **Universal exit-gate criteria UG-01 to UG-20** with a per-milestone applicability matrix | Approval Part 10 | §7 |
 | A-19 | **CI fails closed.** Only `success` passes. Timeouts, cancellations and missing results fail. A skip is accepted only for a job that is not applicable, as recomputed independently. Unclassified files and any shared-contract change run every job | PR #2 review, item 1 | `ci_checks.yaml` (`ci/changes`, `ci/summary` rules); DEVENV-R020, R047–R050 |
 | A-20 | **Result vocabulary** PASSED, FAILED, NOT_APPLICABLE, NOT_IMPLEMENTED, SKIPPED, with three applicability rules, a build window for NOT_IMPLEMENTED, card completion by `trace-report CARD=…`, and gate enforcement of the whole completed scope including regression. Replaces the single "N/A" status | PR #2 review, item 2 | ARCHITECTURE §10.8 (ARCH-R101–R105); DEVENV-R013; `make_targets.yaml` conventions |
-| A-21 | **Branch protection is an M0 implementation requirement.** It is applied in two stages: P1 before the first implementation PR merges, P2 (`ci/summary` required) once M0-T07 merges. Exceptions are recorded as `EXC-nnn`; EXC-001 (pre-CI bootstrap cards) is proposed. Required approving reviews are set to 0 because PRs are authored under the owner's account; the owner's merge is the approval | PR #2 review, item 3 | DEVENV §8.4, R039, R051; ADR-0015 §5; `plans/M0_FOUNDATION.md` §3, §8 |
+| A-21 | **Branch protection is an M0 implementation requirement.** It is applied in two stages: P1 before the first implementation PR merges, P2 (`ci/summary` required) once M0-T07 merges. Exceptions are recorded as `EXC-nnn`; EXC-001 (pre-CI bootstrap cards) was proposed here and approved conditionally (A-26). Required approving reviews are set to 0 because PRs are authored under the owner's account; the owner's merge is the approval | PR #2 review, item 3 | DEVENV §8.4, R039, R051; ADR-0015 §5; `plans/M0_FOUNDATION.md` §3, §8 |
 | A-22 | **Milestone evidence** is a machine-checked report validated against the `gateReport` schema. It holds the merged SHA, the approved spec-set version, dataset and fixture versions, required CI results, results per suite, blocking defects, approved exceptions, deferred items and the owner's approval | PR #2 review, item 4 | RMAP-R010; `specs/engineering/engineering.schema.json` (`gateReport`) |
 | A-23 | **Run outcomes versus transport events.** The application lifecycle is separated from AG-UI transport, with normative semantics for completion, cancellation, approval interruption, disconnection, tool failure, retry and resume. The spike gates every dependent CF-3 and CF-4 freeze | PR #2 review, item 5 | ARCHITECTURE §8.6 (ARCH-R106, R107), ARCH-R108; RMAP-R015 |
-| A-24 | **Exact proposed Option A definitions** for ED-07, ED-08 and ED-09, for owner approval. Their status stays Proposed | PR #2 review, item 6 | DECISION_REGISTER §5.1 |
+| A-24 | **Exact proposed Option A definitions** for ED-07, ED-08 and ED-09, for owner approval. Their status stays Proposed (superseded by A-25) | PR #2 review, item 6 | DECISION_REGISTER §5.1 |
+| A-25 | **ED-07, ED-08 and ED-09 approved (Option A)** with the owner's added requirements: production fails closed and grants are always enforced on the backend (ED-07); a missing recording fails and never triggers a live call (ED-08); the Ink & Violet design is preserved (ED-09). AT-M0-T06-02 and AT-M0-T07-05 are extended to verify them | Owner approval, 2026-10-22 | DECISION_REGISTER §5.1; ADR-0016, ADR-0017, ADR-0018; `plans/M0_FOUNDATION.md` |
+| A-26 | **P1/P2 protection policy approved** with 0 required approving reviews; **EXC-001 approved conditionally** with conditions C1–C7, including retroactive GitHub Actions verification before the M0 exit gate. The condition C4 investigation is recorded | Owner approval, 2026-10-22 | DEVENV §8.4; `plans/M0_FOUNDATION.md` §3, GATE-M0-10; STATUS (EXC-001 log) |
 
 **Ownership established by A-08 (gap G-5):**
 

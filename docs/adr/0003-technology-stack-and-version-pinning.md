@@ -4,7 +4,7 @@
 |---|---|
 | Status | Proposed (becomes Accepted when PR-M0 merges) |
 | Date | 2026-10-22 |
-| Decision IDs | DR-027 (approved, GDQ-10), DR-007 and DXD-61 (verification pending), DR-016, ED-09 (proposed), ED-10 (proposed) |
+| Decision IDs | DR-027 (approved, GDQ-10), DR-007 and DXD-61 (verification pending), DR-016, ED-09 (approved 2026-10-22, ADR-0018), ED-10 (proposed) |
 
 ## Context
 
@@ -29,7 +29,7 @@ DR-027 fixed the stack at the Final Design Gate. Exact versions are pinned by lo
 | Web framework | Next.js App Router; React | 16.x; 19.x | DR-027 |
 | Web data | TanStack Query v5; zod | v5; v4 | DR-027 |
 | Web tooling | TypeScript (strict); ESLint flat config with a boundaries plugin; Prettier; Vitest with Testing Library; Playwright; axe-core | current lines | DR-027 |
-| Styling | CSS Modules plus CSS variables generated from `specs/design/tokens.json` | — | **ED-09, still Proposed** (alternative: Tailwind). M0 builds no styled component beyond the shell; see M0-T04 |
+| Styling | CSS Modules plus CSS variables generated from `specs/design/tokens.json` | — | **ED-09 A, approved 2026-10-22 (ADR-0018)**; Tailwind rejected. M0 builds no styled component beyond the shell; see M0-T04 |
 | Charts | Apache ECharts | **5.6.0 exactly** | DR-007, DXD-61. 6.x not adopted under the freeze |
 | AG-UI | `ag-ui-protocol` (Python); `@ag-ui/core` and `@ag-ui/client` (TS) | **Not pinned until ED-10 is decided.** The M0 spike runs against 1.0.x | DR-016, ED-10 |
 | Database | PostgreSQL | 16.x (image pinned by minor tag and digest) | DR-027 |
@@ -86,7 +86,7 @@ The direct dependencies are permissive or weak-copyleft:
 ## Consequences
 
 - Deterministic installs, and identical tooling locally and in CI.
-- ED-09 and ED-10 can still change their rows without reopening this ADR. Each produces a short follow-up ADR (ED-09 → DSYS ADR in PR-M2; ED-10 → ADR-0010).
+- ED-09 is settled by ADR-0018; the token set itself is specified in DESIGN_SYSTEM (PR-M2). ED-10 can still change its row without reopening this ADR; it produces ADR-0010.
 
 ## Verification
 

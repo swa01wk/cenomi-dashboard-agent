@@ -26,6 +26,9 @@ documents:
   - docs/adr/0005-backend-modular-monolith.md
   - docs/adr/0006-database-roles-schemas-and-ownership.md
   - docs/adr/0015-engineering-delivery-workflow-and-ci.md
+  - docs/adr/0016-poc-sign-in-and-session.md
+  - docs/adr/0017-model-determinism-in-tests.md
+  - docs/adr/0018-styling-approach.md
   - docs/product/PRODUCT_SPEC.md
   - docs/architecture/ARCHITECTURE.md
   - docs/architecture/DEVELOPMENT_ENVIRONMENT.md

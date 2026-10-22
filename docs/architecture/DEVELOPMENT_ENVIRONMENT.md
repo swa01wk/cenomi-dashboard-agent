@@ -5,7 +5,7 @@
 | Document code | DEVENV (requirement IDs `DEVENV-Rnnn`) |
 | Version | 1.0 · 2026-10-22 · PR-M0 (CF-0) |
 | Status | Proposed in PR-M0; normative when merged |
-| Rests on | DR-027, DR-037, ED-01, ED-05, ED-06 (approved); ED-07, ED-08, ED-09 (**Proposed**); ADR-0003, ADR-0004, ADR-0006, ADR-0015 |
+| Rests on | DR-027, DR-037, ED-01, ED-05, ED-06 (approved); ED-07, ED-08, ED-09 (approved 2026-10-22; ADR-0016, ADR-0017, ADR-0018); ADR-0003, ADR-0004, ADR-0006, ADR-0015 |
 | Machine-readable sources | `specs/engineering/make_targets.yaml`, `specs/engineering/ci_checks.yaml`, `specs/engineering/spec_set.yaml` — the YAML wins on any conflict with this prose |
 
 **Goal.** A clean clone becomes a running, verified stack with `make setup` then `make up`. Local machines and CI run the same Make targets with the same pinned toolchain, so a green `make check` and `make ci` locally predict a green pull request.
@@ -85,7 +85,7 @@ It does not cover:
 | Dataset | `CENOMI_AS_OF` | `2026-10-20` | Always | no | api, seed | M0 |
 | Dataset | `CENOMI_TZ` | `Asia/Riyadh` | Always | no | api, seed | M0 |
 | Dataset | `CENOMI_SEED` | Value fixed in SYNTHETIC_DATA_STRATEGY (PR-M1) | Seeding | no | seed | M1 |
-| Auth | `AUTH_MODE` | `dev_fixture` (**ED-07 A, Proposed**) | Always | no | api | M0 |
+| Auth | `AUTH_MODE` | `dev_fixture` (ED-07 A, approved; ADR-0016) | Always | no | api | M0 |
 | Auth | `SESSION_SECRET` | Empty (`make setup` generates 48 random bytes into `.env`) | Always; ≥ 32 bytes | yes | api | M0 |
 | Auth | `SESSION_TTL_MINUTES` | `480` | — | no | api | M0 |
 | Model | `LLM_MODE` | `off` (M0–M2), then `replay` | Always; `off`, `replay` or `live` | no | api, harness | M0 (`off`), M3 |
@@ -455,11 +455,21 @@ Settings applied together with P1:
 
 An unrecorded deviation fails GATE-M0-10.
 
-**EXC-001 (Proposed, awaiting the owner's approval).** M0-T01, M0-T03, M0-T11 and M0-T10, which build the tooling that CI itself runs, may merge under stage P1 before `ci/summary` exists. Compensating controls:
-- each PR pastes local `make check` output and the card's AT results;
-- the M0-T07 PR's CI run must pass `trace-report CARD=…` for those four cards before stage P2 is enabled.
+**EXC-001 (Approved conditionally by the owner on 2026-10-22).** The PRs of exactly four cards, M0-T01, M0-T03, M0-T11 and M0-T10, which build the tooling that CI itself runs, may merge under stage P1 before `ci/summary` exists. The owner's seven conditions apply, numbered EXC-001/C1 to C7:
 
-EXC-001 expires when P2 is in force. M0-T07 itself merges under P1 after its own PR run shows `ci/summary` `success`.
+| # | Condition (owner, 2026-10-22) | How it is met |
+|---|---|---|
+| C1 | Document the exact affected feature PRs | Scope is the four card PRs only. Each PR number, branch and title is entered in the EXC-001 log in `plans/STATUS.md` when the PR opens |
+| C2 | Run every available local validation before merging | Before merge, the PR pastes the output of `make check` and of every target named in the card's field 14 that exists at that point, plus the card's AT results. From the M0-T10 merge onward, `make trace-report CARD=<card>` is included |
+| C3 | Record each merge SHA and its compensating controls | After merge, the squash SHA and the controls actually applied are entered in the EXC-001 log |
+| C4 | Investigate whether M0-T07 can be introduced earlier | Finding and adopted mitigation: `plans/M0_FOUNDATION.md` §3 "EXC-001 condition C4" |
+| C5 | Revalidate all exception-covered changes through GitHub Actions once CI is available | (a) The M0-T07 PR run shows `trace-report CARD=…` all `PASSED` for the four cards (AT-M0-T07-02). (b) The first `ci/summary` run on `main` after M0-T07 merges concludes `success`. Both run URLs are entered in the EXC-001 log |
+| C6 | Successful retroactive verification is required before the M0 exit gate | GATE-M0-10 fails unless C5 (a) and (b) succeeded and the EXC-001 log is complete |
+| C7 | No expansion of EXC-001 without additional approval | Any other card, PR or rule deviation needs a new owner-approved exception (`EXC-002`, …) |
+
+EXC-001 expires when P2 is in force. M0-T07 itself is not covered by EXC-001: it merges under P1 after its own PR run shows `ci/summary` `success`.
+
+**Approval of the protection policy (2026-10-22).** The owner approved the two-stage policy P1/P2 above, accepted **0 required approving reviews** for the single-developer workflow, and retained manual review and explicit milestone approval as project requirements. P1 must be applied before the first implementation PR merges. No existing security control may be weakened. Applying the settings remains the owner's action (DEVENV-R044).
 
 ### 8.5 Commit messages
 

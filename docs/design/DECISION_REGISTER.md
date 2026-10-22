@@ -238,19 +238,19 @@ Engineering decisions fix how the approved design is built. They never reopen a 
 | ED-05 | CI/CD scope | **Approved 2026-10-22** | A: GitHub Actions CI; images built, not pushed; no deploy | ADR-0015 §2 | M0 specs |
 | ED-06 | When M0 is built | **Approved 2026-10-22** | A: after PR-M0 is approved and merged, subject to explicit build authorization | ADR-0015 §3 | M0 specs |
 | D-01 | Snapshot schema | **Approved 2026-10-22** | A: dedicated `snap` schema | ADR-0006 §2 | M0 specs |
-| ED-07 | POC sign-in | Proposed | A recommended: dev fixture sign-in, signed httpOnly cookie; B: password table | — (ADR on decision) | M0 build |
-| ED-08 | Model determinism in tests | Proposed | A recommended: replay provider in CI, live runs manual; B: live model in CI | — (ADR-0009 on decision) | M0 build |
-| ED-09 | Styling approach | Proposed | A recommended: CSS Modules + token CSS variables; B: Tailwind | — (DSYS ADR on decision) | M0 build |
+| ED-07 | POC sign-in | **Approved 2026-10-22** | A: fixture-user sign-in with a signed httpOnly session cookie, limited to `dev`, `test` and `ci`; any other environment fails closed; authorization and grants always enforced on the backend | ADR-0016 | M0 build |
+| ED-08 | Model determinism in tests | **Approved 2026-10-22** | A: scripted mock for unit tests, recorded replay in CI, separate controlled live evaluations; a missing recording fails, never a live call | ADR-0017 (adapter detail: ADR-0009, PR-M3) | M0 build |
+| ED-09 | Styling approach | **Approved 2026-10-22** | A: CSS Modules with shared design tokens and generated colour and spacing variables; preserves the approved Ink & Violet design | ADR-0018 (token set: DESIGN_SYSTEM, PR-M2) | M0 build |
 | ED-10 | AG-UI version pin | Proposed | A recommended: AG-UI 1.0; B: last 0.x | — (ADR-0010) | PR-M4 |
 | ED-11 | Evaluation scoring (resolves DR-036) | Proposed | A recommended: deterministic 100% + LLM judge + ≥ 20% human spot-check; B: deterministic + human only | — (ADR-0014) | PR-M5 |
 
-### 5.1 Proposed Option A definitions for ED-07, ED-08 and ED-09 (for owner approval)
+### 5.1 Approved Option A definitions for ED-07, ED-08 and ED-09
 
-**Status: Proposed. Not approved.** These are the exact texts that would be recorded in ADRs if the owner approves Option A. Approving one also makes the M0 sections already written to it normative. Choosing Option B changes only the sections listed under "If B is chosen".
+**Status: Approved 2026-10-22 by the project owner (Option A for all three).** These are the decision texts recorded in ADR-0016, ADR-0017 and ADR-0018. The M0 sections written to them are now normative. The owner's approval wording is quoted under each decision; where it adds a requirement, the requirement is numbered into the decision text. The Option B paragraphs are kept as the record of the rejected alternative.
 
 #### ED-07 — POC sign-in
 
-**Option A (proposed decision text)**
+**Option A (approved decision text)**
 
 1. The POC has no passwords, no user table and no identity provider. A principal signs in by choosing a fixture principal on `/sign-in`. The fixture principals are defined in `tests/fixtures/principals.yaml` and validated against `principal.v1` at startup.
 2. `POST /api/v1/auth/dev/sign-in {principalId}` issues a session cookie named `cenomi_session`:
@@ -262,17 +262,21 @@ Engineering decisions fix how the approved design is built. They never reopen a 
 4. The sign-in routes are mounted only when `AUTH_MODE=dev_fixture` and `CENOMI_ENV` is `dev`, `test` or `ci`. Any other combination refuses to start (ARCH-R026).
 5. Roles and permissions remain backend-enforced (DR-019). The browser never reads the cookie. The demo persona switch is sign-out followed by sign-in.
 6. Out of scope: real authentication, multi-factor authentication, account management, single sign-on.
+7. **Production fails closed.** The POC defines no production environment. Any `CENOMI_ENV` other than `dev`, `test` or `ci`, including any attempt to run the POC as production, refuses to start (ARCH-R026 cases b and e). The dev sign-in routes are never mounted outside those three environments.
+8. **Authorization and grants are always enforced and validated on the backend.** The cookie carries only `principalId`, `issuedAt` and `expiresAt`. Role, grants and scope are resolved on the server from the fixture principal on every request and are never accepted from the cookie, a header, a query parameter or a request body. Every data access goes through AccessScope (ARCH-R077–R082).
+
+> Owner's approval (2026-10-22): "ED-07 — Option A: Fixture-user authentication with signed HTTP-only session cookies, limited to development, test, and CI. Production must fail closed. Authorization and grants must always be enforced and validated on the backend."
 
 **Affects:** ARCHITECTURE §5.4 (auth routes), §6.6; M0-T06; M0-T04 (`/sign-in`); `.env.example`.
 
-**If B is chosen** (username and password table):
+**Option B (not chosen)** (username and password table):
 - M0-T06 is rewritten: an `app_users` table with password hashes, a hashing dependency, a login form, and password policy and lockout rules;
 - ARCHITECTURE §6.6 and the sign-in route change;
 - the cookie boundary stays.
 
 #### ED-08 — Model determinism in tests
 
-**Option A (proposed decision text)**
+**Option A (approved decision text)**
 
 1. There are three model-provider kinds behind one adapter (ARCHITECTURE §8.2):
 
@@ -287,10 +291,13 @@ Engineering decisions fix how the approved design is built. They never reopen a 
 4. **A replay miss is an error, never a fallback to a live call.** Changing a prompt template version therefore forces an explicit re-recording.
 5. Recordings are produced only by `make agent-test-live RECORD=1`, which is manual, budget-limited and uses separate credentials. They are committed only through a reviewed PR.
 6. CI (`ci/agent`, `ci/e2e`) runs with `LLM_MODE=replay` and has no model credential. The live model is measured only through `eval-live.yml` or `make agent-test-live`, and is never a required check.
+7. **Missing recordings fail.** A replay miss, an unreadable recording or a recording for a different request hash fails the test with an explicit replay-miss error (its error code is registered with ADR-0009 in PR-M3); it never triggers an unplanned live-model call. The `replay` provider has no code path to a live provider.
+
+> Owner's approval (2026-10-22): "ED-08 — Option A: Scripted mock model for deterministic unit tests, recorded replay responses for CI, and separate controlled live-model evaluations. Missing recordings must fail rather than trigger unplanned live-model calls."
 
 **Affects:** ARCHITECTURE §8.2, §10.2 (areas F and G), §10.5; `ci_checks.yaml` (`LLM_MODE=replay`); `make_targets.yaml` (`agent-test-replay`, `agent-test-live RECORD`); ADR-0009 (PR-M3); M0-T07 (`eval-live.yml` skeleton); M0-T11 (markers).
 
-**If B is chosen** (CI calls the live model):
+**Option B (not chosen)** (CI calls the live model):
 - CI needs a model secret, which conflicts with DEVENV-R027 for PR workflows unless they are restricted to non-fork branches;
 - results become non-deterministic and cost money per run;
 - the replay rows above are removed.
@@ -299,7 +306,7 @@ Note: the approved testing requirements (mock and replay tests must not depend o
 
 #### ED-09 — Styling approach
 
-**Option A (proposed decision text)**
+**Option A (approved decision text)**
 
 1. Component styles are CSS Modules (`*.module.css`), co-located with their component.
 2. Global CSS is limited to a reset, base typography and the token variables.
@@ -310,10 +317,13 @@ Note: the approved testing requirements (mock and replay tests must not depend o
    both are GENERATED and drift-checked.
 4. There is no UI kit, no Tailwind and no runtime CSS-in-JS. Theming, including the optional later Night Operations theme, swaps variable sets only.
 5. In M0, the shell uses a minimal provisional stylesheet `apps/web/src/styles/shell.css` with neutral variables, replaced by the generated tokens in M2.
+6. **The approved Ink & Violet visual design is preserved** (DXD-01). The generated variables cover at least colour and spacing; values come only from `tokens.json`, never hard-coded in a CSS Module once the tokens exist (M2). The provisional M0 stylesheet introduces no new visual language.
+
+> Owner's approval (2026-10-22): "ED-09 — Option A: CSS Modules with shared design tokens and generated colour/spacing variables, preserving the approved Ink and Violet visual design."
 
 **Affects:** ARCHITECTURE §6.1 (`styles/`); ADR-0003 (styling row); M0-T04; DESIGN_SYSTEM (PR-M2).
 
-**If B is chosen** (Tailwind):
+**Option B (not chosen)** (Tailwind):
 - Tailwind and PostCSS dependencies are added, with a Tailwind theme generated from `tokens.json`;
 - utility classes replace CSS Modules;
 - M0-T04 and ADR-0003 change.

@@ -477,7 +477,7 @@ targets:
     prerequisites: ["LLM_MODE=live", LIVE_EVAL_LLM_API_KEY, LIVE_EVAL_MAX_CASES, LIVE_EVAL_MAX_TOKENS, LIVE_EVAL_MAX_COST_USD]
     args:
       - {name: SET, default: "slice", description: "slice or benchmark"}
-      - {name: RECORD, default: "0", description: "1 writes the responses to LLM_REPLAY_DIR as replay recordings (ED-08 Option A, Proposed); the recordings are committed only through a reviewed PR"}
+      - {name: RECORD, default: "0", description: "1 writes the responses to LLM_REPLAY_DIR as replay recordings (ED-08 Option A, approved; ADR-0017); the recordings are committed only through a reviewed PR"}
     behaviour:
       - Refuses unless all budget variables are set and CENOMI_ENV is dev or ci (ARCH-R089).
       - Runs the harness with the live provider; stops before any budget is exceeded; records run metadata.

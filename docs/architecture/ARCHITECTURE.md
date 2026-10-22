@@ -420,10 +420,10 @@ Never held by the client as authority:
 
 | # | Rule |
 |---|---|
-| **ARCH-R045** | The session is an httpOnly, `SameSite=Lax`, `Path=/` cookie issued by `api` through the same-origin rewrite (ED-07 A, **Proposed**). `Secure` is set when the request is HTTPS. The web code never reads the cookie; it learns the principal only from `GET /api/v1/me` |
+| **ARCH-R045** | The session is an httpOnly, `SameSite=Lax`, `Path=/` cookie issued by `api` through the same-origin rewrite (ED-07 A, approved 2026-10-22; ADR-0016). `Secure` is set when the request is HTTPS. The web code never reads the cookie; it learns the principal only from `GET /api/v1/me` |
 | **ARCH-R046** | `web` makes no authorization decision. Route guards in `(app)/layout.tsx` only redirect unauthenticated users to `/sign-in` |
 
-If ED-07 Option B is chosen, only `/sign-in`, the dev auth routes and M0-T06 change; the cookie boundary stays.
+Per ED-07 A (ADR-0016) the cookie carries identity only; role, grants and scope are resolved on the server for every request. Outside `dev`, `test` and `ci` the API refuses to start (ARCH-R026 cases b and e).
 
 ### 6.7 Dashboard selections and thread-local agent context
 
@@ -576,10 +576,10 @@ These identifiers are separate from the evaluation `run_key` of DXD-86.
 | Kind | Purpose | Allowed in | Requires |
 |---|---|---|---|
 | `mock` | Scripted responses declared inside a test; asserts the requests it receives | Unit tests (`make agent-test-mock`), always | Nothing |
-| `replay` | Recorded live responses keyed by a hash of the normalized request; a miss is an error, never a live call | Replay and golden evaluations, E2E, CI | **ED-08 (Proposed, recommended A)** |
+| `replay` | Recorded live responses keyed by a hash of the normalized request; a miss is an error, never a live call | Replay and golden evaluations, E2E, CI | ED-08 A (approved 2026-10-22; ADR-0017) |
 | `live` | The configured provider and models (GDQ-12) | `make agent-test-live`, `eval-live.yml`, manual runs | GDQ-12 configuration; the key as a secret |
 
-The approved testing requirements (approval Part 7 E–G) already require mock and replay tests that do not depend on live APIs, and live tests that are opt-in only; this is the substance of ED-08 A.
+The approved testing requirements (approval Part 7 E–G) already require mock and replay tests that do not depend on live APIs, and live tests that are opt-in only; this is the substance of ED-08 A, approved 2026-10-22 and recorded in ADR-0017. A replay miss fails and never falls back to a live call.
 
 **ARCH-R072** Fallback rule: a fallback model is used only after the primary returns a provider error or times out. Never because an answer failed verification; verification failure follows DR-031. Every response records which model answered.
 

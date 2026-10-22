@@ -41,7 +41,7 @@ Job names, triggers and required checks are fixed in `specs/engineering/ci_check
 
 - M0 may be implemented after PR-M0 is approved and merged, **subject to the owner's separate, explicit authorization to begin implementation**.
 - Merging a specification PR does not authorize writing application code. This applies to every milestone.
-- The conditions for authorizing M0 are listed in `plans/M0_FOUNDATION.md` §8. They include decisions on ED-07, ED-08 and ED-09, which remain Proposed.
+- The conditions for authorizing M0 are listed in `plans/M0_FOUNDATION.md` §8. They include decisions on ED-07, ED-08 and ED-09, approved on 2026-10-22 (ADR-0016, ADR-0017, ADR-0018).
 
 ### 4. Branches and pull requests
 
@@ -64,7 +64,7 @@ Branch protection is **an M0 implementation requirement**. It is specified in DE
 | P1 | PR required; no force push; no deletion; squash only; conversation resolution | Before the first implementation PR merges |
 | P2 | `ci/summary` required and strict | As soon as M0-T07 has merged |
 
-Any merge outside these rules needs an owner-approved exception recorded as `EXC-nnn` in STATUS.md (DEVENV-R051). EXC-001, the pre-CI bootstrap cards, is proposed.
+Any merge outside these rules needs an owner-approved exception recorded as `EXC-nnn` in STATUS.md (DEVENV-R051). EXC-001, the pre-CI bootstrap cards, was approved conditionally on 2026-10-22 with seven conditions (DEVENV §8.4). The P1/P2 policy, with 0 required approving reviews, was approved on the same date.
 
 The settings are **not applied** by Claude. As of 2026-10-22, `main` has no protection. Applying them needs the owner's action or explicit authorization.
 
