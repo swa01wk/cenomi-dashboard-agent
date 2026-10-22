@@ -13,6 +13,7 @@ Source: `docs/architecture/ARCHITECTURE.md` §10, §12.
 - Tests are deterministic: frozen `as_of`, fixed seeds, derandomized Hypothesis in CI, `TZ=UTC` with explicit Asia/Riyadh assertions, no external network (`pytest-socket`), no live model.
 - Unit tests touch no database or network. Integration tests use the test database with rollback or app-schema truncation. E2E runs on the Compose stack.
 - Test both success and refusal: authorization denial, empty scope, unavailable, partial and error states.
+- Results use exactly PASSED, FAILED, NOT_APPLICABLE, NOT_IMPLEMENTED, SKIPPED (ARCHITECTURE §10.8). Only PASSED is success. A missing acceptance test is NOT_IMPLEMENTED. A skip is SKIPPED, never PASSED. NOT_APPLICABLE comes only from the milestone, change or gate rule, never from a test's own skip marker. (Checked: `make trace-report CARD=…`, `ci/summary`.)
 - Never skip, `xfail` or loosen a failing test to get green. Quarantine needs `DEF-nnnn`, an expiry within 7 days and the owner's approval. (Checked: quarantine expiry lint.)
 - Live-model tests run only via `make agent-test-live` or `eval-live.yml`, with budgets.
 - Every Playwright journey runs axe-core on each state it visits.

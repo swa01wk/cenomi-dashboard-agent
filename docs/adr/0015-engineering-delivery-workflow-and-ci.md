@@ -49,7 +49,7 @@ Job names, triggers and required checks are fixed in `specs/engineering/ci_check
 - Specification work uses `docs/m<n>-<slug>`.
 - PR contents and merge policy are fixed in DEVELOPMENT_ENVIRONMENT.md §8:
   - squash merge;
-  - at least one approving review, from the owner;
+  - review by the owner, given by the owner merging the PR (PRs are authored under the owner's account, and GitHub forbids self-approval; DEVENV-R039);
   - no merge with a failing required check;
   - rebased or validated against the latest `main`;
   - no force-push to `main`.
@@ -57,7 +57,16 @@ Job names, triggers and required checks are fixed in `specs/engineering/ci_check
 
 ### 5. Repository settings
 
-Branch protection or a ruleset for `main`, and the `live-eval` environment, are **specified** in DEVELOPMENT_ENVIRONMENT.md §8.4. They are **not applied** by Claude. As of 2026-10-22 `main` has no protection. Applying the settings needs the owner's action or explicit authorization.
+Branch protection is **an M0 implementation requirement**. It is specified in DEVELOPMENT_ENVIRONMENT.md §8.4 in two stages:
+
+| Stage | Contents | Must be in force |
+|---|---|---|
+| P1 | PR required; no force push; no deletion; squash only; conversation resolution | Before the first implementation PR merges |
+| P2 | `ci/summary` required and strict | As soon as M0-T07 has merged |
+
+Any merge outside these rules needs an owner-approved exception recorded as `EXC-nnn` in STATUS.md (DEVENV-R051). EXC-001, the pre-CI bootstrap cards, is proposed.
+
+The settings are **not applied** by Claude. As of 2026-10-22, `main` has no protection. Applying them needs the owner's action or explicit authorization.
 
 ## Consequences
 
@@ -66,4 +75,4 @@ Branch protection or a ruleset for `main`, and the `live-eval` environment, are 
 
 ## Verification
 
-GATE-M0-06 (CI baseline green on `main`; required check names match `ci_checks.yaml`) and GATE-M0-10 (repository settings applied or the deviation recorded in STATUS.md).
+GATE-M0-06 (CI baseline green on `main`; required check names match `ci_checks.yaml`) and GATE-M0-10 (stages P1 and P2 in force; every deviation covered by an approved `EXC-nnn`).

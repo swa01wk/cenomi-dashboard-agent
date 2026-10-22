@@ -15,6 +15,6 @@ Source: `AGENTS.md`; ADR-0001, ADR-0015; `plans/ROADMAP.md`.
 - Never edit `docs/reference/**`, `docs/design/baseline/**`, `docs/handoff/**` or `plans/proposed/**`. (Checked: `make specs-check` SHA-256 verification.)
 - Never edit specifications (`docs/**`, `specs/**`, `plans/**`) in an implementation PR. Specifications change only in `docs/m<n>-…` PRs.
 - One card per branch and PR; branch `feat|fix|test|chore/m<n>-t<nn>-<slug>`. (Checked: `ci/static` branch-name check.)
-- Never merge, never push to `main`, never force-push a shared branch, never change repository settings.
+- Never merge, never push to `main`, never force-push a shared branch, never change repository settings. A merge outside the protection rules needs an owner-approved `EXC-nnn` (DEVENV-R051).
 - A card is done only when every `AT-…` of its field 15 is an automated passing test that carries that ID. (Checked: `make trace-report`.)
 - Fill all 15 PR template sections; paste `make check` output.

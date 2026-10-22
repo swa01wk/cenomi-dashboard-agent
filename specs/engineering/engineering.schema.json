@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cenomi.local/engineering/engineering.schema.json",
   "title": "Cenomi engineering metadata",
-  "description": "Validates specs/engineering/make_targets.yaml, ci_checks.yaml, spec_set.yaml, specs/traceability/id_conventions.yaml and specs/contracts/error_codes.v1.yaml. Used by make specs-check (M0-T10). This is engineering metadata, not a runtime contract: it is never passed to codegen, so the ADR-0004 subset does not apply to it.",
+  "description": "Validates specs/engineering/make_targets.yaml, ci_checks.yaml, spec_set.yaml, specs/traceability/id_conventions.yaml specs/contracts/error_codes.v1.yaml, and the milestone gate report tests/reports/gate/M<n>/report.json (RMAP-R010). Used by make specs-check (M0-T10). This is engineering metadata, not a runtime contract: it is never passed to codegen, so the ADR-0004 subset does not apply to it.",
   "oneOf": [
     {
       "$ref": "#/$defs/makeTargets"
@@ -18,6 +18,9 @@
     },
     {
       "$ref": "#/$defs/errorCodes"
+    },
+    {
+      "$ref": "#/$defs/gateReport"
     }
   ],
   "$defs": {
@@ -603,6 +606,399 @@
                 "type": "string",
                 "minLength": 10
               }
+            }
+          }
+        }
+      }
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "PASSED",
+        "FAILED",
+        "NOT_APPLICABLE",
+        "NOT_IMPLEMENTED",
+        "SKIPPED"
+      ]
+    },
+    "resultRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "result"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "result": {
+          "$ref": "#/$defs/result"
+        },
+        "rule": {
+          "type": "string",
+          "description": "Required when result is NOT_APPLICABLE: milestone rule, change rule or gate rule (ARCH-R101)."
+        },
+        "evidence": {
+          "type": "string"
+        }
+      }
+    },
+    "gateReport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "milestone",
+        "generatedAt",
+        "mergedCommitSha",
+        "specSet",
+        "dataset",
+        "fixtures",
+        "ci",
+        "suites",
+        "gateChecks",
+        "universalCriteria",
+        "trace",
+        "defects",
+        "exceptions",
+        "deferred",
+        "approval"
+      ],
+      "properties": {
+        "schema": {
+          "const": "cenomi.gate_report.v1"
+        },
+        "milestone": {
+          "$ref": "#/$defs/milestone"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "mergedCommitSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "specSet": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "version",
+            "approvedInPr"
+          ],
+          "properties": {
+            "version": {
+              "type": "string",
+              "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+            },
+            "approvedInPr": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "dataset": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "datasetId",
+            "asOf",
+            "state"
+          ],
+          "properties": {
+            "datasetId": {
+              "type": "string",
+              "pattern": "^sd-[0-9]{4}\\.[0-9]{2}\\.[0-9]{2}-[0-9]{2}$"
+            },
+            "asOf": {
+              "type": "string",
+              "format": "date"
+            },
+            "state": {
+              "type": "string",
+              "enum": [
+                "not_seeded",
+                "seeded"
+              ]
+            },
+            "seedHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{16,64}$"
+            }
+          }
+        },
+        "fixtures": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "fixtureSetSha256"
+          ],
+          "properties": {
+            "fixtureSetSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "canonicalFiguresSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "ci": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "runUrl",
+            "summaryConclusion",
+            "jobs"
+          ],
+          "properties": {
+            "runUrl": {
+              "type": "string"
+            },
+            "summaryConclusion": {
+              "type": "string"
+            },
+            "jobs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "applicable",
+                  "conclusion"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "pattern": "^ci/[a-z][a-z0-9-]*$"
+                  },
+                  "applicable": {
+                    "type": "boolean"
+                  },
+                  "conclusion": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "suites": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "suite",
+              "result"
+            ],
+            "properties": {
+              "suite": {
+                "type": "string",
+                "enum": [
+                  "backend_unit",
+                  "backend_integration",
+                  "frontend_unit",
+                  "integration",
+                  "e2e_playwright",
+                  "agent_mock",
+                  "agent_replay",
+                  "database_invariants",
+                  "contracts",
+                  "specs",
+                  "security",
+                  "echarts_gate",
+                  "accessibility",
+                  "replay_golden",
+                  "performance"
+                ]
+              },
+              "result": {
+                "$ref": "#/$defs/result"
+              },
+              "rule": {
+                "type": "string"
+              },
+              "counts": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "passed": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "failed": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "skipped": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "notImplemented": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              },
+              "artifact": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "gateChecks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/resultRecord"
+          }
+        },
+        "universalCriteria": {
+          "type": "array",
+          "minItems": 20,
+          "maxItems": 20,
+          "items": {
+            "$ref": "#/$defs/resultRecord"
+          }
+        },
+        "trace": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "atTotal",
+            "passed",
+            "failed",
+            "notImplemented",
+            "skipped"
+          ],
+          "properties": {
+            "atTotal": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "passed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "failed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "notImplemented": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "skipped": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "defects": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "blockingOpen",
+            "open"
+          ],
+          "properties": {
+            "blockingOpen": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^DEF-[0-9]{4}$"
+              }
+            },
+            "open": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^DEF-[0-9]{4}$"
+              }
+            }
+          }
+        },
+        "exceptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "summary",
+              "approvedOn"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^EXC-[0-9]{3}$"
+              },
+              "summary": {
+                "type": "string"
+              },
+              "approvedOn": {
+                "type": "string",
+                "format": "date"
+              },
+              "expiredOn": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          }
+        },
+        "deferred": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "item",
+              "targetMilestone"
+            ],
+            "properties": {
+              "item": {
+                "type": "string"
+              },
+              "targetMilestone": {
+                "$ref": "#/$defs/milestone"
+              }
+            }
+          }
+        },
+        "approval": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "decision"
+          ],
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "approved",
+                "rejected"
+              ]
+            },
+            "approvedBy": {
+              "type": "string"
+            },
+            "decidedOn": {
+              "type": "string",
+              "format": "date"
+            },
+            "reference": {
+              "type": "string"
             }
           }
         }

@@ -5,7 +5,7 @@
 | Document code | RMAP (requirement IDs `RMAP-Rnnn`) |
 | Version | **1.0 · approved 2026-10-22** · introduced by PR-M0 |
 | Approved from | Engineering Specification Plan draft of 22 Oct 2026 (13 tabs), preserved unchanged in `plans/proposed/engineering-specification-plan/` |
-| Approval | Project owner, 2026-10-22, "subject to the refinements" of the approval message. The refinements are recorded as amendments A-01 to A-18 (§2) |
+| Approval | Project owner, 2026-10-22, "subject to the refinements" of the approval message. The refinements are recorded as amendments A-01 to A-18 (§2). The owner's review of PR #2 (2026-10-22, 21:04 IST) added refinements A-19 to A-24 |
 | Holds | Scope and structure of the engineering programme: milestones, dependencies, contract freezes, deliverables, feature-card standard, exit-gate framework, slice classification, specification inventory, timeline |
 | Does not hold | Progress (only `plans/STATUS.md`); decisions (only `docs/adr/` and `docs/design/DECISION_REGISTER.md`); task cards (milestone plans) |
 
@@ -78,6 +78,12 @@ Their current status lives only in `plans/STATUS.md`.
 | A-16 | **Delivery class** on every card: `slice`, `full` or `deferred` | ED-04 A; approval Part 3 | ADR-0002 §4; §8 |
 | A-17 | **CF-0 contents** made exact: error envelope, error code registry, principal, scope decision, health report, dataset descriptor, the engineering specs and the ID conventions | M0 authoring | §3.2 |
 | A-18 | **Universal exit-gate criteria UG-01 to UG-20** with a per-milestone applicability matrix | Approval Part 10 | §7 |
+| A-19 | **CI fails closed.** Only `success` passes. Timeouts, cancellations and missing results fail. A skip is accepted only for a job that is not applicable, as recomputed independently. Unclassified files and any shared-contract change run every job | PR #2 review, item 1 | `ci_checks.yaml` (`ci/changes`, `ci/summary` rules); DEVENV-R020, R047–R050 |
+| A-20 | **Result vocabulary** PASSED, FAILED, NOT_APPLICABLE, NOT_IMPLEMENTED, SKIPPED, with three applicability rules, a build window for NOT_IMPLEMENTED, card completion by `trace-report CARD=…`, and gate enforcement of the whole completed scope including regression. Replaces the single "N/A" status | PR #2 review, item 2 | ARCHITECTURE §10.8 (ARCH-R101–R105); DEVENV-R013; `make_targets.yaml` conventions |
+| A-21 | **Branch protection is an M0 implementation requirement.** It is applied in two stages: P1 before the first implementation PR merges, P2 (`ci/summary` required) once M0-T07 merges. Exceptions are recorded as `EXC-nnn`; EXC-001 (pre-CI bootstrap cards) is proposed. Required approving reviews are set to 0 because PRs are authored under the owner's account; the owner's merge is the approval | PR #2 review, item 3 | DEVENV §8.4, R039, R051; ADR-0015 §5; `plans/M0_FOUNDATION.md` §3, §8 |
+| A-22 | **Milestone evidence** is a machine-checked report validated against the `gateReport` schema. It holds the merged SHA, the approved spec-set version, dataset and fixture versions, required CI results, results per suite, blocking defects, approved exceptions, deferred items and the owner's approval | PR #2 review, item 4 | RMAP-R010; `specs/engineering/engineering.schema.json` (`gateReport`) |
+| A-23 | **Run outcomes versus transport events.** The application lifecycle is separated from AG-UI transport, with normative semantics for completion, cancellation, approval interruption, disconnection, tool failure, retry and resume. The spike gates every dependent CF-3 and CF-4 freeze | PR #2 review, item 5 | ARCHITECTURE §8.6 (ARCH-R106, R107), ARCH-R108; RMAP-R015 |
+| A-24 | **Exact proposed Option A definitions** for ED-07, ED-08 and ED-09, for owner approval. Their status stays Proposed | PR #2 review, item 6 | DECISION_REGISTER §5.1 |
 
 **Ownership established by A-08 (gap G-5):**
 
@@ -121,8 +127,8 @@ The thin M6 slice part may be built earlier because it depends only on the M2 sn
 | CF-0 Toolchain | PR-M0 | Repository layout; `error_envelope.v1` and `error_codes.v1`; `principal.v1`; `scope_decision.v1` (AccessScope interface, deny by default); `health_report.v1`; `dataset_descriptor.v1`; codegen pipeline and JSON Schema subset (ADR-0004); `specs/engineering/*`; `specs/traceability/id_conventions.yaml`; CI check names |
 | CF-1 Data | PR-M1 | Tables, enums, roles' table grants for `core`, `meta`, `snap`, `seed_meta`; metric YAML; permissions matrix; scenario manifest; canonical figures |
 | CF-2 Analytics | PR-M2 | Metric query, `analysis_result.v1`, card view-models, records paging, `selection_ref.v1`, design tokens |
-| CF-3 Agent | PR-M3 | AnalysisPlan, tool schemas, AnswerDraft, fact tokens, evidence envelope, LLM adapter interface, thread and run identity contracts, `agent` tables, evaluation case schema v1 |
-| CF-4 Presentation | PR-M4 | `cenomi.presentation.v1` and per-kind schemas, composition policy, AG-UI event mapping and state shape, run-management endpoints |
+| CF-3 Agent | PR-M3 | AnalysisPlan, tool schemas, AnswerDraft, fact tokens, evidence envelope, LLM adapter interface, thread and run identity contracts, `agent` tables, evaluation case schema v1. Elements that depend on the AG-UI spike freeze only after its report (RMAP-R015) |
+| CF-4 Presentation | PR-M4 | `cenomi.presentation.v1` and per-kind schemas, composition policy, AG-UI event mapping and state shape, run-management endpoints. Requires the merged spike report (RMAP-R015) |
 | CF-5 Insights | PR-M6 | `insight.v1`, detector configuration schema, runner protocol, inbox API, `insights` tables |
 | CF-6 Evaluation | PR-M5 | Benchmark composition and scoring (needs DR-036) |
 
@@ -173,7 +179,7 @@ Each cell names deliverables, not task cards; cards are written in each mileston
 | Proactive intelligence | — | — |
 | Automated testing | pytest, Vitest and Playwright harnesses; trace markers; JUnit and trace reports; shell smoke E2E; DB grant tests; contract tests | slice |
 | Developer tooling | Root Makefile (full target contract); uv and pnpm workspaces; lockfiles; `make doctor`; `.env.example`; Compose | slice |
-| CI/CD | `ci.yml` with all jobs (inactive jobs report N/A); `milestone-gate.yml`; `eval-live.yml` skeleton; security scans; image builds without push; ECharts gate harness | slice |
+| CI/CD | `ci.yml` with all jobs and fail-closed `ci/summary` (targets not yet due report NOT_APPLICABLE or NOT_IMPLEMENTED per ARCHITECTURE §10.8); `milestone-gate.yml`; `eval-live.yml` skeleton; security scans; image builds without push; ECharts gate harness | slice |
 | Documentation and contracts | PR-M0 items 1–12; CF-0 schemas; AGENTS.md; Cursor rules; PR and defect templates | slice |
 
 ### M1 — Database and synthetic data
@@ -328,7 +334,7 @@ A PR passing CI is never sufficient on its own.
 | UG-14 | No unresolved blocking defect (`DEF-` issue labelled `blocking`) |
 | UG-15 | Documentation and ADRs current |
 | UG-16 | `plans/STATUS.md` reflects the actual state |
-| UG-17 | Every acceptance test ID of the milestone has at least one passing test (`make trace-report`) |
+| UG-17 | Every acceptance test ID of the cards of M0…M<n> is `PASSED` (`make trace-report GATE=M<n>`). An AT that is FAILED, NOT_IMPLEMENTED or SKIPPED fails the gate (ARCH-R105) |
 | UG-18 | Required CI evidence archived (milestone-gate workflow artefacts) |
 | UG-19 | Deferred items explicitly listed with their target milestone |
 | UG-20 | Milestone verification report approved by the owner |
@@ -363,15 +369,30 @@ A = applies. — = not applicable because the subsystem does not exist yet; the 
 
 ### 7.4 Integration rules and the milestone verification report
 
-**RMAP-R010** The gate runs `milestone-gate.yml` on a specific `main` commit. The report (`tests/reports/gate/M<n>/report.md`, archived as a workflow artefact for 90 days and linked from STATUS.md) records:
-- the commit SHA;
-- the dataset ID and seed hash (from M1);
-- the specification-set version (`specs/engineering/spec_set.yaml`);
-- the result of every `GATE-M<n>-nn` check and every applicable UG;
-- the trace report;
-- deferred items;
-- open defects;
-- the owner's approval line.
+**RMAP-R010** The gate runs `milestone-gate.yml` on a specific merged `main` commit and produces two files:
+- `tests/reports/gate/M<n>/report.json`, which **must validate against the `gateReport` definition** in `specs/engineering/engineering.schema.json` (`make specs-check GATE=M<n>` validates it);
+- `report.md`, rendered from the JSON.
+
+Both are archived as workflow artefacts for 90 days and linked from STATUS.md. The report records:
+
+| Evidence | Field | Source |
+|---|---|---|
+| Merged commit SHA (40 hex) | `mergedCommitSha` | The gate run input |
+| Approved specification-set version, and the PR that approved it | `specSet.version`, `specSet.approvedInPr` | `spec_set.yaml` at that commit |
+| Dataset ID, `as_of`, seed hash, seeded state | `dataset` | `meta` (from M1); "not seeded" before |
+| Fixture-set version: SHA-256 over the sorted paths and contents of `tests/fixtures/**`, plus the canonical-figures file hash | `fixtures` | Computed by the gate workflow |
+| Required CI results: the `ci/summary` conclusion and every job's applicability, conclusion and run URL | `ci` | The reused `ci.yml` run |
+| Results per suite, in the ARCH §10.8 vocabulary, with counts. Suites: backend unit, backend integration, frontend unit and component, integration (API, auth, AG-UI), Playwright E2E, agent mock, agent replay, database invariants, contracts, specs, security, ECharts gate, accessibility, replay golden, performance. `NOT_APPLICABLE` must cite its rule | `suites` | JUnit and `status.jsonl` |
+| Every `GATE-M<n>-nn` check and every universal criterion, with its result | `gateChecks`, `universalCriteria` | Gate run |
+| Trace summary: AT total, passed, failed, not implemented, skipped | `trace` | `trace-report GATE=M<n>` |
+| Defects: open `blocking` defects (must be empty for approval) and other open defects | `defects` | GitHub issues `DEF-nnnn` |
+| Approved exceptions in force or used during the milestone | `exceptions` | STATUS.md `EXC-nnn` |
+| Deferred items with their target milestone | `deferred` | Milestone plan |
+| The owner's decision, with date and reference | `approval` | Filled after review; `pending` until then |
+
+**RMAP-R014** The gate enforces everything applicable to the milestone's completed scope (ARCH-R105). That includes regression: the acceptance tests of every earlier milestone must still pass at M<n>'s gate. A gate is never passed on PR-level CI evidence alone.
+
+**RMAP-R015** No CF-3 or CF-4 contract element that depends on AG-UI SDK behaviour (spike items A1–A14) is frozen before the M0-T09 spike report is merged and reviewed (ARCH-R108).
 
 **RMAP-R011** No milestone is marked complete in STATUS.md before the owner approves its report.
 

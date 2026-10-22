@@ -52,15 +52,22 @@ concurrency:
   cancel_in_progress_on_pull_request: true
   cancel_in_progress_on_main: false
 
-# `runs_when` is evaluated on pull requests only. On push to main and in milestone-gate.yml every job runs.
-# A job that does not run because of `runs_when` reports "skipped"; ci/summary accepts a skip only when
-# the job's runs_when is false for the PR's changed files.
+# Applicability and fail-closed semantics: DEVELOPMENT_ENVIRONMENT.md §7.3 (DEVENV-R019, R020, R047–R050);
+# result vocabulary: ARCHITECTURE.md §10.8.
+# `runs_when` is evaluated on pull requests only. On push to main and in milestone-gate.yml every job is
+# applicable. `docs_only` means every changed file matches docs_only_candidates.
 jobs:
   - name: ci/changes
-    purpose: Classify changed files into path_categories; output flags for the other jobs.
+    purpose: Compute, for every job, whether it is applicable to this change, with the reasons; publish the result as job outputs and tests/reports/ci/applicability.json.
     runs_when: always
     needs: []
     targets: []
+    rules:
+      - "Input is the full diff between the PR head and its merge base (fetched with enough history). If the diff cannot be computed, every job is applicable."
+      - "A changed file that matches no category other than `tests` and is not a docs_only_candidate is treated as shared_contract, so every job is applicable (fail closed)."
+      - "A file in any shared_contract glob makes every job applicable."
+      - "Each job record holds: job, applicable (true/false), the categories that made it applicable, and the runs_when expression evaluated."
+      - "On push to main and on workflow_call (milestone gate), every job is applicable regardless of paths."
     timeout_minutes: 5
     make_ci: false
     blocking: true
@@ -207,9 +214,14 @@ jobs:
     targets: [trace-report]
     extra_steps: ["download JUnit and report artefacts of all jobs before running trace-report"]
     rules:
-      - Fails if any needed blocking job failed or was cancelled.
-      - Fails if a needed job was skipped although its runs_when is true for the changed files.
-      - ci/echarts-gate counts as blocking only when spec_set.yaml active_milestone is M2 or later.
+      - "Allow-list: a needed blocking job passes only with conclusion `success`. Any other conclusion fails the summary: `failure`, `cancelled` (which includes timeouts and lost runners), `timed_out`, `action_required`, `stale`, `neutral`, or an absent result."
+      - "A `skipped` conclusion is accepted only when the job is not applicable. The summary recomputes applicability itself from the same diff and ci_checks.yaml (scripts/ci/changes.py as a library). It fails if its recomputation differs from ci/changes's published record, or if ci/changes did not succeed."
+      - "Completeness: the summary reads ci_checks.yaml and fails if any job declared there (other than ci/summary) is missing from its needs list or from the workflow run."
+      - "Results: the summary reads every tests/reports/status.jsonl and JUnit artefact. It fails on any FAILED; on NOT_IMPLEMENTED outside the build window (ARCH-R103); and on SKIPPED without a recorded reason (ARCH-R104). Each NOT_APPLICABLE must name its rule."
+      - "Card rule: when the head branch names a task card (feat|fix|test|chore/m<n>-t<nn>-…), the summary runs trace-report CARD=M<n>-T<nn> and fails unless every AT of that card is PASSED (ARCH-R105)."
+      - "ci/echarts-gate is blocking only when spec_set.yaml active_milestone is M2 or later. Earlier, its result is reported but does not fail the summary."
+      - "If the summary job itself errors or is cancelled, the required check is not `success`, so GitHub blocks the merge (fail closed)."
+
     report: "$GITHUB_STEP_SUMMARY and tests/reports/ci-summary.md (DEVENV §7.6)"
     timeout_minutes: 5
     make_ci: false

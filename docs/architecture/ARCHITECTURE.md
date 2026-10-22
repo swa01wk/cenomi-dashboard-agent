@@ -631,6 +631,12 @@ It verifies the DX4-AGUI assumptions A1–A8 unchanged, plus A9–A14:
 
 A failed item does not fail the M0 gate. It must be reported, with a mapping recommendation, so that PR-M4 starts from verified facts.
 
+**ARCH-R108** The spike gates the freeze of every contract that depends on it. No CF-3 or CF-4 contract element whose shape depends on an item A1–A14 is frozen until both hold:
+- the spike report is merged and reviewed;
+- the element follows the spike-verified SDK behaviour.
+
+Affected elements include the run identity carriage, the event mapping, interrupt and resume, the cancellation signal and the replay endpoint. Where the spike contradicts the provisional representation in §8.6, PR-M4 adopts the verified mapping and records the deviation from DX4-AGUI in ADR-0010. The application semantics of §8.6 do not change.
+
 ### 8.5 Server and client state ownership for agent features
 
 | State | Authoritative owner | Client role |
@@ -639,6 +645,36 @@ A failed item does not fail the M0 gate. It must be reported, with a mapping rec
 | Analytical state per thread (focus entities, metrics, dataset refs, decisions) | Server (M3) | Displays; sends imports as explicit requests |
 | Selections inside a thread | Client `ThreadState`; sent with each run as a hint and re-validated by the server | Owns presentation |
 | Insight instances, versions, triage | Server, `insights` schema (M6) | Displays; actions carry `requestId` |
+
+### 8.6 Run outcomes versus transport events
+
+Two layers are kept separate.
+
+| Layer | Owner | Holds |
+|---|---|---|
+| **Application lifecycle** | `cenomi.agent.runtime`, M3 | The run's state (§8.1), its outcome, retries and answer versions. Persisted in the `agent` run ledger, whether or not a client is connected |
+| **Transport** | `cenomi.agui` and web `agui/`, M4 | The SSE connection, AG-UI events, `seq`, and the replay endpoint. It carries lifecycle facts to the client but never decides them |
+
+**ARCH-R106** The application lifecycle is authoritative. Lifecycle state and outcome are application fields written by the runtime, carried to the client in Cenomi payloads (STATE_* or `metadata`, per the spike), and reduced by the client from them. A client never infers a lifecycle state from transport behaviour such as the stream ending, a timeout or a missing event.
+
+**ARCH-R107** A transport condition never changes lifecycle state. A disconnected, slow or reconnecting client does not cancel, fail, retry or complete a run. The only client actions that change a run are explicit requests: cancel, retry this step, run again, a decision on a pending proposal or clarification, and re-run with current data.
+
+**Normative semantics.** The "Transport representation" column is **provisional**. It is the DX4-AGUI design with the AG-UI 1.0 candidates, confirmed or replaced by the spike items named, and frozen in CF-4 only under ARCH-R108.
+
+| Situation | Application lifecycle (normative) | Persisted | Transport representation (provisional) | Spike |
+|---|---|---|---|---|
+| Normal completion | COMPLETE. Outcome is the coverage class (`supported`, `derived`, `partial`, `related_only`, `unavailable`) | Run complete; immutable answer version | `RUN_FINISHED` (1.0 outcome type `success`) | A1 |
+| User cancellation (Stop) | CANCELLED, terminal, outcome `cancelled`. Completed tool results are kept; no partial narrative is shown. Run again is a new run | Run cancelled | Client aborts the stream and calls the idempotent `POST …/runs/{runId}/cancel`; server emits `RUN_ERROR` with code `CANCELLED` (DX4-AGUI). It is not an error to the user | A11 |
+| Awaiting approval: dashboard filter proposal (DR-025) | The analysis is already complete and is not changed by the decision. The proposal is pending until Apply or Dismiss; applying it changes only dashboard filters, with Undo on the card. Not an error, not a cancellation | Proposal record, `pending` → `applied` / `dismissed` | DX4: frontend tool call awaiting confirmation (A8), or the fallback "end the run with the proposal; confirmation starts a new run". 1.0 candidate: `RUN_FINISHED` outcome `interrupt` (reason `tool_call`), with the decision sent as a resume run | A8, A12 |
+| Awaiting input: clarification | CLARIFICATION_REQUIRED, terminal. Choosing an option starts a new run (DX4-Spec) | Run terminal with options | CUSTOM (choice) + `RUN_FINISHED` (DX4). 1.0 candidate: `interrupt` with reason `input_required` | A12 |
+| Transport disconnection | **No lifecycle change.** The run continues on the server and nothing is re-executed | Events persisted by `(runId, seq)` | The client reconnects with backoff and calls `GET …/runs/{runId}/events?after=lastSeq` (our endpoint, not AG-UI); duplicates are dropped by `(runId, seq)` | A4, A5, A7, A10 |
+| Tool failure | Automatic retry once for a timeout, inside the same run. If the node still fails it is marked Failed, the run continues, and it completes with a `partial` outcome plus an Unavailable statement for what is missing. Only a failure that prevents any answer ends the run as ERROR, code `TOOL` | Node attempts and errors | `TOOL_CALL_RESULT` carrying the error; `RUN_ERROR` code `TOOL` only for a run-ending failure | A3 |
+| Run failure | ERROR, codes `BUDGET` or `INTERNAL`. Output produced earlier stays visible. A verifier failure does not end the run: after one retry a deterministic template answer is used (DR-031) | Run error | `RUN_ERROR` with the code | A1 |
+| Retry: automatic tool retry | Same run, attempt counter | Node attempts | `TOOL_CALL_*` with the attempt shown | — |
+| Retry: retry this step | New run with `retryOf {runId, nodeId}`; only that node executes; `version = previous + 1`, `revises = previous runId`; v1 unchanged | New run, new answer version | New `RUN_STARTED` | — |
+| Retry: run again (after Stop or error) | New run, new `requestId`, same question and context snapshot | New run | New `RUN_STARTED` | — |
+| Resubmit (double-click, network retry) | Same `requestId` returns the existing run; nothing new is created (ARCH-R019) | — | Same `runId` | — |
+| Resume — three distinct meanings, never conflated | (a) **Thread resume**: opening history shows stored answers exactly as generated, with the dataset version; nothing executes; re-run with current data is an explicit new run (DXD-33). (b) **Decision resume**: continuing after a pending proposal or clarification is a new run carrying the decision. (c) **Stream reconnection**: see Transport disconnection | (a) Read only; (b) New run | (a) REST thread API (PR-M3); (b) a new AG-UI run (1.0 `resume` array if A12 confirms); (c) the replay endpoint | A12 |
 
 ---
 
@@ -790,6 +826,41 @@ Quarantined tests still run in the non-blocking job `ci/quarantine` and are list
 
 **ARCH-R091** Line coverage is measured and reported (pytest-cov, Vitest coverage) but is **not** a gate. The acceptance signal is AT traceability (UG-17) plus the golden suites. A percentage threshold would reward superficial tests and is not justified by any approved requirement. A milestone specification may introduce a per-module threshold with a stated reason.
 
+### 10.8 Result vocabulary and applicability
+
+**ARCH-R101** Every test, Make target, CI job and gate check reports exactly one of five results. No other word (such as "N/A", "ok" or "ignored") is used in reports.
+
+| Result | Meaning | Counts as success? |
+|---|---|---|
+| `PASSED` | Executed, and every assertion or check passed | Yes. The only success |
+| `FAILED` | Executed and failed, errored, crashed or timed out; **or** a required report is missing or unparseable | No. Always blocking |
+| `NOT_APPLICABLE` | Not required, **by an explicit rule** named in the record: (1) **milestone rule**: the item's `active_from` milestone is later than `active_milestone` in `specs/engineering/spec_set.yaml`; (2) **change rule**: on a pull request, the CI job's `runs_when` is false for the changed files (`ci_checks.yaml`, fail-closed per DEVENV §7.3); (3) **gate rule**: ROADMAP §7.2 marks the universal criterion "—" for the milestone | Neutral: neither pass nor fail. Never allowed for an item a rule makes applicable |
+| `NOT_IMPLEMENTED` | Required by the current scope, but the target is still a stub or the test does not exist. **A required acceptance test that has no executed test is NOT_IMPLEMENTED, never PASSED** | No. Blocking, except during the build window of ARCH-R103 |
+| `SKIPPED` | The test exists but did not execute: a pytest `skip`/`skipif`, a quarantined test deselected, a Vitest or Playwright `skip`/`fixme`, or a CI job that did not run | No. Never counts as success; see ARCH-R104 |
+
+**ARCH-R102** Recording:
+- Every Make target appends one JSON object per run to `tests/reports/status.jsonl`, with the fields `{"item", "kind": "target", "result", "rule", "reason", "milestone", "durationMs"}`.
+- Test results come from JUnit: pass → `PASSED`; failure or error → `FAILED`; skipped → `SKIPPED`.
+- `make trace-report` derives each acceptance test's result from these sources. An AT ID with no executed test is `NOT_IMPLEMENTED`.
+- A Make target returning `NOT_APPLICABLE` never satisfies an acceptance test.
+- Only the three rules of ARCH-R101 can make anything `NOT_APPLICABLE`. In particular, a skip marker in a test cannot.
+
+**ARCH-R103** The build window for `NOT_IMPLEMENTED`:
+- `active_milestone` is the milestone currently being built. It is advanced to M<n> in the commit that records the owner's build authorization for M<n>; it is M0 until then.
+- In ordinary PR and `main` CI, `NOT_IMPLEMENTED` is tolerated and reported only for items whose `active_from` equals `active_milestone`, so that milestone's cards can land one at a time.
+- It is blocking for any item whose `active_from` is earlier than `active_milestone`.
+- It is always blocking in gate mode.
+- A card's own acceptance tests are never in the window. Its PR must show all of them `PASSED` (ARCH-R105).
+
+**ARCH-R104** `SKIPPED` in ordinary CI is allowed only with a recorded reason: a quarantine record (ARCH-R088), or a job not applicable under the change rule. It is listed in the CI summary. In gate mode, any `SKIPPED` acceptance test of the gated scope fails the gate.
+
+**ARCH-R105** Completion rules:
+
+| Scope | Rule |
+|---|---|
+| **Card** | A card is complete only when `make trace-report CARD=<card-id>` shows every one of its AT IDs `PASSED` on the PR's CI run. `ci/summary` enforces this for branches named after a card |
+| **Milestone gate** (`GATE=M<n>`) | The gate enforces everything applicable to the completed scope, including regression. That is: every AT ID of every card of M0…M<n>, every Make target with `active_from ≤ M<n>`, and every universal criterion applicable under ROADMAP §7.2 must be `PASSED`. Any `FAILED`, `NOT_IMPLEMENTED`, `SKIPPED` or quarantined item among them fails the gate. `NOT_APPLICABLE` is accepted only where the gate rule marks it |
+
 ---
 
 ## 11. Sources of truth and contract compatibility
@@ -842,7 +913,13 @@ Quarantined tests still run in the non-blocking job `ci/quarantine` and are list
 - `specs/traceability/id_conventions.yaml`;
 - JUnit reports and test annotations.
 
-It writes `tests/reports/trace/trace.json` and a Markdown summary. It fails in gate mode (`GATE=M<n>`) when an AT ID of that milestone has no passing test, when a test cites an unknown ID, or when an ID matches no family.
+It writes `tests/reports/trace/trace.json` and a Markdown summary, recording each AT ID's result in the vocabulary of §10.8. It has three modes, and in every mode it fails when a test cites an unknown ID or an ID matches no family:
+
+| Mode | Fails when |
+|---|---|
+| Default | Only the ID checks above |
+| `CARD=<card-id>` | Any AT ID of that card is not `PASSED` |
+| `GATE=M<n>` | Any AT ID of the cards of M0…M<n> is not `PASSED` (ARCH-R105) |
 
 ---
 
@@ -918,8 +995,8 @@ The acceptance tests are defined in `plans/M0_FOUNDATION.md`.
 | ARCH-R035, 036, 038–040, 044, 053–055 | M0-T04 |
 | ARCH-R075, 076 | M0-T09 |
 | ARCH-R077–081 | M0-T06 |
-| ARCH-R083–091, 094, 095 | M0-T10, M0-T11 |
+| ARCH-R083–091, 094, 095, 101–105 | M0-T07, M0-T10, M0-T11 |
 | ARCH-R092, 093 | M0-T05, M0-T07, M0-T10 |
 | ARCH-R096–099 | M0-T03, M0-T07, M0-T11 |
 
-ARCH-R003, 017, 018, 047–052, 066–074, 082, 100 are verified in their delivering milestones (M2–M6).
+ARCH-R003, 017, 018, 047–052, 066–074, 082, 100 and 106–107 are verified in their delivering milestones (M2–M6). ARCH-R108 is verified at the PR-M3 and PR-M4 reviews, which check that the spike report is merged before CF-3 and CF-4 freeze.

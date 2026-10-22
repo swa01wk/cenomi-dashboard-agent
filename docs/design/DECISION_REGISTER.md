@@ -244,5 +244,79 @@ Engineering decisions fix how the approved design is built. They never reopen a 
 | ED-10 | AG-UI version pin | Proposed | A recommended: AG-UI 1.0; B: last 0.x | — (ADR-0010) | PR-M4 |
 | ED-11 | Evaluation scoring (resolves DR-036) | Proposed | A recommended: deterministic 100% + LLM judge + ≥ 20% human spot-check; B: deterministic + human only | — (ADR-0014) | PR-M5 |
 
+### 5.1 Proposed Option A definitions for ED-07, ED-08 and ED-09 (for owner approval)
+
+**Status: Proposed. Not approved.** These are the exact texts that would be recorded in ADRs if the owner approves Option A. Approving one also makes the M0 sections already written to it normative. Choosing Option B changes only the sections listed under "If B is chosen".
+
+#### ED-07 — POC sign-in
+
+**Option A (proposed decision text)**
+
+1. The POC has no passwords, no user table and no identity provider. A principal signs in by choosing a fixture principal on `/sign-in`. The fixture principals are defined in `tests/fixtures/principals.yaml` and validated against `principal.v1` at startup.
+2. `POST /api/v1/auth/dev/sign-in {principalId}` issues a session cookie named `cenomi_session`:
+   - the payload is `{principalId, issuedAt, expiresAt}`;
+   - it is signed with HMAC-SHA256 (Python standard library) using `SESSION_SECRET` (at least 32 bytes) and verified in constant time;
+   - the time-to-live is `SESSION_TTL_MINUTES` (default 480);
+   - attributes are `HttpOnly`, `SameSite=Lax`, `Path=/`, and `Secure` when served over HTTPS.
+3. `GET /api/v1/me` returns the principal. `POST /api/v1/auth/sign-out` clears the cookie. An unknown principal, or a tampered or expired cookie, is refused: `404 NOT_AVAILABLE` at sign-in, `401 UNAUTHENTICATED` elsewhere.
+4. The sign-in routes are mounted only when `AUTH_MODE=dev_fixture` and `CENOMI_ENV` is `dev`, `test` or `ci`. Any other combination refuses to start (ARCH-R026).
+5. Roles and permissions remain backend-enforced (DR-019). The browser never reads the cookie. The demo persona switch is sign-out followed by sign-in.
+6. Out of scope: real authentication, multi-factor authentication, account management, single sign-on.
+
+**Affects:** ARCHITECTURE §5.4 (auth routes), §6.6; M0-T06; M0-T04 (`/sign-in`); `.env.example`.
+
+**If B is chosen** (username and password table):
+- M0-T06 is rewritten: an `app_users` table with password hashes, a hashing dependency, a login form, and password policy and lockout rules;
+- ARCHITECTURE §6.6 and the sign-in route change;
+- the cookie boundary stays.
+
+#### ED-08 — Model determinism in tests
+
+**Option A (proposed decision text)**
+
+1. There are three model-provider kinds behind one adapter (ARCHITECTURE §8.2):
+
+   | Kind | Behaviour | Where used |
+   |---|---|---|
+   | `mock` | Scripted responses declared inside a test | Always allowed |
+   | `replay` | Recorded live responses | CI and E2E |
+   | `live` | The configured provider and models (GDQ-12) | Manual runs only |
+
+2. Replay recordings are keyed by the SHA-256 of a normalized request: model role, prompt template ID and version, structured-output schema ID, messages, tool list and decoding parameters. Provider-specific transport fields are excluded.
+3. Each recording is stored as one JSON file under `LLM_REPLAY_DIR` (default `tests/fixtures/llm-replay/`). The file carries the response, provider, model, recording time and the commit it was recorded at.
+4. **A replay miss is an error, never a fallback to a live call.** Changing a prompt template version therefore forces an explicit re-recording.
+5. Recordings are produced only by `make agent-test-live RECORD=1`, which is manual, budget-limited and uses separate credentials. They are committed only through a reviewed PR.
+6. CI (`ci/agent`, `ci/e2e`) runs with `LLM_MODE=replay` and has no model credential. The live model is measured only through `eval-live.yml` or `make agent-test-live`, and is never a required check.
+
+**Affects:** ARCHITECTURE §8.2, §10.2 (areas F and G), §10.5; `ci_checks.yaml` (`LLM_MODE=replay`); `make_targets.yaml` (`agent-test-replay`, `agent-test-live RECORD`); ADR-0009 (PR-M3); M0-T07 (`eval-live.yml` skeleton); M0-T11 (markers).
+
+**If B is chosen** (CI calls the live model):
+- CI needs a model secret, which conflicts with DEVENV-R027 for PR workflows unless they are restricted to non-fork branches;
+- results become non-deterministic and cost money per run;
+- the replay rows above are removed.
+
+Note: the approved testing requirements (mock and replay tests must not depend on live APIs, and live tests must be opt-in) already require the substance of Option A.
+
+#### ED-09 — Styling approach
+
+**Option A (proposed decision text)**
+
+1. Component styles are CSS Modules (`*.module.css`), co-located with their component.
+2. Global CSS is limited to a reset, base typography and the token variables.
+3. Design tokens are defined once, in `specs/design/tokens.json` (PR-M2, Ink & Violet, DXD-01). `make codegen` generates:
+   - `apps/web/src/styles/tokens.css` (CSS custom properties);
+   - `packages/viz/src/tokens.ts` (TypeScript constants for ECharts colours and sizes);
+
+   both are GENERATED and drift-checked.
+4. There is no UI kit, no Tailwind and no runtime CSS-in-JS. Theming, including the optional later Night Operations theme, swaps variable sets only.
+5. In M0, the shell uses a minimal provisional stylesheet `apps/web/src/styles/shell.css` with neutral variables, replaced by the generated tokens in M2.
+
+**Affects:** ARCHITECTURE §6.1 (`styles/`); ADR-0003 (styling row); M0-T04; DESIGN_SYSTEM (PR-M2).
+
+**If B is chosen** (Tailwind):
+- Tailwind and PostCSS dependencies are added, with a Tailwind theme generated from `tokens.json`;
+- utility classes replace CSS Modules;
+- M0-T04 and ADR-0003 change.
+
 Configuration (not a decision): GDQ-12 provider, primary and fallback model names and the API key — before slice day 3 and before the M0-T09 latency sample can be taken; never committed.
 

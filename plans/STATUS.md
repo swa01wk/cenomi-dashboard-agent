@@ -1,6 +1,6 @@
 # STATUS — Cenomi Dashboard Intelligence Agent POC
 
-Updated: 2026-10-22 (PR-M0 opened for review as [PR #2](https://github.com/swa01wk/cenomi-dashboard-agent/pull/2)).
+Updated: 2026-10-22 (PR-M0 = [PR #2](https://github.com/swa01wk/cenomi-dashboard-agent/pull/2), revision 2 after the owner's review: ROADMAP A-19…A-24).
 
 | | |
 |---|---|
@@ -28,8 +28,8 @@ Updated: 2026-10-22 (PR-M0 opened for review as [PR #2](https://github.com/swa01
 | Phase | **Specification authoring** — M0 specifications in review |
 | Current milestone | **M0 Foundation**: specifications **In review** (PR-M0 = PR #2, branch `docs/m0-foundation-specs`); build **Not started, not authorized** |
 | Migration | **Complete.** PR #1 merged into `main` on 2026-10-22 at `d5db7f3`; 214/214 handoff hashes verified |
-| Engineering Specification Plan | **Approved 2026-10-22**, subject to the owner's refinements. Recorded as `plans/ROADMAP.md` v1.0 with amendments A-01 to A-18. The proposed draft is kept unchanged in `plans/proposed/` |
-| Next gate | Owner review and merge of PR-M0 (CF-0) → decisions on ED-07, ED-08, ED-09 → explicit M0 build authorization |
+| Engineering Specification Plan | **Approved 2026-10-22**, subject to the owner's refinements. Recorded as `plans/ROADMAP.md` v1.0 with amendments A-01 to A-18, plus A-19 to A-24 from the owner's review of PR #2. The proposed draft is kept unchanged in `plans/proposed/` |
+| Next gate | Owner merges PR-M0 (CF-0) → decides ED-07, ED-08, ED-09 (exact Option A texts in `docs/design/DECISION_REGISTER.md` §5.1) → approves EXC-001 → applies protection stage P1 → explicit M0 build authorization |
 | Implementation | **Not started.** No application code, migrations, packages, CI or Makefile exist |
 
 ## Completed and approved work
@@ -49,7 +49,7 @@ Updated: 2026-10-22 (PR-M0 opened for review as [PR #2](https://github.com/swa01
 
 | Milestone | Specs PR | Spec state | Build state | Slice cards | Gate | Blocked by |
 |---|---|---|---|---|---|---|
-| M0 Foundation | PR-M0 (items 1–12) | **In review** | Not started — not authorized | All M0 cards except M0-T09 (built before slice day 1, ED-06 A) | GATE-M0-01…14 (`plans/M0_FOUNDATION.md` §6) | PR-M0 merge; ED-07, ED-08, ED-09; build authorization |
+| M0 Foundation | PR-M0 (items 1–12) | **In review** | Not started — not authorized | All M0 cards except M0-T09 (built before slice day 1, ED-06 A) | GATE-M0-01…14 (`plans/M0_FOUNDATION.md` §6) | PR-M0 merge; ED-07, ED-08, ED-09; EXC-001; protection P1; build authorization |
 | M1 Data | PR-M1 (13–21) | Not started | Not started | Days 1–2 | Seed hash reproducible; GI 51/51; canonical figures; snapshots = parity | PR-M0 merged (CF-0) |
 | M2 Metrics and dashboards | PR-M2 (22–26) | Not started | Not started | Days 2–3 | Golden tests; card = records totals; ECharts gate | PR-M1 (CF-1) |
 | M3 Agent runtime | PR-M3 (27–31) | Not started | Not started | Day 3 | Verifier; J1–J10 on replay; budgets | PR-M2 (CF-2); GDQ-12 configuration |
@@ -88,7 +88,7 @@ Updated: 2026-10-22 (PR-M0 opened for review as [PR #2](https://github.com/swa01
 | 8 | `specs/contracts/` bootstrap (6 files); `specs/engineering/` (4 files); `specs/traceability/id_conventions.yaml` | In review | PR-M0 | — |
 | 9 | `AGENTS.md`, `.cursor/rules/*.mdc` (7 files) | In review | PR-M0 | — |
 | 10 | `plans/ROADMAP.md` | In review (records the approved ESP) | PR-M0 | — |
-| 11 | `plans/M0_FOUNDATION.md` (M0-T01…T11, 81 acceptance tests, GATE-M0-01…14) | In review | PR-M0 | — |
+| 11 | `plans/M0_FOUNDATION.md` (M0-T01…T11, 83 acceptance tests, GATE-M0-01…14) | In review | PR-M0 | — |
 | 12 | `plans/STATUS.md` | This file | PR-M0 | — |
 | 13–21 | DATABASE_SCHEMA, metric YAML (including the Properties set, ROADMAP A-09; T-31206 action items, A-10), KPI_CATALOG, permissions, SYNTHETIC_DATA_STRATEGY, scenarios, golden fixtures, ADR 0007/0008/0012, M1 plan | Not started | PR-M1 | OI-04, 05, 06, 14 |
 | 22–26 | API_CONTRACTS, DESIGN_SYSTEM + tokens, card specs (PRODUCT_SPEC Appendix A), ADR-0011, M2 plan | Not started | PR-M2 | ECharts result; ED-09 |
@@ -113,9 +113,9 @@ Updated: 2026-10-22 (PR-M0 opened for review as [PR #2](https://github.com/swa01
 
 | ID | Decision | Recommended | Needed before | Owner |
 |---|---|---|---|---|
-| **ED-07** | POC sign-in: dev fixture principal with a signed httpOnly cookie | A | **M0 build** | Owner |
-| **ED-08** | Model determinism: replay provider in CI, live runs manual (the approved test requirements already require this behaviour) | A | **M0 build** | Owner |
-| **ED-09** | Styling: CSS Modules plus token CSS variables | A | **M0 build** | Owner |
+| **ED-07** | POC sign-in: dev fixture principal with a signed httpOnly cookie (exact text: DECISION_REGISTER §5.1) | A | **M0 build** | Owner |
+| **ED-08** | Model determinism: mock, replay in CI, live manual only (exact text: DECISION_REGISTER §5.1; the approved test requirements already require this behaviour) | A | **M0 build** | Owner |
+| **ED-09** | Styling: CSS Modules plus token CSS variables (exact text: DECISION_REGISTER §5.1) | A | **M0 build** | Owner |
 | ED-10 | AG-UI 1.0 pin (spike to confirm; see the correction in ROADMAP A-13) | A | PR-M4 | Owner |
 | ED-11 | DR-036 evaluation scoring | A | PR-M5 | Owner |
 | DR-036 | Evaluation scoring (the register's only open decision) | via ED-11 | PR-M5 | Owner |
@@ -123,6 +123,12 @@ Updated: 2026-10-22 (PR-M0 opened for review as [PR #2](https://github.com/swa01
 **Configuration (not decisions):**
 - GDQ-12: provider, primary and fallback model names, API key. Needed before slice day 3; optional for the M0 spike item L1. Stored as a secret, never committed.
 - Live-evaluation credentials (`LIVE_EVAL_LLM_API_KEY`), separate from development keys.
+
+## Exceptions (DEVENV-R051)
+
+| ID | Scope | Reason | Compensating controls | Expires | State |
+|---|---|---|---|---|---|
+| EXC-001 | Merges of M0-T01, M0-T03, M0-T11 and M0-T10 under protection stage P1, before `ci/summary` exists | These cards build the tooling CI runs; GitHub cannot require a check that has never reported | Each PR pastes local `make check` output and its AT results. The M0-T07 PR's CI must show `trace-report CARD=…` all `PASSED` for the four cards before stage P2 is enabled | When stage P2 is in force | **Proposed — awaiting the owner's approval** |
 
 ## Open questions (non-blocking)
 
@@ -159,7 +165,7 @@ Updated: 2026-10-22 (PR-M0 opened for review as [PR #2](https://github.com/swa01
 | B-04 | OI-13: the DX5-GenUI "overdue" wording fix exists in the exported boards only | Architect | 2026-10-22 | Exported boards are authoritative; no action |
 | B-05 | PR-M0 awaiting owner review and merge | Owner | 2026-10-22 | Review PR-M0 |
 | B-06 | ED-07, ED-08, ED-09 undecided (block the M0 build, not the M0 specs) | Owner | 2026-10-22 | Pick values |
-| B-07 | `main` has no branch protection; DEVENV §8.4 settings not applied | Owner | 2026-10-22 | Apply before GATE-M0-10, or record a deviation |
+| B-07 | `main` has no branch protection. Stage P1 (DEVENV §8.4) is required before the first implementation PR merges, and P2 right after M0-T07 merges. Required approving reviews must be 0, because PRs are authored under the owner's account and GitHub forbids self-approval; the owner's merge is the approval (DEVENV-R039) | Owner | 2026-10-22 | Apply P1 before authorizing the M0 build; approve or reject EXC-001 |
 | R-01 | Scope squeezed into five days | Owner, Architect | GD | Keep slice and full scope separate (ROADMAP §8) |
 | R-02 | Seed or metric drift from the canonical figures | Developer | GD | GI invariants and replay hash in CI |
 | R-04 | Ungrounded numbers or causal wording | Developer | GD | Fact tokens, verifier, banned-term lint |
@@ -172,7 +178,7 @@ The full risk register is in `docs/reference/final-design-gate/08_OPEN_ISSUES_AN
 
 1. Owner reviews PR-M0 (`docs/m0-foundation-specs`). Claude revises it in the same PR on comments. The owner merges, and CF-0 is recorded as frozen.
 2. Owner decides ED-07, ED-08 and ED-09. Claude records each in an ADR (DSYS ADR for ED-09 in PR-M2; ADR-0009 groundwork for ED-08).
-3. Owner applies the DEVENV §8.4 repository settings, or records a deviation.
+3. Owner approves or rejects EXC-001 and applies protection stage P1 (DEVENV §8.4) before the first implementation PR merges. P2 follows immediately after M0-T07 merges.
 4. Owner explicitly authorizes the M0 build (ADR-0015 §3). Composer implements M0-T01…T11 one card per PR; the M0-T09 spike report merges through a docs PR.
 5. In parallel with the M0 build, once PR-M0 has merged: Claude authors PR-M1 (`docs/m1-…`).
 6. GATE-M0 runs on the merged `main` commit; owner approves the M0 verification report.

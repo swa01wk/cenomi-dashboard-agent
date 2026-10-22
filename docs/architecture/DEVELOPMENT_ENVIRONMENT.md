@@ -111,7 +111,7 @@ It does not cover:
 |---|---|
 | **DEVENV-R011** | The root `Makefile` is the only supported developer and CI interface. Its targets, arguments, prerequisites, behaviour, failure codes and safety rules are exactly those of `specs/engineering/make_targets.yaml`. `make help` prints the targets in that file's order, and `make specs-check` fails if they differ |
 | **DEVENV-R012** | Exit codes: `0` success; `1` check or test failure; `2` refused by a guard or bad arguments; `3` missing prerequisite |
-| **DEVENV-R013** | **Not-yet-active targets.** A target whose `active_from` milestone has not been built prints `N/A: <target> becomes active in M<n> — <reason>`, appends the line to `tests/reports/na.txt` and exits 0. This keeps one stable interface from M0 without pretending checks exist. `ci/summary` lists every N/A line. In gate mode (`GATE=M<n>`), `specs-check` fails if any target with `active_from ≤ M<n>` still reports N/A |
+| **DEVENV-R013** | **Result reporting.** Every target reports exactly one result in the ARCHITECTURE §10.8 vocabulary and appends it to `tests/reports/status.jsonl`. **A target whose `active_from` is later than `active_milestone` reports `NOT_APPLICABLE`** (milestone rule) and exits 0. **A target that is due but still a stub reports `NOT_IMPLEMENTED`**; it exits 0 only inside the build window of ARCH-R103 and 1 otherwise. Neither result ever satisfies an acceptance test, and `ci/summary` lists both. In gate mode (`GATE=M<n>`), every target with `active_from ≤ M<n>` must report `PASSED` |
 | **DEVENV-R014** | **Safety.** `check` is non-destructive and needs no database. `ci` may recreate only `cenomi_test`. `db-downgrade`, `seed-reset` and `down VOLUMES=1` are destructive: they call the guards of ARCH-R064 and require `CONFIRM=yes` or interactive confirmation. `db-downgrade` and `agent-test-live` are never run by `check` or `ci` |
 | **DEVENV-R015** | Targets contain orchestration only (calls to `uv run cenomi …`, `uv run pytest …`, `pnpm …`, `docker compose …`, or scripts in `scripts/`). Logic lives in code that has tests |
 
@@ -177,7 +177,7 @@ Rendered from `specs/engineering/make_targets.yaml`. The YAML wins on conflict. 
 |---|---|---|---|---|---|---|---|
 | `agent-test-mock` | M3 | no | Agent runtime tests with the scripted mock model provider (no network, no recordings). | — | Exit 1 on any failed test. | no | `ci/agent` |
 | `agent-test-replay` | M3 | no | Golden analytical cases on the replay provider against a seeded cenomi_test. | `SET` (slice) | Exit 1 on any failed deterministic check. | no | `ci/agent` |
-| `agent-test-live` | M3 | no | Live-model evaluation with budgets. Never part of check or ci. *Safety:* Spends money. Separate credentials. Manual only. | `SET` (slice) | Exit 2 if a control is missing; exit 1 if the run cannot complete; quality results are reported, not pass/fail, until EVALUATION_PLAN sets thresholds (PR-M5). | no | — |
+| `agent-test-live` | M3 | no | Live-model evaluation with budgets. Never part of check or ci. *Safety:* Spends money. Separate credentials. Manual only. | `SET` (slice); `RECORD` (0) | Exit 2 if a control is missing; exit 1 if the run cannot complete; quality results are reported, not pass/fail, until EVALUATION_PLAN sets thresholds (PR-M5). | no | — |
 
 **Contracts and integration**
 
@@ -193,7 +193,7 @@ Rendered from `specs/engineering/make_targets.yaml`. The YAML wins on conflict. 
 
 | Target | Active from | Destructive | Summary | Arguments (default) | Failure | In `check` | CI jobs |
 |---|---|---|---|---|---|---|---|
-| `trace-report` | M0 | no | Build the requirement → test trace report from milestone plans and test reports. | `GATE` (—) | Without GATE: exit 1 only for unknown or malformed IDs. With GATE: also for uncovered or failing AT IDs. | no | `ci/specs`, `ci/summary` |
+| `trace-report` | M0 | no | Build the requirement → test trace report from milestone plans and test reports. | `CARD` (—); `GATE` (—) | Always exit 1 for unknown or malformed IDs. With CARD or GATE: also exit 1 for any in-scope AT that is FAILED, NOT_IMPLEMENTED or SKIPPED. | no | `ci/specs`, `ci/summary` |
 | `security-check` | M0 | no | Secret scan, dependency audit and licence report. | — | Exit 1 listing each finding (secret values are redacted). | no | `ci/security` |
 | `echarts-gate` | M0 | no | Run the DX3 gallery self-test on a local, version-pinned ECharts 5.6.0 (GDQ-06) and record the result. | — | M0–M1: exit 0 and record the result (informational). From M2: exit 1 if any ECharts row fails and the DXD-23 fallback is not recorded for that chart (GDQ-06, DXD-21). | no | `ci/echarts-gate` |
 | `replay` | M6 | no | Insight checkpoint replay to as_of and golden comparison. | `SET` (slice) | Exit 1 on any difference. | no | `ci/integration` |
@@ -270,7 +270,7 @@ Rendered from `specs/engineering/ci_checks.yaml`. The YAML wins on conflict.
 <!-- BEGIN GENERATED: ci_jobs (source: specs/engineering/ci_checks.yaml) -->
 | Job (stable name) | Runs when (PR) | Needs | Make targets | Timeout (min) | Blocking | Purpose |
 |---|---|---|---|---|---|---|
-| `ci/changes` | `always` | — | — | 5 | yes | Classify changed files into path_categories; output flags for the other jobs. |
+| `ci/changes` | `always` | — | — | 5 | yes | Compute, for every job, whether it is applicable to this change, with the reasons; publish the result as job outputs and tests/reports/ci/applicability.json. |
 | `ci/static` | `not docs_only` | `ci/changes` | `doctor`, `backend-lint`, `backend-typecheck`, `frontend-lint`, `frontend-typecheck` | 15 | yes | Formatting, lint, type checks, lockfile validation, toolchain check, quarantine expiry. |
 | `ci/specs` | `always` | `ci/changes` | `specs-check`, `trace-report` | 10 | yes | Specification and engineering-metadata validation; non-gate trace report. |
 | `ci/contracts` | `backend or frontend or shared_contract` | `ci/changes` | `contracts-check` | 10 | yes | Generated artefacts current; schema subset; examples valid; Pydantic = schema. |
@@ -306,11 +306,22 @@ Required check: `ci/summary`. Runner `ubuntu-24.04`.
 
 The rationale for the shared-contract row: a shared change can affect several components, and its consumers are never skipped (ARCH-R093).
 
-**DEVENV-R020** `ci/summary` is the only required check. It fails when:
-- any blocking job failed or was cancelled; or
-- a job was skipped although its `runs_when` was true.
+**DEVENV-R020** `ci/summary` is the only required check, and it **fails closed**. The exact rules are in `ci_checks.yaml` under `ci/summary.rules`. In summary, it passes only when all of the following hold:
+- every applicable blocking job concluded `success` (failed, cancelled, timed-out, missing and every other conclusion fail it);
+- every `skipped` job was genuinely not applicable;
+- its own job list is complete;
+- no report contains a result that the vocabulary rules make blocking.
 
 Path optimization therefore cannot hide a failure.
+
+**Fail-closed applicability (how a job is judged applicable).**
+
+| # | Rule |
+|---|---|
+| **DEVENV-R047** | Applicability is computed once per run by `ci/changes` from the full PR diff against its merge base and the `path_categories` of `ci_checks.yaml`, and published as `tests/reports/ci/applicability.json`. On push to `main` and in the milestone gate, every job is applicable |
+| **DEVENV-R048** | Uncertainty resolves towards running checks. If the diff cannot be computed, every job is applicable. A changed file that matches no category (other than `tests`) and is not specification-only is treated as a shared-contract change, so every job is applicable |
+| **DEVENV-R049** | **Shared-contract consumers.** Any change to a `shared_contract` path (`specs/**`, `backend/src/cenomi/contracts/**`, `packages/contracts-ts/**`, `scripts/**`, `Makefile`, Compose files, `.github/**`, `infra/**`, `.env.example`, manifests and lockfiles, toolchain pins) makes **every** job applicable. The POC does not keep a per-contract consumer list, because a missed consumer would be a silent failure. Running every consumer is the simple fail-closed choice, and the cost is bounded by §7.5 |
+| **DEVENV-R050** | `ci/summary` does not trust `ci/changes` alone. It recomputes applicability with the same library and fails on any disagreement, or if `ci/changes` did not succeed. It also fails if any job declared in `ci_checks.yaml` is absent from the run |
 
 ### 7.4 Reliability
 
@@ -349,7 +360,7 @@ Path optimization therefore cannot hide a failure.
 | 1 | Commit SHA |
 | 2 | Specification-set version (`spec_set.yaml`) |
 | 3 | Dataset ID and seed hash (from M1; "not seeded" before) |
-| 4 | Each job with its status and duration, and N/A targets with their reasons |
+| 4 | Each job with its applicability (and reason), conclusion and duration; every target or test reported `NOT_APPLICABLE` (with its rule), `NOT_IMPLEMENTED` or `SKIPPED` (with its reason) |
 | 5 | Backend, frontend and integration test counts (passed, failed, skipped, quarantined) from JUnit |
 | 6 | Agent mock and replay results (M3+) |
 | 7 | Database invariant and canonical-figure results (M1+) |
@@ -407,26 +418,48 @@ A specification PR uses the same headings, with the ESP tab 6 self-review checkl
 | # | Rule |
 |---|---|
 | **DEVENV-R036** | No direct commits to `main`. Every change arrives by PR |
-| **DEVENV-R037** | No merge while `ci/summary` is failing or pending |
+| **DEVENV-R037** | No merge while `ci/summary` is failing or pending. Before `ci/summary` exists (until M0-T07 merges), the only allowed merges are those covered by an approved exception (EXC-001, §8.4) |
 | **DEVENV-R038** | Squash merge. The squash title is `<card-id>: <title>` (or `docs: …` for specification PRs) |
-| **DEVENV-R039** | Review is required. **Only the project owner approves and merges** (ADR-0001). Composer and Claude never merge |
+| **DEVENV-R039** | Review is required. **Only the project owner approves and merges** (ADR-0001). Composer and Claude never merge. PRs are opened under the owner's GitHub account, and GitHub does not allow an author to approve their own PR. The owner's approval is therefore given by the owner merging the PR after review, not by a GitHub "approving review" (§8.4) |
 | **DEVENV-R040** | All review conversations are resolved before merge |
 | **DEVENV-R041** | The branch is validated against the latest `main` (rebased or merged-in, with a fresh CI run) before merge |
 | **DEVENV-R042** | No force-push to `main`, and no rewriting of published history. Force-pushing a feature branch before review is allowed |
 | **DEVENV-R043** | Completed milestone evidence (gate reports, ADRs, STATUS entries) is never deleted |
 
-### 8.4 Repository settings to apply (specified; not applied by Claude)
+### 8.4 Repository protection (an M0 implementation requirement; specified, not applied by Claude)
 
-**DEVENV-R044** These settings are required by GATE-M0-10. As of 2026-10-22, `main` has **no protection**. Applying them needs the project owner, or the owner's explicit authorization to Claude. Claude does not change repository administration settings without that authorization.
+**DEVENV-R044** Branch protection and the required-check rules are **an M0 implementation requirement, not a gate-time formality**. As of 2026-10-22, `main` has **no protection**. Applying it needs the project owner, or the owner's explicit authorization to Claude. Claude does not change repository administration settings during documentation work, and does not change them at all without that authorization.
+
+The protection is applied in two stages, because the required check `ci/summary` cannot exist until M0-T07 has merged. GitHub blocks a PR forever on a required check that never reports.
+
+| Stage | When it must be in force | Setting (ruleset on `main`, no bypass actors) |
+|---|---|---|
+| **P1 — before any implementation PR merges** | Before the first M0 task-card PR merges. A condition of the M0 build authorization (`plans/M0_FOUNDATION.md` §8) | Require a pull request before merging. **Required approving reviews: 0** (see DEVENV-R039; all PRs are authored by the owner's account). Require conversation resolution. Block force pushes. Block deletion. Allow squash merge only, and delete head branches after merge |
+| **P2 — required check** | Immediately after the M0-T07 PR merges and `ci/summary` has reported `success` on `main`; before any further PR merges | P1, plus: require status check `ci/summary`, strict (branch up to date with `main`) |
+
+Settings applied together with P1:
 
 | Setting | Value |
 |---|---|
-| Ruleset or branch protection on `main` | Require a pull request; require 1 approving review; dismiss stale approvals on new commits; require conversation resolution; require status check `ci/summary` (strict, up to date with `main`); block force pushes; block deletion; linear history (squash only) |
-| Merge methods | Squash only; delete head branches after merge |
-| Actions | Allow only actions pinned by SHA (or the owner's allow-list); workflow default token permission read-only; forks cannot access secrets |
-| Environment `live-eval` | Required reviewer: the project owner; deployment branches limited to `main` and this repository's branches; secret `LIVE_EVAL_LLM_API_KEY` stored only here |
+| Actions | Allow only actions pinned by SHA (or the owner's allow-list); default workflow token permission read-only; fork PRs get no secrets |
+| Environment `live-eval` | Required reviewer: the project owner; deployment branches limited to `main` and this repository's branches; secret `LIVE_EVAL_LLM_API_KEY` stored only here. May be created when M3 starts |
 | Secret scanning and push protection | Enabled (the repository is public) |
-| Dependabot alerts | Enabled. Dependabot **version-update PRs** are disabled; upgrades follow the CR rule of ADR-0003 |
+| Dependabot alerts | Enabled. Dependabot **version-update PRs** disabled; upgrades follow the CR rule of ADR-0003 |
+
+**DEVENV-R051** **Exceptions.** A merge that the rules above would not allow is permitted only under an exception approved by the owner. The exception is recorded as `EXC-nnn` in `plans/STATUS.md` with:
+- the scope (which PRs or cards);
+- the reason;
+- the compensating controls;
+- an expiry condition;
+- the approval date.
+
+An unrecorded deviation fails GATE-M0-10.
+
+**EXC-001 (Proposed, awaiting the owner's approval).** M0-T01, M0-T03, M0-T11 and M0-T10, which build the tooling that CI itself runs, may merge under stage P1 before `ci/summary` exists. Compensating controls:
+- each PR pastes local `make check` output and the card's AT results;
+- the M0-T07 PR's CI run must pass `trace-report CARD=…` for those four cards before stage P2 is enabled.
+
+EXC-001 expires when P2 is in force. M0-T07 itself merges under P1 after its own PR run shows `ci/summary` `success`.
 
 ### 8.5 Commit messages
 
@@ -469,6 +502,6 @@ A specification PR uses the same headings, with the ESP tab 6 self-review checkl
 |---|---|
 | DEVENV-R001–R015 | M0-T01, M0-T02, M0-T10 |
 | DEVENV-R016, R017 | M0-T02, M0-T03, M0-T04 |
-| DEVENV-R018–R031 | M0-T07, M0-T11 |
-| DEVENV-R032–R045 | M0-T10; GATE-M0-10 |
+| DEVENV-R018–R031, R047–R050 | M0-T07, M0-T11 |
+| DEVENV-R032–R045, R051 | M0-T10; GATE-M0-10 |
 | DEVENV-R046 | M0-T10 (issue template) |

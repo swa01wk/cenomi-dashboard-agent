@@ -224,3 +224,12 @@ families:
     origin: existing
     source: Project Restoration and Engineering Readiness Assessment (22 Oct 2026)
     pattern: '^G-[1-9]$'
+  - id: approved_exception
+    origin: new
+    description: An owner-approved exception to a delivery rule (DEVENV-R051), recorded in plans/STATUS.md with scope, reason, controls, expiry and approval date.
+    pattern: '^EXC-[0-9]{3}$'
+    examples: [EXC-001]
+  - id: protection_stage
+    origin: new
+    description: Repository protection stages (DEVELOPMENT_ENVIRONMENT.md §8.4).
+    pattern: '^P[12]$'
