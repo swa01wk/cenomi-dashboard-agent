@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cenomi.local/contracts/principal.v1.schema.json",
+  "title": "Principal v1",
+  "description": "The signed-in principal returned by GET /api/v1/me and POST /api/v1/auth/dev/sign-in (ARCH-R077). The client uses it only for presentation; authorization is enforced server-side (ARCH-R046). Business keys in grants are provisional until CF-1 confirms them against the seed (ARCH-R078). Bootstrap contract, frozen by CF-0.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["principalId", "displayName", "persona", "role", "grants", "permissions", "sessionExpiresAt"],
+  "properties": {
+    "principalId": {"type": "string", "pattern": "^p_[a-z0-9_]{2,60}$"},
+    "displayName": {"type": "string", "minLength": 1, "maxLength": 120},
+    "persona": {"type": "string", "enum": ["admin", "tenant"], "description": "Which dashboard family the principal lands on."},
+    "role": {
+      "type": "string",
+      "enum": ["PORTFOLIO_ADMIN", "REGIONAL_ADMIN", "MALL_MANAGER", "LEASING_MANAGER", "FITOUT_MANAGER", "TENANT_COMPANY_ADMIN", "TENANT_LEASE_CONTACT"],
+      "description": "Fixture role (approved G0 access model; DR-019). Permissions per role are fixed in specs/authorization/permissions.yaml (PR-M1)."
+    },
+    "grants": {
+      "type": "array",
+      "maxItems": 20,
+      "description": "Union of scope grants. Empty means no access (deny by default, ARCH-R079). ALL is only ever an explicit grant (ARCH-R080).",
+      "items": {"$ref": "scope_decision.v1.schema.json#/$defs/scope"}
+    },
+    "permissions": {
+      "type": "array",
+      "maxItems": 200,
+      "description": "Permission names from specs/authorization/permissions.yaml. Empty in M0 (the matrix arrives in PR-M1).",
+      "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*(:[a-zA-Z0-9_.-]+)+$"}
+    },
+    "sessionExpiresAt": {"type": "string", "format": "date-time"}
+  },
+  "examples": [
+    {
+      "principalId": "p_central_manager",
+      "displayName": "Central regional manager",
+      "persona": "admin",
+      "role": "REGIONAL_ADMIN",
+      "grants": [{"kind": "REGIONS", "regionKeys": ["central"]}],
+      "permissions": [],
+      "sessionExpiresAt": "2026-10-22T22:00:00Z"
+    },
+    {
+      "principalId": "p_tenant_t31206",
+      "displayName": "Lumen Home (lease T-31206)",
+      "persona": "tenant",
+      "role": "TENANT_LEASE_CONTACT",
+      "grants": [{"kind": "TENANT_LEASES", "leaseKeys": ["T-31206"]}],
+      "permissions": [],
+      "sessionExpiresAt": "2026-10-22T22:00:00Z"
+    },
+    {
+      "principalId": "p_no_grants",
+      "displayName": "No-access test principal",
+      "persona": "admin",
+      "role": "REGIONAL_ADMIN",
+      "grants": [],
+      "permissions": [],
+      "sessionExpiresAt": "2026-10-22T22:00:00Z"
+    }
+  ]
+}

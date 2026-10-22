@@ -1,0 +1,51 @@
+# Specification-set version — NORMATIVE
+#
+# Every merged specification PR bumps `version` (semantic versioning: minor per milestone PR,
+# patch for corrections). CI reports and milestone gate reports record this value (RMAP-R010).
+# Progress and approval state are NOT recorded here; they live only in plans/STATUS.md.
+
+schema: cenomi.spec_set.v1
+version: "0.1.0"
+introduced_by: PR-M0 (docs/m0-foundation-specs)
+active_milestone: M0          # the milestone whose build rules apply (used by ci/summary for ci/echarts-gate)
+contract_freezes_in_this_set: [CF-0]
+documents:
+  - AGENTS.md
+  - .cursor/rules/00-governance.mdc
+  - .cursor/rules/10-backend.mdc
+  - .cursor/rules/20-frontend.mdc
+  - .cursor/rules/30-contracts-and-specs.mdc
+  - .cursor/rules/40-database.mdc
+  - .cursor/rules/50-testing.mdc
+  - .cursor/rules/60-agent-genui.mdc
+  - docs/adr/README.md
+  - docs/adr/0001-record-architecture-decisions.md
+  - docs/adr/0002-repository-structure-and-sources-of-truth.md
+  - docs/adr/0003-technology-stack-and-version-pinning.md
+  - docs/adr/0004-contract-pipeline-and-bootstrap-rule.md
+  - docs/adr/0005-backend-modular-monolith.md
+  - docs/adr/0006-database-roles-schemas-and-ownership.md
+  - docs/adr/0015-engineering-delivery-workflow-and-ci.md
+  - docs/adr/0016-poc-sign-in-and-session.md
+  - docs/adr/0017-model-determinism-in-tests.md
+  - docs/adr/0018-styling-approach.md
+  - docs/product/PRODUCT_SPEC.md
+  - docs/architecture/ARCHITECTURE.md
+  - docs/architecture/DEVELOPMENT_ENVIRONMENT.md
+  - docs/design/DESIGN_BASELINE.md
+  - docs/design/DECISION_REGISTER.md
+  - plans/ROADMAP.md
+  - plans/M0_FOUNDATION.md
+contracts:
+  - specs/contracts/error_envelope.v1.schema.json
+  - specs/contracts/error_codes.v1.yaml
+  - specs/contracts/principal.v1.schema.json
+  - specs/contracts/scope_decision.v1.schema.json
+  - specs/contracts/health_report.v1.schema.json
+  - specs/contracts/dataset_descriptor.v1.schema.json
+engineering:
+  - specs/engineering/make_targets.yaml
+  - specs/engineering/ci_checks.yaml
+  - specs/engineering/spec_set.yaml
+  - specs/engineering/engineering.schema.json
+  - specs/traceability/id_conventions.yaml

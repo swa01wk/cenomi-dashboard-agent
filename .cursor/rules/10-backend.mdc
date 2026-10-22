@@ -1,0 +1,22 @@
+---
+description: Backend (Python 3.12, FastAPI, SQLAlchemy Core, psycopg 3) rules
+globs: backend/**,scripts/**
+alwaysApply: false
+---
+
+# Backend rules
+
+Source: `docs/architecture/ARCHITECTURE.md` §5, §7, §9, §13; ADR-0005, ADR-0006.
+
+- Module imports follow ARCHITECTURE §5.2 exactly; import only a module's public interface. (Checked: `lint-imports`.)
+- Routers contain no business logic: validate, call one service, map to a contract model. Every route declares its contract models and auth (and from M1 its permission).
+- All I/O is async (SQLAlchemy Core 2.0 async + psycopg 3). CPU-bound work goes through `asyncio.to_thread`.
+- SQL is parameterized only. No f-strings, `%` formatting or concatenation into SQL or `text()`. From M2, SQL that reads business data lives only in `cenomi/analytics/queries/*.sql` with the scope fragment. (Checked: `make backend-lint` SQL safety lint, ruff S608.)
+- The API process uses only the reader and app pools. It never loads owner, seed or admin credentials.
+- Raise `cenomi.core.errors` subclasses with registry codes (`specs/contracts/error_codes.v1.yaml`). Never return a stack trace, SQL, secret or submitted value in a response. (Checked: AT-M0-T03-05/06, AT-M0-T05-05.)
+- Unknown query parameters and body fields → 400 `VALIDATION_ERROR`. Status 422 never leaves the API.
+- Uniform refusal: unauthorized and non-existent both → 404 `NOT_AVAILABLE` with the same body.
+- Business "now" is `DatasetClock.as_of`; never the wall clock, never `NOW()` in metric SQL.
+- Configuration only through `cenomi.core.settings.Settings`; secrets as `SecretStr`; never log them. (Checked: AT-M0-T03-07.)
+- Logs are JSON with the ARCH-R096 fields, including `requestRef`. Never log cookies, tokens, prompts, model output, result rows or bound SQL values.
+- `mypy --strict` clean; `ruff` clean. (Checked: `make backend-lint`, `make backend-typecheck`.)

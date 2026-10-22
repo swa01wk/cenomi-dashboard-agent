@@ -1,0 +1,256 @@
+# GitHub Actions CI contract — NORMATIVE
+#
+# Built in M0-T07. `make specs-check` compares the job `name:` values in .github/workflows/*.yml
+# with this file; `make ci JOB=<job>` runs exactly the `targets` listed for a job.
+# Prose and rationale: docs/architecture/DEVELOPMENT_ENVIRONMENT.md §7. Decision: ADR-0015.
+
+schema: cenomi.ci_checks.v1
+spec: docs/architecture/DEVELOPMENT_ENVIRONMENT.md#7-github-actions-ci
+
+runner: ubuntu-24.04            # pinned image label, never ubuntu-latest
+default_permissions: {contents: read}
+action_pinning: full-length commit SHA for every third-party action
+setup_action: .github/actions/setup   # installs Python (uv), Node (Corepack pnpm) with caches
+
+required_checks:
+  # Branch protection / ruleset requires exactly these check names (DEVENV §8.4).
+  - ci/summary
+
+path_categories:
+  # Glob lists evaluated by the ci/changes job. A file may belong to several categories.
+  docs_only_candidates: ["docs/**", "plans/**", "*.md", ".cursor/**", "AGENTS.md"]
+  backend: ["backend/**", "infra/postgres/**"]
+  database: ["backend/migrations/**", "backend/src/cenomi/db/**", "backend/src/cenomi/seed/**", "infra/postgres/**", "specs/metrics/**", "specs/scenarios/**", "tests/fixtures/golden/**", "tests/fixtures/metrics/**"]
+  frontend: ["apps/web/**", "packages/**"]
+  agent: ["backend/src/cenomi/agent/**", "backend/src/cenomi/agui/**", "tests/agent-evals/**", "tests/fixtures/tools/**", "tests/fixtures/agui/**"]
+  tests: ["tests/**"]
+  shared_contract:
+    # Any change here runs every job (ARCH-R093): consumers are never skipped.
+    - "specs/**"
+    - "backend/src/cenomi/contracts/**"
+    - "packages/contracts-ts/**"
+    - "scripts/**"
+    - "Makefile"
+    - "docker-compose*.yml"
+    - ".github/**"
+    - "infra/**"
+    - ".env.example"
+    - "backend/pyproject.toml"
+    - "uv.lock"
+    - "package.json"
+    - "pnpm-workspace.yaml"
+    - "pnpm-lock.yaml"
+    - ".python-version"
+    - ".nvmrc"
+
+triggers:
+  pull_request: {types: [opened, synchronize, reopened, ready_for_review], branches: [main]}
+  push: {branches: [main]}
+  workflow_call: true            # milestone-gate.yml reuses ci.yml
+concurrency:
+  group: "ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}"
+  cancel_in_progress_on_pull_request: true
+  cancel_in_progress_on_main: false
+
+# Applicability and fail-closed semantics: DEVELOPMENT_ENVIRONMENT.md §7.3 (DEVENV-R019, R020, R047–R050);
+# result vocabulary: ARCHITECTURE.md §10.8.
+# `runs_when` is evaluated on pull requests only. On push to main and in milestone-gate.yml every job is
+# applicable. `docs_only` means every changed file matches docs_only_candidates.
+jobs:
+  - name: ci/changes
+    purpose: Compute, for every job, whether it is applicable to this change, with the reasons; publish the result as job outputs and tests/reports/ci/applicability.json.
+    runs_when: always
+    needs: []
+    targets: []
+    rules:
+      - "Input is the full diff between the PR head and its merge base (fetched with enough history). If the diff cannot be computed, every job is applicable."
+      - "A changed file that matches no category other than `tests` and is not a docs_only_candidate is treated as shared_contract, so every job is applicable (fail closed)."
+      - "A file in any shared_contract glob makes every job applicable."
+      - "Each job record holds: job, applicable (true/false), the categories that made it applicable, and the runs_when expression evaluated."
+      - "On push to main and on workflow_call (milestone gate), every job is applicable regardless of paths."
+    timeout_minutes: 5
+    make_ci: false
+    blocking: true
+
+  - name: ci/static
+    purpose: Formatting, lint, type checks, lockfile validation, toolchain check, quarantine expiry.
+    runs_when: "not docs_only"
+    needs: [ci/changes]
+    targets: [doctor, backend-lint, backend-typecheck, frontend-lint, frontend-typecheck]
+    extra_steps:
+      - "uv lock --check (lockfile matches pyproject)"
+      - "pnpm install --frozen-lockfile --lockfile-only (lockfile matches manifests)"
+      - "scripts/lint/quarantine_expiry.py (ARCH-R088)"
+      - "scripts/ci/check_branch_name.py — pull requests only; head branch must match the `branch` family of id_conventions.yaml (DEVENV-R032)"
+    timeout_minutes: 15
+    make_ci: true
+    blocking: true
+
+  - name: ci/specs
+    purpose: Specification and engineering-metadata validation; non-gate trace report.
+    runs_when: always
+    needs: [ci/changes]
+    targets: [specs-check, trace-report]
+    timeout_minutes: 10
+    make_ci: true
+    blocking: true
+
+  - name: ci/contracts
+    purpose: Generated artefacts current; schema subset; examples valid; Pydantic = schema.
+    runs_when: "backend or frontend or shared_contract"
+    needs: [ci/changes]
+    targets: [contracts-check]
+    timeout_minutes: 10
+    make_ci: true
+    blocking: true
+
+  - name: ci/security
+    purpose: Secret scan (full history), dependency audit, licence report.
+    runs_when: always
+    needs: [ci/changes]
+    targets: [security-check]
+    timeout_minutes: 15
+    make_ci: true
+    blocking: true
+
+  - name: ci/backend
+    purpose: Backend unit and integration tests against PostgreSQL 16.
+    runs_when: "backend or database or agent or tests or shared_contract"
+    needs: [ci/static]
+    services: {postgres: "postgres:16 (minor tag and digest pinned in the workflow)"}
+    targets: [db-init, db-upgrade, backend-test]
+    env: {CENOMI_ENV: ci, DB: test}
+    timeout_minutes: 20
+    make_ci: true
+    blocking: true
+
+  - name: ci/database
+    purpose: Fresh migration, drift check, grants; from M1 deterministic seed, verify, snapshot reconciliation, KPI goldens.
+    runs_when: "database or backend or shared_contract"
+    needs: [ci/static]
+    services: {postgres: "postgres:16 (pinned)"}
+    targets: [db-init, db-upgrade, db-current, db-check, seed-reset, seed-verify]
+    env: {CENOMI_ENV: ci, DB: test, CONFIRM: "yes"}
+    timeout_minutes: 25
+    make_ci: true
+    blocking: true
+
+  - name: ci/frontend
+    purpose: Vitest unit and component tests; production build.
+    runs_when: "frontend or shared_contract"
+    needs: [ci/static]
+    targets: [frontend-test, frontend-build]
+    timeout_minutes: 20
+    make_ci: true
+    blocking: true
+
+  - name: ci/agent
+    purpose: Mock-model runtime tests and replay golden evaluations (active from M3).
+    runs_when: "agent or backend or database or shared_contract"
+    needs: [ci/static]
+    services: {postgres: "postgres:16 (pinned)"}
+    targets: [agent-test-mock, agent-test-replay]
+    env: {CENOMI_ENV: ci, LLM_MODE: replay}
+    timeout_minutes: 20
+    make_ci: true
+    blocking: true
+
+  - name: ci/integration
+    purpose: API contract, authorization boundaries, cross-module integration; AG-UI event fixtures (M4); slice replay golden (M6).
+    runs_when: "backend or frontend or database or agent or tests or shared_contract"
+    needs: [ci/backend]
+    services: {postgres: "postgres:16 (pinned)"}
+    targets: [db-init, db-upgrade, integration-test, replay]
+    env: {CENOMI_ENV: ci, DB: test}
+    timeout_minutes: 25
+    make_ci: true
+    blocking: true
+
+  - name: ci/e2e
+    purpose: Playwright journeys with axe-core on the Compose stack (real PostgreSQL; replay model from M3).
+    runs_when: "backend or frontend or database or agent or tests or shared_contract"
+    needs: [ci/backend, ci/frontend]
+    targets: [e2e]
+    env: {CENOMI_ENV: test, LLM_MODE: replay}
+    artifacts_on_failure: [tests/reports/e2e/**]
+    timeout_minutes: 30
+    make_ci: true
+    blocking: true
+
+  - name: ci/echarts-gate
+    purpose: DX3 gallery self-test on pinned ECharts 5.6.0 (GDQ-06). Informational in M0–M1; blocking from M2.
+    runs_when: "frontend or shared_contract"
+    needs: [ci/static]
+    targets: [echarts-gate]
+    artifacts_always: [tests/reports/echarts/**]
+    timeout_minutes: 15
+    make_ci: true
+    blocking: "from M2"
+
+  - name: ci/images
+    purpose: Build the api and web Docker images (no push, ED-05).
+    runs_when: "backend or frontend or shared_contract"
+    needs: [ci/static]
+    targets: []
+    extra_steps: ["docker buildx build --load (api)", "docker buildx build --load (web)", "no registry login, no push"]
+    timeout_minutes: 25
+    make_ci: false
+    blocking: true
+
+  - name: ci/quarantine
+    purpose: Run quarantined tests and report them; never blocks (ARCH-R088).
+    runs_when: always
+    needs: [ci/changes]
+    targets: []
+    extra_steps: ["pytest -m quarantine; vitest and playwright tests titled [QUARANTINE …]"]
+    timeout_minutes: 15
+    make_ci: false
+    blocking: false
+
+  - name: ci/summary
+    purpose: The single required check. Aggregates results, enforces skip rules, publishes the human-readable CI report.
+    runs_when: always            # `if: always()`
+    needs: [ci/changes, ci/static, ci/specs, ci/contracts, ci/security, ci/backend, ci/database, ci/frontend, ci/agent, ci/integration, ci/e2e, ci/echarts-gate, ci/images]
+    targets: [trace-report]
+    extra_steps: ["download JUnit and report artefacts of all jobs before running trace-report"]
+    rules:
+      - "Allow-list: a needed blocking job passes only with conclusion `success`. Any other conclusion fails the summary: `failure`, `cancelled` (which includes timeouts and lost runners), `timed_out`, `action_required`, `stale`, `neutral`, or an absent result."
+      - "A `skipped` conclusion is accepted only when the job is not applicable. The summary recomputes applicability itself from the same diff and ci_checks.yaml (scripts/ci/changes.py as a library). It fails if its recomputation differs from ci/changes's published record, or if ci/changes did not succeed."
+      - "Completeness: the summary reads ci_checks.yaml and fails if any job declared there (other than ci/summary) is missing from its needs list or from the workflow run."
+      - "Results: the summary reads every tests/reports/status.jsonl and JUnit artefact. It fails on any FAILED; on NOT_IMPLEMENTED outside the build window (ARCH-R103); and on SKIPPED without a recorded reason (ARCH-R104). Each NOT_APPLICABLE must name its rule."
+      - "Card rule: when the head branch names a task card (feat|fix|test|chore/m<n>-t<nn>-…), the summary runs trace-report CARD=M<n>-T<nn> and fails unless every AT of that card is PASSED (ARCH-R105)."
+      - "ci/echarts-gate is blocking only when spec_set.yaml active_milestone is M2 or later. Earlier, its result is reported but does not fail the summary."
+      - "If the summary job itself errors or is cancelled, the required check is not `success`, so GitHub blocks the merge (fail closed)."
+
+    report: "$GITHUB_STEP_SUMMARY and tests/reports/ci-summary.md (DEVENV §7.6)"
+    timeout_minutes: 5
+    make_ci: false
+    blocking: true
+
+other_workflows:
+  - file: .github/workflows/milestone-gate.yml
+    trigger: workflow_dispatch
+    inputs: {milestone: "M0…M6", sha: "commit on main (default: current main)"}
+    jobs:
+      - name: gate/ci
+        uses: ci.yml (workflow_call) on the given sha
+      - name: gate/db-roundtrip
+        steps: ["fresh cenomi_test", "make db-upgrade DB=test", "make db-downgrade REV=base DB=test CONFIRM=yes", "make db-upgrade DB=test"]
+      - name: gate/specific
+        steps: ["make specs-check GATE=<milestone>", "make trace-report GATE=<milestone>", "milestone-specific suites from the milestone plan (for example make replay SET=full at M6, performance runs at M5)"]
+      - name: gate/report
+        steps: ["assemble tests/reports/gate/<milestone>/report.md (RMAP-R010)"]
+    artifacts_retention_days: 90
+  - file: .github/workflows/eval-live.yml
+    trigger: workflow_dispatch
+    inputs: {set: "slice|benchmark", max_cases: integer, max_tokens: integer, max_cost_usd: number}
+    environment: live-eval        # protected; required reviewer = project owner (DEVENV §8.4)
+    guard: "github.repository == 'swa01wk/cenomi-dashboard-agent' and the ref is a branch of this repository (never fork code)"
+    secrets: [LIVE_EVAL_LLM_API_KEY]
+    targets: [agent-test-live]
+    artifacts_retention_days: 30
+
+artifact_retention_days:
+  pull_request: 14
+  main: 30
+  gate: 90

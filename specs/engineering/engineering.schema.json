@@ -1,0 +1,1008 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cenomi.local/engineering/engineering.schema.json",
+  "title": "Cenomi engineering metadata",
+  "description": "Validates specs/engineering/make_targets.yaml, ci_checks.yaml, spec_set.yaml, specs/traceability/id_conventions.yaml specs/contracts/error_codes.v1.yaml, and the milestone gate report tests/reports/gate/M<n>/report.json (RMAP-R010). Used by make specs-check (M0-T10). This is engineering metadata, not a runtime contract: it is never passed to codegen, so the ADR-0004 subset does not apply to it.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/makeTargets"
+    },
+    {
+      "$ref": "#/$defs/ciChecks"
+    },
+    {
+      "$ref": "#/$defs/specSet"
+    },
+    {
+      "$ref": "#/$defs/idConventions"
+    },
+    {
+      "$ref": "#/$defs/errorCodes"
+    },
+    {
+      "$ref": "#/$defs/gateReport"
+    }
+  ],
+  "$defs": {
+    "milestone": {
+      "type": "string",
+      "enum": [
+        "M0",
+        "M1",
+        "M2",
+        "M3",
+        "M4",
+        "M5",
+        "M6"
+      ]
+    },
+    "makeArg": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "default",
+        "description"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]*$"
+        },
+        "default": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 3
+        }
+      }
+    },
+    "makeTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "group",
+        "active_from",
+        "destructive",
+        "summary",
+        "prerequisites",
+        "args",
+        "behaviour",
+        "failure",
+        "in_check",
+        "ci_jobs"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "group": {
+          "type": "string",
+          "enum": [
+            "environment",
+            "database",
+            "synthetic_data",
+            "backend",
+            "frontend",
+            "agent",
+            "contracts_and_integration",
+            "verification",
+            "full_validation"
+          ]
+        },
+        "active_from": {
+          "$ref": "#/$defs/milestone"
+        },
+        "destructive": {
+          "type": "boolean"
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 200
+        },
+        "prerequisites": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/makeArg"
+          }
+        },
+        "behaviour": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "failure": {
+          "type": "string"
+        },
+        "safety": {
+          "type": "string"
+        },
+        "in_check": {
+          "type": "boolean"
+        },
+        "check_args": {
+          "type": "string"
+        },
+        "ci_jobs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reason_until_active": {
+          "type": "string"
+        }
+      }
+    },
+    "makeTargets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "spec",
+        "groups",
+        "targets"
+      ],
+      "properties": {
+        "schema": {
+          "const": "cenomi.make_targets.v1"
+        },
+        "spec": {
+          "type": "string"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/makeTarget"
+          }
+        }
+      }
+    },
+    "ciJob": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "purpose",
+        "runs_when",
+        "needs",
+        "targets",
+        "timeout_minutes",
+        "make_ci",
+        "blocking"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^ci/[a-z][a-z0-9-]*$"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "runs_when": {
+          "type": "string"
+        },
+        "needs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^ci/[a-z][a-z0-9-]*$"
+          }
+        },
+        "services": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "postgres": {
+              "type": "string"
+            }
+          }
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          }
+        },
+        "extra_steps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "env": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "CENOMI_ENV": {
+              "type": "string"
+            },
+            "DB": {
+              "type": "string"
+            },
+            "CONFIRM": {
+              "type": "string"
+            },
+            "LLM_MODE": {
+              "type": "string"
+            }
+          }
+        },
+        "artifacts_on_failure": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "artifacts_always": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "report": {
+          "type": "string"
+        },
+        "timeout_minutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60
+        },
+        "make_ci": {
+          "type": "boolean"
+        },
+        "blocking": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string",
+              "pattern": "^from M[0-6]$"
+            }
+          ]
+        }
+      }
+    },
+    "ciChecks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "spec",
+        "runner",
+        "required_checks",
+        "path_categories",
+        "triggers",
+        "jobs",
+        "other_workflows"
+      ],
+      "properties": {
+        "schema": {
+          "const": "cenomi.ci_checks.v1"
+        },
+        "spec": {
+          "type": "string"
+        },
+        "runner": {
+          "type": "string"
+        },
+        "default_permissions": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "contents": {
+              "const": "read"
+            }
+          }
+        },
+        "action_pinning": {
+          "type": "string"
+        },
+        "setup_action": {
+          "type": "string"
+        },
+        "required_checks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "path_categories": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "triggers": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "pull_request": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "types": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "branches": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "push": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "branches": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "workflow_call": {
+              "type": "boolean"
+            }
+          }
+        },
+        "concurrency": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "group": {
+              "type": "string"
+            },
+            "cancel_in_progress_on_pull_request": {
+              "type": "boolean"
+            },
+            "cancel_in_progress_on_main": {
+              "type": "boolean"
+            }
+          }
+        },
+        "jobs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/ciJob"
+          }
+        },
+        "other_workflows": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "artifact_retention_days": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "specSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "version",
+        "introduced_by",
+        "active_milestone",
+        "documents",
+        "contracts",
+        "engineering"
+      ],
+      "properties": {
+        "schema": {
+          "const": "cenomi.spec_set.v1"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "introduced_by": {
+          "type": "string"
+        },
+        "active_milestone": {
+          "$ref": "#/$defs/milestone"
+        },
+        "contract_freezes_in_this_set": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^CF-[0-6]$"
+          }
+        },
+        "documents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "contracts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "engineering": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "idFamily": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "origin",
+        "pattern"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "origin": {
+          "type": "string",
+          "enum": [
+            "existing",
+            "new"
+          ]
+        },
+        "source": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "pattern": {
+          "type": "string",
+          "pattern": "^\\^.*\\$$"
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notes": {
+          "type": "string"
+        },
+        "document_codes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "idConventions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "families"
+      ],
+      "properties": {
+        "schema": {
+          "const": "cenomi.id_conventions.v1"
+        },
+        "spec_set_version_ref": {
+          "type": "string"
+        },
+        "families": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/idFamily"
+          }
+        }
+      }
+    },
+    "errorCodes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "codes"
+      ],
+      "properties": {
+        "schema": {
+          "const": "cenomi.error_codes.v1"
+        },
+        "codes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "channel",
+              "http",
+              "retryable",
+              "status",
+              "milestone",
+              "meaning"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9_]{2,63}$"
+              },
+              "channel": {
+                "type": "string",
+                "enum": [
+                  "http",
+                  "tool_result",
+                  "agui_run_error"
+                ]
+              },
+              "http": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 400,
+                "maximum": 599
+              },
+              "retryable": {
+                "type": "boolean"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "active",
+                  "reserved"
+                ]
+              },
+              "milestone": {
+                "$ref": "#/$defs/milestone"
+              },
+              "meaning": {
+                "type": "string",
+                "minLength": 10
+              }
+            }
+          }
+        }
+      }
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "PASSED",
+        "FAILED",
+        "NOT_APPLICABLE",
+        "NOT_IMPLEMENTED",
+        "SKIPPED"
+      ]
+    },
+    "resultRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "result"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "result": {
+          "$ref": "#/$defs/result"
+        },
+        "rule": {
+          "type": "string",
+          "description": "Required when result is NOT_APPLICABLE: milestone rule, change rule or gate rule (ARCH-R101)."
+        },
+        "evidence": {
+          "type": "string"
+        }
+      }
+    },
+    "gateReport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "milestone",
+        "generatedAt",
+        "mergedCommitSha",
+        "specSet",
+        "dataset",
+        "fixtures",
+        "ci",
+        "suites",
+        "gateChecks",
+        "universalCriteria",
+        "trace",
+        "defects",
+        "exceptions",
+        "deferred",
+        "approval"
+      ],
+      "properties": {
+        "schema": {
+          "const": "cenomi.gate_report.v1"
+        },
+        "milestone": {
+          "$ref": "#/$defs/milestone"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "mergedCommitSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "specSet": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "version",
+            "approvedInPr"
+          ],
+          "properties": {
+            "version": {
+              "type": "string",
+              "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+            },
+            "approvedInPr": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "dataset": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "datasetId",
+            "asOf",
+            "state"
+          ],
+          "properties": {
+            "datasetId": {
+              "type": "string",
+              "pattern": "^sd-[0-9]{4}\\.[0-9]{2}\\.[0-9]{2}-[0-9]{2}$"
+            },
+            "asOf": {
+              "type": "string",
+              "format": "date"
+            },
+            "state": {
+              "type": "string",
+              "enum": [
+                "not_seeded",
+                "seeded"
+              ]
+            },
+            "seedHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{16,64}$"
+            }
+          }
+        },
+        "fixtures": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "fixtureSetSha256"
+          ],
+          "properties": {
+            "fixtureSetSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "canonicalFiguresSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "ci": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "runUrl",
+            "summaryConclusion",
+            "jobs"
+          ],
+          "properties": {
+            "runUrl": {
+              "type": "string"
+            },
+            "summaryConclusion": {
+              "type": "string"
+            },
+            "jobs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "applicable",
+                  "conclusion"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "pattern": "^ci/[a-z][a-z0-9-]*$"
+                  },
+                  "applicable": {
+                    "type": "boolean"
+                  },
+                  "conclusion": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "suites": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "suite",
+              "result"
+            ],
+            "properties": {
+              "suite": {
+                "type": "string",
+                "enum": [
+                  "backend_unit",
+                  "backend_integration",
+                  "frontend_unit",
+                  "integration",
+                  "e2e_playwright",
+                  "agent_mock",
+                  "agent_replay",
+                  "database_invariants",
+                  "contracts",
+                  "specs",
+                  "security",
+                  "echarts_gate",
+                  "accessibility",
+                  "replay_golden",
+                  "performance"
+                ]
+              },
+              "result": {
+                "$ref": "#/$defs/result"
+              },
+              "rule": {
+                "type": "string"
+              },
+              "counts": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "passed": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "failed": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "skipped": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "notImplemented": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              },
+              "artifact": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "gateChecks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/resultRecord"
+          }
+        },
+        "universalCriteria": {
+          "type": "array",
+          "minItems": 20,
+          "maxItems": 20,
+          "items": {
+            "$ref": "#/$defs/resultRecord"
+          }
+        },
+        "trace": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "atTotal",
+            "passed",
+            "failed",
+            "notImplemented",
+            "skipped"
+          ],
+          "properties": {
+            "atTotal": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "passed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "failed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "notImplemented": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "skipped": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "defects": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "blockingOpen",
+            "open"
+          ],
+          "properties": {
+            "blockingOpen": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^DEF-[0-9]{4}$"
+              }
+            },
+            "open": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^DEF-[0-9]{4}$"
+              }
+            }
+          }
+        },
+        "exceptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "summary",
+              "approvedOn"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^EXC-[0-9]{3}$"
+              },
+              "summary": {
+                "type": "string"
+              },
+              "approvedOn": {
+                "type": "string",
+                "format": "date"
+              },
+              "expiredOn": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          }
+        },
+        "deferred": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "item",
+              "targetMilestone"
+            ],
+            "properties": {
+              "item": {
+                "type": "string"
+              },
+              "targetMilestone": {
+                "$ref": "#/$defs/milestone"
+              }
+            }
+          }
+        },
+        "approval": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "decision"
+          ],
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "approved",
+                "rejected"
+              ]
+            },
+            "approvedBy": {
+              "type": "string"
+            },
+            "decidedOn": {
+              "type": "string",
+              "format": "date"
+            },
+            "reference": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

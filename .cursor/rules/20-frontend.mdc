@@ -1,0 +1,20 @@
+---
+description: Web (Next.js 16 App Router, React 19, TypeScript strict) and packages rules
+globs: apps/web/**,packages/**
+alwaysApply: false
+---
+
+# Frontend rules
+
+Source: `docs/architecture/ARCHITECTURE.md` §6; DESIGN_SYSTEM (from PR-M2); GENERATIVE_UI (from PR-M4).
+
+- Boundaries (ARCH-R035): `app/` imports only `features/` and `lib/`; only `lib/api/` performs fetch or EventSource; only `packages/viz` imports `echarts`; only `agui/` imports `@ag-ui/*`; nothing imports `app/`. (Checked: ESLint boundaries in `make frontend-lint`.)
+- Server Components render the shell only. All data is fetched client-side through `lib/api` over the same-origin `/api` rewrite and parsed with the generated zod schema. Unparsed data is never rendered. (Checked: AT-M0-T04-06.)
+- Query keys start with `[principalId, datasetId, …]`; sign-out or a persona switch clears the cache.
+- Client state has exactly the owners in ARCHITECTURE §6.5 (React context + `useReducer`; no global state library). Scope and grants are never held as authority on the client.
+- The route map of ARCHITECTURE §6.2 is fixed; overlays use search parameters (§6.8). Deep links carry identifiers only.
+- No `dangerouslySetInnerHTML`; no API or model string as HTML, URL, `href`, `src` or style. (Checked: ESLint `react/no-danger`.)
+- Never import or hand-write a contract type; use `packages/contracts-ts` (GENERATED). (Checked: `make contracts-check`.)
+- Every screen state is accessible: keyboard reachable, announced, no colour-only signals. axe-core serious or critical findings fail E2E.
+- The synthetic banner and as-of date are visible on every screen.
+- TypeScript strict; ESLint zero warnings; Prettier formatted.

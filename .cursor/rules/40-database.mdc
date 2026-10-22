@@ -1,0 +1,17 @@
+---
+description: Database, migrations, roles and destructive-operation safety
+globs: backend/migrations/**,backend/src/cenomi/db/**,infra/**,backend/alembic.ini
+alwaysApply: false
+---
+
+# Database rules
+
+Source: ADR-0006; `docs/architecture/ARCHITECTURE.md` §5.8, §7.
+
+- Six schemas and four roles exactly as ADR-0006. Grants go through default privileges; never grant the app role access to `core`, `meta`, `snap` or `seed_meta`, and never give the reader role write access.
+- No table in `agent` or `insights` before its owning contract freeze (CF-3, CF-5).
+- Alembic is one linear history; files `NNNN_m<milestone>_<slug>.py`; every revision implements `downgrade()`. A merged revision is never edited.
+- Migrations contain DDL and grants only — never business data (the seed owns data).
+- Every destructive command calls the guards DG-1 to DG-5 in `cenomi.db.guards`. Never bypass or weaken a guard. (Checked: AT-M0-T02-07.)
+- `make db-check` (alembic check + role verification) must be clean after `make db-upgrade`.
+- Tests use `cenomi_test` or per-worker `cenomi_test_gw<N>`, never `cenomi_dev`.
