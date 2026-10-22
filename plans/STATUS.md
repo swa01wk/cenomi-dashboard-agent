@@ -1,6 +1,6 @@
 # STATUS — Cenomi Dashboard Intelligence Agent POC
 
-Updated: 2026-10-22 (PR-M0 opened for review).
+Updated: 2026-10-22 (PR-M0 opened for review as [PR #2](https://github.com/swa01wk/cenomi-dashboard-agent/pull/2)).
 
 | | |
 |---|---|
@@ -26,7 +26,7 @@ Updated: 2026-10-22 (PR-M0 opened for review).
 | | |
 |---|---|
 | Phase | **Specification authoring** — M0 specifications in review |
-| Current milestone | **M0 Foundation**: specifications **In review** (PR-M0); build **Not started, not authorized** |
+| Current milestone | **M0 Foundation**: specifications **In review** (PR-M0 = PR #2, branch `docs/m0-foundation-specs`); build **Not started, not authorized** |
 | Migration | **Complete.** PR #1 merged into `main` on 2026-10-22 at `d5db7f3`; 214/214 handoff hashes verified |
 | Engineering Specification Plan | **Approved 2026-10-22**, subject to the owner's refinements. Recorded as `plans/ROADMAP.md` v1.0 with amendments A-01 to A-18. The proposed draft is kept unchanged in `plans/proposed/` |
 | Next gate | Owner review and merge of PR-M0 (CF-0) → decisions on ED-07, ED-08, ED-09 → explicit M0 build authorization |
