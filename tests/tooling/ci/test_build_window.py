@@ -25,7 +25,6 @@ def _target_rows() -> list[dict[str, str]]:
     ]
 
 
-@pytest.mark.trace("AT-M0-T07-04", reqs=["ARCH-R103"])
 def test_m0_t07_implemented_on_main_without_live_at(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -34,19 +33,25 @@ def test_m0_t07_implemented_on_main_without_live_at(
     ) -> tuple[dict, list[str], int]:
         if card != "M0-T07":
             return {"acceptanceTests": []}, [], 0
-        return {
-            "acceptanceTests": [
-                {"atId": "AT-M0-T07-01", "manual": False, "result": "PASSED"},
-                {"atId": "AT-M0-T07-02", "manual": False, "result": "NOT_IMPLEMENTED"},
-                {"atId": "AT-M0-T07-03", "manual": False, "result": "PASSED"},
-            ]
-        }, [], 0
+        return (
+            {
+                "acceptanceTests": [
+                    {"atId": "AT-M0-T07-01", "manual": False, "result": "PASSED"},
+                    {
+                        "atId": "AT-M0-T07-02",
+                        "manual": False,
+                        "result": "NOT_IMPLEMENTED",
+                    },
+                    {"atId": "AT-M0-T07-03", "manual": False, "result": "PASSED"},
+                ]
+            },
+            [],
+            0,
+        )
 
     monkeypatch.setattr("scripts.ci.build_window.build_report", fake_build_report)
 
-    implemented = implemented_m0_cards(
-        REPO_ROOT, junit_paths=[], pr_card=None
-    )
+    implemented = implemented_m0_cards(REPO_ROOT, junit_paths=[], pr_card=None)
     assert "M0-T07" in implemented
 
     errors = assert_build_window_targets(

@@ -13,7 +13,9 @@ def live_summary_test_selected() -> bool:
     return gha and live
 
 
-def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
+def pytest_collection_modifyitems(
+    config: pytest.Config, items: list[pytest.Item]
+) -> None:
     if live_summary_test_selected():
         return
     remaining: list[pytest.Item] = []

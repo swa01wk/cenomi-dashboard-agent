@@ -21,9 +21,14 @@ if str(REPO_ROOT) not in sys.path:
 import yaml
 
 from scripts.ci.changes import compute_applicability, job_make_ci, load_ci_checks
+from scripts.ci.job_junit import (
+    BASENAME_TO_REL,
+    JOB_JUNIT,
+    JUNIT_PRODUCER_TARGET,
+)
 from scripts.ci.job_slug import artifact_slug_to_job
 from scripts.make.report import milestone_index, read_active_milestone
-from scripts.trace.report import DEFAULT_JUNIT_REL, build_report
+from scripts.trace.report import build_report
 
 SPEC_SET = REPO_ROOT / "specs/engineering/spec_set.yaml"
 SUMMARY_MD = REPO_ROOT / "tests/reports/ci-summary.md"
@@ -147,24 +152,18 @@ def echarts_blocking(active_milestone: str) -> bool:
     return bool(milestone_index(active_milestone) >= milestone_index("M2"))
 
 
-def _canonical_junit_dest(source: Path) -> Path | None:
-    """Map a downloaded JUnit file to the repo-relative path trace-report reads."""
-    parts = source.parts
-    if "tests" in parts:
-        idx = parts.index("tests")
-        rel = Path(*parts[idx:])
-        if rel.as_posix().startswith("tests/reports/") and "junit" in source.name:
-            return rel
-    for rel_str in DEFAULT_JUNIT_REL:
-        if source.name == Path(rel_str).name:
-            return Path(rel_str)
-    return None
+def _last_target_result(records: list[dict[str, Any]], target: str) -> str | None:
+    last: str | None = None
+    for rec in records:
+        if rec.get("kind") == "target" and rec.get("item") == target:
+            last = str(rec.get("result", ""))
+    return last
 
 
 def stage_junit_artifacts(junit_root: Path) -> tuple[list[Path], list[str]]:
     """
     Copy JUnit files from downloaded CI artefacts into DEFAULT_JUNIT_REL locations.
-    Returns canonical paths for build_report and any fatal errors.
+    Maps by basename only (upload-artifact may strip directory prefixes).
     """
     if not junit_root.is_dir():
         return [], []
@@ -174,12 +173,14 @@ def stage_junit_artifacts(junit_root: Path) -> tuple[list[Path], list[str]]:
     errors: list[str] = []
 
     for source in sources:
-        rel = _canonical_junit_dest(source)
+        basename = source.name
+        rel = BASENAME_TO_REL.get(basename)
         if rel is None:
+            errors.append(f"unknown JUnit basename {basename!r}: {source}")
             continue
         if rel in dest_to_source and dest_to_source[rel] != source:
             errors.append(
-                f"duplicate JUnit destination {rel.as_posix()}: {dest_to_source[rel]} and {source}"
+                f"duplicate JUnit basename {basename!r}: {dest_to_source[rel]} and {source}"
             )
             continue
         dest_to_source[rel] = source
@@ -202,6 +203,47 @@ def stage_junit_artifacts(junit_root: Path) -> tuple[list[Path], list[str]]:
         shutil.copyfile(source, dest)
         canonical.append(dest)
     return canonical, errors
+
+
+def check_job_junit_requirements(
+    *,
+    job_conclusions: dict[str, str | None],
+    applicability: dict[str, Any],
+    job_status_files: dict[str, Path],
+    ci: dict[str, Any] | None = None,
+) -> list[str]:
+    """Applicable jobs with PASSED producers must have staged JUnit files."""
+    ci = ci or load_ci_checks()
+    published = {r["job"]: r for r in applicability.get("jobs", [])}
+    errors: list[str] = []
+
+    for job_name, rel_paths in JOB_JUNIT.items():
+        if not rel_paths:
+            continue
+        if not job_make_ci(job_name, ci):
+            continue
+        applicable = published.get(job_name, {}).get("applicable", True)
+        conclusion = job_conclusions.get(job_name)
+        if not applicable or conclusion != "success":
+            continue
+        status_path = job_status_files.get(job_name)
+        records = read_status_jsonl(status_path) if status_path else []
+        for rel in rel_paths:
+            basename = Path(rel).name
+            target = JUNIT_PRODUCER_TARGET.get(basename)
+            if target is None:
+                continue
+            result = _last_target_result(records, target)
+            if result in ("NOT_IMPLEMENTED", "NOT_APPLICABLE"):
+                continue
+            if result != "PASSED":
+                continue
+            dest = REPO_ROOT / rel
+            if not dest.is_file():
+                errors.append(
+                    f"{job_name}: missing JUnit {rel} after {target} reported PASSED"
+                )
+    return errors
 
 
 def evaluate_verdict(
@@ -618,15 +660,25 @@ def main() -> int:
     spec_version = version_match.group(1) if version_match else "unknown"
     active = read_active_milestone(SPEC_SET)
 
+    job_status_files = discover_job_status_files(args.status_artifacts_dir)
+
     junit_paths, junit_errors = stage_junit_artifacts(args.junit_artifacts_dir)
     if junit_errors:
         for err in junit_errors:
             print(f"ci/summary: FAILED — {err}", file=sys.stderr)
         return 1
 
-    staged_junit_json = write_staged_junit_manifest(junit_paths)
+    junit_req_errors = check_job_junit_requirements(
+        job_conclusions=job_conclusions,
+        applicability=applicability,
+        job_status_files=job_status_files,
+    )
+    if junit_req_errors:
+        for err in junit_req_errors:
+            print(f"ci/summary: FAILED — {err}", file=sys.stderr)
+        return 1
 
-    job_status_files = discover_job_status_files(args.status_artifacts_dir)
+    staged_junit_json = write_staged_junit_manifest(junit_paths)
     status_paths = list(job_status_files.values())
     if STATUS_JSONL.is_file():
         status_paths.append(STATUS_JSONL)

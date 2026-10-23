@@ -76,15 +76,6 @@ jobs:
           name: ci-applicability
           path: tests/reports/ci/applicability.json
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: always()
-        with:
-          name: junit-ci-changes
-          path: |
-            tests/reports/**/junit*.xml
-          if-no-files-found: ignore
-          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
-
   static:
     name: ci/static
     needs: [changes]
@@ -120,15 +111,6 @@ jobs:
           name: status-ci-static
           path: tests/reports/status.jsonl
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: always()
-        with:
-          name: junit-ci-static
-          path: |
-            tests/reports/**/junit*.xml
-          if-no-files-found: ignore
-          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
-
   specs:
     name: ci/specs
     needs: [changes]
@@ -158,12 +140,14 @@ jobs:
           name: status-ci-specs
           path: tests/reports/status.jsonl
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+      - name: Stage job JUnit artefacts
+        if: always()
+        run: uv run --project backend python scripts/ci/stage_job_junit_upload.py ci/specs
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: junit-ci-specs
-          path: |
-            tests/reports/**/junit*.xml
+          path: tests/reports/ci/junit-upload/ci-specs
           if-no-files-found: ignore
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
 
@@ -191,15 +175,6 @@ jobs:
           name: status-ci-contracts
           path: tests/reports/status.jsonl
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: always()
-        with:
-          name: junit-ci-contracts
-          path: |
-            tests/reports/**/junit*.xml
-          if-no-files-found: ignore
-          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
-
   security:
     name: ci/security
     needs: [changes]
@@ -226,15 +201,6 @@ jobs:
           name: status-ci-security
           path: tests/reports/status.jsonl
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: always()
-        with:
-          name: junit-ci-security
-          path: |
-            tests/reports/**/junit*.xml
-          if-no-files-found: ignore
-          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
-
   backend:
     name: ci/backend
     needs: [changes, static]
@@ -279,12 +245,14 @@ jobs:
           name: status-ci-backend
           path: tests/reports/status.jsonl
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+      - name: Stage job JUnit artefacts
+        if: always()
+        run: uv run --project backend python scripts/ci/stage_job_junit_upload.py ci/backend
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: junit-ci-backend
-          path: |
-            tests/reports/**/junit*.xml
+          path: tests/reports/ci/junit-upload/ci-backend
           if-no-files-found: ignore
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
 
@@ -333,15 +301,6 @@ jobs:
           name: status-ci-database
           path: tests/reports/status.jsonl
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: always()
-        with:
-          name: junit-ci-database
-          path: |
-            tests/reports/**/junit*.xml
-          if-no-files-found: ignore
-          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
-
   frontend:
     name: ci/frontend
     needs: [changes, static]
@@ -370,12 +329,14 @@ jobs:
           name: status-ci-frontend
           path: tests/reports/status.jsonl
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+      - name: Stage job JUnit artefacts
+        if: always()
+        run: uv run --project backend python scripts/ci/stage_job_junit_upload.py ci/frontend
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: junit-ci-frontend
-          path: |
-            tests/reports/**/junit*.xml
+          path: tests/reports/ci/junit-upload/ci-frontend
           if-no-files-found: ignore
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
 
@@ -423,15 +384,6 @@ jobs:
           name: status-ci-agent
           path: tests/reports/status.jsonl
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: always()
-        with:
-          name: junit-ci-agent
-          path: |
-            tests/reports/**/junit*.xml
-          if-no-files-found: ignore
-          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
-
   integration:
     name: ci/integration
     needs: [changes, backend]
@@ -476,15 +428,6 @@ jobs:
           name: status-ci-integration
           path: tests/reports/status.jsonl
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: always()
-        with:
-          name: junit-ci-integration
-          path: |
-            tests/reports/**/junit*.xml
-          if-no-files-found: ignore
-          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
-
   e2e:
     name: ci/e2e
     needs: [changes, backend, frontend]
@@ -519,12 +462,14 @@ jobs:
           name: status-ci-e2e
           path: tests/reports/status.jsonl
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+      - name: Stage job JUnit artefacts
+        if: always()
+        run: uv run --project backend python scripts/ci/stage_job_junit_upload.py ci/e2e
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: junit-ci-e2e
-          path: |
-            tests/reports/**/junit*.xml
+          path: tests/reports/ci/junit-upload/ci-e2e
           if-no-files-found: ignore
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
 
@@ -563,15 +508,6 @@ jobs:
           name: status-ci-echarts-gate
           path: tests/reports/status.jsonl
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: always()
-        with:
-          name: junit-ci-echarts-gate
-          path: |
-            tests/reports/**/junit*.xml
-          if-no-files-found: ignore
-          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
-
   images:
     name: ci/images
     needs: [changes, static]
@@ -601,15 +537,6 @@ jobs:
           name: status-ci-images
           path: tests/reports/status.jsonl
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: always()
-        with:
-          name: junit-ci-images
-          path: |
-            tests/reports/**/junit*.xml
-          if-no-files-found: ignore
-          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
-
   quarantine:
     name: ci/quarantine
     needs: [changes]
@@ -630,15 +557,6 @@ jobs:
           code=$?
           if [ $code -eq 5 ]; then code=0; fi
           exit $code
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: always()
-        with:
-          name: junit-ci-quarantine
-          path: |
-            tests/reports/**/junit*.xml
-          if-no-files-found: ignore
-          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
-
   summary:
     name: ci/summary
     needs:

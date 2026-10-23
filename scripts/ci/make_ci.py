@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 import subprocess
 import sys
@@ -17,6 +18,34 @@ import yaml
 CI_CHECKS = REPO_ROOT / "specs/engineering/ci_checks.yaml"
 
 FORBIDDEN_TARGETS = frozenset({"db-downgrade", "agent-test-live"})
+STATUS_PATH = REPO_ROOT / "tests/reports/status.jsonl"
+
+
+def _status_line_count(path: Path) -> int:
+    if not path.is_file():
+        return 0
+    return sum(
+        1 for line in path.read_text(encoding="utf-8").splitlines() if line.strip()
+    )
+
+
+def trim_specs_status_after_tooling_backend_test(path: Path, lines_before: int) -> None:
+    """DEF-0002 (issue #21): drop nested Make records from tooling backend-test."""
+    if not path.is_file():
+        raise RuntimeError(f"expected status log after backend-test: {path}")
+    lines = [
+        line for line in path.read_text(encoding="utf-8").splitlines() if line.strip()
+    ]
+    if not lines:
+        raise RuntimeError("status.jsonl empty after specs backend-test")
+    record = json.loads(lines[-1])
+    if record.get("item") != "backend-test" or record.get("kind") != "target":
+        raise RuntimeError(
+            "last status line after specs backend-test must be backend-test target; "
+            f"got {record!r}"
+        )
+    kept = lines[:lines_before] + [lines[-1]]
+    path.write_text("\n".join(kept) + "\n", encoding="utf-8")
 
 
 def load_ci_checks() -> dict[str, Any]:
@@ -118,15 +147,15 @@ def run_job(slug: str) -> int:
         if err:
             print(f"make ci JOB={slug}: refused — {err}", file=sys.stderr)
             return 2
+        lines_before = 0
+        if slug == "specs" and target == "backend-test":
+            lines_before = _status_line_count(STATUS_PATH)
         code = run_make(target, job_env)
         if code != 0:
             print(f"make ci JOB={slug}: failed at target {target}", file=sys.stderr)
             return code
         if slug == "specs" and target == "backend-test":
-            # Tooling ATs invoke guarded targets; keep only this job's make_ci records.
-            status_path = REPO_ROOT / "tests/reports/status.jsonl"
-            if status_path.is_file():
-                status_path.unlink()
+            trim_specs_status_after_tooling_backend_test(STATUS_PATH, lines_before)
     return 0
 
 

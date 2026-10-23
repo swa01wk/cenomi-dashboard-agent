@@ -15,6 +15,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from scripts.ci.changes import compute_applicability, job_make_ci, load_ci_checks
 from scripts.ci.summary import (
+    check_job_junit_requirements,
     evaluate,
     evaluate_card_rule,
     evaluate_verdict,
@@ -481,7 +482,9 @@ def test_summary_order_verdict_before_card_rule(
         order.append("write_verdict")
         path = path or tmp_path / "verdict.json"
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text('{"success": true, "errors": [], "warnings": []}', encoding="utf-8")
+        path.write_text(
+            '{"success": true, "errors": [], "warnings": []}', encoding="utf-8"
+        )
 
     def fake_live(**_kwargs: Any) -> tuple[int, Path | None]:
         order.append("live")
@@ -500,7 +503,8 @@ def test_summary_order_verdict_before_card_rule(
     monkeypatch.setattr("scripts.ci.summary.write_card_trace_artifacts", fake_card)
     monkeypatch.setattr("scripts.ci.summary.stage_junit_artifacts", lambda _p: ([], []))
     monkeypatch.setattr(
-        "scripts.ci.summary.write_staged_junit_manifest", lambda _p: tmp_path / "junit.json"
+        "scripts.ci.summary.write_staged_junit_manifest",
+        lambda _p: tmp_path / "junit.json",
     )
     monkeypatch.setattr(
         "scripts.ci.summary.parse_card_from_branch", lambda _b: "M0-T07"
@@ -514,7 +518,9 @@ def test_summary_order_verdict_before_card_rule(
         encoding="utf-8",
     )
     jobs_json = tmp_path / "jobs.json"
-    jobs_json.write_text('{"ci/changes": "success", "ci/static": "success"}', encoding="utf-8")
+    jobs_json.write_text(
+        '{"ci/changes": "success", "ci/static": "success"}', encoding="utf-8"
+    )
     monkeypatch.setattr(
         "sys.argv",
         [
@@ -532,10 +538,10 @@ def test_summary_order_verdict_before_card_rule(
 
 
 @pytest.mark.trace("AT-M0-T07-04", reqs=["DEVENV-R031"])
-def test_stage_junit_duplicate_dest_fails(tmp_path: Path) -> None:
+def test_stage_junit_duplicate_basename_fails(tmp_path: Path) -> None:
     root = tmp_path / "artifacts"
-    a = root / "junit-ci-backend" / "tests/reports/backend/junit-unit.xml"
-    b = root / "junit-ci-specs" / "tests/reports/backend/junit-unit.xml"
+    a = root / "junit-ci-backend" / "junit-unit.xml"
+    b = root / "junit-ci-other" / "junit-unit.xml"
     a.parent.mkdir(parents=True)
     b.parent.mkdir(parents=True)
     a.write_text('<?xml version="1.0"?><testsuite></testsuite>', encoding="utf-8")
@@ -546,7 +552,61 @@ def test_stage_junit_duplicate_dest_fails(tmp_path: Path) -> None:
 
 
 @pytest.mark.trace("AT-M0-T07-04", reqs=["DEVENV-R031"])
-def test_stage_junit_places_at_default_rel(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_stage_junit_flat_file_at_artifact_root(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import scripts.ci.summary as summary_mod
+
+    monkeypatch.setattr(summary_mod, "REPO_ROOT", tmp_path)
+    root = tmp_path / "artifacts" / "junit-ci-specs"
+    src = root / "junit-tooling.xml"
+    root.mkdir(parents=True)
+    src.write_text('<?xml version="1.0"?><testsuite></testsuite>', encoding="utf-8")
+    paths, errors = stage_junit_artifacts(tmp_path / "artifacts")
+    assert not errors
+    assert tmp_path / "tests/reports/backend/junit-tooling.xml" in paths
+
+
+@pytest.mark.trace("AT-M0-T07-04", reqs=["DEVENV-R031"])
+def test_stage_junit_unknown_basename_fails(tmp_path: Path) -> None:
+    root = tmp_path / "artifacts" / "junit-ci-specs"
+    root.mkdir(parents=True)
+    (root / "junit-unknown.xml").write_text(
+        '<?xml version="1.0"?><testsuite></testsuite>', encoding="utf-8"
+    )
+    paths, errors = stage_junit_artifacts(tmp_path / "artifacts")
+    assert not paths
+    assert any("unknown JUnit basename" in e for e in errors)
+
+
+@pytest.mark.trace("AT-M0-T07-04", reqs=["DEVENV-R031"])
+def test_missing_junit_for_passed_target_fails(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import scripts.ci.summary as summary_mod
+
+    monkeypatch.setattr(summary_mod, "REPO_ROOT", tmp_path)
+    jobs = _all_jobs_success()
+    apps = _applicability(["backend/src/cenomi/api/main.py"])
+    status = tmp_path / "backend_status.jsonl"
+    status.write_text(
+        '{"item":"backend-test","kind":"target","result":"PASSED","reason":"ok"}\n',
+        encoding="utf-8",
+    )
+    errors = check_job_junit_requirements(
+        job_conclusions=jobs,
+        applicability=apps,
+        job_status_files={"ci/backend": status},
+        ci=CI,
+    )
+    assert errors
+    assert any("junit-unit.xml" in e for e in errors)
+
+
+@pytest.mark.trace("AT-M0-T07-04", reqs=["DEVENV-R031"])
+def test_stage_junit_places_at_default_rel(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     import scripts.ci.summary as summary_mod
 
     monkeypatch.setattr(summary_mod, "REPO_ROOT", tmp_path)
