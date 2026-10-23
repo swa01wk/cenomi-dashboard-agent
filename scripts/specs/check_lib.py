@@ -57,7 +57,8 @@ CheckFn = Callable[[Path], list[Finding]]
 
 def _load_schema(repo: Path) -> dict[str, Any]:
     path = repo / "specs/engineering/engineering.schema.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    data: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
+    return data
 
 
 def _milestone_index(name: str) -> int:
