@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite tests="1" failures="0" errors="0" skipped="0">
+    <testcase classname="vitest" name="[AT-M0-T11-02] Vitest AT title in JUnit" time="0.01"/>
+  </testsuite>
+</testsuites>

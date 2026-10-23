@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="sample" tests="5" failures="1" errors="1" skipped="1">
+    <testcase classname="tests.harness" name="test_passes" time="0.01"/>
+    <testcase classname="tests.harness" name="test_fails" time="0.01">
+      <failure message="boom">boom</failure>
+    </testcase>
+    <testcase classname="tests.harness" name="test_errors" time="0.01">
+      <error message="err">err</error>
+    </testcase>
+    <testcase classname="tests.harness" name="test_skipped_at" time="0.0">
+      <properties>
+        <property name="at_id" value="AT-M0-T11-08"/>
+      </properties>
+      <skipped message="pytest.skip inside AT"/>
+    </testcase>
+    <testcase classname="tests.harness" name="test_passed_at" time="0.01">
+      <properties>
+        <property name="at_id" value="AT-M0-T11-08"/>
+      </properties>
+    </testcase>
+  </testsuite>
+</testsuites>

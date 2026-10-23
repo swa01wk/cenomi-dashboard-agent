@@ -76,3 +76,31 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = ["doctor", "help_text", "report", "targets"]
 ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+pythonpath = ["src", ".."]
+addopts = [
+  "--strict-markers",
+  "--strict-config",
+  "--disable-socket",
+  "--allow-hosts=127.0.0.1,localhost,::1",
+]
+markers = [
+  "unit: unit tests — no database or external network",
+  "integration: integration tests against cenomi_test or the local stack",
+  "db: database-focused tests",
+  "contract: contract validation tests",
+  "security: security and authorization tests",
+  "agent_mock: agent tests with the mock provider (M3+)",
+  "agent_replay: agent tests with the replay provider (M3+)",
+  "agent_live: live-model agent tests (manual / eval-live only)",
+  "slow: slow tests (may be deselected in fast CI)",
+  "trace: acceptance-test traceability marker",
+  "quarantine: flaky test quarantine (ARCH-R088)",
+]
+filterwarnings = [
+  "error::pytest.PytestUnknownMarkWarning",
+]
+junit_family = "legacy"
