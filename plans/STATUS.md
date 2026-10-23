@@ -1,6 +1,6 @@
 # STATUS — Cenomi Dashboard Intelligence Agent POC
 
-Updated: 2026-10-23. **M0 build authorized** by the owner (10:46 IST) for Cursor Composer 2.5. Spec set **0.1.1** at `77c9c10`; P1 verified and recorded (PR #4, `b2067d8`).
+Updated: 2026-10-23. **M0 build in progress.** M0-T01 merged at `75a2fed` (PR #6, under P1 + EXC-001). Spec set **0.1.1** at `77c9c10`; P1 in force (ruleset `25699552`).
 
 | | |
 |---|---|
@@ -29,8 +29,8 @@ Updated: 2026-10-23. **M0 build authorized** by the owner (10:46 IST) for Cursor
 | Current milestone | **M0 Foundation**: specifications **approved and merged** (PR #2, squash `4515031`, 2026-10-22T15:59:58Z). Corrections HC-1 to HC-5 and the clarifications merged at `77c9c10` (PR #3, spec set 0.1.1). P1 in force. Build **authorized 2026-10-23**, not yet started (first card M0-T01) |
 | Migration | **Complete.** PR #1 merged into `main` on 2026-10-22 at `d5db7f3`; 214/214 handoff hashes verified |
 | Engineering Specification Plan | **Approved 2026-10-22**, subject to the owner's refinements. Recorded as `plans/ROADMAP.md` v1.0 with amendments A-01 to A-18, plus A-19 to A-24 from the owner's review of PR #2, A-25 and A-26 from the owner's approvals, and A-27 (corrections HC-1 to HC-5). The proposed draft is kept unchanged in `plans/proposed/` |
-| Next gate | M0-T01 PR (`chore/m0-t01-repo-scaffold`, merges under P1 + EXC-001), then the M0 build sequence in `plans/M0_FOUNDATION.md` §3 |
-| Implementation | **M0 authorized 2026-10-23, not yet started.** Executor: Cursor Composer 2.5, one card per branch and PR, following `plans/M0_IMPLEMENTATION_HANDOFF.md`. First card: M0-T01 |
+| Next gate | M0-T03 (`feat/m0-t03-backend-skeleton`, P1 + EXC-001), which needs the HC-6 decision on `backend/pyproject.toml` packaging, ruff and mypy sections; M0-T07 drafting may start (EXC-001 C4) |
+| Implementation | **M0 in progress.** Merged: M0-T01 (`75a2fed`). Next: M0-T03 → M0-T11 → M0-T10, with M0-T07 drafted in parallel. Executor: Cursor Composer 2.5; the architect reviews each pushed branch and opens the PR; the owner merges |
 
 ## Completed and approved work
 
@@ -187,11 +187,11 @@ Any later change to the ruleset or merge settings must be recorded here with its
 |---|---|---|---|---|---|
 | EXC-001 | Merges of exactly the M0-T01, M0-T03, M0-T11 and M0-T10 PRs under protection stage P1, before `ci/summary` exists | These cards build the tooling CI runs; GitHub cannot require a check that has never reported | Conditions C1–C7 (DEVENV §8.4): PRs documented; every available local validation before merge; merge SHA and controls recorded; M0-T07 authored early as a draft PR (C4, `plans/M0_FOUNDATION.md` §3); retroactive GitHub Actions verification once CI exists; that verification required before GATE-M0; no expansion without approval | When stage P2 is in force | **Approved conditionally, 2026-10-22** |
 
-**EXC-001 log (conditions C1, C3 and C5).** Filled in as each PR opens and merges. GATE-M0-10 checks that it is complete.
+**EXC-001 log (conditions C1, C3 and C5).** Filled in as each PR opens and merges. GATE-M0-10 checks that it is complete. From 2026-10-23 on, the architect reviews each pushed card branch and opens its PR with the full description, including the C2 evidence, before the owner merges. Squash titles keep the PR title `M<n>-T<nn>: …` (DEVENV-R038).
 
 | Card | PR | Branch | Local validations pasted (C2) | Merge SHA (C3) | Compensating controls applied (C3) | Retroactive CI verification (C5) |
 |---|---|---|---|---|---|---|
-| M0-T01 | — | — | — | — | — | — |
+| M0-T01 | [#6](https://github.com/swa01wk/cenomi-dashboard-agent/pull/6) | `chore/m0-t01-repo-scaffold` | Partial at merge time: verbatim local output for `108f733` (`make install` clean, `doctor`, `help`, `check`, 7/7 ATs) and Cursor's reported green run for `5abf172`. The PR had an empty description when merged; the evidence was added afterwards (2026-10-23) | **`75a2fed`** (squash title "Chore/m0 t01 repo scaffold (#6)", not the DEVENV-R038 format; PR title corrected afterwards) | Architect review before merge, with 4 findings fixed in `5abf172` (pin policy, AT-07 no skip, no-op scripts removed, targets drift test); tree verified identical to the reviewed commit | Pending (C5) |
 | M0-T03 | — | — | — | — | — | — |
 | M0-T11 | — | — | — | — | — | — |
 | M0-T10 | — | — | — | — | — | — |
@@ -283,4 +283,4 @@ The full risk register is in `docs/reference/final-design-gate/08_OPEN_ISSUES_AN
 - [x] Protection stage P1 applied and verified (ruleset `25699552`, 2026-10-23)
 - [x] Owner's M0 build authorization (2026-10-23, 10:46 IST)
 
-Last reviewed: **2026-10-23**. Next: Cursor Composer starts **M0-T01**; the owner reviews and merges each card PR. `active_milestone` stays `M0` (ARCH-R103).
+Last reviewed: **2026-10-23**. Next: the HC-6 decision, then M0-T03. `active_milestone` stays `M0` (ARCH-R103).
