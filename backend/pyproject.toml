@@ -44,6 +44,8 @@ dev = [
 required-version = "==0.13.5"
 package = true
 exclude-newer = "2026-10-09T00:00:00Z"
+# CR-002 / DEF-0001 security patch (ADR-0003 §2, PYSEC-2026-4320); remove when exclude-newer passes this date
+exclude-newer-package = { certifi = "2026-10-21T00:00:00Z" }
 
 [tool.uv.build-backend]
 module-name = "cenomi"
