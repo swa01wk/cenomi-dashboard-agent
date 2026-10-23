@@ -202,8 +202,7 @@ def run_target(name: str) -> None:
     if name == "backend-typecheck":
         _resolve(meta, run)
         code = _shell(
-            "uv run --directory backend mypy --strict --explicit-package-bases "
-            "src ../scripts"
+            "uv run --directory backend mypy --strict --explicit-package-bases src ../scripts"
         )
         if code != 0:
             failed(name, "mypy failed", run, exit_code=code)
@@ -218,8 +217,18 @@ def run_target(name: str) -> None:
         reports = REPO_ROOT / "tests" / "reports" / "backend"
         reports.mkdir(parents=True, exist_ok=True)
 
-        def _pytest(args: str) -> int:
-            return _shell(f"uv run --directory backend pytest {args}")
+        def _pytest(args: str, *, clear_makeflags: bool = False) -> int:
+            cmd = f"uv run --directory backend pytest {args}"
+            if not clear_makeflags:
+                return _shell(cmd)
+            env = os.environ.copy()
+            env.pop("MAKEFLAGS", None)
+            env.pop("MFLAGS", None)
+            env["MAKELEVEL"] = "0"
+            print(f"+ {cmd}", flush=True)
+            return subprocess.run(
+                cmd, shell=True, cwd=REPO_ROOT, env=env, check=False
+            ).returncode
 
         if suite in ("unit", "all"):
             k_flag = f"-k {k_expr!r} " if k_expr else ""
@@ -250,10 +259,65 @@ def run_target(name: str) -> None:
             if code != 0:
                 failed(name, "integration tests failed", run, exit_code=code)
                 return
+        if suite == "tooling":
+            junit = reports / "junit-tooling.xml"
+            code = _pytest(
+                "-c pyproject.toml --rootdir=.. --confcutdir=.. "
+                f"../tests/tooling --junitxml={junit}",
+                clear_makeflags=True,
+            )
+            if code != 0:
+                failed(name, "tooling tests failed", run, exit_code=code)
+                return
+            passed(name, "backend tests passed (SUITE=tooling)", run)
+            return
         if suite not in ("unit", "integration", "all"):
             failed(name, f"unknown SUITE={suite!r}", run, exit_code=2)
             return
         passed(name, f"backend tests passed (SUITE={suite})", run)
+        return
+
+    if name == "specs-check":
+        _resolve(meta, run)
+        gate = os.environ.get("GATE", "").strip()
+        env_prefix = f"GATE={gate} " if gate else ""
+        code = _shell(
+            f"{env_prefix}uv run --directory backend python ../scripts/specs/check.py"
+        )
+        if code != 0:
+            failed(name, "specs-check reported findings", run, exit_code=code)
+            return
+        passed(name, "specifications and engineering metadata validated", run)
+        return
+
+    if name == "trace-report":
+        _resolve(meta, run)
+        card = os.environ.get("CARD", "").strip()
+        gate = os.environ.get("GATE", "").strip()
+        env_parts = []
+        if card:
+            env_parts.append(f"CARD={card}")
+        if gate:
+            env_parts.append(f"GATE={gate}")
+        env_prefix = " ".join(env_parts)
+        if env_prefix:
+            env_prefix += " "
+        code = _shell(
+            f"{env_prefix}uv run --directory backend python ../scripts/trace/report.py"
+        )
+        if code != 0:
+            failed(name, "trace-report failed", run, exit_code=code)
+            return
+        passed(name, "trace report generated", run)
+        return
+
+    if name == "security-check":
+        _resolve(meta, run)
+        code = _shell("uv run --directory backend python ../scripts/specs/security.py")
+        if code != 0:
+            failed(name, "security-check failed", run, exit_code=code)
+            return
+        passed(name, "security scan and audits passed", run)
         return
 
     if name == "check":
