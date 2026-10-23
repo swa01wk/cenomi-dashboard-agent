@@ -588,10 +588,19 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
       - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
-      - name: Build api image
-        run: docker buildx build --load -f backend/Dockerfile -t cenomi-api:ci .
-      - name: Build web image
-        run: docker buildx build --load -f apps/web/Dockerfile -t cenomi-web:ci .
+      - name: Reset job status log
+        run: rm -f tests/reports/status.jsonl && mkdir -p tests/reports
+      - name: Build images
+        run: uv run --project backend python scripts/ci/build_images.py
+      - name: Finalize reports
+        if: always()
+        run: bash scripts/ci/finalize_reports.sh ci/images
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: status-ci-images
+          path: tests/reports/status.jsonl
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:

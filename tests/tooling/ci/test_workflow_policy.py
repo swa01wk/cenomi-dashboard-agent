@@ -158,7 +158,10 @@ def test_ci_images_builds_without_push_or_login() -> None:
     data = yaml.safe_load(text)
     images = data["jobs"]["images"]
     steps_yaml = yaml.dump(images["steps"])
-    assert "docker buildx build" in steps_yaml
+    assert "build_images.py" in steps_yaml
+    build_script = REPO_ROOT / "scripts/ci/build_images.py"
+    assert "docker buildx build" in build_script.read_text(encoding="utf-8")
+    assert "status-ci-images" in steps_yaml
     assert "docker/login-action" not in steps_yaml
     assert "push: true" not in steps_yaml
     assert "docker push" not in steps_yaml

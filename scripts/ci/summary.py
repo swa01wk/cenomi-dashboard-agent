@@ -29,8 +29,11 @@ SPEC_SET = REPO_ROOT / "specs/engineering/spec_set.yaml"
 SUMMARY_MD = REPO_ROOT / "tests/reports/ci-summary.md"
 STATUS_JSONL = REPO_ROOT / "tests/reports/status.jsonl"
 VERDICT_JSON = REPO_ROOT / "tests/reports/ci/summary-verdict.json"
+STAGED_JUNIT_JSON = REPO_ROOT / "tests/reports/ci/staged-junit-paths.json"
 SUMMARY_REPORT_DIR = REPO_ROOT / "tests/reports/ci/summary"
 LIVE_JUNIT = SUMMARY_REPORT_DIR / "junit-live.xml"
+
+JOBS_REQUIRING_STATUS = frozenset({"ci/images"})
 
 BOOTSTRAP_CARDS = ("M0-T01", "M0-T03", "M0-T11", "M0-T10")
 
@@ -191,11 +194,14 @@ def stage_junit_artifacts(junit_root: Path) -> tuple[list[Path], list[str]]:
         src_resolved = source.resolve()
         dest_resolved = dest.resolve()
         if src_resolved == dest_resolved:
-            canonical.append(dest)
+            errors.append(
+                "JUnit source equals destination (must not): "
+                f"{rel.as_posix()} ({source})"
+            )
             continue
         shutil.copyfile(source, dest)
         canonical.append(dest)
-    return canonical, []
+    return canonical, errors
 
 
 def evaluate_verdict(
@@ -250,7 +256,8 @@ def evaluate_verdict(
         outcome.errors.append(f"ci/changes: conclusion {changes_conclusion!r}")
 
     for job_name in all_tracked_jobs:
-        if not job_make_ci(job_name, ci):
+        needs_status = job_make_ci(job_name, ci) or job_name in JOBS_REQUIRING_STATUS
+        if not needs_status:
             continue
         conclusion = job_conclusions.get(job_name)
         applicable = published.get(job_name, {}).get("applicable", True)
@@ -305,8 +312,13 @@ def evaluate_verdict(
             outcome.errors.append(f"status.jsonl FAILED: {rec.get('item')}")
         if result == "NOT_IMPLEMENTED":
             item = str(rec.get("item", ""))
-            active_from = targets_active_from.get(item) or rec.get("active_from")
-            if active_from and milestone_index(active_from) < milestone_index(active):
+            if rec.get("kind") == "step":
+                active_from = rec.get("milestone") or rec.get("active_from")
+            else:
+                active_from = targets_active_from.get(item) or rec.get("active_from")
+            if active_from and milestone_index(str(active_from)) < milestone_index(
+                active
+            ):
                 outcome.success = False
                 outcome.errors.append(
                     f"NOT_IMPLEMENTED outside build window: {item} ({active_from})"
@@ -353,13 +365,24 @@ def write_verdict_json(outcome: SummaryOutcome, path: Path = VERDICT_JSON) -> No
     )
 
 
-def run_live_summary_test() -> tuple[int, Path | None]:
+def write_staged_junit_manifest(junit_paths: list[Path]) -> Path:
+    STAGED_JUNIT_JSON.parent.mkdir(parents=True, exist_ok=True)
+    rels = [p.relative_to(REPO_ROOT).as_posix() for p in junit_paths]
+    STAGED_JUNIT_JSON.write_text(json.dumps(rels, indent=2) + "\n", encoding="utf-8")
+    return STAGED_JUNIT_JSON
+
+
+def run_live_summary_test(
+    *, staged_junit_json: Path | None = None
+) -> tuple[int, Path | None]:
     """AT-M0-T07-02 — runs only on GitHub Actions."""
     if os.environ.get("GITHUB_ACTIONS", "").strip().lower() != "true":
         return 0, None
     LIVE_JUNIT.parent.mkdir(parents=True, exist_ok=True)
     env = os.environ.copy()
     env["CENOMI_CI_SUMMARY_LIVE"] = "1"
+    if staged_junit_json is not None and staged_junit_json.is_file():
+        env["CENOMI_CI_STAGED_JUNIT_JSON"] = str(staged_junit_json)
     proc = subprocess.run(
         [
             "uv",
@@ -601,6 +624,8 @@ def main() -> int:
             print(f"ci/summary: FAILED — {err}", file=sys.stderr)
         return 1
 
+    staged_junit_json = write_staged_junit_manifest(junit_paths)
+
     job_status_files = discover_job_status_files(args.status_artifacts_dir)
     status_paths = list(job_status_files.values())
     if STATUS_JSONL.is_file():
@@ -618,9 +643,10 @@ def main() -> int:
     )
     write_verdict_json(verdict)
 
-    live_code, live_junit = run_live_summary_test()
+    live_code, live_junit = run_live_summary_test(staged_junit_json=staged_junit_json)
     if live_junit is not None and live_junit not in junit_paths:
         junit_paths = [*junit_paths, live_junit]
+        write_staged_junit_manifest(junit_paths)
 
     outcome = verdict
     if live_code != 0:

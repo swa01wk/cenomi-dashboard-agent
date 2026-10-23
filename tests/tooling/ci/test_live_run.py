@@ -15,8 +15,13 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from scripts.ci.build_window import assert_build_window_targets
-from scripts.ci.summary import BOOTSTRAP_CARDS, VERDICT_JSON, parse_card_from_branch
-from scripts.trace.report import build_report
+from scripts.ci.summary import (
+    BOOTSTRAP_CARDS,
+    STAGED_JUNIT_JSON,
+    VERDICT_JSON,
+    parse_card_from_branch,
+)
+from scripts.trace.report import DEFAULT_JUNIT_REL, build_report
 
 MAKE_TARGETS = REPO_ROOT / "specs/engineering/make_targets.yaml"
 
@@ -27,6 +32,17 @@ def _target_rows() -> list[dict[str, str]]:
         {"name": str(t["name"]), "active_from": str(t["active_from"])}
         for t in data["targets"]
     ]
+
+
+def _junit_paths() -> list[Path]:
+    env_path = os.environ.get("CENOMI_CI_STAGED_JUNIT_JSON", "").strip()
+    if env_path:
+        rels = json.loads(Path(env_path).read_text(encoding="utf-8"))
+        return [REPO_ROOT / rel for rel in rels if (REPO_ROOT / rel).is_file()]
+    if STAGED_JUNIT_JSON.is_file():
+        rels = json.loads(STAGED_JUNIT_JSON.read_text(encoding="utf-8"))
+        return [REPO_ROOT / rel for rel in rels if (REPO_ROOT / rel).is_file()]
+    return [REPO_ROOT / rel for rel in DEFAULT_JUNIT_REL if (REPO_ROOT / rel).is_file()]
 
 
 def _status_records() -> list[dict]:
@@ -47,7 +63,7 @@ def test_at_m0_t07_02_live_summary() -> None:
     assert not verdict.get("errors"), verdict.get("errors")
 
     pr_card = parse_card_from_branch(os.environ.get("HEAD_BRANCH", "").strip() or None)
-    junit_paths = sorted((REPO_ROOT / "tests/reports").rglob("junit*.xml"))
+    junit_paths = _junit_paths()
     status_records = _status_records()
 
     window_errors = assert_build_window_targets(

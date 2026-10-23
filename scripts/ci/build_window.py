@@ -17,8 +17,15 @@ PLAN = Path(__file__).resolve().parents[2] / "plans/M0_FOUNDATION.md"
 SPEC_SET = Path(__file__).resolve().parents[2] / "specs/engineering/spec_set.yaml"
 
 
+M0_T07_LIVE_AT = "AT-M0-T07-02"
+
+
 def card_non_manual_all_passed(
-    repo: Path, junit_paths: list[Path], card_id: str
+    repo: Path,
+    junit_paths: list[Path],
+    card_id: str,
+    *,
+    skip_at_ids: frozenset[str] = frozenset(),
 ) -> bool:
     payload, _errors, code = build_report(repo, junit_paths=junit_paths, card=card_id)
     if code != 0:
@@ -28,6 +35,8 @@ def card_non_manual_all_passed(
         return False
     for row in tests:
         if not isinstance(row, dict) or row.get("manual"):
+            continue
+        if row.get("atId") in skip_at_ids:
             continue
         if row.get("result") != "PASSED":
             return False
@@ -40,8 +49,9 @@ def implemented_m0_cards(
     table_cards = m0_cards_in_table(PLAN)
     out: set[str] = set()
     for card in table_cards:
+        skip = frozenset({M0_T07_LIVE_AT}) if card == "M0-T07" else frozenset()
         if (pr_card and card == pr_card) or card_non_manual_all_passed(
-            repo, junit_paths, card
+            repo, junit_paths, card, skip_at_ids=skip
         ):
             out.add(card)
     return out

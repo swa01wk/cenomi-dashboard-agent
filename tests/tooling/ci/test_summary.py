@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 from typing import Any
@@ -28,6 +29,8 @@ def _status_files_for_applicable(
     job_conclusions: dict[str, str | None],
     applicability: dict[str, Any],
     tmp_path: Path,
+    *,
+    include_ci_images: bool = True,
 ) -> dict[str, Path]:
     published = {r["job"]: r["applicable"] for r in applicability["jobs"]}
     files: dict[str, Path] = {}
@@ -46,6 +49,18 @@ def _status_files_for_applicable(
             encoding="utf-8",
         )
         files[job] = path
+    if (
+        include_ci_images
+        and published.get("ci/images")
+        and job_conclusions.get("ci/images") not in (None, "skipped")
+    ):
+        if "ci/images" not in files:
+            path = tmp_path / "ci_images.jsonl"
+            path.write_text(
+                '{"item":"images-api","kind":"step","result":"PASSED","reason":"fixture"}\n',
+                encoding="utf-8",
+            )
+            files["ci/images"] = path
     return files
 
 
@@ -265,6 +280,95 @@ def test_allowed_skip_when_not_applicable_passes(tmp_path: Path) -> None:
 
 
 @pytest.mark.trace("AT-M0-T07-04", reqs=["ARCH-R103"])
+def test_images_web_step_not_implemented_in_build_window_passes(
+    tmp_path: Path,
+) -> None:
+    jobs = _all_jobs_success()
+    apps = _applicability(["backend/Dockerfile"])
+    images_status = tmp_path / "ci_images.jsonl"
+    images_status.write_text(
+        json.dumps(
+            {
+                "item": "images-web",
+                "kind": "step",
+                "result": "NOT_IMPLEMENTED",
+                "milestone": "M0",
+                "reason": "apps/web/Dockerfile arrives with M0-T04",
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    status_files = _status_files_for_applicable(jobs, apps, tmp_path)
+    status_files["ci/images"] = images_status
+    out = evaluate(
+        job_conclusions=jobs,
+        applicability=apps,
+        changed_files=["backend/Dockerfile"],
+        event_mode="pull_request",
+        head_branch=None,
+        status_records=[
+            {
+                "item": "images-web",
+                "kind": "step",
+                "result": "NOT_IMPLEMENTED",
+                "milestone": "M0",
+                "reason": "apps/web/Dockerfile arrives with M0-T04",
+            }
+        ],
+        job_status_files=status_files,
+        active_milestone="M0",
+        ci=CI,
+    )
+    assert out.success
+
+
+@pytest.mark.trace("AT-M0-T07-04", reqs=["ARCH-R103"])
+def test_images_web_step_not_implemented_outside_window_fails(
+    tmp_path: Path,
+) -> None:
+    jobs = _all_jobs_success()
+    apps = _applicability(["backend/Dockerfile"])
+    images_status = tmp_path / "ci_images.jsonl"
+    images_status.write_text(
+        json.dumps(
+            {
+                "item": "images-web",
+                "kind": "step",
+                "result": "NOT_IMPLEMENTED",
+                "milestone": "M0",
+                "reason": "apps/web/Dockerfile arrives with M0-T04",
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    status_files = _status_files_for_applicable(jobs, apps, tmp_path)
+    status_files["ci/images"] = images_status
+    out = evaluate(
+        job_conclusions=jobs,
+        applicability=apps,
+        changed_files=["backend/Dockerfile"],
+        event_mode="pull_request",
+        head_branch=None,
+        status_records=[
+            {
+                "item": "images-web",
+                "kind": "step",
+                "result": "NOT_IMPLEMENTED",
+                "milestone": "M0",
+                "reason": "apps/web/Dockerfile arrives with M0-T04",
+            }
+        ],
+        job_status_files=status_files,
+        active_milestone="M1",
+        ci=CI,
+    )
+    assert not out.success
+    assert any("images-web" in e for e in out.errors)
+
+
+@pytest.mark.trace("AT-M0-T07-04", reqs=["ARCH-R103"])
 def test_not_implemented_in_build_window_passes(tmp_path: Path) -> None:
     jobs = _all_jobs_success()
     apps = _applicability(["plans/M0_FOUNDATION.md"])
@@ -318,11 +422,13 @@ def test_unreadable_job_conclusions_fails(tmp_path: Path) -> None:
 
 
 @pytest.mark.trace("AT-M0-T07-04", reqs=["DEVENV-R050"])
-def test_missing_status_artifact_for_non_make_ci_job_passes(tmp_path: Path) -> None:
+def test_missing_status_artifact_for_ci_images_fails(tmp_path: Path) -> None:
     files = ["backend/Dockerfile"]
     jobs = _all_jobs_success()
     apps = _applicability(files)
-    status_files = _status_files_for_applicable(jobs, apps, tmp_path)
+    status_files = _status_files_for_applicable(
+        jobs, apps, tmp_path, include_ci_images=False
+    )
     assert "ci/images" not in status_files
     out = evaluate(
         job_conclusions=jobs,
@@ -335,7 +441,8 @@ def test_missing_status_artifact_for_non_make_ci_job_passes(tmp_path: Path) -> N
         active_milestone="M0",
         ci=CI,
     )
-    assert out.success
+    assert not out.success
+    assert any("ci/images" in e for e in out.errors)
 
 
 @pytest.mark.trace("AT-M0-T07-04", reqs=["DEVENV-R050"])
@@ -376,7 +483,7 @@ def test_summary_order_verdict_before_card_rule(
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text('{"success": true, "errors": [], "warnings": []}', encoding="utf-8")
 
-    def fake_live() -> tuple[int, Path | None]:
+    def fake_live(**_kwargs: Any) -> tuple[int, Path | None]:
         order.append("live")
         return 0, None
 
@@ -392,6 +499,9 @@ def test_summary_order_verdict_before_card_rule(
     monkeypatch.setattr("scripts.ci.summary.evaluate_card_rule", fake_card)
     monkeypatch.setattr("scripts.ci.summary.write_card_trace_artifacts", fake_card)
     monkeypatch.setattr("scripts.ci.summary.stage_junit_artifacts", lambda _p: ([], []))
+    monkeypatch.setattr(
+        "scripts.ci.summary.write_staged_junit_manifest", lambda _p: tmp_path / "junit.json"
+    )
     monkeypatch.setattr(
         "scripts.ci.summary.parse_card_from_branch", lambda _b: "M0-T07"
     )
@@ -452,7 +562,7 @@ def test_stage_junit_places_at_default_rel(tmp_path: Path, monkeypatch: pytest.M
 
 
 @pytest.mark.trace("AT-M0-T07-04", reqs=["DEVENV-R031"])
-def test_stage_junit_skips_copy_when_source_is_dest(
+def test_stage_junit_source_equals_dest_fails(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     import scripts.ci.summary as summary_mod
@@ -466,5 +576,5 @@ def test_stage_junit_skips_copy_when_source_is_dest(
     src.parent.mkdir(parents=True)
     src.symlink_to(dest.resolve())
     paths, errors = stage_junit_artifacts(root)
-    assert not errors
-    assert dest in paths
+    assert not paths
+    assert any("equals destination" in e for e in errors)

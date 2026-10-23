@@ -122,6 +122,11 @@ def run_job(slug: str) -> int:
         if code != 0:
             print(f"make ci JOB={slug}: failed at target {target}", file=sys.stderr)
             return code
+        if slug == "specs" and target == "backend-test":
+            # Tooling ATs invoke guarded targets; keep only this job's make_ci records.
+            status_path = REPO_ROOT / "tests/reports/status.jsonl"
+            if status_path.is_file():
+                status_path.unlink()
     return 0
 
 
