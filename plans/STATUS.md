@@ -1,12 +1,12 @@
 # STATUS — Cenomi Dashboard Intelligence Agent POC
 
-Updated: 2026-10-24. **M0 build in progress.** Merged: M0-T01 (`75a2fed`, PR #6), M0-T03 (`0027aae`, PR #9) and M0-T11 (`386f017`, PR #12), all under P1 + EXC-001. Spec set **0.1.4** at `c582535` (CR-002, PR #14); **0.1.5** (HC-10) in review. **Next:** the DEF-0001 security patch (EXC-002), then M0-T10. P1 in force (ruleset `25699552`).
+Updated: 2026-10-24. **M0 build in progress; all EXC-001 bootstrap cards merged.** Merged: M0-T01 (`75a2fed`, PR #6), M0-T03 (`0027aae`, PR #9), M0-T11 (`386f017`, PR #12) and M0-T10 (`5dae0a5`, PR #18) under P1 + EXC-001; DEF-0001 security patch (`6e813b3`, PR #16) under P1 + EXC-002. Spec set **0.1.5** at `7544885` (HC-10, PR #17). **Next:** M0-T07 (CI workflows, draft PR #11) rebased and completed; then P2. P1 in force (ruleset `25699552`).
 
 | | |
 |---|---|
 | Baseline | DX1–DX6 (canvas v27 + OI-13 local wording fix); Final Design Gate 2026-10-22 |
 | Dataset | `sd-2026.10.20-01` (`as_of` 2026-10-20; insight replay hash `82fde5250960761d`; runner reference_hash `c1e36ced42cebecc`) — **not yet seeded** |
-| Specification set | **0.1.5** (HC-10, ROADMAP A-32) in review; **0.1.4** at `c582535` (CR-002/EXC-002, ROADMAP A-31); **0.1.3** at `3c182cf` (CR-001, ROADMAP A-30); 0.1.2 at `ccdc276` (HC-6, HC-7); 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
+| Specification set | **0.1.5** at `7544885` (HC-10, ROADMAP A-32); **0.1.4** at `c582535` (CR-002/EXC-002, ROADMAP A-31); **0.1.3** at `3c182cf` (CR-001, ROADMAP A-30); 0.1.2 at `ccdc276` (HC-6, HC-7); 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
 
 > Status vocabulary:
 >
@@ -25,12 +25,12 @@ Updated: 2026-10-24. **M0 build in progress.** Merged: M0-T01 (`75a2fed`, PR #6)
 
 | | |
 |---|---|
-| Phase | **M0 build** (authorized 2026-10-23); spec set 0.1.1 |
+| Phase | **M0 build** (authorized 2026-10-23); spec set 0.1.5 |
 | Current milestone | **M0 Foundation**: specifications **approved and merged** (PR #2, squash `4515031`, 2026-10-22T15:59:58Z). Corrections HC-1 to HC-5 and the clarifications merged at `77c9c10` (PR #3, spec set 0.1.1). P1 in force. Build **authorized 2026-10-23**, not yet started (first card M0-T01) |
 | Migration | **Complete.** PR #1 merged into `main` on 2026-10-22 at `d5db7f3`; 214/214 handoff hashes verified |
 | Engineering Specification Plan | **Approved 2026-10-22**, subject to the owner's refinements. Recorded as `plans/ROADMAP.md` v1.0 with amendments A-01 to A-18, plus A-19 to A-24 from the owner's review of PR #2, A-25 and A-26 from the owner's approvals, and A-27 (corrections HC-1 to HC-5). The proposed draft is kept unchanged in `plans/proposed/` |
-| Next gate | DEF-0001 security patch (`fix/def-0001-security-advisories`, P1 + EXC-002), then M0-T10 (governance automation, P1 + EXC-001; last bootstrap card; implemented, branch rebased after the patch). M0-T07 (draft PR #11, EXC-001 C4) is then rebased, adds the CR-001 `ci/specs` steps, and merges once `ci/summary` is green; then P2 is applied |
-| Implementation | **M0 in progress.** Merged: M0-T01 (`75a2fed`), M0-T03 (`0027aae`) and M0-T11 (`386f017`). In progress: M0-T10 (implemented, awaiting push and review; `security-check` blocked by DEF-0001), M0-T07 (draft PR #11). Next: DEF-0001 patch → M0-T10. Executor: Cursor Composer 2.5; the architect reviews each pushed branch and opens the PR; the owner merges |
+| Next gate | M0-T07 (CI workflows, draft PR #11): rebase onto `main`, add the CR-001 `ci/specs` steps, merge under P1 once its own run shows `ci/summary` `success` (it is not covered by EXC-001). That run is also EXC-001 C5 (a) and EXC-002 C5 (a). Then the owner applies P2 |
+| Implementation | **M0 in progress.** Merged: M0-T01 (`75a2fed`), M0-T03 (`0027aae`), M0-T11 (`386f017`), M0-T10 (`5dae0a5`); DEF-0001 patch (`6e813b3`). In progress: M0-T07 (draft PR #11). Remaining after M0-T07: M0-T02, M0-T05, M0-T08, M0-T06, M0-T04, M0-T09 spike |
 
 ## Completed and approved work
 
@@ -61,6 +61,7 @@ Updated: 2026-10-24. **M0 build in progress.** Merged: M0-T01 (`75a2fed`, PR #6)
 | **HC-8 and HC-9 approved** (tooling suite in `ci/specs`; manual-AT results file) and recorded as **CR-001** with the `import-linter` wording fix | 23 Oct 2026 | Owner's answers, 23 Oct 2026 23:20 IST; ROADMAP A-30 |
 | **M0-T11 merged** (PR #12, `386f017`) and **CR-001 merged** (PR #13, `3c182cf`; spec set 0.1.3); EXC-001 log entry and CR-001 hashes recorded | 23 Oct 2026 | EXC-001 log and CF-0 section below |
 | **CR-002 and EXC-002 approved**: one security-patch PR for DEF-0001 (`certifi`, `handlebars`; pre-existing on `main`, found by M0-T10's `security-check`) merges under P1 before M0-T10 | 23 Oct 2026 | Owner's answer, 23 Oct 2026 23:55 IST ("Separate patch PR first"); ROADMAP A-31; [DEF-0001](https://github.com/swa01wk/cenomi-dashboard-agent/issues/15) |
+| **DEF-0001 patch merged** (PR #16, `6e813b3`), **HC-10 merged** (PR #17, `7544885`, spec set 0.1.5) and **M0-T10 merged** (PR #18, `5dae0a5`): all four EXC-001 bootstrap cards are in; EXC-001 and EXC-002 log entries recorded | 23–24 Oct 2026 | EXC-001 and EXC-002 logs below |
 
 ### CF-0 contract freeze (exact versions at `4515031`)
 
@@ -89,7 +90,7 @@ The M0 corrections PR changes none of the contract files. Its only change to a C
 | `specs/engineering/make_targets.yaml` | `backend-test SUITE=tooling`; `backend-lint` runs `import-linter lint` | `6daa6a4cd01d2cda` |
 | `specs/engineering/ci_checks.yaml` | `ci/specs` installs browsers and runs `backend-test` with `SUITE=tooling` | `c1b270e160d701a9` |
 | `specs/engineering/engineering.schema.json` | `manualResults`; optional `gateReport.manualResults`; `SUITE` in job env | `679f81ed9f69075c` |
-| `specs/engineering/spec_set.yaml` | version 0.1.3 (later versions: 0.1.4 at `c582535`, CR-002; 0.1.5, HC-10) | `b9aadc55b002ec15` |
+| `specs/engineering/spec_set.yaml` | version 0.1.3 (later versions: 0.1.4 at `c582535`, CR-002; 0.1.5 at `7544885`, HC-10) | `b9aadc55b002ec15` |
 
 ## Milestones
 
@@ -201,7 +202,7 @@ Any later change to the ruleset or merge settings must be recorded here with its
 | ID | Scope | Reason | Compensating controls | Expires | State |
 |---|---|---|---|---|---|
 | EXC-001 | Merges of exactly the M0-T01, M0-T03, M0-T11 and M0-T10 PRs under protection stage P1, before `ci/summary` exists | These cards build the tooling CI runs; GitHub cannot require a check that has never reported | Conditions C1–C7 (DEVENV §8.4): PRs documented; every available local validation before merge; merge SHA and controls recorded; M0-T07 authored early as a draft PR (C4, `plans/M0_FOUNDATION.md` §3); retroactive GitHub Actions verification once CI exists; that verification required before GATE-M0; no expansion without approval | When stage P2 is in force | **Approved conditionally, 2026-10-22** |
-| EXC-002 | Merge of exactly one security-patch PR, `fix/def-0001-security-advisories` (DEF-0001, CR-002), under P1 before `ci/summary` exists | ADR-0003 §2 requires a CI run for a security patch, but CI arrives with M0-T07, whose `ci/security` cannot pass while the advisories are open | EXC-001 C1–C3 and C6 unchanged (EXC-002 log below); C5 = M0-T07 PR run with `ci/security` `success`, then the first `ci/summary` on `main` (DEVENV §8.4) | On merge of that PR, or when P2 is in force | **Approved, 2026-10-23** |
+| EXC-002 | Merge of exactly one security-patch PR, `fix/def-0001-security-advisories` (DEF-0001, CR-002), under P1 before `ci/summary` exists | ADR-0003 §2 requires a CI run for a security patch, but CI arrives with M0-T07, whose `ci/security` cannot pass while the advisories are open | EXC-001 C1–C3 and C6 unchanged (EXC-002 log below); C5 = M0-T07 PR run with `ci/security` `success`, then the first `ci/summary` on `main` (DEVENV §8.4) | On merge of that PR, or when P2 is in force | **Approved, 2026-10-23; expired on merge** (`6e813b3`, 2026-10-23T18:48:25Z); C5 pending |
 
 **EXC-001 log (conditions C1, C3 and C5).** Filled in as each PR opens and merges. GATE-M0-10 checks that it is complete. From 2026-10-23 on, the architect reviews each pushed card branch and opens its PR with the full description, including the C2 evidence, before the owner merges. Squash titles keep the PR title `M<n>-T<nn>: …` (DEVENV-R038).
 
@@ -210,7 +211,7 @@ Any later change to the ruleset or merge settings must be recorded here with its
 | M0-T01 | [#6](https://github.com/swa01wk/cenomi-dashboard-agent/pull/6) | `chore/m0-t01-repo-scaffold` | Partial at merge time: verbatim local output for `108f733` (`make install` clean, `doctor`, `help`, `check`, 7/7 ATs) and Cursor's reported green run for `5abf172`. The PR had an empty description when merged; the evidence was added afterwards (2026-10-23) | **`75a2fed`** (squash title "Chore/m0 t01 repo scaffold (#6)", not the DEVENV-R038 format; PR title corrected afterwards) | Architect review before merge, with 4 findings fixed in `5abf172` (pin policy, AT-07 no skip, no-op scripts removed, targets drift test); tree verified identical to the reviewed commit | Pending (C5) |
 | M0-T03 | [#9](https://github.com/swa01wk/cenomi-dashboard-agent/pull/9) | `feat/m0-t03-backend-skeleton` | Yes: owner's log at 2026-10-23T07:54:52Z on `d7a7020` (`make install` clean; doctor; backend-lint; backend-typecheck; backend-test unit 10/10 and integration 5/5; `make check`; 11 tooling tests), pasted in PR §8 | **`0027aae`** (squash title in DEVENV-R038 format) | Architect review with 7 findings fixed in `d7a7020`; independent ruff, format and SQL-safety re-run on the export; tree verified identical to the reviewed commit. Accepted: formatting-only edits to M0-T01's `scripts/make/**`, needed because `backend-lint` covers `scripts/` | Pending (C5) |
 | M0-T11 | [#12](https://github.com/swa01wk/cenomi-dashboard-agent/pull/12) | `test/m0-t11-test-harness` | Yes: owner's run on `6e78f7a`, clean tree before and after (`make install` clean; doctor; backend-lint; backend-typecheck; backend-test unit 10 and integration 5; `make check`; tooling suite 29 passed including AT-M0-T01-01; `quarantine_expiry.py` passed), pasted in PR §8. An earlier run made before the commit was discarded | **`386f017`** (squash title in DEVENV-R038 format) | Architect review before the PR was opened; tree of `386f017` verified identical to the reviewed head `6e78f7a`. Its bootstrap ATs run under `backend-test SUITE=tooling` once M0-T10 and M0-T07 implement CR-001 | Pending (C5) |
-| M0-T10 | — | — | — | — | — | — |
+| M0-T10 | [#18](https://github.com/swa01wk/cenomi-dashboard-agent/pull/18) | `chore/m0-t10-governance-automation` | Yes: owner's full handoff §11 step-5 run at `f18d860` (install clean; doctor; lint; typecheck; unit 10, integration 5, tooling 104; specs-check; `make check`; security-check; `trace-report CARD=` T01 7, T03 10, T11 8, T10 7 PASSED; clean tree), plus a re-run at the final `6ccc14e` (tooling 106, lint, typecheck, security-check), pasted in PR §8 | **`5dae0a5`** (squash title in DEVENV-R038 format) | Three architect review rounds before the PR (vacuous AT tests, manual-AT detection, register data in code resolved by HC-10, invalid defect form, licence and pip-audit defects, gate-mode gaps); tree of `5dae0a5` verified identical to the reviewed `6ccc14e`. Accepted: `scripts/__init__.py` (outside field 13, needed by M0-T03's mypy run) and every fixable pip-audit finding blocking (PyPI data has no severity) | Pending (C5) |
 | C5 (a): M0-T07 PR run, `trace-report CARD=…` for all four | — | — | — | — | — | — |
 | C5 (b): first `ci/summary` run on `main` after M0-T07 merges | — | — | — | — | — | — |
 
@@ -218,7 +219,7 @@ Any later change to the ruleset or merge settings must be recorded here with its
 
 | PR | Branch | Local validations pasted (C2) | Merge SHA (C3) | Compensating controls applied (C3) | Retroactive CI verification (C5) |
 |---|---|---|---|---|---|
-| — | `fix/def-0001-security-advisories` | — | — | — | Pending: (a) M0-T07 PR run `ci/security`; (b) first `ci/summary` on `main` |
+| [#16](https://github.com/swa01wk/cenomi-dashboard-agent/pull/16) | `fix/def-0001-security-advisories` | Yes: owner's run on `38d4e57` (baseline and post-patch audits; install clean; doctor; lock checks; lint; typecheck; unit 10, integration 5, tooling 29; `make check`; four-file diff; clean tree), pasted in PR §8 | **`6e813b3`** (squash title `DEF-0001: …`) | Architect review; squash diff verified identical to the reviewed `38d4e57`; exact upstream pin of `handlebars` 4.7.9 by `@boundaries/elements` overridden to 4.7.10 with the rationale recorded in the PR; [DEF-0001](https://github.com/swa01wk/cenomi-dashboard-agent/issues/15) closed. EXC-002 expired on this merge | Pending: (a) M0-T07 PR run `ci/security`; (b) first `ci/summary` on `main` |
 
 ## Open questions (non-blocking)
 
@@ -287,7 +288,7 @@ The full risk register is in `docs/reference/final-design-gate/08_OPEN_ISSUES_AN
 | Design canvas | v27 (+ OI-13 local fix in exported boards) |
 | Final Design Gate doc | 22 Oct 2026 outcome recorded (exported 8 tabs) |
 | Engineering Specification Plan | 22 Oct 2026 draft → **approved** as `plans/ROADMAP.md` v1.0 |
-| Specification set | **0.1.5** in review (HC-10); **0.1.4** at `c582535` (CR-002); **0.1.3** at `3c182cf` (CR-001); 0.1.2 at `ccdc276`; 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
+| Specification set | **0.1.5** at `7544885` (HC-10); **0.1.4** at `c582535` (CR-002); **0.1.3** at `3c182cf` (CR-001); 0.1.2 at `ccdc276`; 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
 | Planning Assessment | v0.3 (G0) |
 | Dataset | `sd-2026.10.20-01` |
 | Detectors | detectors-1.1 |
