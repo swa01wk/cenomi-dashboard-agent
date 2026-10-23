@@ -1,10 +1,8 @@
-#!/usr/bin/env python3
 """Dispatch Make targets for M0-T01 (orchestration only; logic lives in scripts/)."""
 
 from __future__ import annotations
 
 import os
-import re
 import shutil
 import subprocess
 import sys
@@ -17,9 +15,9 @@ BACKEND = REPO_ROOT / "backend"
 if str(MAKE_DIR) not in sys.path:
     sys.path.insert(0, str(MAKE_DIR))
 
-from doctor import run_doctor  # noqa: E402
-from help_text import render_help  # noqa: E402
-from report import (  # noqa: E402
+from doctor import run_doctor
+from help_text import render_help
+from report import (
     TargetRun,
     failed,
     milestone_index,
@@ -28,7 +26,7 @@ from report import (  # noqa: E402
     passed,
     read_active_milestone,
 )
-from targets import TARGET_BY_NAME, TargetMeta  # noqa: E402
+from targets import TARGET_BY_NAME, TargetMeta
 
 STUB_REASON = "implemented in a later M0 task card"
 
@@ -121,7 +119,12 @@ def run_target(name: str) -> None:
         browsers = os.environ.get("BROWSERS", "1").strip()
         code = _shell("uv sync --locked --directory backend --all-groups")
         if code != 0:
-            failed(name, "uv sync --locked failed (lockfile out of date?)", run, exit_code=1)
+            failed(
+                name,
+                "uv sync --locked failed (lockfile out of date?)",
+                run,
+                exit_code=1,
+            )
             return
         code = _shell("pnpm install --frozen-lockfile")
         if code != 0:
@@ -143,8 +146,7 @@ def run_target(name: str) -> None:
             REPO_ROOT / ".ruff_cache",
             REPO_ROOT / "tests/reports",
         ]
-        for pkg in (REPO_ROOT / "packages").glob("*/dist"):
-            paths.append(pkg)
+        paths.extend((REPO_ROOT / "packages").glob("*/dist"))
         for path in paths:
             if path.is_dir():
                 print(f"+ rm -rf {path}", flush=True)
@@ -167,6 +169,91 @@ def run_target(name: str) -> None:
         if not _guard_db_downgrade(run):
             return
         _stub(meta, run)
+        return
+
+    if name == "backend-format":
+        _resolve(meta, run)
+        code = _shell("uv run ruff format backend scripts")
+        if code != 0:
+            failed(name, "ruff format failed", run, exit_code=code)
+            return
+        code = _shell("uv run ruff check --select I --fix backend scripts")
+        if code != 0:
+            failed(name, "ruff import fix failed", run, exit_code=code)
+            return
+        passed(name, "backend formatting applied", run)
+        return
+
+    if name == "backend-lint":
+        _resolve(meta, run)
+        for cmd in (
+            "uv run ruff check backend scripts",
+            "uv run ruff format --check backend scripts",
+            "uv run --directory backend lint-imports",
+            "uv run python scripts/lint/sql_safety.py",
+        ):
+            code = _shell(cmd)
+            if code != 0:
+                failed(name, f"failed: {cmd}", run, exit_code=code)
+                return
+        passed(name, "backend static checks passed", run)
+        return
+
+    if name == "backend-typecheck":
+        _resolve(meta, run)
+        code = _shell(
+            "uv run --directory backend mypy --strict --explicit-package-bases "
+            "src ../scripts"
+        )
+        if code != 0:
+            failed(name, "mypy failed", run, exit_code=code)
+            return
+        passed(name, "backend typecheck passed", run)
+        return
+
+    if name == "backend-test":
+        _resolve(meta, run)
+        suite = os.environ.get("SUITE", "all").strip()
+        k_expr = os.environ.get("K", "").strip()
+        reports = REPO_ROOT / "tests" / "reports" / "backend"
+        reports.mkdir(parents=True, exist_ok=True)
+
+        def _pytest(args: str) -> int:
+            return _shell(f"uv run --directory backend pytest {args}")
+
+        if suite in ("unit", "all"):
+            k_flag = f"-k {k_expr!r} " if k_expr else ""
+            code = _pytest(
+                f"tests/unit {k_flag}"
+                f"--junitxml={reports / 'junit-unit.xml'} "
+                f"--cov=cenomi --cov-report=xml:{reports / 'coverage.xml'}"
+            )
+            if code != 0:
+                failed(name, "unit tests failed", run, exit_code=code)
+                return
+        if suite in ("integration", "all"):
+            if suite == "integration" or suite == "all":
+                code = _shell("make db-upgrade DB=test")
+                if code not in (0,):
+                    failed(
+                        name,
+                        "db-upgrade DB=test failed (database unreachable?)",
+                        run,
+                        exit_code=3,
+                    )
+                    return
+            k_flag = f"-k {k_expr!r} " if k_expr else ""
+            code = _pytest(
+                f"tests/integration -m 'not agent_live' {k_flag}"
+                f"--junitxml={reports / 'junit-integration.xml'}"
+            )
+            if code != 0:
+                failed(name, "integration tests failed", run, exit_code=code)
+                return
+        if suite not in ("unit", "integration", "all"):
+            failed(name, f"unknown SUITE={suite!r}", run, exit_code=2)
+            return
+        passed(name, f"backend tests passed (SUITE={suite})", run)
         return
 
     if name == "check":

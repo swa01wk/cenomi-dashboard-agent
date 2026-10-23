@@ -1,0 +1,74 @@
+[importlinter]
+root_package = cenomi
+include_external_packages = false
+
+[importlinter:contract:core-independence]
+name = core does not import other cenomi modules
+type = forbidden
+source_modules =
+    cenomi.core
+forbidden_modules =
+    cenomi.api
+    cenomi.semantic
+    cenomi.analytics
+    cenomi.presentation
+    cenomi.agent
+    cenomi.agui
+    cenomi.insights
+    cenomi.seed
+    cenomi.cli
+
+[importlinter:contract:analytics-forbidden]
+name = analytics must not import higher-layer modules (ARCH-R007)
+type = forbidden
+source_modules =
+    cenomi.analytics
+forbidden_modules =
+    cenomi.agent
+    cenomi.presentation
+    cenomi.agui
+    cenomi.insights
+    cenomi.api
+    cenomi.seed
+
+[importlinter:contract:no-api-imports]
+name = no module imports api (ARCH-R006)
+type = forbidden
+source_modules =
+    cenomi.core
+    cenomi.semantic
+    cenomi.analytics
+    cenomi.presentation
+    cenomi.agent
+    cenomi.agui
+    cenomi.insights
+    cenomi.seed
+forbidden_modules =
+    cenomi.api
+
+[importlinter:contract:no-seed-imports]
+name = no module imports seed (ARCH-R006)
+type = forbidden
+source_modules =
+    cenomi.core
+    cenomi.semantic
+    cenomi.analytics
+    cenomi.presentation
+    cenomi.agent
+    cenomi.agui
+    cenomi.insights
+    cenomi.api
+forbidden_modules =
+    cenomi.seed
+
+[importlinter:contract:seed-forbidden]
+name = seed must not import api or auth layers
+type = forbidden
+source_modules =
+    cenomi.seed
+forbidden_modules =
+    cenomi.api
+    cenomi.agent
+    cenomi.agui
+    cenomi.insights
+    cenomi.presentation
