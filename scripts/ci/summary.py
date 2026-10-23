@@ -186,8 +186,7 @@ def stage_junit_artifacts(junit_root: Path) -> tuple[list[Path], list[str]]:
             continue
         if rel in dest_to_source and dest_to_source[rel] != source:
             errors.append(
-                f"duplicate JUnit destination {rel.as_posix()}: "
-                f"{dest_to_source[rel]} and {source}"
+                f"duplicate JUnit destination {rel.as_posix()}: {dest_to_source[rel]} and {source}"
             )
             continue
         dest_to_source[rel] = source
@@ -420,7 +419,9 @@ def bootstrap_trace_lines(junit_paths: list[Path]) -> list[str]:
         tests = payload.get("acceptanceTests")
         if not isinstance(tests, list):
             tests = []
-        failed = [t for t in tests if isinstance(t, dict) and t.get("result") != "PASSED"]
+        failed = [
+            t for t in tests if isinstance(t, dict) and t.get("result") != "PASSED"
+        ]
         if code != 0 or failed:
             lines.append(f"- `{card}`: **FAILED** ({len(failed)} non-PASSED AT(s))")
             for err in errors[:5]:

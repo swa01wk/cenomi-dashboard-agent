@@ -78,9 +78,7 @@ def test_at_m0_t07_02_live_summary() -> None:
     junit_dir = REPO_ROOT / "tests/reports"
     junit_paths = sorted(junit_dir.rglob("junit*.xml"))
     for card in BOOTSTRAP_CARDS:
-        payload, errors, code = build_report(
-            REPO_ROOT, junit_paths=junit_paths, card=card
-        )
+        payload, errors, code = build_report(REPO_ROOT, junit_paths=junit_paths, card=card)
         assert code == 0, f"{card}: build_report failed: {errors}"
         tests = payload.get("acceptanceTests")
         assert isinstance(tests, list)
