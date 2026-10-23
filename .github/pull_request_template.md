@@ -10,7 +10,7 @@
 ## Implementation summary
 <!-- DEVENV-R035 §4: Implementation summary -->
 
-## Files and modules affected, and confirmation they are within the card's file ownership
+## Files and modules affected
 <!-- DEVENV-R035 §5: Files and modules affected, and confirmation they are within the card's file ownership -->
 
 ## Acceptance criteria

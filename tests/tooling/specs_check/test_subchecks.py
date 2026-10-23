@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import shutil
 from pathlib import Path
 
@@ -211,4 +212,76 @@ def test_manual_at_ids_from_field_15() -> None:
         "AT-M0-T09-02",
         "AT-M0-T09-03",
     }
-    assert expected <= manual
+    assert manual == expected
+
+
+@pytest.mark.trace("AT-M0-T10-01", reqs=["RMAP-R007"])
+def test_negative_id_families_unknown(tmp_path: Path) -> None:
+    dest = tmp_path / "specs/traceability/id_conventions.yaml"
+    dest.parent.mkdir(parents=True)
+    shutil.copy(REPO / "specs/traceability/id_conventions.yaml", dest)
+    doc = tmp_path / "docs/x.md"
+    doc.parent.mkdir(parents=True)
+    doc.write_text("See FAKE-R001 for details.\n")
+    assert any(f.code == "ID_UNKNOWN" for f in check_id_families(tmp_path))
+
+
+@pytest.mark.trace("AT-M0-T10-07", reqs=["DEVENV-R046"])
+def test_banned_term_ignored_under_engineering_specs(tmp_path: Path) -> None:
+    path = tmp_path / "specs/engineering/spec_set.yaml"
+    path.parent.mkdir(parents=True)
+    path.write_text("version: overdue\n", encoding="utf-8")
+    assert not any(f.code == "BANNED_TERM" for f in check_banned_terms(tmp_path))
+
+
+@pytest.mark.trace("AT-M0-T10-07", reqs=["DEVENV-R046"])
+def test_banned_term_under_other_specs_path(tmp_path: Path) -> None:
+    path = tmp_path / "specs/traceability/note.yaml"
+    path.parent.mkdir(parents=True)
+    path.write_text("note: overdue\n", encoding="utf-8")
+    assert any(f.code == "BANNED_TERM" for f in check_banned_terms(tmp_path))
+
+
+@pytest.mark.trace("AT-M0-T10-01", reqs=["RMAP-R010"])
+def test_gate_report_missing_when_gate_set(tmp_path: Path) -> None:
+    from scripts.specs.check_lib import check_gate_mode
+
+    _copy_engineering_tree(tmp_path)
+    assert any(
+        f.code == "GATE_REPORT_MISSING"
+        for f in check_gate_mode(tmp_path, "M0")
+    )
+
+
+@pytest.mark.trace("AT-M0-T10-01", reqs=["RMAP-R010"])
+def test_gate_report_present_passes_gate_file_check(tmp_path: Path) -> None:
+    from scripts.specs.check_lib import check_gate_mode
+
+    _copy_engineering_tree(tmp_path)
+    gate_dir = tmp_path / "tests/reports/gate/M0"
+    gate_dir.mkdir(parents=True)
+    (gate_dir / "report.json").write_text(
+        json.dumps(
+            {
+                "schema": "cenomi.gate_report.v1",
+                "milestone": "M0",
+                "gateChecks": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+    codes = {f.code for f in check_gate_mode(tmp_path, "M0")}
+    assert "GATE_REPORT_MISSING" not in codes
+
+
+@pytest.mark.trace("AT-M0-T10-01", reqs=["RMAP-R007"])
+def test_crashing_subcheck_exits_with_name(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def _boom(_repo: Path) -> list:
+        raise RuntimeError("fail")
+
+    monkeypatch.setitem(SUB_CHECKS, "cursor_rules", _boom)
+    with pytest.raises(SystemExit) as exc:
+        run_checks(tmp_path, only={"cursor_rules"})
+    assert exc.value.code == 1

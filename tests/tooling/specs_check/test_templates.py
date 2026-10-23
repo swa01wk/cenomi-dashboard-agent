@@ -10,17 +10,19 @@ import yaml
 
 REPO = Path(__file__).resolve().parents[3]
 
-TRIAGE_CLASSES = [
-    "triage:test-failure",
-    "triage:contract-mismatch",
-    "triage:kpi-discrepancy",
-    "triage:authorization",
-    "triage:grounding",
-    "triage:ui-rendering",
-    "triage:ci-infrastructure",
-    "triage:live-model-variability",
-    "triage:flaky",
-]
+def _devenv_triage_classes() -> list[str]:
+    text = (REPO / "docs/architecture/DEVELOPMENT_ENVIRONMENT.md").read_text(
+        encoding="utf-8"
+    )
+    block = text.split("**DEVENV-R046**", 1)[1].split("## 10.", 1)[0]
+    classes: list[str] = []
+    for line in block.splitlines():
+        if "`triage:" not in line:
+            continue
+        match = re.search(r"`(triage:[^`]+)`", line)
+        if match:
+            classes.append(match.group(1))
+    return classes
 
 
 def _devenv_pr_section_names() -> list[str]:
@@ -34,7 +36,13 @@ def _devenv_pr_section_names() -> list[str]:
         if not match:
             continue
         cell = match.group(1).strip()
-        names.append(re.split(r"\s*\(", cell, maxsplit=1)[0].strip())
+        if "(" in cell:
+            name = re.split(r"\s*\(", cell, maxsplit=1)[0].strip()
+        elif "," in cell:
+            name = re.split(r",", cell, maxsplit=1)[0].strip()
+        else:
+            name = cell
+        names.append(name)
     return names
 
 
@@ -62,7 +70,7 @@ def test_defect_template_nine_triage_classes() -> None:
             options = field["attributes"]["options"]
         if field.get("id") == "blocking":
             blocking_type = field["type"]
-    assert options == TRIAGE_CLASSES
+    assert options == _devenv_triage_classes()
     assert blocking_type == "checkboxes"
     title = data.get("title", "")
     assert title.startswith("DEF-")

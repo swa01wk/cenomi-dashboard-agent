@@ -22,7 +22,7 @@ def _parse_export_table(text: str) -> list[dict[str, str]]:
     for line in lines:
         if not line.startswith("|"):
             break
-        if line.startswith("| ---") or line.startswith("| ID |"):
+        if line.startswith(("| ---", "| ID |")):
             continue
         parts = [part.strip() for part in line.strip("|").split("|")]
         if len(parts) < 6:
@@ -50,7 +50,7 @@ def _parse_section2_table(text: str) -> list[dict[str, str]]:
     for line in lines:
         if not line.startswith("|"):
             break
-        if line.startswith("| ---") or line.startswith("| ID |"):
+        if line.startswith(("| ---", "| ID |")):
             continue
         parts = [part.strip() for part in line.strip("|").split("|")]
         if len(parts) < 7:
@@ -94,7 +94,9 @@ def _parse_section1_status_overrides(section1: str) -> dict[str, str]:
     return overrides
 
 
-def _expected_status_now(export_status: str, overrides: dict[str, str], id_: str) -> str:
+def _expected_status_now(
+    export_status: str, overrides: dict[str, str], id_: str
+) -> str:
     return overrides.get(id_, export_status)
 
 
@@ -122,9 +124,7 @@ def check_drift(repo: Path) -> list[str]:
     committed_rows = _parse_section2_table(register_text)
 
     section1_start = register_text.index("## 1. Status after")
-    section1 = register_text[
-        section1_start : register_text.index("## 2. Register")
-    ]
+    section1 = register_text[section1_start : register_text.index("## 2. Register")]
     status_overrides = _parse_section1_status_overrides(section1)
 
     if len(committed_rows) != len(export_rows):
@@ -141,9 +141,7 @@ def check_drift(repo: Path) -> list[str]:
             continue
         for col in ("decision", "rule", "origin", "status_pre_gate"):
             if committed[col] != export[col]:
-                errors.append(
-                    f"{register}: {row_ref} column {col} differs from export"
-                )
+                errors.append(f"{register}: {row_ref} column {col} differs from export")
         expected_now = _expected_status_now(
             export["status_pre_gate"], status_overrides, export["id"]
         )

@@ -202,8 +202,7 @@ def run_target(name: str) -> None:
     if name == "backend-typecheck":
         _resolve(meta, run)
         code = _shell(
-            "uv run --directory backend mypy --strict --explicit-package-bases "
-            "src ../scripts"
+            "uv run --directory backend mypy --strict --explicit-package-bases src ../scripts"
         )
         if code != 0:
             failed(name, "mypy failed", run, exit_code=code)

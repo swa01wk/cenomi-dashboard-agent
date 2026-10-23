@@ -12,6 +12,7 @@ from typing import Any
 
 import yaml
 from jsonschema import Draft202012Validator, RefResolver  # type: ignore[import-untyped]
+
 from scripts.docs.render_engineering_tables import (
     check_drift as engineering_table_drift,
 )
