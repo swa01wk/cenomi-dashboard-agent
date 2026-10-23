@@ -1,0 +1,699 @@
+# CI contract: specs/engineering/ci_checks.yaml (M0-T07)
+name: ci
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_call:
+    inputs:
+      ref:
+        description: Git ref to checkout (milestone gate)
+        required: false
+        type: string
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  CENOMI_ENV: ci
+  POSTGRES_IMAGE: postgres:16.15@sha256:9e2cf6287f25c3151f4c9421ccce2b17f3e60061c111a29165e0d2cdd9ff0a97
+  DATABASE_URL_ADMIN: postgresql://postgres:postgres@localhost:5432/postgres
+  DATABASE_URL_OWNER: postgresql://cenomi_owner:change-me-dev-only-owner@localhost:5432/cenomi_test
+  DATABASE_URL_SEED: postgresql://cenomi_seed:change-me-dev-only-seed@localhost:5432/cenomi_test
+  DATABASE_URL_READER: postgresql://cenomi_reader:change-me-dev-only-reader@localhost:5432/cenomi_test
+  DATABASE_URL_APP: postgresql://cenomi_app:change-me-dev-only-app@localhost:5432/cenomi_test
+
+jobs:
+  changes:
+    name: ci/changes
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      applicable_ci_static: ${{ steps.classify.outputs.applicable_ci_static }}
+      applicable_ci_specs: ${{ steps.classify.outputs.applicable_ci_specs }}
+      applicable_ci_contracts: ${{ steps.classify.outputs.applicable_ci_contracts }}
+      applicable_ci_security: ${{ steps.classify.outputs.applicable_ci_security }}
+      applicable_ci_backend: ${{ steps.classify.outputs.applicable_ci_backend }}
+      applicable_ci_database: ${{ steps.classify.outputs.applicable_ci_database }}
+      applicable_ci_frontend: ${{ steps.classify.outputs.applicable_ci_frontend }}
+      applicable_ci_agent: ${{ steps.classify.outputs.applicable_ci_agent }}
+      applicable_ci_integration: ${{ steps.classify.outputs.applicable_ci_integration }}
+      applicable_ci_e2e: ${{ steps.classify.outputs.applicable_ci_e2e }}
+      applicable_ci_echarts_gate: ${{ steps.classify.outputs.applicable_ci_echarts_gate }}
+      applicable_ci_images: ${{ steps.classify.outputs.applicable_ci_images }}
+      applicable_ci_quarantine: ${{ steps.classify.outputs.applicable_ci_quarantine }}
+      applicable_ci_summary: ${{ steps.classify.outputs.applicable_ci_summary }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.ref || github.sha }}
+      - uses: ./.github/actions/setup
+      - name: Classify paths
+        id: classify
+        run: |
+          EVENT="${{ github.event_name }}"
+          if [ "$EVENT" = "pull_request" ]; then
+            uv run --project backend python scripts/ci/changes.py \
+              --event pull_request \
+              --base-ref "${{ github.base_ref }}" \
+              --head-ref "${{ github.sha }}" \
+              --github-output "$GITHUB_OUTPUT"
+          else
+            uv run --project backend python scripts/ci/changes.py \
+              --event "$EVENT" \
+              --github-output "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ci-applicability
+          path: tests/reports/ci/applicability.json
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: junit-ci-changes
+          path: |
+            tests/reports/**/junit*.xml
+          if-no-files-found: ignore
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+
+  static:
+    name: ci/static
+    needs: [changes]
+    if: >-
+      github.event_name != 'pull_request' ||
+      needs.changes.outputs.applicable_ci_static == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - name: Reset job status log
+        run: rm -f tests/reports/status.jsonl && mkdir -p tests/reports
+      - name: Lockfiles and toolchain
+        run: |
+          uv lock --check --directory backend
+          pnpm install --frozen-lockfile --lockfile-only
+          uv run --project backend python scripts/lint/quarantine_expiry.py
+      - name: Branch name (pull requests)
+        if: github.event_name == 'pull_request'
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: uv run --project backend python scripts/ci/check_branch_name.py "$HEAD_REF"
+      - name: Run ci/static targets
+        run: make ci JOB=static
+
+      - name: Finalize reports
+        if: always()
+        run: bash scripts/ci/finalize_reports.sh ci/static
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: status-ci-static
+          path: tests/reports/status.jsonl
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: junit-ci-static
+          path: |
+            tests/reports/**/junit*.xml
+          if-no-files-found: ignore
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+
+  specs:
+    name: ci/specs
+    needs: [changes]
+    if: >-
+      github.event_name != 'pull_request' ||
+      needs.changes.outputs.applicable_ci_specs == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - name: Reset job status log
+        run: rm -f tests/reports/status.jsonl && mkdir -p tests/reports
+      - run: make ci JOB=specs
+
+      - name: Finalize reports
+        if: always()
+        run: bash scripts/ci/finalize_reports.sh ci/specs
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: status-ci-specs
+          path: tests/reports/status.jsonl
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: junit-ci-specs
+          path: |
+            tests/reports/**/junit*.xml
+          if-no-files-found: ignore
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+
+  contracts:
+    name: ci/contracts
+    needs: [changes]
+    if: >-
+      github.event_name != 'pull_request' ||
+      needs.changes.outputs.applicable_ci_contracts == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - name: Reset job status log
+        run: rm -f tests/reports/status.jsonl && mkdir -p tests/reports
+      - run: make ci JOB=contracts
+
+      - name: Finalize reports
+        if: always()
+        run: bash scripts/ci/finalize_reports.sh ci/contracts
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: status-ci-contracts
+          path: tests/reports/status.jsonl
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: junit-ci-contracts
+          path: |
+            tests/reports/**/junit*.xml
+          if-no-files-found: ignore
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+
+  security:
+    name: ci/security
+    needs: [changes]
+    if: >-
+      github.event_name != 'pull_request' ||
+      needs.changes.outputs.applicable_ci_security == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - name: Reset job status log
+        run: rm -f tests/reports/status.jsonl && mkdir -p tests/reports
+      - run: make ci JOB=security
+
+      - name: Finalize reports
+        if: always()
+        run: bash scripts/ci/finalize_reports.sh ci/security
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: status-ci-security
+          path: tests/reports/status.jsonl
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: junit-ci-security
+          path: |
+            tests/reports/**/junit*.xml
+          if-no-files-found: ignore
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+
+  backend:
+    name: ci/backend
+    needs: [changes, static]
+    if: >-
+      always() && !cancelled() &&
+      (needs.static.result == 'success' || needs.static.result == 'skipped') &&
+      (github.event_name != 'pull_request' ||
+       needs.changes.outputs.applicable_ci_backend == 'true')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16.15@sha256:9e2cf6287f25c3151f4c9421ccce2b17f3e60061c111a29165e0d2cdd9ff0a97
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DB: test
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - name: Reset job status log
+        run: rm -f tests/reports/status.jsonl && mkdir -p tests/reports
+      - run: make ci JOB=backend
+
+      - name: Finalize reports
+        if: always()
+        run: bash scripts/ci/finalize_reports.sh ci/backend
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: status-ci-backend
+          path: tests/reports/status.jsonl
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: junit-ci-backend
+          path: |
+            tests/reports/**/junit*.xml
+          if-no-files-found: ignore
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+
+  database:
+    name: ci/database
+    needs: [changes, static]
+    if: >-
+      always() && !cancelled() &&
+      (needs.static.result == 'success' || needs.static.result == 'skipped') &&
+      (github.event_name != 'pull_request' ||
+       needs.changes.outputs.applicable_ci_database == 'true')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16.15@sha256:9e2cf6287f25c3151f4c9421ccce2b17f3e60061c111a29165e0d2cdd9ff0a97
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DB: test
+      CONFIRM: "yes"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - name: Reset job status log
+        run: rm -f tests/reports/status.jsonl && mkdir -p tests/reports
+      - run: make ci JOB=database
+
+      - name: Finalize reports
+        if: always()
+        run: bash scripts/ci/finalize_reports.sh ci/database
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: status-ci-database
+          path: tests/reports/status.jsonl
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: junit-ci-database
+          path: |
+            tests/reports/**/junit*.xml
+          if-no-files-found: ignore
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+
+  frontend:
+    name: ci/frontend
+    needs: [changes, static]
+    if: >-
+      always() && !cancelled() &&
+      (needs.static.result == 'success' || needs.static.result == 'skipped') &&
+      (github.event_name != 'pull_request' ||
+       needs.changes.outputs.applicable_ci_frontend == 'true')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - name: Reset job status log
+        run: rm -f tests/reports/status.jsonl && mkdir -p tests/reports
+      - run: make ci JOB=frontend
+
+      - name: Finalize reports
+        if: always()
+        run: bash scripts/ci/finalize_reports.sh ci/frontend
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: status-ci-frontend
+          path: tests/reports/status.jsonl
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: junit-ci-frontend
+          path: |
+            tests/reports/**/junit*.xml
+          if-no-files-found: ignore
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+
+  agent:
+    name: ci/agent
+    needs: [changes, static]
+    if: >-
+      always() && !cancelled() &&
+      (needs.static.result == 'success' || needs.static.result == 'skipped') &&
+      (github.event_name != 'pull_request' ||
+       needs.changes.outputs.applicable_ci_agent == 'true')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16.15@sha256:9e2cf6287f25c3151f4c9421ccce2b17f3e60061c111a29165e0d2cdd9ff0a97
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      LLM_MODE: replay
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - name: Reset job status log
+        run: rm -f tests/reports/status.jsonl && mkdir -p tests/reports
+      - run: make ci JOB=agent
+
+      - name: Finalize reports
+        if: always()
+        run: bash scripts/ci/finalize_reports.sh ci/agent
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: status-ci-agent
+          path: tests/reports/status.jsonl
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: junit-ci-agent
+          path: |
+            tests/reports/**/junit*.xml
+          if-no-files-found: ignore
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+
+  integration:
+    name: ci/integration
+    needs: [changes, backend]
+    if: >-
+      always() && !cancelled() &&
+      (needs.backend.result == 'success' || needs.backend.result == 'skipped') &&
+      (github.event_name != 'pull_request' ||
+       needs.changes.outputs.applicable_ci_integration == 'true')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16.15@sha256:9e2cf6287f25c3151f4c9421ccce2b17f3e60061c111a29165e0d2cdd9ff0a97
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DB: test
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - name: Reset job status log
+        run: rm -f tests/reports/status.jsonl && mkdir -p tests/reports
+      - run: make ci JOB=integration
+
+      - name: Finalize reports
+        if: always()
+        run: bash scripts/ci/finalize_reports.sh ci/integration
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: status-ci-integration
+          path: tests/reports/status.jsonl
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: junit-ci-integration
+          path: |
+            tests/reports/**/junit*.xml
+          if-no-files-found: ignore
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+
+  e2e:
+    name: ci/e2e
+    needs: [changes, backend, frontend]
+    if: >-
+      always() && !cancelled() &&
+      (needs.backend.result == 'success' || needs.backend.result == 'skipped') &&
+      (needs.frontend.result == 'success' || needs.frontend.result == 'skipped') &&
+      (github.event_name != 'pull_request' ||
+       needs.changes.outputs.applicable_ci_e2e == 'true')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CENOMI_ENV: test
+      LLM_MODE: replay
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - name: Reset job status log
+        run: rm -f tests/reports/status.jsonl && mkdir -p tests/reports
+      - run: make ci JOB=e2e
+
+      - name: Finalize reports
+        if: always()
+        run: bash scripts/ci/finalize_reports.sh ci/e2e
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: status-ci-e2e
+          path: tests/reports/status.jsonl
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: junit-ci-e2e
+          path: |
+            tests/reports/**/junit*.xml
+          if-no-files-found: ignore
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+
+  echarts-gate:
+    name: ci/echarts-gate
+    needs: [changes, static]
+    if: >-
+      always() && !cancelled() &&
+      (needs.static.result == 'success' || needs.static.result == 'skipped') &&
+      (github.event_name != 'pull_request' ||
+       needs.changes.outputs.applicable_ci_echarts_gate == 'true')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - name: Reset job status log
+        run: rm -f tests/reports/status.jsonl && mkdir -p tests/reports
+      - run: make ci JOB=echarts-gate
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: echarts-gate
+          path: tests/reports/echarts/**
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+          if-no-files-found: ignore
+
+      - name: Finalize reports
+        if: always()
+        run: bash scripts/ci/finalize_reports.sh ci/echarts-gate
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: status-ci-echarts-gate
+          path: tests/reports/status.jsonl
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: junit-ci-echarts-gate
+          path: |
+            tests/reports/**/junit*.xml
+          if-no-files-found: ignore
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+
+  images:
+    name: ci/images
+    needs: [changes, static]
+    if: >-
+      always() && !cancelled() &&
+      (needs.static.result == 'success' || needs.static.result == 'skipped') &&
+      (github.event_name != 'pull_request' ||
+       needs.changes.outputs.applicable_ci_images == 'true')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - name: Build api image
+        run: docker buildx build --load -f backend/Dockerfile -t cenomi-api:ci .
+      - name: Build web image
+        run: docker buildx build --load -f apps/web/Dockerfile -t cenomi-web:ci .
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: junit-ci-images
+          path: |
+            tests/reports/**/junit*.xml
+          if-no-files-found: ignore
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+
+  quarantine:
+    name: ci/quarantine
+    needs: [changes]
+    if: >-
+      github.event_name != 'pull_request' ||
+      needs.changes.outputs.applicable_ci_quarantine == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - name: Quarantined tests
+        run: |
+          set +e
+          uv run --project backend pytest -m quarantine
+          code=$?
+          if [ $code -eq 5 ]; then code=0; fi
+          exit $code
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: junit-ci-quarantine
+          path: |
+            tests/reports/**/junit*.xml
+          if-no-files-found: ignore
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+
+  summary:
+    name: ci/summary
+    needs:
+      - changes
+      - static
+      - specs
+      - contracts
+      - security
+      - backend
+      - database
+      - frontend
+      - agent
+      - integration
+      - e2e
+      - echarts-gate
+      - images
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ci-applicability
+          path: tests/reports/ci
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: status-*
+          path: tests/reports/ci/status-artifacts
+          merge-multiple: true
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: junit-*
+          path: tests/reports/ci/junit-artifacts
+          merge-multiple: true
+        continue-on-error: true
+      - name: Collect job conclusions
+        run: |
+          uv run --project backend python - <<'PY'
+          import json, os
+          jobs = {
+            "ci/changes": os.environ["R_CHANGES"],
+            "ci/static": os.environ["R_STATIC"],
+            "ci/specs": os.environ["R_SPECS"],
+            "ci/contracts": os.environ["R_CONTRACTS"],
+            "ci/security": os.environ["R_SECURITY"],
+            "ci/backend": os.environ["R_BACKEND"],
+            "ci/database": os.environ["R_DATABASE"],
+            "ci/frontend": os.environ["R_FRONTEND"],
+            "ci/agent": os.environ["R_AGENT"],
+            "ci/integration": os.environ["R_INTEGRATION"],
+            "ci/e2e": os.environ["R_E2E"],
+            "ci/echarts-gate": os.environ["R_ECHARTS"],
+            "ci/images": os.environ["R_IMAGES"],
+          }
+          path = "tests/reports/ci/job-conclusions.json"
+          os.makedirs(os.path.dirname(path), exist_ok=True)
+          with open(path, "w", encoding="utf-8") as f:
+              json.dump(jobs, f)
+          PY
+        env:
+          R_CHANGES: ${{ needs.changes.result }}
+          R_STATIC: ${{ needs.static.result }}
+          R_SPECS: ${{ needs.specs.result }}
+          R_CONTRACTS: ${{ needs.contracts.result }}
+          R_SECURITY: ${{ needs.security.result }}
+          R_BACKEND: ${{ needs.backend.result }}
+          R_DATABASE: ${{ needs.database.result }}
+          R_FRONTEND: ${{ needs.frontend.result }}
+          R_AGENT: ${{ needs.agent.result }}
+          R_INTEGRATION: ${{ needs.integration.result }}
+          R_E2E: ${{ needs.e2e.result }}
+          R_ECHARTS: ${{ needs.echarts-gate.result }}
+          R_IMAGES: ${{ needs.images.result }}
+      - name: Evaluate summary
+        env:
+          HEAD_BRANCH: ${{ github.head_ref }}
+        run: |
+          uv run --project backend python scripts/ci/summary.py \
+            --applicability tests/reports/ci/applicability.json \
+            --jobs-json tests/reports/ci/job-conclusions.json \
+            --status-artifacts-dir tests/reports/ci/status-artifacts \
+            --event "${{ github.event_name }}" \
+            --head-branch "$HEAD_BRANCH" \
+            --sha "${{ github.sha }}" \
+            --step-summary "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: ci-summary
+          path: tests/reports/ci-summary.md
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}

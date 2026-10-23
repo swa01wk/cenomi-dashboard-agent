@@ -320,6 +320,27 @@ def run_target(name: str) -> None:
         passed(name, "security scan and audits passed", run)
         return
 
+    if name == "ci":
+        _resolve(meta, run)
+        code = subprocess.run(
+            [
+                "uv",
+                "run",
+                "--project",
+                "backend",
+                "python",
+                "scripts/ci/make_ci.py",
+            ],
+            cwd=REPO_ROOT,
+            check=False,
+        ).returncode
+        job = os.environ.get("JOB", "").strip() or "all"
+        if code == 0:
+            passed(name, f"JOB={job} completed", run)
+        else:
+            failed(name, f"JOB={job} failed", run, exit_code=code)
+        return
+
     if name == "check":
         _resolve(meta, run)
         steps = [
