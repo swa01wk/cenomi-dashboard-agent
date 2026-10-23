@@ -10,10 +10,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from scripts.make.report import (  # type: ignore[import-not-found]
-    append_status,
-    read_active_milestone,
-)
+from scripts.make.report import append_status, read_active_milestone
 
 STATUS = REPO_ROOT / "tests/reports/status.jsonl"
 

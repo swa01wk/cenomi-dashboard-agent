@@ -20,20 +20,10 @@ if str(REPO_ROOT) not in sys.path:
 
 import yaml
 
-from scripts.ci.changes import (  # type: ignore[import-not-found]
-    compute_applicability,
-    job_make_ci,
-    load_ci_checks,
-)
-from scripts.ci.job_slug import artifact_slug_to_job  # type: ignore[import-not-found]
-from scripts.make.report import (  # type: ignore[import-not-found]
-    milestone_index,
-    read_active_milestone,
-)
-from scripts.trace.report import (  # type: ignore[import-not-found]
-    DEFAULT_JUNIT_REL,
-    build_report,
-)
+from scripts.ci.changes import compute_applicability, job_make_ci, load_ci_checks
+from scripts.ci.job_slug import artifact_slug_to_job
+from scripts.make.report import milestone_index, read_active_milestone
+from scripts.trace.report import DEFAULT_JUNIT_REL, build_report
 
 SPEC_SET = REPO_ROOT / "specs/engineering/spec_set.yaml"
 SUMMARY_MD = REPO_ROOT / "tests/reports/ci-summary.md"
@@ -78,9 +68,9 @@ class SummaryOutcome:
 
 def _load_reports_module() -> ModuleType | None:
     try:
-        from scripts.ci import reports as reports_mod  # type: ignore[import-not-found]
+        from scripts.ci import reports as reports_mod
 
-        return cast(ModuleType, reports_mod)
+        return reports_mod
     except ImportError:
         return None
 
@@ -162,9 +152,9 @@ def _canonical_junit_dest(source: Path) -> Path | None:
         rel = Path(*parts[idx:])
         if rel.as_posix().startswith("tests/reports/") and "junit" in source.name:
             return rel
-    for rel in DEFAULT_JUNIT_REL:
-        if source.name == Path(rel).name:
-            return Path(rel)
+    for rel_str in DEFAULT_JUNIT_REL:
+        if source.name == Path(rel_str).name:
+            return Path(rel_str)
     return None
 
 

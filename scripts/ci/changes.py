@@ -16,11 +16,7 @@ if str(REPO_ROOT) not in sys.path:
 
 import yaml
 
-from scripts.ci._paths import (  # type: ignore[import-not-found]
-    categories_for_path,
-    normalize_path,
-    path_matches,
-)
+from scripts.ci._paths import categories_for_path, normalize_path, path_matches
 
 CI_CHECKS = REPO_ROOT / "specs/engineering/ci_checks.yaml"
 APPLICABILITY_PATH = REPO_ROOT / "tests/reports/ci/applicability.json"
@@ -268,10 +264,7 @@ def main() -> int:
     for rec in result["jobs"]:
         print(f"{rec['job']}: applicable={rec['applicable']} reason={rec['reason']}")
 
-    from scripts.make.report import (  # type: ignore[import-not-found]
-        append_status,
-        read_active_milestone,
-    )
+    from scripts.make.report import append_status, read_active_milestone
 
     APPLICABILITY_PATH.parent.mkdir(parents=True, exist_ok=True)
     append_status(
