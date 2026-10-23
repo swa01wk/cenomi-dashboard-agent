@@ -6,7 +6,7 @@ Updated: 2026-10-24. **M0 build in progress; all EXC-001 bootstrap cards merged.
 |---|---|
 | Baseline | DX1–DX6 (canvas v27 + OI-13 local wording fix); Final Design Gate 2026-10-22 |
 | Dataset | `sd-2026.10.20-01` (`as_of` 2026-10-20; insight replay hash `82fde5250960761d`; runner reference_hash `c1e36ced42cebecc`) — **not yet seeded** |
-| Specification set | **0.1.5** at `7544885` (HC-10, ROADMAP A-32); **0.1.4** at `c582535` (CR-002/EXC-002, ROADMAP A-31); **0.1.3** at `3c182cf` (CR-001, ROADMAP A-30); 0.1.2 at `ccdc276` (HC-6, HC-7); 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
+| Specification set | **0.1.6** (HC-11, ROADMAP A-33) in review; **0.1.5** at `7544885` (HC-10, ROADMAP A-32); **0.1.4** at `c582535` (CR-002/EXC-002, ROADMAP A-31); **0.1.3** at `3c182cf` (CR-001, ROADMAP A-30); 0.1.2 at `ccdc276` (HC-6, HC-7); 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
 
 > Status vocabulary:
 >
@@ -25,7 +25,7 @@ Updated: 2026-10-24. **M0 build in progress; all EXC-001 bootstrap cards merged.
 
 | | |
 |---|---|
-| Phase | **M0 build** (authorized 2026-10-23); spec set 0.1.5 |
+| Phase | **M0 build** (authorized 2026-10-23); spec set 0.1.5 (0.1.6 in review) |
 | Current milestone | **M0 Foundation**: specifications **approved and merged** (PR #2, squash `4515031`, 2026-10-22T15:59:58Z). Corrections HC-1 to HC-5 and the clarifications merged at `77c9c10` (PR #3, spec set 0.1.1). P1 in force. Build **authorized 2026-10-23**, not yet started (first card M0-T01) |
 | Migration | **Complete.** PR #1 merged into `main` on 2026-10-22 at `d5db7f3`; 214/214 handoff hashes verified |
 | Engineering Specification Plan | **Approved 2026-10-22**, subject to the owner's refinements. Recorded as `plans/ROADMAP.md` v1.0 with amendments A-01 to A-18, plus A-19 to A-24 from the owner's review of PR #2, A-25 and A-26 from the owner's approvals, and A-27 (corrections HC-1 to HC-5). The proposed draft is kept unchanged in `plans/proposed/` |
@@ -149,6 +149,7 @@ The M0 corrections PR changes none of the contract files. Its only change to a C
 ## Decisions
 
 **Approved:**
+- **HC-11** (2026-10-24): during the build window, the `ci/images` web image build records `NOT_IMPLEMENTED` while `apps/web/Dockerfile` (M0-T04) is absent; outside the window it fails (ARCH-R103, ROADMAP A-33)
 - **HC-10** (2026-10-24): DECISION_REGISTER §2 is consistency-checked by M0-T10, not regenerated; the register data stays only in DECISION_REGISTER.md (ROADMAP A-32)
 - GDQ-01…GDQ-12, Option A (2026-10-22)
 - DXD-80…93
@@ -288,7 +289,7 @@ The full risk register is in `docs/reference/final-design-gate/08_OPEN_ISSUES_AN
 | Design canvas | v27 (+ OI-13 local fix in exported boards) |
 | Final Design Gate doc | 22 Oct 2026 outcome recorded (exported 8 tabs) |
 | Engineering Specification Plan | 22 Oct 2026 draft → **approved** as `plans/ROADMAP.md` v1.0 |
-| Specification set | **0.1.5** at `7544885` (HC-10); **0.1.4** at `c582535` (CR-002); **0.1.3** at `3c182cf` (CR-001); 0.1.2 at `ccdc276`; 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
+| Specification set | **0.1.6** in review (HC-11); **0.1.5** at `7544885` (HC-10); **0.1.4** at `c582535` (CR-002); **0.1.3** at `3c182cf` (CR-001); 0.1.2 at `ccdc276`; 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
 | Planning Assessment | v0.3 (G0) |
 | Dataset | `sd-2026.10.20-01` |
 | Detectors | detectors-1.1 |

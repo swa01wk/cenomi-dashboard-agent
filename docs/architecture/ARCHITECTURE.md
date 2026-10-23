@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Document code | ARCH (requirement IDs `ARCH-Rnnn`) |
-| Version | 1.0 · 2026-10-22 · PR-M0 (CF-0) |
+| Version | 1.1 · 2026-10-24 · ARCH-R083 manual marker (HC-10) and ARCH-R103 CI build steps (HC-11). 1.0 · 2026-10-22 · PR-M0 (CF-0) |
 | Status | Proposed in PR-M0; normative when merged |
 | Rests on | GD architecture tab (`docs/reference/final-design-gate/02_ARCHITECTURE_AND_INTERACTION_MODEL.md`); DR-013, 016, 019–021, 027–032, 037; DXD-05, 06, 12, 17, 19, 25–40, 46; ADR-0002 to ADR-0006, ADR-0015 |
 | Later milestones extend | §5.1 rows (as modules are built), §8 (PR-M3, PR-M4), §9.4 (PR-M1, ADR-0008), §13.2 (PR-M3) |
@@ -850,6 +850,7 @@ Quarantined tests still run in the non-blocking job `ci/quarantine` and are list
 - In ordinary PR and `main` CI, `NOT_IMPLEMENTED` is tolerated and reported only for items whose `active_from` equals `active_milestone`, so that milestone's cards can land one at a time.
 - It is blocking for any item whose `active_from` is earlier than `active_milestone`.
 - It is always blocking in gate mode.
+- **CI build steps (HC-11).** A blocking CI step that is not a Make target but needs a file delivered by a not-yet-merged card follows the same window. In M0 this is only the `ci/images` web image build, which needs `apps/web/Dockerfile` from M0-T04. When the file is absent, the step does not build: it appends a `status.jsonl` record `{"item": "images-web", "kind": "step", "result": "NOT_IMPLEMENTED", "milestone": "M0", "reason": "apps/web/Dockerfile arrives with M0-T04"}`, and `ci/summary` applies this rule with `milestone` as the item's `active_from`. When the file exists, the step builds normally and records `PASSED` or `FAILED`. The `api` image always builds. Absence outside the window fails.
 - A card's own acceptance tests are never in the window. Its PR must show all of them `PASSED` (ARCH-R105).
 
 **ARCH-R104** `SKIPPED` in ordinary CI is allowed only with a recorded reason: a quarantine record (ARCH-R088), or a job not applicable under the change rule. It is listed in the CI summary. In gate mode, any `SKIPPED` acceptance test of the gated scope fails the gate.
