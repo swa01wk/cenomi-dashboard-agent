@@ -423,7 +423,7 @@ def test_summary_order_verdict_before_card_rule(
 
 @pytest.mark.trace("AT-M0-T07-04", reqs=["DEVENV-R031"])
 def test_stage_junit_duplicate_dest_fails(tmp_path: Path) -> None:
-    root = tmp_path / "junit-artifacts"
+    root = tmp_path / "artifacts"
     a = root / "junit-ci-backend" / "tests/reports/backend/junit-unit.xml"
     b = root / "junit-ci-specs" / "tests/reports/backend/junit-unit.xml"
     a.parent.mkdir(parents=True)
@@ -440,7 +440,7 @@ def test_stage_junit_places_at_default_rel(tmp_path: Path, monkeypatch: pytest.M
     import scripts.ci.summary as summary_mod
 
     monkeypatch.setattr(summary_mod, "REPO_ROOT", tmp_path)
-    root = tmp_path / "junit-artifacts"
+    root = tmp_path / "artifacts"
     src = root / "junit-ci-specs" / "tests/reports/backend/junit-tooling.xml"
     src.parent.mkdir(parents=True)
     src.write_text('<?xml version="1.0"?><testsuite></testsuite>', encoding="utf-8")
@@ -448,4 +448,23 @@ def test_stage_junit_places_at_default_rel(tmp_path: Path, monkeypatch: pytest.M
     assert not errors
     dest = tmp_path / "tests/reports/backend/junit-tooling.xml"
     assert dest.is_file()
+    assert dest in paths
+
+
+@pytest.mark.trace("AT-M0-T07-04", reqs=["DEVENV-R031"])
+def test_stage_junit_skips_copy_when_source_is_dest(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import scripts.ci.summary as summary_mod
+
+    monkeypatch.setattr(summary_mod, "REPO_ROOT", tmp_path)
+    dest = tmp_path / "tests/reports/backend/junit-tooling.xml"
+    dest.parent.mkdir(parents=True)
+    dest.write_text('<?xml version="1.0"?><testsuite></testsuite>', encoding="utf-8")
+    root = tmp_path / "artifacts" / "junit-ci-specs"
+    src = root / "tests/reports/backend/junit-tooling.xml"
+    src.parent.mkdir(parents=True)
+    src.symlink_to(dest.resolve())
+    paths, errors = stage_junit_artifacts(root)
+    assert not errors
     assert dest in paths

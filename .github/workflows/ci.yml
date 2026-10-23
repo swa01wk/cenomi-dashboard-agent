@@ -616,7 +616,8 @@ jobs:
       - name: Quarantined tests
         run: |
           set +e
-          uv run --project backend pytest -m quarantine
+          uv run --directory backend pytest -c pyproject.toml --rootdir=.. --confcutdir=.. \
+            -m quarantine tests ../tests/tooling
           code=$?
           if [ $code -eq 5 ]; then code=0; fi
           exit $code
@@ -658,11 +659,11 @@ jobs:
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: status-*
-          path: tests/reports/ci/status-artifacts
+          path: tests/reports/ci/artifacts
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: junit-*
-          path: tests/reports/ci/junit-artifacts
+          path: tests/reports/ci/artifacts
         continue-on-error: true
       - name: Collect job conclusions
         run: |
@@ -709,8 +710,8 @@ jobs:
           uv run --project backend python scripts/ci/summary.py \
             --applicability tests/reports/ci/applicability.json \
             --jobs-json tests/reports/ci/job-conclusions.json \
-            --status-artifacts-dir tests/reports/ci/status-artifacts \
-            --junit-artifacts-dir tests/reports/ci/junit-artifacts \
+            --status-artifacts-dir tests/reports/ci/artifacts \
+            --junit-artifacts-dir tests/reports/ci/artifacts \
             --event "${{ github.event_name }}" \
             --head-branch "$HEAD_BRANCH" \
             --sha "${{ github.sha }}" \

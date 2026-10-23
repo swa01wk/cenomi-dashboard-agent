@@ -28,6 +28,10 @@ runs:
         restore-keys: |
           ${{ runner.os }}-pnpm-store-
 
+    - name: Install gitleaks
+      shell: bash
+      run: bash scripts/ci/install_gitleaks.sh
+
     - name: Install dependencies
       shell: bash
       run: make install BROWSERS=0

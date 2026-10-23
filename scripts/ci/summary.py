@@ -188,7 +188,12 @@ def stage_junit_artifacts(junit_root: Path) -> tuple[list[Path], list[str]]:
     for rel, source in sorted(dest_to_source.items()):
         dest = REPO_ROOT / rel
         dest.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(source, dest)
+        src_resolved = source.resolve()
+        dest_resolved = dest.resolve()
+        if src_resolved == dest_resolved:
+            canonical.append(dest)
+            continue
+        shutil.copyfile(source, dest)
         canonical.append(dest)
     return canonical, []
 
@@ -353,6 +358,8 @@ def run_live_summary_test() -> tuple[int, Path | None]:
     if os.environ.get("GITHUB_ACTIONS", "").strip().lower() != "true":
         return 0, None
     LIVE_JUNIT.parent.mkdir(parents=True, exist_ok=True)
+    env = os.environ.copy()
+    env["CENOMI_CI_SUMMARY_LIVE"] = "1"
     proc = subprocess.run(
         [
             "uv",
@@ -365,6 +372,7 @@ def run_live_summary_test() -> tuple[int, Path | None]:
             "-q",
         ],
         cwd=REPO_ROOT,
+        env=env,
         check=False,
     )
     return proc.returncode, LIVE_JUNIT if LIVE_JUNIT.is_file() else None
@@ -545,14 +553,14 @@ def main() -> int:
     parser.add_argument(
         "--status-artifacts-dir",
         type=Path,
-        default=REPO_ROOT / "tests/reports/ci/status-artifacts",
-        help="Directory of downloaded status-* artifacts",
+        default=REPO_ROOT / "tests/reports/ci/artifacts",
+        help="Directory of downloaded status-* artefacts",
     )
     parser.add_argument(
         "--junit-artifacts-dir",
         type=Path,
-        default=REPO_ROOT / "tests/reports/ci/junit-artifacts",
-        help="Directory of downloaded junit-* artifacts",
+        default=REPO_ROOT / "tests/reports/ci/artifacts",
+        help="Directory of downloaded CI artefacts (junit-* subfolders)",
     )
     args = parser.parse_args()
 

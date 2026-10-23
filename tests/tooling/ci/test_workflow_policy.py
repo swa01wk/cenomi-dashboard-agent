@@ -139,6 +139,19 @@ def test_check_branch_name_accepts_and_rejects() -> None:
     assert docs.returncode == 0
 
 
+@pytest.mark.trace("AT-M0-T07-04", reqs=["ARCH-R088"])
+def test_ci_quarantine_pytest_command_shape() -> None:
+    text = CI_YML.read_text(encoding="utf-8")
+    data = yaml.safe_load(text)
+    steps_yaml = yaml.dump(data["jobs"]["quarantine"]["steps"])
+    assert "-c pyproject.toml" in steps_yaml
+    assert "--rootdir=.." in steps_yaml
+    assert "--confcutdir=.." in steps_yaml
+    assert "-m quarantine" in steps_yaml
+    assert "../tests/tooling" in steps_yaml
+    assert data["jobs"]["quarantine"].get("continue-on-error") is True
+
+
 @pytest.mark.trace("AT-M0-T07-06", reqs=["DEVENV-R028"])
 def test_ci_images_builds_without_push_or_login() -> None:
     text = CI_YML.read_text(encoding="utf-8")
