@@ -1,12 +1,12 @@
 # STATUS — Cenomi Dashboard Intelligence Agent POC
 
-Updated: 2026-10-23. PR-M0 ([PR #2](https://github.com/swa01wk/cenomi-dashboard-agent/pull/2)) merged at `4515031`; CF-0 frozen. The owner approved corrections HC-1 to HC-5 (ROADMAP A-27), which are in review on branch `docs/m0-implementation-corrections`.
+Updated: 2026-10-23. PR-M0 ([PR #2](https://github.com/swa01wk/cenomi-dashboard-agent/pull/2)) merged at `4515031`; CF-0 frozen. The owner approved corrections HC-1 to HC-5 and the operational clarifications (ROADMAP A-27, A-28) and approved [PR #3](https://github.com/swa01wk/cenomi-dashboard-agent/pull/3) for merge. Spec set **0.1.1** is approved; it is on `main` from PR #3's squash commit onward.
 
 | | |
 |---|---|
 | Baseline | DX1–DX6 (canvas v27 + OI-13 local wording fix); Final Design Gate 2026-10-22 |
 | Dataset | `sd-2026.10.20-01` (`as_of` 2026-10-20; insight replay hash `82fde5250960761d`; runner reference_hash `c1e36ced42cebecc`) — **not yet seeded** |
-| Specification set | **0.1.0 approved and merged** (PR #2, `main` @ `4515031`); 0.1.1 (M0 corrections) in review |
+| Specification set | **0.1.1 approved** 2026-10-23 (PR #3: M0 corrections; ROADMAP A-27, A-28). 0.1.0 merged in PR #2 at `4515031` (CF-0) |
 
 > Status vocabulary:
 >
@@ -25,11 +25,11 @@ Updated: 2026-10-23. PR-M0 ([PR #2](https://github.com/swa01wk/cenomi-dashboard-
 
 | | |
 |---|---|
-| Phase | **Specification authoring** — M0 specifications merged; M0 corrections in review |
-| Current milestone | **M0 Foundation**: specifications **approved and merged** (PR #2, squash `4515031`, 2026-10-22T15:59:58Z). Corrections HC-1 to HC-5 were approved 2026-10-23 and are in review in the M0 corrections PR. Build **Not started, not authorized** |
+| Phase | **Specification authoring complete for M0** (spec set 0.1.1); M0 build awaiting P1 and authorization |
+| Current milestone | **M0 Foundation**: specifications **approved and merged** (PR #2, squash `4515031`, 2026-10-22T15:59:58Z). Corrections HC-1 to HC-5 and the clarifications were approved 2026-10-23 (PR #3). Build **Not started, not authorized** |
 | Migration | **Complete.** PR #1 merged into `main` on 2026-10-22 at `d5db7f3`; 214/214 handoff hashes verified |
 | Engineering Specification Plan | **Approved 2026-10-22**, subject to the owner's refinements. Recorded as `plans/ROADMAP.md` v1.0 with amendments A-01 to A-18, plus A-19 to A-24 from the owner's review of PR #2, A-25 and A-26 from the owner's approvals, and A-27 (corrections HC-1 to HC-5). The proposed draft is kept unchanged in `plans/proposed/` |
-| Next gate | Owner approves and merges the M0 corrections PR → owner applies protection stage P1 (DEVENV §8.4) → owner's explicit M0 build authorization to Cursor Composer → M0-T01 |
+| Next gate | Owner applies protection stage P1 and its evidence is recorded (DEVENV-R056) → owner's explicit M0 build authorization to Cursor Composer → M0-T01 |
 | Implementation | **Not started.** No application code, migrations, packages, CI or Makefile exist |
 
 ## Completed and approved work
@@ -52,6 +52,7 @@ Updated: 2026-10-23. PR-M0 ([PR #2](https://github.com/swa01wk/cenomi-dashboard-
 | **PR-M0 merged** (squash on the owner's instruction after verification): `main` @ **`4515031`**, tree identical to PR head `946fcee`; ADR-0001…0006 and ADR-0015…0018 Accepted | 22 Oct 2026 | PR #2; `git log` |
 | **CF-0 frozen** at `4515031` (versions below) | 22 Oct 2026 | ROADMAP §3.2 |
 | **Corrections HC-1 to HC-5 approved** (M0 dependencies, acceptance gates, lockfile rule, file ownership) | 23 Oct 2026 | Owner's approval message, 23 Oct 2026 09:29 IST; ROADMAP A-27 |
+| **Operational clarifications approved**: lockfile serialization (DEVENV-R055 (a)); protection availability and non-destructive verification (DEVENV-R056). **PR #3 approved for merge**; spec set 0.1.1 approved | 23 Oct 2026 | Owner's approval message, 23 Oct 2026 09:58 IST; ROADMAP A-28 |
 
 ### CF-0 contract freeze (exact versions at `4515031`)
 
@@ -77,7 +78,7 @@ The M0 corrections PR changes none of the contract files. Its only change to a C
 
 | Milestone | Specs PR | Spec state | Build state | Slice cards | Gate | Blocked by |
 |---|---|---|---|---|---|---|
-| M0 Foundation | PR-M0 (items 1–12), merged `4515031`; M0 corrections PR | **Approved and merged** (0.1.0); corrections (0.1.1) in review | Not started — not authorized | All M0 cards except M0-T09 (built before slice day 1, ED-06 A) | GATE-M0-01…14 (`plans/M0_FOUNDATION.md` §6) | Corrections PR merged; protection P1 applied; build authorization |
+| M0 Foundation | PR-M0 (items 1–12), merged `4515031`; PR #3 (corrections) | **Approved** (0.1.1) | Not started — not authorized | All M0 cards except M0-T09 (built before slice day 1, ED-06 A) | GATE-M0-01…14 (`plans/M0_FOUNDATION.md` §6) | Protection P1 applied and verified; build authorization |
 | M1 Data | PR-M1 (13–21) | Not started | Not started | Days 1–2 | Seed hash reproducible; GI 51/51; canonical figures; snapshots = parity | PR-M0 merged (CF-0) |
 | M2 Metrics and dashboards | PR-M2 (22–26) | Not started | Not started | Days 2–3 | Golden tests; card = records totals; ECharts gate | PR-M1 (CF-1) |
 | M3 Agent runtime | PR-M3 (27–31) | Not started | Not started | Day 3 | Verifier; J1–J10 on replay; budgets | PR-M2 (CF-2); GDQ-12 configuration |
@@ -110,14 +111,14 @@ The M0 corrections PR changes none of the contract files. Its only change to a C
 | 2 | `docs/reference/` (frozen copies) | Committed (PR #1); hash check specified in `make specs-check` | PR #1 / PR-M0 | — |
 | 3 | `docs/design/DESIGN_BASELINE.md` | Merged (`4515031`) | PR-M0 | — |
 | 4 | `docs/design/DECISION_REGISTER.md` | Merged (`4515031`) | PR-M0 | — |
-| 5 | `docs/product/PRODUCT_SPEC.md` | Merged (`4515031`); 1.0.1 in review | PR-M0; M0 corrections | OQ-PSPEC-01 |
+| 5 | `docs/product/PRODUCT_SPEC.md` | Merged (`4515031`); 1.0.1 approved (PR #3) | PR-M0; PR #3 | OQ-PSPEC-01 |
 | 6 | `docs/architecture/ARCHITECTURE.md` | Merged (`4515031`) | PR-M0 | OQ-ARCH-01, 02, 03 |
-| 7 | `docs/architecture/DEVELOPMENT_ENVIRONMENT.md` | Merged (`4515031`); 1.1 in review (DEVENV-R052–R055) | PR-M0; M0 corrections | — |
+| 7 | `docs/architecture/DEVELOPMENT_ENVIRONMENT.md` | Merged (`4515031`); 1.1 approved (DEVENV-R052–R056; PR #3) | PR-M0; PR #3 | — |
 | 8 | `specs/contracts/` bootstrap (6 files); `specs/engineering/` (4 files); `specs/traceability/id_conventions.yaml` | **Merged and frozen (CF-0)**, `4515031` | PR-M0 | — |
 | 9 | `AGENTS.md`, `.cursor/rules/*.mdc` (7 files) | Merged (`4515031`) | PR-M0 | — |
-| 10 | `plans/ROADMAP.md` | Merged (`4515031`); A-27 in review | PR-M0; M0 corrections | — |
-| 11 | `plans/M0_FOUNDATION.md` (M0-T01…T11, GATE-M0-01…14): 1.0 with 83 acceptance tests merged; 1.1 with 85 in review (HC-1 to HC-5) | Merged (`4515031`); 1.1 in review | PR-M0; M0 corrections | — |
-| 11b | `plans/M0_IMPLEMENTATION_HANDOFF.md` (non-normative sequencing guide for Composer) | In review | M0 corrections | — |
+| 10 | `plans/ROADMAP.md` | Merged (`4515031`); A-27, A-28 approved (PR #3) | PR-M0; PR #3 | — |
+| 11 | `plans/M0_FOUNDATION.md` (M0-T01…T11, GATE-M0-01…14): 1.0 with 83 acceptance tests merged; 1.1 with 85 approved (HC-1 to HC-5; PR #3) | Merged (`4515031`); 1.1 approved | PR-M0; PR #3 | — |
+| 11b | `plans/M0_IMPLEMENTATION_HANDOFF.md` (non-normative sequencing guide for Composer) | Approved (PR #3) | M0 corrections | — |
 | 11a | `docs/adr/0016`, `0017`, `0018` (ED-07, ED-08, ED-09) | Merged (`4515031`) | PR-M0 | — |
 | 12 | `plans/STATUS.md` | This file | PR-M0 | — |
 | 13–21 | DATABASE_SCHEMA, metric YAML (including the Properties set, ROADMAP A-09; T-31206 action items, A-10), KPI_CATALOG, permissions, SYNTHETIC_DATA_STRATEGY, scenarios, golden fixtures, ADR 0007/0008/0012, M1 plan | Not started | PR-M1 | OI-04, 05, 06, 14 |
@@ -207,9 +208,9 @@ The M0 corrections PR changes none of the contract files. Its only change to a C
 | B-03 | ~~Migration PR not merged~~ — **resolved 2026-10-22** (`d5db7f3`) | — | — | — |
 | B-04 | OI-13: the DX5-GenUI "overdue" wording fix exists in the exported boards only | Architect | 2026-10-22 | Exported boards are authoritative; no action |
 | B-05 | ~~PR-M0 awaiting owner review~~ — **merged 2026-10-22** (`4515031`) | — | — | — |
-| B-08 | M0 corrections PR (HC-1 to HC-5) awaiting the owner's review and merge. It blocks the M0-T02, T04, T05, T06 and T08 cards; the build as a whole waits for it too, because the build is authorized after it merges | Owner | 2026-10-23 | Review and merge |
+| B-08 | ~~M0 corrections PR awaiting review~~ — **approved 2026-10-23** (PR #3) | — | — | — |
 | B-06 | ~~ED-07, ED-08, ED-09 undecided~~ — **resolved 2026-10-22** (Option A) | — | — | — |
-| B-07 | `main` has no branch protection. Stage P1 (DEVENV §8.4) is required before the first implementation PR merges, and P2 right after M0-T07 merges. Required approving reviews must be 0, because PRs are authored under the owner's account and GitHub forbids self-approval; the owner's merge is the approval (DEVENV-R039). Policy and EXC-001 approved 2026-10-22; **settings not yet applied** | Owner | 2026-10-22 | Apply P1 before the first implementation PR merges |
+| B-07 | `main` has no branch protection. Stage P1 (DEVENV §8.4) is required before the first implementation PR merges, and P2 right after M0-T07 merges. Required approving reviews must be 0, because PRs are authored under the owner's account and GitHub forbids self-approval; the owner's merge is the approval (DEVENV-R039). Policy and EXC-001 approved 2026-10-22; **settings not yet applied** (verified 2026-10-23: 0 rulesets, `main` not protected; merge commits and rebase merging still enabled). **Availability verified:** public repository on a personal account; rulesets and required checks are available on GitHub Free, so no plan change is needed. Residual limitation: the owner, as admin, can edit or disable the ruleset; compensating controls are in DEVENV-R056 | Owner | 2026-10-22 | Apply P1 as a ruleset with an empty bypass list; disable merge commits and rebase merging; record the DEVENV-R056 evidence; recommended: give Composer a fine-grained token without Administration permission |
 | R-01 | Scope squeezed into five days | Owner, Architect | GD | Keep slice and full scope separate (ROADMAP §8) |
 | R-02 | Seed or metric drift from the canonical figures | Developer | GD | GI invariants and replay hash in CI |
 | R-04 | Ungrounded numbers or causal wording | Developer | GD | Fact tokens, verifier, banned-term lint |
@@ -222,8 +223,8 @@ The full risk register is in `docs/reference/final-design-gate/08_OPEN_ISSUES_AN
 
 1. ✅ ED-07, ED-08 and ED-09 decided (Option A) and recorded in ADR-0016, ADR-0017 and ADR-0018. EXC-001 approved conditionally; P1/P2 policy approved.
 2. ✅ PR-M0 merged (`4515031`); CF-0 frozen. HC-1 to HC-5 approved 2026-10-23.
-2a. Owner reviews and merges the M0 corrections PR (spec set 0.1.1).
-3. Owner applies protection stage P1 (DEVENV §8.4) before the first implementation PR merges. P2 follows immediately after M0-T07 merges.
+2a. ✅ PR #3 approved (spec set 0.1.1).
+3. Owner applies protection stage P1 (DEVENV §8.4) before the first implementation PR merges; the DEVENV-R056 evidence is recorded below B-07. P2 follows immediately after M0-T07 merges, verified the same way.
 4. Owner explicitly authorizes the M0 build (ADR-0015 §3). Composer implements M0-T01…T11 one card per PR, following the M0 implementation handoff; the M0-T09 spike report merges through a docs PR. The EXC-001 log above is filled in as the bootstrap PRs merge.
 5. In parallel with the M0 build, once PR-M0 has merged: Claude authors PR-M1 (`docs/m1-…`).
 6. GATE-M0 runs on the merged `main` commit; owner approves the M0 verification report.
@@ -238,7 +239,7 @@ The full risk register is in `docs/reference/final-design-gate/08_OPEN_ISSUES_AN
 | Design canvas | v27 (+ OI-13 local fix in exported boards) |
 | Final Design Gate doc | 22 Oct 2026 outcome recorded (exported 8 tabs) |
 | Engineering Specification Plan | 22 Oct 2026 draft → **approved** as `plans/ROADMAP.md` v1.0 |
-| Specification set | 0.1.0 merged (`4515031`, CF-0); 0.1.1 in review (M0 corrections) |
+| Specification set | **0.1.1** (approved 2026-10-23, PR #3); 0.1.0 at `4515031` (CF-0) |
 | Planning Assessment | v0.3 (G0) |
 | Dataset | `sd-2026.10.20-01` |
 | Detectors | detectors-1.1 |
@@ -254,6 +255,6 @@ The full risk register is in `docs/reference/final-design-gate/08_OPEN_ISSUES_AN
 - [x] ED-07, ED-08, ED-09 decided (Option A, 2026-10-22)
 - [x] PR-M0 merged (`4515031`); CF-0 frozen
 - [x] Corrections HC-1 to HC-5 approved (2026-10-23)
-- [ ] M0 corrections PR merged
+- [x] M0 corrections approved (PR #3, spec set 0.1.1)
 
-Last reviewed: **2026-10-23**. Next required owner actions: **merge the M0 corrections PR**, **apply protection stage P1**, then **authorize the M0 build**.
+Last reviewed: **2026-10-23**. Next required owner actions: **apply protection stage P1** (and record its evidence), then **authorize the M0 build**.

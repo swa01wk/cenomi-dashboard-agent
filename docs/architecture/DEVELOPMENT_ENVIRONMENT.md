@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Document code | DEVENV (requirement IDs `DEVENV-Rnnn`) |
-| Version | 1.1 · 2026-10-23 · M0 corrections PR (HC-3 Compose note; HC-4 DEVENV-R052; HC-5 §8.6, DEVENV-R053–R055). 1.0 merged in PR-M0 (`4515031`) |
+| Version | 1.1 · 2026-10-23 · M0 corrections PR (HC-3 Compose note; HC-4 DEVENV-R052; HC-5 §8.6, DEVENV-R053–R055; DEVENV-R055 lockfile serialization and DEVENV-R056 protection verification, owner clarifications of 2026-10-23). 1.0 merged in PR-M0 (`4515031`) |
 | Status | Normative since PR-M0 merged (`4515031`); version 1.1 amendments in review |
 | Rests on | DR-027, DR-037, ED-01, ED-05, ED-06 (approved); ED-07, ED-08, ED-09 (approved 2026-10-22; ADR-0016, ADR-0017, ADR-0018); ADR-0003, ADR-0004, ADR-0006, ADR-0015 |
 | Machine-readable sources | `specs/engineering/make_targets.yaml`, `specs/engineering/ci_checks.yaml`, `specs/engineering/spec_set.yaml` — the YAML wins on any conflict with this prose |
@@ -437,7 +437,7 @@ The protection is applied in two stages, because the required check `ci/summary`
 
 | Stage | When it must be in force | Setting (ruleset on `main`, no bypass actors) |
 |---|---|---|
-| **P1 — before any implementation PR merges** | Before the first M0 task-card PR merges. A condition of the M0 build authorization (`plans/M0_FOUNDATION.md` §8) | Require a pull request before merging. **Required approving reviews: 0** (see DEVENV-R039; all PRs are authored by the owner's account). Require conversation resolution. Block force pushes. Block deletion. Allow squash merge only, and delete head branches after merge |
+| **P1 — before any implementation PR merges** | Before the first M0 task-card PR merges. A condition of the M0 build authorization (`plans/M0_FOUNDATION.md` §8) | Require a pull request before merging. **Required approving reviews: 0** (see DEVENV-R039; all PRs are authored by the owner's account). Require conversation resolution. Block force pushes. Block deletion. Allow squash merge only (enforced in the repository merge settings, DEVENV-R056), and delete head branches after merge |
 | **P2 — required check** | Immediately after the M0-T07 PR merges and `ci/summary` has reported `success` on `main`; before any further PR merges | P1, plus: require status check `ci/summary`, strict (branch up to date with `main`) |
 
 Settings applied together with P1:
@@ -474,6 +474,25 @@ EXC-001 expires when P2 is in force. M0-T07 itself is not covered by EXC-001: it
 
 **Approval of the protection policy (2026-10-22).** The owner approved the two-stage policy P1/P2 above, accepted **0 required approving reviews** for the single-developer workflow, and retained manual review and explicit milestone approval as project requirements. P1 must be applied before the first implementation PR merges. No existing security control may be weakened. Applying the settings remains the owner's action (DEVENV-R044).
 
+**DEVENV-R056** **Protection availability, enforcement and verification** (verified 2026-10-23).
+
+- *Availability.* The repository is **public** and owned by the personal account `swa01wk`. Rulesets, classic branch protection and required status checks are all available for public repositories on GitHub Free. P1 and P2 can therefore be enforced with no plan change and no change of visibility.
+- *Form.* P1 and P2 are one repository **ruleset** targeting `main`, with **an empty bypass list**. GitHub grants bypass only to actors added to that list. Classic branch protection may be used instead, but only with "Do not allow bypassing the above settings" selected.
+- *Squash only.* "Squash only" is enforced in the repository's merge settings: merge commits and rebase merging are disabled. A ruleset's merge-method restriction is not relied on, because it does not override the repository-wide settings.
+- *Non-destructive verification.* No push to `main` is ever attempted as a test. After applying P1, the owner, or Claude with read-only API calls, records in STATUS:
+  - the ruleset ID, `enforcement: active` and `bypass_actors: []`;
+  - `current_user_can_bypass` for the owner's token, which is expected to be `never`; any other value is reported before the first card merges;
+  - the rules returned by `GET /repos/{owner}/{repo}/rules/branches/main`;
+  - the repository merge settings;
+  - the ruleset's `updated_at`.
+
+  P2 is verified the same way, plus the required check `ci/summary` in strict mode.
+- *Residual limitation.* On a personal-account repository the owner holds admin rights, and admins can edit, disable or delete rulesets. GitHub offers no setting that prevents this. While the ruleset is active with an empty bypass list, the owner's pushes and merges are subject to it, but the owner can switch it off. Compensating controls:
+  1. Only the owner changes repository settings (DEVENV-R044). Claude and Composer never do (AGENTSMD-R019).
+  2. **Recommended:** Composer and other automation push with a fine-grained personal access token scoped to this repository, with Contents and Pull requests write and **no Administration permission**, so their credentials cannot change protection.
+  3. Any change to the ruleset or merge settings after P1 is recorded in STATUS with its reason. GATE-M0-10 compares the ruleset's `updated_at` and current settings with those records.
+- *Stronger separation, if ever needed* (each requires the owner's approval; neither is needed for M0): transfer the repository to an organization, where organization ownership can be separated from repository administration; or run automation through a GitHub App or a second account without admin rights. Making the repository private would **remove** rulesets and branch protection on GitHub Free, so visibility must not change without a plan decision.
+
 ### 8.5 Commit messages
 
 **DEVENV-R045** Commit messages on branches are free-form but start with the card ID (for example `M0-T03: add health checks`). The squash commit follows DEVENV-R038. No commit contains secrets, real credentials or production data.
@@ -503,10 +522,14 @@ Broad directory ownership (for example M0-T03's `/backend/src/cenomi/**` or M0-T
 | `backend/tests/conftest.py` | M0-T11 | M0-T02 adds the `pytest_plugins` entry for `backend/tests/fixtures/db.py` |
 | `.github/workflows/**`, `.github/actions/**` | M0-T07 | None in M0. Every job of `ci_checks.yaml` already calls its Make targets. A card whose target is not run stops and reports |
 
-**DEVENV-R055** **No conflicting parallel changes.** Two PRs open at the same time must not change the same shared file or composition point unless each PR's "Dependencies on other PRs" section names the other. The PR that merges second rebases onto `main`, regenerates lockfiles (never merges them by hand), re-runs `make check` and CI, and resolves conflicts only within its own permitted changes. In M0, the known overlaps are:
-- `pnpm-lock.yaml`, between M0-T05 and M0-T08;
-- `Makefile` recipes, among M0-T02, M0-T05 and M0-T08;
-- `docker-compose.yml`, between M0-T02 and M0-T04, already ordered by M0-T04's dependency on M0-T02.
+**DEVENV-R055** **Shared files in parallel work** (clarified by the owner on 2026-10-23). Parallel implementation *branches* are allowed. Pull requests that touch the same shared file are coordinated as follows:
+
+| Case | Rule |
+|---|---|
+| **(a) Lockfiles** (`pnpm-lock.yaml`, `backend/uv.lock`) | At most **one open pull request, draft or ready, changes a given lockfile at a time**. A second branch that needs the same lockfile keeps its dependency change local and opens its PR only after the first has merged. It then rebases onto the updated `main`, regenerates the lockfile with the package manager (never merging it by hand), and re-runs `make install`, `make check` and the card's field-14 targets before asking for review |
+| **(b) Other shared files and composition points** (DEVENV-R054) | Two open PRs may change the same file only in disjoint, permitted parts, for example the recipes of different Make targets, and only when each PR's "Dependencies on other PRs" section names the other. The PR that merges second rebases onto `main`, resolves conflicts only within its own permitted changes and re-runs CI |
+
+In M0 Wave 3, M0-T05 and M0-T08 both change `pnpm-lock.yaml`, so they are serialized under (a). M0-T05 goes first, because it is on the critical path to M0-T06 and M0-T04. The `Makefile` recipes of M0-T02, M0-T05 and M0-T08 fall under (b). `docker-compose.yml` (M0-T02, then M0-T04) is already ordered by M0-T04's dependency on M0-T02.
 
 ---
 
@@ -549,4 +572,5 @@ Broad directory ownership (for example M0-T03's `/backend/src/cenomi/**` or M0-T
 | DEVENV-R032–R045, R051 | M0-T10; GATE-M0-10 |
 | DEVENV-R052 | M0-T01 (AT-M0-T01-01 clean-install check), `ci/static` lockfile validation; review |
 | DEVENV-R053–R055 | Review (PR template section 5); M0 task-card field 13 |
+| DEVENV-R056 | GATE-M0-10 (rules API evidence in STATUS) |
 | DEVENV-R046 | M0-T10 (issue template) |

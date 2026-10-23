@@ -104,9 +104,9 @@ Every card follows the 20-field standard (RMAP-R007). The format is machine-chec
 | 15 | Acceptance criteria | **AT-M0-T01-01** `make install` on a clean clone succeeds and leaves `git status` clean (no lockfile change). **AT-M0-T01-02** `make doctor` exits 0 on a conforming toolchain and 3 when a PATH shim reports Node 20. **AT-M0-T01-03** `make help` lists exactly the targets of `make_targets.yaml`, in order. **AT-M0-T01-04** With `active_milestone: M0`: every target with `active_from` > M0 reports `NOT_APPLICABLE`, naming the milestone rule, in `status.jsonl` and exits 0; a stubbed M0 target reports `NOT_IMPLEMENTED` and exits 0, but exits 1 with `GATE=M0`; with `active_milestone` set to M1 in a test copy, a stubbed M0 target exits 1; no target reports `PASSED` without executing. **AT-M0-T01-05** `make down VOLUMES=1` without `CONFIRM=yes`, and `make db-downgrade` without `REV`, exit 2. **AT-M0-T01-06** `make check` passes on the skeleton while no database is reachable. **AT-M0-T01-07** `.env.example` contains every DEVENV §4 variable, and gitleaks reports nothing in it except the allow-listed placeholders |
 | 16 | Failure and recovery scenarios | Lockfile out of date → `install` exits 1 and never rewrites it. Missing tool → exit 3 with the tool named. Partial install → re-run `make install` (idempotent) |
 | 17 | Security requirements | No secret in any committed file. `.env` is git-ignored. Placeholders are allow-listed by exact path only |
-| 18 | Observability requirements | Each Make target prints the commands it runs and a final `OK <target>` or `FAIL <target> (exit n)` line |
+| 18 | Observability requirements | Each Make target prints the commands it runs. Its last line is `<RESULT>: <target> — <reason>` in the ARCHITECTURE §10.8 vocabulary, and it appends its `status.jsonl` record (the `make_targets.yaml` conventions; ARCH-R102). Aligned with `make_targets.yaml` on 2026-10-23; the earlier `OK`/`FAIL` wording is withdrawn |
 | 19 | Delivery class | slice |
-| 20 | Completion gate | ATs 01–07 pass in CI (`ci/static`, `ci/specs`); `make check` green; PR merged |
+| 20 | Completion gate | ATs 01–07 pass in CI (`ci/static`, `ci/specs`); `make check` green; PR merged. Under EXC-001 the CI part of this gate is met retroactively (condition C5); before merge the same targets and ATs pass locally and their output is pasted in the PR (condition C2) |
 
 ### M0-T02 — Compose stack, PostgreSQL bootstrap and migration framework
 
@@ -156,7 +156,7 @@ Every card follows the 20-field standard (RMAP-R007). The format is machine-chec
 | 17 | Security requirements | No stack trace, SQL or secret in responses. Unknown parameters rejected. `Cache-Control: no-store`. Startup refuses an unsafe `AUTH_MODE`/`CENOMI_ENV` combination |
 | 18 | Observability requirements | ARCH-R096 fields on every request log; the `event` names `request_completed` and `request_failed`; health check durations in the report |
 | 19 | Delivery class | slice |
-| 20 | Completion gate | ATs 01–10 pass in `ci/static` and `ci/backend`; PR merged |
+| 20 | Completion gate | ATs 01–10 pass in `ci/static` and `ci/backend`; PR merged. Under EXC-001 the CI part of this gate is met retroactively (condition C5); before merge the same targets and ATs pass locally and their output is pasted in the PR (condition C2) |
 
 ### M0-T04 — Web shell: routes, layouts, data client and boundaries
 
@@ -331,7 +331,7 @@ Every card follows the 20-field standard (RMAP-R007). The format is machine-chec
 | 17 | Security requirements | Scripts read the repository only; no network |
 | 18 | Observability requirements | Findings are printed as `file:line: CODE message` and summarized in `ci-summary.md` |
 | 19 | Delivery class | slice |
-| 20 | Completion gate | ATs 01–07 pass in `ci/specs`; PR merged |
+| 20 | Completion gate | ATs 01–07 pass in `ci/specs`; PR merged. Under EXC-001 the CI part of this gate is met retroactively (condition C5); before merge the same targets and ATs pass locally and their output is pasted in the PR (condition C2) |
 
 ### M0-T11 — Test harness, traceability markers and CI reporting
 
@@ -356,7 +356,7 @@ Every card follows the 20-field standard (RMAP-R007). The format is machine-chec
 | 17 | Security requirements | Reports never include environment values or secrets; network blocked in unit tests |
 | 18 | Observability requirements | JUnit for every suite; artefacts per DEVENV-R029 |
 | 19 | Delivery class | slice |
-| 20 | Completion gate | ATs 01–08 pass in `ci/backend`, `ci/frontend`, `ci/e2e`; PR merged |
+| 20 | Completion gate | ATs 01–08 pass in `ci/backend`, `ci/frontend`, `ci/e2e`; PR merged. Under EXC-001 the CI part of this gate is met retroactively (condition C5); before merge the same targets and ATs pass locally and their output is pasted in the PR (condition C2) |
 
 ---
 
@@ -391,7 +391,7 @@ Run with `milestone-gate.yml` (`milestone=M0`) on the merged `main` commit. Ever
 | GATE-M0-07 | Compatibility assumptions recorded: CA-01 (ECharts result in STATUS), CA-02 to CA-04 (spike report reviewed), CA-05, CA-06 | UG-12 (recording only), UG-15 |
 | GATE-M0-08 | Database roles and grants (AT-M0-T02-02…06) and deny-by-default AccessScope (AT-M0-T06-05, -06) | UG-07, UG-09 |
 | GATE-M0-09 | ADR-0001 to ADR-0006 and ADR-0015 to ADR-0018 Accepted; DECISION_REGISTER current; STATUS reflects the actual state | UG-15, UG-16 |
-| GATE-M0-10 | Repository protection stages P1 and P2 (DEVENV §8.4) are in force, and P1 was in force before the first card PR merged. Every merge outside the rules is covered by an owner-approved `EXC-nnn` in STATUS.md (EXC-001 expired when P2 took effect). The EXC-001 log is complete (PR numbers, merge SHAs, local validations, compensating controls; conditions C1–C3), and its retroactive GitHub Actions verification succeeded (condition C5: the M0-T07 PR run and the first `ci/summary` run on `main` after M0-T07; condition C6). An unrecorded deviation, or a missing or failed retroactive verification, fails this check | UG-10 |
+| GATE-M0-10 | Repository protection stages P1 and P2 (DEVENV §8.4) are in force, and P1 was in force before the first card PR merged. Every merge outside the rules is covered by an owner-approved `EXC-nnn` in STATUS.md (EXC-001 expired when P2 took effect). The EXC-001 log is complete (PR numbers, merge SHAs, local validations, compensating controls; conditions C1–C3), and its retroactive GitHub Actions verification succeeded (condition C5: the M0-T07 PR run and the first `ci/summary` run on `main` after M0-T07; condition C6). Protection is verified non-destructively per DEVENV-R056: rules API evidence, an empty bypass list, `current_user_can_bypass` = `never`, and a ruleset `updated_at` consistent with the STATUS records. No direct push to `main` is used as a test. An unrecorded deviation, a missing or failed retroactive verification, or an unrecorded protection change fails this check | UG-10 |
 | GATE-M0-11 | `make security-check` green: gitleaks over the full history, audits and licences | UG-10 |
 | GATE-M0-12 | Observability: JSON logs with `requestRef` and `traceId`; redaction test (AT-M0-T03-07, -10) | UG-13 |
 | GATE-M0-13 | `make trace-report GATE=M0`: every automated AT-M0 ID is `PASSED` (none `NOT_IMPLEMENTED`, `SKIPPED` or quarantined), and each manual AT has a recorded result | UG-01, UG-17 |

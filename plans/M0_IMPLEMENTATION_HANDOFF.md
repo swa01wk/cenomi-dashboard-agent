@@ -2,10 +2,10 @@
 
 | | |
 |---|---|
-| Version | 1.1 · 2026-10-23. Version 1.0 (2026-10-22) was delivered outside the repository. 1.1 applies corrections HC-1 to HC-5 (ROADMAP A-27) |
+| Version | 1.2 · 2026-10-23. Version 1.0 (2026-10-22) was delivered outside the repository. 1.1 applies corrections HC-1 to HC-5 (ROADMAP A-27). 1.2 adds the owner's operational clarifications (A-28): lockfile serialization, protection verification and the M0-T01 kickoff |
 | Nature | **Non-normative.** A sequencing and orientation guide. It restates no contract. If it disagrees with a specification, the specification wins (AGENTSMD-R003) |
-| Baseline | `main` @ `4515031` (PR-M0, spec set 0.1.0, CF-0 frozen), plus the M0 corrections PR (spec set 0.1.1) once the owner merges it |
-| Build state | **Not authorized.** The owner authorizes Cursor separately, after the corrections PR is merged and protection stage P1 is applied (ADR-0015 §3) |
+| Baseline | `main` from PR #3's squash commit onward: spec set **0.1.1** (CF-0 frozen at `4515031`, contract files unchanged) |
+| Build state | **Not authorized.** The owner authorizes Cursor separately, after protection stage P1 is applied and verified (ADR-0015 §3) |
 
 ---
 
@@ -13,11 +13,12 @@
 
 | # | Action | Blocks |
 |---|---|---|
-| O-1 | Merge the M0 corrections PR (`docs/m0-implementation-corrections`) | The build authorization |
-| O-2 | **Apply protection stage P1** on `main`: the DEVENV §8.4 stage table, plus the "settings applied together with P1" table | The first card merge |
+| O-1 | ✅ PR #3 (corrections, spec set 0.1.1) approved and merged | — |
+| O-2 | **Apply protection stage P1** on `main` (DEVENV §8.4, DEVENV-R056): (a) a ruleset targeting `main` with enforcement **active** and an **empty bypass list**, requiring a PR (0 approvals), resolved conversations, and blocking force pushes and deletion; (b) repository merge settings: squash only (disable merge commits and rebase merging), delete head branches; (c) the companion settings table. **Verify without pushing:** record the ruleset ID, `bypass_actors: []`, `current_user_can_bypass` = `never`, the `GET /repos/swa01wk/cenomi-dashboard-agent/rules/branches/main` output, the merge settings and `updated_at` in STATUS | The first card merge |
 | O-3 | Give Cursor the explicit M0 build authorization, pointing it at `AGENTS.md`, `.cursor/rules/` and this guide | Everything |
 | O-4 | *Optional:* GDQ-12 configuration as a local secret | Spike item L1 only |
-| O-5 | **Apply P2** (`ci/summary` required, strict) as soon as M0-T07 has merged and `ci/summary` is `success` on `main` | Every merge after M0-T07 |
+| O-4a | *Recommended:* give Composer a fine-grained personal access token for this repository only, with Contents and Pull requests write and **no Administration** permission (DEVENV-R056) | — |
+| O-5 | **Apply P2** (`ci/summary` required, strict) as soon as M0-T07 has merged and `ci/summary` is `success` on `main`; verify it the same way as P1 | Every merge after M0-T07 |
 
 ---
 
@@ -54,14 +55,16 @@ T01 ──┬─▶ T03 ──┬─▶ T11 ──┬─▶ T10 ──▶ T07 �
 ## 3. Execution order
 
 ```
-O-1 corrections merged → O-2 P1 applied → O-3 authorized
+O-2 P1 applied and verified → O-3 authorized
 Wave 0  T01                         merge under P1 + EXC-001
         ├─ T09 spike (parallel, any time)
         └─ T07 authoring starts; draft PR rebased after each bootstrap merge (EXC-001 C4)
 Wave 1  T03 → T11 → T10              strictly sequential, P1 + EXC-001
 Wave 2  T07: own run ci/summary success + trace-report CARD= for T01/T03/T11/T10 (C5a)
         merge → ci/summary success on main (C5b) → O-5 apply P2
-Wave 3  T02 ║ T05 ║ T08              parallel lanes under P2 (DEVENV-R055 for shared files)
+Wave 3  T02 ║ T05 → T08             branches in parallel under P2; T05 and T08 PRs serialized
+                                     (pnpm-lock.yaml, DEVENV-R055 (a)): merge T05, then rebase T08 onto main,
+                                     regenerate the lockfile, re-run make install / make check / field-14 targets
 Wave 4  T06                          after T05
 Wave 5  T04                          after T02 and T06
 Gate    milestone-gate.yml → GATE-M0-01…14 → owner approval
@@ -72,7 +75,7 @@ Gate    milestone-gate.yml → GATE-M0-01…14 → owner approval
 **May run in parallel:**
 - T09 with everything, after T01.
 - T07 *authoring* with T03, T11 and T10. It *merges* only after T10.
-- T02, T05 and T08 with each other. Their authoring may start once their merge dependencies are on `main`; they merge only after P2.
+- T02, T05 and T08 as *branches*. Their authoring may start once their merge dependencies are on `main`; they merge only after P2. Only one PR changing `pnpm-lock.yaml` may be open at a time, so T08's PR opens after T05 merges (DEVENV-R055 (a)).
 - T02 with T06.
 
 ---
@@ -90,7 +93,9 @@ Gate    milestone-gate.yml → GATE-M0-01…14 → owner approval
   - the `[tool.pytest.ini_options]` section in `backend/pyproject.toml`: T11.
 
   No M0 card changes `.github/workflows/**` after T07, or `.env.example` after T01.
-- **Parallel lanes (DEVENV-R055).** T05 and T08 both touch `pnpm-lock.yaml`. T02, T05 and T08 each touch their own `Makefile` recipes. The PR that merges second rebases onto `main` and regenerates; each PR names the other.
+- **Parallel lanes (DEVENV-R055).**
+  - **Lockfiles:** at most one open PR, draft or ready, per lockfile. T05 opens and merges first. T08 keeps its `echarts` change on its branch, then rebases onto the updated `main`, regenerates `pnpm-lock.yaml` with pnpm, re-runs `make install`, `make check` and its field-14 targets, and only then opens its PR.
+  - **Makefile recipes** (T02, T05, T08): open PRs may overlap, because they change disjoint targets; each PR names the others, and later PRs rebase.
 
 ---
 
@@ -125,8 +130,8 @@ Gate    milestone-gate.yml → GATE-M0-01…14 → owner approval
 
 ## 7. Composer readiness checklist
 
-- [ ] M0 corrections PR merged; STATUS shows spec set 0.1.1
-- [ ] P1 applied on `main`; verified by attempting a direct push, which must be rejected
+- [x] PR #3 merged; spec set 0.1.1
+- [ ] P1 applied on `main` and verified **through the rules API**, never by a test push (DEVENV-R056); evidence in STATUS
 - [ ] Owner's M0 build authorization recorded in STATUS
 - [ ] Composer opened at the repository root with `AGENTS.md` and `.cursor/rules/*.mdc` loaded
 - [ ] One card per Composer session and per branch; branch names follow `id_conventions.yaml`, for example `chore/m0-t01-repo-scaffold`
@@ -140,3 +145,21 @@ Gate    milestone-gate.yml → GATE-M0-01…14 → owner approval
 **Kick-off prompt (per card):**
 
 > Implement task card **M0-Txx** from `plans/M0_FOUNDATION.md` on branch `<branch>` from the latest `main`. Follow `AGENTS.md` and `.cursor/rules/`. Read all 20 fields, then every spec and contract in fields 2 and 11. Touch only field-13 paths, plus lockfiles for dependencies the card names (DEVENV-R052) and the listed composition points (DEVENV-R054). Implement every field-15 acceptance criterion as a test carrying its AT ID. Add nothing the card does not name. On any ambiguity, conflict or out-of-scope path: stop and report in the PR. Finish with `make check`, the field-14 targets and `make trace-report CARD=M0-Txx` (once M0-T10 exists), and fill every PR template section.
+
+---
+
+## 8. M0-T01 — exact kickoff prompt
+
+M0-T01 is ready: its 20 fields are complete; its contracts (`make_targets.yaml`, DEVENV §3–§4, ARCH §10.8) are frozen in CF-0; its last-line format is aligned with `make_targets.yaml`; its completion gate states the EXC-001 evidence. Branch: `chore/m0-t01-repo-scaffold`. Merges under P1 + EXC-001.
+
+> You are implementing task card **M0-T01 — Repository scaffold, toolchain and Makefile contract** for the Cenomi Dashboard Intelligence Agent POC. The owner has authorized the M0 build (see `plans/STATUS.md`); if STATUS does not show that authorization, stop and report.
+>
+> 1. Create branch `chore/m0-t01-repo-scaffold` from the latest `main`.
+> 2. Read, in this order: `AGENTS.md`; `.cursor/rules/*.mdc`; `plans/M0_FOUNDATION.md` §2, §3 and the full M0-T01 card (all 20 fields); `specs/engineering/make_targets.yaml` (normative: exact 40 targets, order, arguments, exit codes, result vocabulary and the `<RESULT>: <target> — <reason>` last line); `specs/engineering/spec_set.yaml`; `docs/architecture/DEVELOPMENT_ENVIRONMENT.md` §2–§5 and §8.6; `docs/architecture/ARCHITECTURE.md` §10.8 (ARCH-R101–R105); ADR-0003 (versions and pin policy).
+> 3. Implement only field 5 "In" and fields 7–8: root configuration files; the uv workspace in `backend/` with exactly the field-7 dependencies; the pnpm workspace with empty `apps/web`, `packages/contracts-ts` and `packages/viz` skeletons and exactly the field-8 dev tooling; committed lockfiles; `.env.example` with every DEVENV §4 variable and recognisably fake placeholders; the root `Makefile` with all 40 targets in YAML order, the result helper appending to `tests/reports/status.jsonl`, `make help` generated from `##` comments; `scripts/make/` helpers; `scripts/tools.lock`. Targets owned by later cards are stubs that report `NOT_IMPLEMENTED` within the build window; targets with `active_from` later than M0 report `NOT_APPLICABLE`.
+> 4. Touch only the field-13 paths. No application code, Compose, workflows, migrations or extra dependencies. Versions follow DEVENV-R004: the newest release at least 14 days old within the approved line.
+> 5. Write `tests/tooling/test_make_contract.py` with one test per acceptance criterion **AT-M0-T01-01 … AT-M0-T01-07**, each tagged `@pytest.mark.trace("AT-M0-T01-0n", reqs=[…])` as AGENTSMD-R007 requires. M0-T11 later registers the marker and its plugin; until then pytest only warns. Do not build the plugin here.
+> 6. Run locally and paste the output into the PR: `make install` (clean clone; `git status` stays clean), `make doctor`, `make help`, `make check`, and `uv run pytest tests/tooling/test_make_contract.py -v`. This is EXC-001 condition C2; there is no CI yet.
+> 7. Open the PR titled `M0-T01: Repository scaffold, toolchain and Makefile contract`, filling every section of the PR template in DEVENV §8.2 (the template file itself arrives with M0-T10). State that the PR merges under P1 + EXC-001, list each dependency with its reason and licence, and list the shared files created.
+> 8. If anything is ambiguous, conflicts with a specification, or needs a path outside field 13: stop and report in the PR. Never resolve it yourself, never weaken a test, never merge, and never change repository settings.
+
