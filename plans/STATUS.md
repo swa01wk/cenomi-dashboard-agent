@@ -6,7 +6,7 @@ Updated: 2026-10-23. **M0 build in progress.** Merged: M0-T01 (`75a2fed`, PR #6)
 |---|---|
 | Baseline | DX1–DX6 (canvas v27 + OI-13 local wording fix); Final Design Gate 2026-10-22 |
 | Dataset | `sd-2026.10.20-01` (`as_of` 2026-10-20; insight replay hash `82fde5250960761d`; runner reference_hash `c1e36ced42cebecc`) — **not yet seeded** |
-| Specification set | **0.1.1** at `77c9c10` (PR #3); **0.1.2** (HC-6, HC-7; ROADMAP A-29) in review. 0.1.0 merged in PR #2 at `4515031` (CF-0) |
+| Specification set | **0.1.2** at `ccdc276` (HC-6, HC-7); **0.1.3** (CR-001, ROADMAP A-30) in review. 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
 
 > Status vocabulary:
 >
@@ -58,6 +58,7 @@ Updated: 2026-10-23. **M0 build in progress.** Merged: M0-T01 (`75a2fed`, PR #6)
 | **M0 build authorized** for Cursor Composer 2.5 (ADR-0015 §3; `plans/M0_FOUNDATION.md` §8 conditions 1–4 met: spec set merged, ED-07/08/09 decided, P1 in force with EXC-001 approved, Composer directed to `AGENTS.md` and `.cursor/rules/`) | 23 Oct 2026 | Owner's message, 23 Oct 2026 10:46 IST: "lets start with cursor implementation" |
 | **M0-T01 merged** (PR #6, `75a2fed`); EXC-001 log entry recorded (PR #7) | 23 Oct 2026 | EXC-001 log below |
 | **HC-6 approved**: M0-T03 may change the packaging, ruff and mypy sections of `backend/pyproject.toml`. **HC-7** (an owner for each of the 33 M0 Make targets) is proposed in the same PR and approved by merging it | 23 Oct 2026 | Owner's answer, 23 Oct 2026 13:04 IST; ROADMAP A-29 |
+| **HC-8 and HC-9 approved** (tooling suite in `ci/specs`; manual-AT results file) and recorded as **CR-001** with the `import-linter` wording fix | 23 Oct 2026 | Owner's answers, 23 Oct 2026 23:20 IST; ROADMAP A-30 |
 
 ### CF-0 contract freeze (exact versions at `4515031`)
 
@@ -77,7 +78,7 @@ Specification set **0.1.0** (`specs/engineering/spec_set.yaml`). Hash = first 16
 | `specs/engineering/spec_set.yaml` | `cenomi.spec_set.v1`, version 0.1.0 | `874a00a336b2fc61` |
 | `specs/traceability/id_conventions.yaml` | `cenomi.id_conventions.v1` | `3656fda0f48e335b` |
 
-The M0 corrections PR changes none of the contract files. Its only change to a CF-0 file is in `spec_set.yaml`: the version (0.1.0 → 0.1.1, required by that file's own patch rule for corrections) and the document list (the handoff is added). Every other CF-0 file is byte-identical.
+The M0 corrections PR changes none of the contract files. Its only change to a CF-0 file is in `spec_set.yaml`: the version (0.1.0 → 0.1.1, required by that file's own patch rule for corrections) and the document list (the handoff is added). Every other CF-0 file is byte-identical. **CR-001 (2026-10-23)** amends `make_targets.yaml` (`backend-test SUITE=tooling`, `backend-lint` command), `ci_checks.yaml` (`ci/specs`) and `engineering.schema.json` (`manualResults`); the hashes above are those of `4515031`, and new hashes are recorded when CR-001 merges.
 
 ## Milestones
 
@@ -100,7 +101,7 @@ The M0 corrections PR changes none of the contract files. Its only change to a C
 
 | CF | Contracts | Frozen in | Date | Version |
 |---|---|---|---|---|
-| CF-0 Toolchain | Repository layout; `error_envelope.v1`, `error_codes.v1`, `principal.v1`, `scope_decision.v1`, `health_report.v1`, `dataset_descriptor.v1`; codegen pipeline and schema subset; `specs/engineering/*`; ID conventions; CI check names | PR-M0 | **In review** | 1 |
+| CF-0 Toolchain | Repository layout; `error_envelope.v1`, `error_codes.v1`, `principal.v1`, `scope_decision.v1`, `health_report.v1`, `dataset_descriptor.v1`; codegen pipeline and schema subset; `specs/engineering/*`; ID conventions; CI check names | PR-M0 | **Frozen** 2026-10-22 (`4515031`); amended by CR-001 (2026-10-23) | 1 (+CR-001) |
 | CF-1 Data | Tables (`core`, `meta`, `snap`, `seed_meta`); enums; metric YAML; permissions; scenarios; canonical figures | PR-M1 | — | — |
 | CF-2 Analytics | metric query, `analysis_result.v1`, card view-models, records, `selection_ref.v1`, tokens | PR-M2 | — | — |
 | CF-3 Agent | AnalysisPlan, tool schemas, AnswerDraft, fact tokens, evidence envelope, LLM adapter, thread and run contracts, `agent` tables, evaluation case schema v1 | PR-M3 | — | — |
@@ -208,7 +209,7 @@ Any later change to the ruleset or merge settings must be recorded here with its
 | OQ-ARCH-02 | Full script CSP with nonces | Baseline headers only | PR-M4 | Architect |
 | OQ-ARCH-03 | AG-UI interrupt outcome vs the DX4 A8 fallback for filter proposals and clarification | DX4-AGUI stands | PR-M4 (after spike) | Architect |
 | OQ-PSPEC-01 | Bell visibility for the tenant persona | Tenant reaches the inbox from the rail | PR-M6 | Architect, owner if it changes design |
-| OQ-DEVENV-01 | import-linter 2.15 installs the `import-linter` command, not `lint-imports`. `make_targets.yaml` (`backend-lint` behaviour, CF-0) and AT-M0-T03-04 still say `lint-imports`; the implementation runs `import-linter lint`, which performs the same check | Align the wording in the next specification PR (change request on the CF-0 wording only) | Next spec PR | Architect |
+| OQ-DEVENV-01 | ~~`lint-imports` vs `import-linter lint` wording~~ | **Resolved by CR-001** (2026-10-23) | — | — |
 
 ## Verification gates
 
@@ -224,7 +225,7 @@ Any later change to the ruleset or merge settings must be recorded here with its
 
 | CR | Date | Summary | Cites | Decision |
 |---|---|---|---|---|
-| — | — | None raised. The refinements of 22 Oct 2026 were approved together with the ESP and are recorded as ROADMAP amendments, not as CRs | — | — |
+| CR-001 | 2026-10-23 | Amends CF-0 (`make_targets.yaml`, `ci_checks.yaml`, `engineering.schema.json`): (1) `backend-test SUITE=tooling` runs `tests/tooling` in `ci/specs` with browsers (HC-8); (2) manual-AT results go in `plans/gates/M<n>-manual-results.json` (`manualResults`), excluded from `CARD`, required in `GATE` (HC-9); (3) `backend-lint` runs `import-linter lint` (OQ-DEVENV-01) | ROADMAP A-30; ARCH-R083; M0-T07, M0-T10 | **Approved** by the owner 2026-10-23 (HC-8, HC-9) |
 
 ## Blockers and risks
 
@@ -266,7 +267,7 @@ The full risk register is in `docs/reference/final-design-gate/08_OPEN_ISSUES_AN
 | Design canvas | v27 (+ OI-13 local fix in exported boards) |
 | Final Design Gate doc | 22 Oct 2026 outcome recorded (exported 8 tabs) |
 | Engineering Specification Plan | 22 Oct 2026 draft → **approved** as `plans/ROADMAP.md` v1.0 |
-| Specification set | **0.1.2** in review (HC-6, HC-7); 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
+| Specification set | **0.1.3** in review (CR-001); 0.1.2 at `ccdc276`; 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
 | Planning Assessment | v0.3 (G0) |
 | Dataset | `sd-2026.10.20-01` |
 | Detectors | detectors-1.1 |

@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Version | 1.3 · 2026-10-23. Adds HC-6 and HC-7 (ROADMAP A-29), the M0-T03 and M0-T07 kickoff prompts (§9, §10) and the review-then-PR workflow. Version 1.2 added lockfile serialization, protection verification and the M0-T01 kickoff; 1.1 applied HC-1 to HC-5 (A-27); 1.0 (2026-10-22) was delivered outside the repository |
+| Version | 1.4 · 2026-10-23. Adds the M0-T10 kickoff prompt (§11) with CR-001 (HC-8 tooling suite, HC-9 manual ATs). 1.3 · 2026-10-23. Adds HC-6 and HC-7 (ROADMAP A-29), the M0-T03 and M0-T07 kickoff prompts (§9, §10) and the review-then-PR workflow. Version 1.2 added lockfile serialization, protection verification and the M0-T01 kickoff; 1.1 applied HC-1 to HC-5 (A-27); 1.0 (2026-10-22) was delivered outside the repository |
 | Nature | **Non-normative.** A sequencing and orientation guide. It restates no contract. If it disagrees with a specification, the specification wins (AGENTSMD-R003) |
 | Baseline | `main` from PR #3's squash commit onward: spec set **0.1.1** (CF-0 frozen at `4515031`, contract files unchanged) |
 | Build state | **Not authorized.** The owner authorizes Cursor separately, after protection stage P1 is applied and verified (ADR-0015 §3) |
@@ -224,4 +224,31 @@ M0-T07 may be **authored now**, in parallel with M0-T03, M0-T11 and M0-T10, on i
 > 6. Until M0-T10 and M0-T11 are on `main`, some jobs report `NOT_IMPLEMENTED` and `ci/summary` may fail on the draft. That is expected; record what you observe.
 > 7. Commit with messages starting `M0-T07:`. **Do not push and do not open a PR.** The owner pushes, and the architect reviews and opens it as a draft.
 > 8. If anything is ambiguous or conflicts with a specification: stop and report.
+
+---
+
+## 11. M0-T10 — kickoff prompt
+
+**Prerequisites:** M0-T11 merged, and the CR-001 documentation PR (spec set 0.1.3) merged. Branch: `chore/m0-t10-governance-automation`. Merges under P1 + EXC-001.
+
+> You are implementing task card **M0-T10 — Governance automation: templates, specs-check, trace report, renderers** for the Cenomi Dashboard Intelligence Agent POC. The M0 build is authorized (`plans/STATUS.md`). If STATUS does not show spec set 0.1.3, stop and report. Work in /Users/swa/dev/cenomi-dashboard-agent on branch `chore/m0-t10-governance-automation` from the latest main (M0-T01, T03 and T11 are merged).
+>
+> 1. Read, in order: AGENTS.md; .cursor/rules/*.mdc; plans/M0_FOUNDATION.md §3 (including the Make target-owner table) and the full M0-T10 card (all 20 fields, v1.3); `specs/engineering/make_targets.yaml` (`specs-check`, `trace-report`, `security-check` and `backend-test` entries); `specs/engineering/engineering.schema.json` (including `gateReport` and `manualResults`); `specs/traceability/id_conventions.yaml`; docs/architecture/ARCHITECTURE.md §10.8 and §12 (ARCH-R083, R094, R095, R101–R105); docs/architecture/DEVELOPMENT_ENVIRONMENT.md §5, §7, §8.2 (DEVENV-R035, PR template), §8.6 and §9 (triage classes); docs/design/DECISION_REGISTER.md §1–§2; ADR-0002 §3; ADR-0003 §4.
+> 2. Implement field 5 "In" and the field-12 tasks:
+>    - `.github/pull_request_template.md` with exactly the 15 sections of DEVENV-R035, and `.github/ISSUE_TEMPLATE/defect.yml` (`DEF-` title, exactly the 9 triage classes of DEVENV §9, a `blocking` checkbox).
+>    - `scripts/specs/check.py`: every check listed under `specs-check` in `make_targets.yaml`, including schema validation of the engineering YAMLs, SHA256SUMS of the frozen paths, ADR headings and index, ID uniqueness and family match, 20-row task cards, relative links, `make help` vs YAML and workflow job names vs `ci_checks.yaml` (skip that comparison, reporting it as `NOT_APPLICABLE`, only while `.github/workflows/ci.yml` does not exist on main), the banned-term lint, `plans/gates/M<n>-manual-results.json` against `manualResults` when present, and the gate-mode checks. Each sub-check gets a positive and a negative fixture. Negative fixtures live under `tests/tooling/specs_check/fixtures/`; for AT-M0-T10-07 build a temporary tree in `tmp_path` that mirrors `tests/fixtures/` instead of committing anything outside field 13. A crashing check exits 1 with its name; it never silently passes.
+>    - `scripts/trace/report.py`: reads the AT IDs from field 15 of the milestone plans, and the results from JUnit (use `scripts/ci/reports.py` from M0-T11) and `tests/reports/status.jsonl`. It writes `tests/reports/trace/trace.json` and `trace.md` in the ARCH §10.8 vocabulary. An unknown or malformed ID always exits 1. `CARD=` and `GATE=` follow `make_targets.yaml`. **HC-9:** ATs marked *manual* in field 15 are excluded from `CARD` checks and listed separately; in `GATE` mode a manual AT without a result in `plans/gates/M<n>-manual-results.json` fails.
+>    - `scripts/docs/render_engineering_tables.py` reproduces the generated tables between the `BEGIN/END GENERATED` markers in DEVELOPMENT_ENVIRONMENT §5.2 and §7.2 from the YAMLs, byte for byte. `scripts/docs/render_register.py` reproduces DECISION_REGISTER §2 byte for byte from the frozen export `docs/reference/final-design-gate/03_DECISION_REGISTER.md` plus the status changes listed in DECISION_REGISTER §1. Both come with drift checks. If either cannot be reproduced deterministically from repository content, stop and report; do not edit the specification text to fit.
+>    - Make recipes, through `scripts/make/invoke.py` only for these targets: `specs-check` (`GATE`), `trace-report` (`CARD`, `GATE`), `security-check`, and the **`SUITE=tooling` branch of `backend-test`** (CR-001: `pytest tests/tooling` with JUnit to `tests/reports/backend/junit-tooling.xml`; leave the unit and integration branches unchanged).
+>    - `security-check`: gitleaks (working tree locally; full history when `GITHUB_ACTIONS=true`), `uv run pip-audit` (fail on high or critical vulnerabilities with a fix available), `pnpm audit --audit-level high`, and a licence report. For Python use the standard library `importlib.metadata`; for Node use `pnpm licenses list --json`. GPL-family and AGPL licences fail unless an ADR accepts them (ADR-0003 §4 accepts psycopg's LGPL-3.0). Add no new dependency.
+> 3. Touch only field-13 paths and those recipe branches. Do not change specification content. If a check finds a real defect in the current specs, stop and report it with file and line.
+> 4. Write the field-14 tests for **AT-M0-T10-01 … AT-M0-T10-07**, each tagged `@pytest.mark.trace("AT-M0-T10-nn", reqs=[…])`.
+> 5. Run and save the full output to `tests/reports/m0-t10-local-verification.log` (EXC-001 C2), starting from a committed, clean tree:
+>    - `make install && git status --porcelain`; `make doctor`; `make backend-lint`; `make backend-typecheck`;
+>    - `make backend-test SUITE=unit`; `make backend-test SUITE=integration`; `make backend-test SUITE=tooling`;
+>    - `make specs-check`; `make check`; `make security-check`;
+>    - `make trace-report CARD=M0-T01`; `make trace-report CARD=M0-T03`; `make trace-report CARD=M0-T11`; `make trace-report CARD=M0-T10`;
+>    - finally `git status --porcelain` (must be empty).
+> 6. Commit with messages starting `M0-T10:`. Do not push and do not open a PR.
+> 7. If anything is ambiguous, conflicts with a specification, or needs a path outside field 13 and the listed recipe branches: stop and report. Never weaken a test, never merge, never change repository settings.
 

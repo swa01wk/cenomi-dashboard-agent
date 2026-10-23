@@ -333,7 +333,7 @@ targets:
     args: []
     behaviour:
       - uv run ruff check backend scripts; uv run ruff format --check backend scripts.
-      - uv run lint-imports (contracts in backend/.importlinter, ARCH-R006/R007).
+      - uv run import-linter lint (contracts in backend/.importlinter, ARCH-R006/R007). import-linter 2.15 installs the `import-linter` command; `lint-imports` is not installed (CR-001, OQ-DEVENV-01).
       - "uv run python scripts/lint/sql_safety.py (no f-string or concatenation into text(); from M2 also: no SQL outside analytics/queries, every query file has the scope fragment)."
     failure: Exit 1 listing every violation.
     in_check: true
@@ -359,17 +359,18 @@ targets:
     summary: Backend pytest suites — unit, and integration against cenomi_test.
     prerequisites: [install, "for SUITE=integration|all: db-upgrade DB=test"]
     args:
-      - {name: SUITE, default: "all", description: "unit (no database), integration, or all"}
+      - {name: SUITE, default: "all", description: "unit (no database), integration, tooling, or all (all = unit + integration; tooling is never part of all; CR-001)"}
       - {name: K, default: "", description: "pytest -k expression"}
     behaviour:
       - "uv run pytest backend/tests/unit (SUITE=unit|all)."
       - "uv run pytest backend/tests/integration -m 'not agent_live' (SUITE=integration|all) against cenomi_test."
+      - "uv run pytest tests/tooling (SUITE=tooling): repository tooling and harness tests carrying the bootstrap ATs of M0-T01, T03, T07, T10 and T11 (CR-001, HC-8). Needs the Playwright browsers (make install BROWSERS=1). JUnit goes to tests/reports/backend/junit-tooling.xml."
       - Writes JUnit to tests/reports/backend/junit-<suite>.xml and coverage to tests/reports/backend/coverage.xml.
       - Quarantined tests are deselected here and run by ci/quarantine (ARCH-R088).
     failure: Exit 1 on any failed test; exit 3 if SUITE needs the database and it is unreachable.
     in_check: true
     check_args: "SUITE=unit"
-    ci_jobs: [ci/backend]
+    ci_jobs: [ci/backend, ci/specs]
 
   # ----------------------------------------------------------------- frontend
   - name: frontend-format

@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Document code | DEVENV (requirement IDs `DEVENV-Rnnn`) |
-| Version | 1.1 · 2026-10-23 · M0 corrections PR (HC-3 Compose note; HC-4 DEVENV-R052; HC-5 §8.6, DEVENV-R053–R055; DEVENV-R055 lockfile serialization and DEVENV-R056 protection verification, owner clarifications of 2026-10-23); 1.2 · HC-6 (DEVENV-R054 `pyproject` sections for M0-T03), HC-7 (Makefile row) and DEVENV-R001 wording. 1.0 merged in PR-M0 (`4515031`) |
+| Version | 1.1 · 2026-10-23 · M0 corrections PR (HC-3 Compose note; HC-4 DEVENV-R052; HC-5 §8.6, DEVENV-R053–R055; DEVENV-R055 lockfile serialization and DEVENV-R056 protection verification, owner clarifications of 2026-10-23); 1.2 · HC-6 (DEVENV-R054 `pyproject` sections for M0-T03), HC-7 (Makefile row) and DEVENV-R001 wording; 1.3 · CR-001 (`backend-test SUITE=tooling` in `ci/specs`; `import-linter lint`), tables re-rendered. 1.0 merged in PR-M0 (`4515031`) |
 | Status | Normative since PR-M0 merged (`4515031`); version 1.1 amendments in review |
 | Rests on | DR-027, DR-037, ED-01, ED-05, ED-06 (approved); ED-07, ED-08, ED-09 (approved 2026-10-22; ADR-0016, ADR-0017, ADR-0018); ADR-0003, ADR-0004, ADR-0006, ADR-0015 |
 | Machine-readable sources | `specs/engineering/make_targets.yaml`, `specs/engineering/ci_checks.yaml`, `specs/engineering/spec_set.yaml` — the YAML wins on any conflict with this prose |
@@ -160,7 +160,7 @@ Rendered from `specs/engineering/make_targets.yaml`. The YAML wins on conflict. 
 | `backend-format` | M0 | no | Rewrite backend code formatting and import order (writes files). | — | Exit 1 only if a file cannot be parsed. | no | — |
 | `backend-lint` | M0 | no | Static checks — ruff lint, ruff format check, import-linter module boundaries, SQL safety lint. | — | Exit 1 listing every violation. | yes | `ci/static` |
 | `backend-typecheck` | M0 | no | mypy in strict mode over backend/src and scripts. | — | Exit 1 on any type error. | yes | `ci/static` |
-| `backend-test` | M0 | no | Backend pytest suites — unit, and integration against cenomi_test. | `SUITE` (all); `K` (—) | Exit 1 on any failed test; exit 3 if SUITE needs the database and it is unreachable. | yes (`SUITE=unit`) | `ci/backend` |
+| `backend-test` | M0 | no | Backend pytest suites — unit, and integration against cenomi_test. | `SUITE` (all); `K` (—) | Exit 1 on any failed test; exit 3 if SUITE needs the database and it is unreachable. | yes (`SUITE=unit`) | `ci/backend`, `ci/specs` |
 
 **Frontend**
 
@@ -275,7 +275,7 @@ Rendered from `specs/engineering/ci_checks.yaml`. The YAML wins on conflict.
 |---|---|---|---|---|---|---|
 | `ci/changes` | `always` | — | — | 5 | yes | Compute, for every job, whether it is applicable to this change, with the reasons; publish the result as job outputs and tests/reports/ci/applicability.json. |
 | `ci/static` | `not docs_only` | `ci/changes` | `doctor`, `backend-lint`, `backend-typecheck`, `frontend-lint`, `frontend-typecheck` | 15 | yes | Formatting, lint, type checks, lockfile validation, toolchain check, quarantine expiry. |
-| `ci/specs` | `always` | `ci/changes` | `specs-check`, `trace-report` | 10 | yes | Specification and engineering-metadata validation; non-gate trace report. |
+| `ci/specs` | `always` | `ci/changes` | `backend-test`, `specs-check`, `trace-report` | 15 | yes | Repository tooling and harness tests (backend-test SUITE=tooling, CR-001); specification and engineering-metadata validation; non-gate trace report. |
 | `ci/contracts` | `backend or frontend or shared_contract` | `ci/changes` | `contracts-check` | 10 | yes | Generated artefacts current; schema subset; examples valid; Pydantic = schema. |
 | `ci/security` | `always` | `ci/changes` | `security-check` | 15 | yes | Secret scan (full history), dependency audit, licence report. |
 | `ci/backend` | `backend or database or agent or tests or shared_contract` | `ci/static` | `db-init`, `db-upgrade`, `backend-test` | 20 | yes | Backend unit and integration tests against PostgreSQL 16. |

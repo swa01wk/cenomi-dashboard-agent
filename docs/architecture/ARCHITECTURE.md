@@ -750,7 +750,7 @@ The fingerprint is `sfp_` followed by the first 32 hex characters of SHA-256 ove
 
 | # | Principle |
 |---|---|
-| **ARCH-R083** | Every task card's acceptance criteria are automated tests carrying AT IDs (§12). A criterion that cannot be automated is marked *manual* with a reason and a recorded result in the gate report |
+| **ARCH-R083** | Every task card's acceptance criteria are automated tests carrying AT IDs (§12). A criterion that cannot be automated is marked *manual* with a reason. Its result is recorded in `plans/gates/M<n>-manual-results.json` (schema `manualResults`, CR-001) through a documentation PR and copied into the gate report. `trace-report` excludes manual ATs from `CARD` checks and, in `GATE` mode, fails while any manual AT of the milestone has no recorded result (HC-9) |
 | **ARCH-R084** | **Expected values come from an independent source**: hand-computed micro fixtures (tier T0), or the canonical figures and reference hashes produced by the design-time reference models in `docs/design/baseline/reference-models/` (tier T1). Expected values are stored only in `tests/fixtures/golden/` or `tests/fixtures/metrics/`. A test never computes its expected value with the code under test. Reviewers reject such tests (PR checklist item) |
 | **ARCH-R085** | Tests are deterministic: frozen `as_of`; fixed seeds for any randomness (Hypothesis uses a derandomized profile in CI); `TZ=UTC` in CI with explicit Asia/Riyadh assertions where bucketing is tested; no network except the local stack; no live model in any ordinary test |
 | **ARCH-R086** | Tests are isolated: unit tests use no database or network; integration tests use `cenomi_test` with ARCH-R065 cleanup; E2E runs against a freshly migrated (and from M1 seeded) stack |
