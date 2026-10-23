@@ -10,9 +10,7 @@ from pathlib import Path
 APPROVED_READY = "Approved · ready"
 SUPERSEDED = "Superseded"
 
-AUTHORITY_IN_NOTE = re.compile(
-    r"(GDQ-[0-9]{2}|ADR-[0-9]{4}|CR-[0-9]{3}|ED-[0-9]{2}|DREG-R[0-9]{3})"
-)
+AUTHORITY_IN_NOTE = re.compile(r"(GDQ-[0-9]{2}|ADR-[0-9]{4}|CR-[0-9]{3}|ED-[0-9]{2})")
 
 
 def _parse_export_table(text: str) -> list[dict[str, str]]:
@@ -106,7 +104,7 @@ def _note_ok(export_note: str, committed_note: str) -> tuple[bool, str]:
     if not committed_note.startswith(export_note):
         return False, "note does not start with export text"
     if not AUTHORITY_IN_NOTE.search(committed_note):
-        return False, "amended note missing authority (GDQ, ADR, CR, ED, DREG-R002)"
+        return False, "amended note missing authority (GDQ, ADR, CR, ED)"
     return True, ""
 
 

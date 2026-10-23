@@ -3,18 +3,18 @@
 from __future__ import annotations
 
 import json
+from subprocess import CompletedProcess
 
 import pytest
 
+from scripts.specs import security as sec
 from scripts.specs.security import (
     _is_gpl_family,
     classify_node_licences,
-    classify_python_licences,
     parse_pnpm_licenses_json,
     pip_audit_violations,
+    run_pip_audit,
 )
-
-pytestmark = pytest.mark.trace("AT-M0-T10-01", reqs=["DEVENV-R046"])
 
 
 def test_pip_audit_blocks_any_fixable_vuln() -> None:
@@ -40,6 +40,59 @@ def test_pip_audit_warns_unfixable() -> None:
     fixable, unfixable = pip_audit_violations(payload)
     assert fixable == []
     assert len(unfixable) == 1
+
+
+def test_run_pip_audit_exit1_unfixable_only_returns_0(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payload = {
+        "dependencies": [
+            {"name": "pkg", "vulns": [{"id": "X", "fix_versions": []}]},
+        ]
+    }
+
+    def fake_run(*_a, **_k):
+        return CompletedProcess([], 1, stdout=json.dumps(payload), stderr="")
+
+    monkeypatch.setattr(sec, "_run", fake_run)
+    assert run_pip_audit() == 0
+
+
+def test_run_pip_audit_exit1_fixable_returns_1(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payload = {
+        "dependencies": [
+            {
+                "name": "certifi",
+                "vulns": [{"id": "Y", "fix_versions": ["1.0.1"]}],
+            }
+        ]
+    }
+
+    def fake_run(*_a, **_k):
+        return CompletedProcess([], 1, stdout=json.dumps(payload), stderr="")
+
+    monkeypatch.setattr(sec, "_run", fake_run)
+    assert run_pip_audit() == 1
+
+
+def test_run_pip_audit_exit0_clean_returns_0(monkeypatch: pytest.MonkeyPatch) -> None:
+    payload: dict[str, list] = {"dependencies": []}
+
+    def fake_run(*_a, **_k):
+        return CompletedProcess([], 0, stdout=json.dumps(payload), stderr="")
+
+    monkeypatch.setattr(sec, "_run", fake_run)
+    assert run_pip_audit() == 0
+
+
+def test_run_pip_audit_non_json_returns_1(monkeypatch: pytest.MonkeyPatch) -> None:
+    def fake_run(*_a, **_k):
+        return CompletedProcess([], 2, stdout="not json", stderr="")
+
+    monkeypatch.setattr(sec, "_run", fake_run)
+    assert run_pip_audit() == 1
 
 
 def test_gpl_classifier_form() -> None:

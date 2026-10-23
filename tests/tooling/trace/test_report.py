@@ -181,6 +181,22 @@ def test_manual_at_set_on_real_plans() -> None:
     }
 
 
+def _manual_gate_file(at_id: str, result: str) -> dict[str, object]:
+    return {
+        "schema": "cenomi.manual_results.v1",
+        "milestone": "M0",
+        "results": [
+            {
+                "atId": at_id,
+                "result": result,
+                "recordedBy": "owner@example.com",
+                "recordedAt": "2026-10-24T00:00:00Z",
+                "evidence": "Recorded in gate review.",
+            }
+        ],
+    }
+
+
 @pytest.mark.trace("AT-M0-T10-04", reqs=["ARCH-R095", "ARCH-R105"])
 def test_gate_manual_without_result_fails(tmp_path: Path) -> None:
     _seed_repo(
@@ -188,13 +204,16 @@ def test_gate_manual_without_result_fails(tmp_path: Path) -> None:
         card="M0-T08",
         field15="**AT-M0-T08-05** (*manual record*) only.",
     )
-    _, errors, code = build_report(tmp_path, gate="M0", junit_paths=[])
+    payload, errors, code = build_report(tmp_path, gate="M0", junit_paths=[])
     assert code == 1
-    assert any("AT-M0-T08-05" in e for e in errors)
+    assert "AT-M0-T08-05: manual AT lacks recorded result" in errors
+    manual = payload["manualAcceptanceTests"]
+    assert isinstance(manual, list)
+    assert manual[0]["result"] == "NOT_IMPLEMENTED"
 
 
 @pytest.mark.trace("AT-M0-T10-04", reqs=["ARCH-R095", "ARCH-R105"])
-def test_gate_manual_with_result_passes_manual_check(tmp_path: Path) -> None:
+def test_gate_manual_recorded_failed_fails(tmp_path: Path) -> None:
     _seed_repo(
         tmp_path,
         card="M0-T08",
@@ -203,16 +222,27 @@ def test_gate_manual_with_result_passes_manual_check(tmp_path: Path) -> None:
     gates = tmp_path / "plans/gates"
     gates.mkdir(parents=True)
     (gates / "M0-manual-results.json").write_text(
-        json.dumps(
-            {
-                "schema": "cenomi.manual_results.v1",
-                "milestone": "M0",
-                "results": [{"atId": "AT-M0-T08-05", "result": "PASSED"}],
-            }
-        ),
+        json.dumps(_manual_gate_file("AT-M0-T08-05", "FAILED")),
         encoding="utf-8",
     )
-    junit = tmp_path / "junit.xml"
-    junit.write_text(_junit("AT-M0-T08-05"), encoding="utf-8")
-    _, errors, code = build_report(tmp_path, gate="M0", junit_paths=[junit])
-    assert not any("manual AT lacks" in e for e in errors)
+    _, errors, code = build_report(tmp_path, gate="M0", junit_paths=[])
+    assert code == 1
+    assert "AT-M0-T08-05: recorded FAILED" in errors
+
+
+@pytest.mark.trace("AT-M0-T10-04", reqs=["ARCH-R095", "ARCH-R105"])
+def test_gate_manual_recorded_passed_succeeds(tmp_path: Path) -> None:
+    _seed_repo(
+        tmp_path,
+        card="M0-T08",
+        field15="**AT-M0-T08-05** (*manual record*) only.",
+    )
+    gates = tmp_path / "plans/gates"
+    gates.mkdir(parents=True)
+    (gates / "M0-manual-results.json").write_text(
+        json.dumps(_manual_gate_file("AT-M0-T08-05", "PASSED")),
+        encoding="utf-8",
+    )
+    _, errors, code = build_report(tmp_path, gate="M0", junit_paths=[])
+    assert code == 0
+    assert errors == []

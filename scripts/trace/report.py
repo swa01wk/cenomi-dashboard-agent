@@ -210,9 +210,13 @@ def build_report(
             manual_list.append(entry)
             if card:
                 continue
-            if gate and not manual_result:
-                errors.append(f"{at_id}: manual AT lacks recorded result")
-                exit_code = 1
+            if gate:
+                if not manual_result:
+                    errors.append(f"{at_id}: manual AT lacks recorded result")
+                    exit_code = 1
+                elif manual_result != "PASSED":
+                    errors.append(f"{at_id}: recorded {manual_result}")
+                    exit_code = 1
             records.append(entry)
             continue
 

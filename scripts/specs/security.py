@@ -166,17 +166,20 @@ def run_pip_audit() -> int:
         ["uv", "run", "pip-audit", "--format", "json"],
         cwd=repo_root() / "backend",
     )
-    if proc.stderr:
-        print(proc.stderr, end="", file=sys.stderr)
-    if proc.returncode != 0:
-        if proc.stdout:
-            print(proc.stdout, end="")
-        return proc.returncode
+    stdout = proc.stdout or ""
+    stderr = proc.stderr or ""
+    if stderr:
+        print(stderr, end="", file=sys.stderr)
     try:
-        payload = json.loads(proc.stdout or "{}")
+        payload = json.loads(stdout) if stdout.strip() else {}
     except json.JSONDecodeError:
-        print("pip-audit: invalid JSON output", file=sys.stderr)
+        if stdout:
+            print(stdout, end="")
+        elif stderr:
+            print(stderr, end="", file=sys.stderr)
         return 1
+    if proc.returncode != 0 and stdout:
+        print(stdout, end="")
     fixable, unfixable = pip_audit_violations(payload)
     if not AUTHORITY_NOTE_PRINTED:
         print(

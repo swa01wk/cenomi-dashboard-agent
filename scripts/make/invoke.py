@@ -260,8 +260,10 @@ def run_target(name: str) -> None:
                 failed(name, "integration tests failed", run, exit_code=code)
                 return
         if suite == "tooling":
+            junit = reports / "junit-tooling.xml"
             code = _pytest(
-                f"../tests/tooling --junitxml={reports / 'junit-tooling.xml'}",
+                "-c pyproject.toml --rootdir=.. --confcutdir=.. "
+                f"../tests/tooling --junitxml={junit}",
                 clear_makeflags=True,
             )
             if code != 0:
