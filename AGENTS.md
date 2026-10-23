@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Document code | AGENTSMD (requirement IDs `AGENTSMD-Rnnn`) |
-| Version | 1.0 · 2026-10-22 · PR-M0 |
+| Version | 1.1 · 2026-10-23 · M0 corrections PR (AGENTSMD-R005 ownership exceptions, HC-4 and HC-5) |
 | Applies to | Every change in this repository |
 | Companion | `.cursor/rules/*.mdc` (scoped rules), `plans/M<n>_*.md` (task cards), `plans/STATUS.md` (progress) |
 
@@ -76,7 +76,7 @@ Each rule names the check that enforces it.
 | ID | Rule | Enforced by |
 |---|---|---|
 | **AGENTSMD-R004** | One card per branch and per PR. Branch name `feat\|fix\|test\|chore/m<n>-t<nn>-<slug>` | `ci/static` checks the head branch name against the `branch` ID pattern; review |
-| **AGENTSMD-R005** | Touch only the paths in the card's field 13. If the work needs another path, **stop and report**; never widen the card | PR template field 5, review |
+| **AGENTSMD-R005** | Touch only the paths in the card's field 13. Field 13 is read by the most-specific-path rule (DEVENV-R053): a broad glob never covers a file another card names. Two exceptions: lockfile and manifest updates for dependencies the card introduces (DEVENV-R052), and the listed changes to shared files and composition points (DEVENV-R054). Never make conflicting parallel changes to a shared file (DEVENV-R055). If the work needs any other path, **stop and report**; never widen the card | PR template field 5, review |
 | **AGENTSMD-R006** | Never add a feature, screen, metric, agent capability or dependency the card does not name | Review; DEVENV-R002 (dependency changes must state why) |
 | **AGENTSMD-R007** | Every acceptance criterion `AT-…` is an automated test carrying that ID (pytest `@pytest.mark.trace`; Vitest and Playwright title prefix `[AT-…]`). A card is done only when all its ATs are `PASSED`. A missing test is `NOT_IMPLEMENTED` and a skipped one is `SKIPPED`; neither counts (ARCHITECTURE §10.8). Never mark anything `NOT_APPLICABLE` yourself; only the three rules of ARCH-R101 can | `make trace-report CARD=<card>`, enforced by `ci/summary` |
 | **AGENTSMD-R008** | Expected values come only from `tests/fixtures/golden/` or `tests/fixtures/metrics/`. Never compute an expected value with the code under test; never write an expected business number as a literal in test code | Review; ARCH-R084 |

@@ -3,8 +3,8 @@
 | | |
 |---|---|
 | Document code | PSPEC (requirement IDs `PSPEC-Rnnn`) |
-| Version | 1.0 · 2026-10-22 · PR-M0 |
-| Status | Proposed in PR-M0; normative when merged |
+| Version | 1.0.1 · 2026-10-23 · M0 corrections PR (HC-2 traceability row) |
+| Status | Normative since PR-M0 merged (`4515031`); version 1.0.1 amendment in review |
 | Sources | PRD v1.0 (`docs/reference/Cenomi_Dashboard_Intelligence_Agent_PRD.md`); TA v1.0; API Reference (2026-10-13); DX1–DX6 boards (canvas v27 + OI-13 fix, `docs/design/baseline/`); GD register (`docs/design/DECISION_REGISTER.md`); GD tabs 02, 04, 05 |
 | Extended by | PR-M2 (Appendix A: per-card specifications); PR-M4 and PR-M6 (journey step detail in their plans) |
 
@@ -289,6 +289,6 @@ Expected values for these journeys live only in `tests/fixtures/golden/` (PR-M1)
 
 | Requirements | Verified by |
 |---|---|
-| PSPEC-R002, R004 (persona routing), R007 (shell parts) | M0-T04, M0-T06: E2E-SHELL-01…03, E2E-NAV-01, E2E-RESP-01…03 |
+| PSPEC-R002, R004 (persona routing), R007 (shell parts) | M0-T04: E2E-SHELL-01…03, E2E-NAV-01, E2E-RESP-01…03 (AT-M0-T04-01…03, -10, -11). M0-T06 provides the session API they use (AT-M0-T06-01…07). The E2E journeys moved from M0-T06 to M0-T04 on 2026-10-23 (HC-2) |
 | PSPEC-R008–R023 | The card and journey suites above, in their delivering milestones (M2, M4, M6) |
 | PSPEC-R001, R003 | `make specs-check` (delivery class on every task card) and gate reviews |

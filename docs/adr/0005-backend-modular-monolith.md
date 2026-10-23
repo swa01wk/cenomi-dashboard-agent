@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | Proposed. The underlying decision **ED-02 Option A was approved by the project owner on 2026-10-22**; this ADR becomes Accepted when PR-M0 merges |
+| Status | **Accepted** — PR-M0 merged 2026-10-22 at `4515031` (recorded 2026-10-23). The underlying decision **ED-02 Option A was approved by the project owner on 2026-10-22**. |
 | Date | 2026-10-22 |
 | Decision IDs | ED-02 (approved), DR-013, DR-016, DR-037; supersedes the service split in TA §11 |
 

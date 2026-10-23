@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | Proposed. **ED-07 Option A** was approved by the project owner on 2026-10-22. This ADR becomes Accepted when PR-M0 merges |
+| Status | **Accepted** — PR-M0 merged 2026-10-22 at `4515031` (recorded 2026-10-23). **ED-07 Option A** was approved by the project owner on 2026-10-22. |
 | Date | 2026-10-22 |
 | Decision IDs | ED-07 (approved), DR-019, DR-020, DXD-38, DXD-85; SEC-02, SEC-03 |
 | Decision text | `docs/design/DECISION_REGISTER.md` §5.1 "ED-07" (single source; this ADR does not restate the numbered rules) |
@@ -40,5 +40,7 @@ ED-07 Option A, exactly as worded in DECISION_REGISTER §5.1 items 1–8, includ
 | Fail closed outside `dev`, `test`, `ci` | AT-M0-T03-01 (ARCH-R026 cases b and e) |
 | Dev routes absent unless `AUTH_MODE=dev_fixture` | AT-M0-T06-04 |
 | Cookie attributes; identity-only payload; grants resolved on the backend | AT-M0-T06-02 |
-| Tampered or expired cookie refused; cookie unreadable by page script | AT-M0-T06-03 |
+| Tampered or expired cookie refused | AT-M0-T06-03 |
+| Cookie unreadable by page script | AT-M0-T04-10 (moved from AT-M0-T06-03 by HC-2, 2026-10-23) |
+| Sign-in lands on the persona's route; sign-out returns to `/sign-in` | AT-M0-T04-11 (moved from M0-T06, formerly its eighth AT, by HC-2) |
 | Deny by default; narrow-only authorization | AT-M0-T06-05, AT-M0-T06-06 |

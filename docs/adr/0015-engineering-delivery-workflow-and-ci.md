@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | Proposed. **ED-05 Option A** and **ED-06 Option A**, and the engineering delivery model (approval message of 2026-10-22, Parts 4 and 6–11), were approved by the project owner on 2026-10-22. This ADR becomes Accepted when PR-M0 merges |
+| Status | **Accepted** — PR-M0 merged 2026-10-22 at `4515031` (recorded 2026-10-23). **ED-05 Option A** and **ED-06 Option A**, and the engineering delivery model (approval message of 2026-10-22, Parts 4 and 6–11), were approved by the project owner on 2026-10-22. |
 | Date | 2026-10-22 |
 | Decision IDs | ED-05, ED-06, ED-01, DR-037, DR-041, GDQ-06, GDQ-11 |
 
