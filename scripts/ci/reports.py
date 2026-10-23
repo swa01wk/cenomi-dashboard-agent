@@ -204,10 +204,26 @@ def _safe_junit(path: Path) -> JUnitCounts | None:
         return None
 
 
+def dataset_summary_line(reports_root: Path) -> str:
+    """DEVENV-R031 item 3 — dataset id and seed hash, or not seeded before M1."""
+    descriptor = reports_root / "dataset" / "descriptor.json"
+    seed_hash = reports_root / "dataset" / "seed-hash.txt"
+    if descriptor.is_file() and seed_hash.is_file():
+        try:
+            payload = json.loads(descriptor.read_text(encoding="utf-8"))
+            dataset_id = payload.get("datasetId") or payload.get("dataset_id")
+            seed = seed_hash.read_text(encoding="utf-8").strip()
+            if dataset_id and seed:
+                return f"Dataset: `{dataset_id}` (seed hash `{seed}`)"
+        except (json.JSONDecodeError, OSError):
+            return "Dataset: **FAILED** (unparseable dataset report)"
+    return "Dataset: not seeded"
+
+
 def append_ci_summary_sections(
     reports_root: Path | None = None,
 ) -> list[str]:
-    """Markdown sections for DEVENV-R031 items 5–15 (M0-applicable subset)."""
+    """Markdown sections for DEVENV-R031 M0-applicable content (dataset + items 5–15)."""
     root = reports_root or REPORTS_ROOT
     backend_unit = _safe_junit(root / "backend" / "junit-unit.xml")
     backend_integration = _safe_junit(root / "backend" / "junit-integration.xml")
@@ -217,6 +233,10 @@ def append_ci_summary_sections(
     coverage = _read_coverage_percent(root / "backend" / "coverage.xml")
 
     lines = [
+        "",
+        "## Dataset",
+        "",
+        f"- {dataset_summary_line(root)}",
         "",
         "## Backend, frontend and integration test counts",
         "",

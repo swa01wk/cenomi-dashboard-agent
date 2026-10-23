@@ -108,9 +108,9 @@ def test_ci_summary_sections_include_m0_applicable_blocks(tmp_path: Path) -> Non
         encoding="utf-8",
     )
 
-    header = "# CI summary\n\n- Dataset: not seeded\n"
-    sections = header + "\n".join(append_ci_summary_sections(reports))
+    sections = "\n".join(append_ci_summary_sections(reports))
     assert "Dataset: not seeded" in sections
+    assert "## Dataset" in sections
     assert "## Backend, frontend and integration test counts" in sections
     assert "## Agent mock and replay results" in sections
     assert "Not applicable in M0" in sections
@@ -125,7 +125,6 @@ def test_ci_summary_sections_include_m0_applicable_blocks(tmp_path: Path) -> Non
     assert "## Failing E2E request references" in sections
 
 
-@pytest.mark.trace("AT-M0-T11-02", reqs=["ARCH-R083"])
 def test_vitest_junit_at_title_fixture() -> None:
     path = FIXTURES / "junit-vitest-at.xml"
     _, cases = parse_junit(path)

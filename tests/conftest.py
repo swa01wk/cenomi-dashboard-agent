@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import os
 import sys
+import time
 from pathlib import Path
 
 import pytest
-from hypothesis import HealthCheck, settings
+from hypothesis import settings
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(REPO_ROOT) not in sys.path:
@@ -17,17 +18,14 @@ pytest_plugins = [
     "scripts.testing.pytest_trace",
 ]
 
-settings.register_profile(
-    "ci",
-    derandomize=True,
-    deadline=None,
-    suppress_health_check=list(HealthCheck),
-)
+settings.register_profile("ci", derandomize=True, deadline=None)
 settings.register_profile("default", derandomize=False)
 
 
 def pytest_configure(config: pytest.Config) -> None:
-    os.environ.setdefault("TZ", "UTC")
+    os.environ["TZ"] = "UTC"
+    if hasattr(time, "tzset"):
+        time.tzset()
     if hasattr(config.option, "strict_markers"):
         config.option.strict_markers = True
     if hasattr(config.option, "disable_socket"):
