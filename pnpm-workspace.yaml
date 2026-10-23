@@ -1,3 +1,6 @@
 packages:
   - "apps/*"
   - "packages/*"
+# CR-002 / DEF-0001 security patch (ADR-0003 §2, GHSA-8r5x-fm3f-whwj, GHSA-p8wg-vrv2-v86f)
+overrides:
+  handlebars: "4.7.10"
