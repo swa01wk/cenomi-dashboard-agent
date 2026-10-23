@@ -132,7 +132,9 @@ def check_drift(repo: Path) -> list[str]:
             f"{register}: §2 row count {len(committed_rows)} != export {len(export_rows)}"
         )
 
-    for index, (export, committed) in enumerate(zip(export_rows, committed_rows)):
+    for index, (export, committed) in enumerate(
+        zip(export_rows, committed_rows, strict=False)
+    ):
         row_ref = f"§2 row {index + 1} ({export['id']})"
         if committed["id"] != export["id"]:
             errors.append(f"{register}: {row_ref} id {committed['id']!r} != export")
