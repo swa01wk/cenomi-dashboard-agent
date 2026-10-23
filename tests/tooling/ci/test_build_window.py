@@ -25,7 +25,7 @@ def _target_rows() -> list[dict[str, str]]:
     ]
 
 
-@pytest.mark.trace("AT-M0-T07-02", reqs=["ARCH-R103"])
+@pytest.mark.trace("AT-M0-T07-04", reqs=["ARCH-R103"])
 def test_m0_t07_implemented_on_main_without_live_at(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
