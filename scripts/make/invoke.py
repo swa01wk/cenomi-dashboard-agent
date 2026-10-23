@@ -218,8 +218,18 @@ def run_target(name: str) -> None:
         reports = REPO_ROOT / "tests" / "reports" / "backend"
         reports.mkdir(parents=True, exist_ok=True)
 
-        def _pytest(args: str) -> int:
-            return _shell(f"uv run --directory backend pytest {args}")
+        def _pytest(args: str, *, clear_makeflags: bool = False) -> int:
+            cmd = f"uv run --directory backend pytest {args}"
+            if not clear_makeflags:
+                return _shell(cmd)
+            env = os.environ.copy()
+            env.pop("MAKEFLAGS", None)
+            env.pop("MFLAGS", None)
+            env["MAKELEVEL"] = "0"
+            print(f"+ {cmd}", flush=True)
+            return subprocess.run(
+                cmd, shell=True, cwd=REPO_ROOT, env=env, check=False
+            ).returncode
 
         if suite in ("unit", "all"):
             k_flag = f"-k {k_expr!r} " if k_expr else ""
@@ -252,7 +262,8 @@ def run_target(name: str) -> None:
                 return
         if suite == "tooling":
             code = _pytest(
-                f"../tests/tooling --junitxml={reports / 'junit-tooling.xml'}"
+                f"../tests/tooling --junitxml={reports / 'junit-tooling.xml'}",
+                clear_makeflags=True,
             )
             if code != 0:
                 failed(name, "tooling tests failed", run, exit_code=code)
