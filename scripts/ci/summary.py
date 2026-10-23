@@ -160,6 +160,14 @@ def _last_target_result(records: list[dict[str, Any]], target: str) -> str | Non
     return last
 
 
+def _last_step_result(records: list[dict[str, Any]], item: str) -> str | None:
+    last: str | None = None
+    for rec in records:
+        if rec.get("kind") == "step" and rec.get("item") == item:
+            last = str(rec.get("result", ""))
+    return last
+
+
 def stage_junit_artifacts(junit_root: Path) -> tuple[list[Path], list[str]]:
     """
     Copy JUnit files from downloaded CI artefacts into DEFAULT_JUNIT_REL locations.
@@ -235,6 +243,17 @@ def check_job_junit_requirements(
                 continue
             result = _last_target_result(records, target)
             if result in ("NOT_IMPLEMENTED", "NOT_APPLICABLE"):
+                if (
+                    target == "e2e"
+                    and basename == "junit-playwright.xml"
+                    and _last_step_result(records, "e2e-harness") == "PASSED"
+                ):
+                    dest = REPO_ROOT / rel
+                    if not dest.is_file():
+                        errors.append(
+                            f"{job_name}: missing JUnit {rel} after e2e-harness "
+                            "reported PASSED"
+                        )
                 continue
             if result != "PASSED":
                 continue

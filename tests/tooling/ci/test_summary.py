@@ -604,6 +604,31 @@ def test_missing_junit_for_passed_target_fails(
 
 
 @pytest.mark.trace("AT-M0-T07-04", reqs=["DEVENV-R031"])
+def test_missing_junit_after_passed_e2e_harness_fails(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import scripts.ci.summary as summary_mod
+
+    monkeypatch.setattr(summary_mod, "REPO_ROOT", tmp_path)
+    jobs = _all_jobs_success()
+    apps = _applicability(["apps/web/package.json"])
+    status = tmp_path / "e2e_status.jsonl"
+    status.write_text(
+        '{"item":"e2e","kind":"target","result":"NOT_IMPLEMENTED","reason":"stub"}\n'
+        '{"item":"e2e-harness","kind":"step","result":"PASSED","reason":"harness"}\n',
+        encoding="utf-8",
+    )
+    errors = check_job_junit_requirements(
+        job_conclusions=jobs,
+        applicability=apps,
+        job_status_files={"ci/e2e": status},
+        ci=CI,
+    )
+    assert errors
+    assert any("junit-playwright.xml" in e for e in errors)
+
+
+@pytest.mark.trace("AT-M0-T07-04", reqs=["DEVENV-R031"])
 def test_stage_junit_places_at_default_rel(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

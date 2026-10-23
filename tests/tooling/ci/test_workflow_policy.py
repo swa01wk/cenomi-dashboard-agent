@@ -152,6 +152,17 @@ def test_ci_quarantine_pytest_command_shape() -> None:
     assert data["jobs"]["quarantine"].get("continue-on-error") is True
 
 
+@pytest.mark.trace("AT-M0-T07-04", reqs=["ARCH-R103"])
+def test_ci_e2e_installs_browsers_and_runs_harness_when_stub() -> None:
+    text = CI_YML.read_text(encoding="utf-8")
+    data = yaml.safe_load(text)
+    e2e = data["jobs"]["e2e"]
+    steps_yaml = yaml.dump(e2e["steps"])
+    assert "make install BROWSERS=1" in steps_yaml
+    assert "e2e_harness.py" in steps_yaml
+    assert steps_yaml.index("make ci JOB=e2e") < steps_yaml.index("e2e_harness.py")
+
+
 @pytest.mark.trace("AT-M0-T07-06", reqs=["DEVENV-R028"])
 def test_ci_images_builds_without_push_or_login() -> None:
     text = CI_YML.read_text(encoding="utf-8")

@@ -449,9 +449,13 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
+      - name: Install Playwright browsers
+        run: make install BROWSERS=1
       - name: Reset job status log
         run: rm -f tests/reports/status.jsonl && mkdir -p tests/reports
       - run: make ci JOB=e2e
+      - name: Harness specs when e2e is not implemented
+        run: uv run --project backend python scripts/ci/e2e_harness.py
 
       - name: Finalize reports
         if: always()
