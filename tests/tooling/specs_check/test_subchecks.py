@@ -57,8 +57,6 @@ def test_specs_check_passes_on_repository() -> None:
 @pytest.mark.trace("AT-M0-T10-01", reqs=["RMAP-R007"])
 @pytest.mark.parametrize("name", list(SUB_CHECKS))
 def test_subcheck_positive_on_repository(name: str) -> None:
-    if name == "ci_jobs" and not (REPO / ".github/workflows/ci.yml").is_file():
-        pytest.skip("ci.yml not on branch")
     assert SUB_CHECKS[name](REPO) == []
 
 
