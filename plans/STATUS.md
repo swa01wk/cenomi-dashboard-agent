@@ -1,12 +1,12 @@
 # STATUS — Cenomi Dashboard Intelligence Agent POC
 
-Updated: 2026-10-23. **M0 build in progress.** Merged: M0-T01 (`75a2fed`, PR #6), M0-T03 (`0027aae`, PR #9) and M0-T11 (`386f017`, PR #12), all under P1 + EXC-001. Spec set **0.1.3** at `3c182cf` (CR-001, PR #13); **0.1.4** (CR-002) in this PR. **Next:** the DEF-0001 security patch (EXC-002), then M0-T10. P1 in force (ruleset `25699552`).
+Updated: 2026-10-24. **M0 build in progress.** Merged: M0-T01 (`75a2fed`, PR #6), M0-T03 (`0027aae`, PR #9) and M0-T11 (`386f017`, PR #12), all under P1 + EXC-001. Spec set **0.1.4** at `c582535` (CR-002, PR #14); **0.1.5** (HC-10) in review. **Next:** the DEF-0001 security patch (EXC-002), then M0-T10. P1 in force (ruleset `25699552`).
 
 | | |
 |---|---|
 | Baseline | DX1–DX6 (canvas v27 + OI-13 local wording fix); Final Design Gate 2026-10-22 |
 | Dataset | `sd-2026.10.20-01` (`as_of` 2026-10-20; insight replay hash `82fde5250960761d`; runner reference_hash `c1e36ced42cebecc`) — **not yet seeded** |
-| Specification set | **0.1.4** (CR-002/EXC-002, ROADMAP A-31) in review; **0.1.3** at `3c182cf` (CR-001, ROADMAP A-30); 0.1.2 at `ccdc276` (HC-6, HC-7); 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
+| Specification set | **0.1.5** (HC-10, ROADMAP A-32) in review; **0.1.4** at `c582535` (CR-002/EXC-002, ROADMAP A-31); **0.1.3** at `3c182cf` (CR-001, ROADMAP A-30); 0.1.2 at `ccdc276` (HC-6, HC-7); 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
 
 > Status vocabulary:
 >
@@ -89,7 +89,7 @@ The M0 corrections PR changes none of the contract files. Its only change to a C
 | `specs/engineering/make_targets.yaml` | `backend-test SUITE=tooling`; `backend-lint` runs `import-linter lint` | `6daa6a4cd01d2cda` |
 | `specs/engineering/ci_checks.yaml` | `ci/specs` installs browsers and runs `backend-test` with `SUITE=tooling` | `c1b270e160d701a9` |
 | `specs/engineering/engineering.schema.json` | `manualResults`; optional `gateReport.manualResults`; `SUITE` in job env | `679f81ed9f69075c` |
-| `specs/engineering/spec_set.yaml` | version 0.1.3 (0.1.4 after CR-002; hash recorded when it merges) | `b9aadc55b002ec15` |
+| `specs/engineering/spec_set.yaml` | version 0.1.3 (later versions: 0.1.4 at `c582535`, CR-002; 0.1.5, HC-10) | `b9aadc55b002ec15` |
 
 ## Milestones
 
@@ -148,6 +148,7 @@ The M0 corrections PR changes none of the contract files. Its only change to a C
 ## Decisions
 
 **Approved:**
+- **HC-10** (2026-10-24): DECISION_REGISTER §2 is consistency-checked by M0-T10, not regenerated; the register data stays only in DECISION_REGISTER.md (ROADMAP A-32)
 - GDQ-01…GDQ-12, Option A (2026-10-22)
 - DXD-80…93
 - The 17 batch defaults with final definitions (GDQ-10)
@@ -286,7 +287,7 @@ The full risk register is in `docs/reference/final-design-gate/08_OPEN_ISSUES_AN
 | Design canvas | v27 (+ OI-13 local fix in exported boards) |
 | Final Design Gate doc | 22 Oct 2026 outcome recorded (exported 8 tabs) |
 | Engineering Specification Plan | 22 Oct 2026 draft → **approved** as `plans/ROADMAP.md` v1.0 |
-| Specification set | **0.1.4** in review (CR-002); **0.1.3** at `3c182cf` (CR-001); 0.1.2 at `ccdc276`; 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
+| Specification set | **0.1.5** in review (HC-10); **0.1.4** at `c582535` (CR-002); **0.1.3** at `3c182cf` (CR-001); 0.1.2 at `ccdc276`; 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
 | Planning Assessment | v0.3 (G0) |
 | Dataset | `sd-2026.10.20-01` |
 | Detectors | detectors-1.1 |
