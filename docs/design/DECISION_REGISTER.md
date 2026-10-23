@@ -3,9 +3,9 @@
 | | |
 |---|---|
 | Document code | DREG (requirement IDs `DREG-Rnnn`) |
-| Version | 1.0 · 2026-10-22 · PR-M0 |
+| Version | 1.1 · 2026-10-24 · HC-10 ("Generated" row: consistency check instead of re-render). 1.0 · 2026-10-22 · PR-M0 |
 | Source | Frozen GD export `docs/reference/final-design-gate/03_DECISION_REGISTER.md` (141 decisions) plus the gate decisions of 22 Oct 2026 and the engineering decisions approved on 22 Oct 2026 |
-| Generated | The §2 table was rendered from the frozen export with exactly the status changes listed in §1 (one-time render, checked in this PR). M0-T10 adds the renderer `scripts/docs/render_register.py` and a drift check; from then on a row changes only through an ADR or CR followed by a re-render |
+| Generated | The §2 table was rendered once, in PR-M0, from the frozen export with the status changes listed in §1; notes were extended with the authority that changed them. This document is the only source of the register (DREG-R001): §2 is edited here, never regenerated. M0-T10's `scripts/docs/render_register.py` checks it on every `make specs-check` (HC-10): columns ID to Status (pre-gate) equal the export's, Status (now) changes only for IDs listed in §1, and every Note starts with the export note and names its authority when it differs. A row changes only through a GDQ, an ADR or a CR (DREG-R002), with §1 updated in the same PR |
 
 **DREG-R001** This register is the single living list of DR and DXD decisions. Specifications cite decisions by ID and never restate their rules. The frozen export stays unchanged as the record of the gate.
 
