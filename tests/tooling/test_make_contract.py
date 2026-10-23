@@ -174,10 +174,10 @@ def test_target_results_milestone_and_stubs() -> None:
     )
     assert m1_proc.returncode == 1
 
-    _clear_status()
     help_proc = _run_make("help")
     help_record = _last_status_line("help", REPO_ROOT / "tests/reports/status.jsonl")
     assert help_record is not None and help_record["result"] == "PASSED"
+    _run_make(stub)
     stub_record = _last_status_line(stub, REPO_ROOT / "tests/reports/status.jsonl")
     assert stub_record is not None and stub_record["result"] == "NOT_IMPLEMENTED"
 
