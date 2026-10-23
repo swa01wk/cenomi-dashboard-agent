@@ -1,12 +1,12 @@
 # STATUS — Cenomi Dashboard Intelligence Agent POC
 
-Updated: 2026-10-23. **M0 build in progress.** M0-T01 merged at `75a2fed` (PR #6, under P1 + EXC-001). Spec set **0.1.1** at `77c9c10`; P1 in force (ruleset `25699552`).
+Updated: 2026-10-23. **M0 build in progress.** M0-T01 merged at `75a2fed` (PR #6). HC-6 approved and HC-7 proposed in this PR (spec set 0.1.2, ROADMAP A-29). P1 in force (ruleset `25699552`).
 
 | | |
 |---|---|
 | Baseline | DX1–DX6 (canvas v27 + OI-13 local wording fix); Final Design Gate 2026-10-22 |
 | Dataset | `sd-2026.10.20-01` (`as_of` 2026-10-20; insight replay hash `82fde5250960761d`; runner reference_hash `c1e36ced42cebecc`) — **not yet seeded** |
-| Specification set | **0.1.1, merged at `77c9c10`** (PR #3, 2026-10-23T04:33:50Z; ROADMAP A-27, A-28). 0.1.0 merged in PR #2 at `4515031` (CF-0) |
+| Specification set | **0.1.1** at `77c9c10` (PR #3); **0.1.2** (HC-6, HC-7; ROADMAP A-29) in review. 0.1.0 merged in PR #2 at `4515031` (CF-0) |
 
 > Status vocabulary:
 >
@@ -29,7 +29,7 @@ Updated: 2026-10-23. **M0 build in progress.** M0-T01 merged at `75a2fed` (PR #6
 | Current milestone | **M0 Foundation**: specifications **approved and merged** (PR #2, squash `4515031`, 2026-10-22T15:59:58Z). Corrections HC-1 to HC-5 and the clarifications merged at `77c9c10` (PR #3, spec set 0.1.1). P1 in force. Build **authorized 2026-10-23**, not yet started (first card M0-T01) |
 | Migration | **Complete.** PR #1 merged into `main` on 2026-10-22 at `d5db7f3`; 214/214 handoff hashes verified |
 | Engineering Specification Plan | **Approved 2026-10-22**, subject to the owner's refinements. Recorded as `plans/ROADMAP.md` v1.0 with amendments A-01 to A-18, plus A-19 to A-24 from the owner's review of PR #2, A-25 and A-26 from the owner's approvals, and A-27 (corrections HC-1 to HC-5). The proposed draft is kept unchanged in `plans/proposed/` |
-| Next gate | M0-T03 (`feat/m0-t03-backend-skeleton`, P1 + EXC-001), which needs the HC-6 decision on `backend/pyproject.toml` packaging, ruff and mypy sections; M0-T07 drafting may start (EXC-001 C4) |
+| Next gate | Owner merges the HC-6/HC-7 PR (spec set 0.1.2) → M0-T03 (`feat/m0-t03-backend-skeleton`, P1 + EXC-001); M0-T07 drafting in parallel (EXC-001 C4) |
 | Implementation | **M0 in progress.** Merged: M0-T01 (`75a2fed`). Next: M0-T03 → M0-T11 → M0-T10, with M0-T07 drafted in parallel. Executor: Cursor Composer 2.5; the architect reviews each pushed branch and opens the PR; the owner merges |
 
 ## Completed and approved work
@@ -56,6 +56,8 @@ Updated: 2026-10-23. **M0 build in progress.** M0-T01 merged at `75a2fed` (PR #6
 | **PR #3 merged**: `main` @ **`77c9c10`** (squash of `88d2b74`, tree identical); spec set 0.1.1 accepted by the owner | 23 Oct 2026 | PR #3; owner's message, 23 Oct 2026 10:11 IST |
 | **Protection stage P1 applied** by the owner (web UI) **and verified** through read-only API calls (ruleset `25699552`) | 23 Oct 2026 | "Repository protection" section below |
 | **M0 build authorized** for Cursor Composer 2.5 (ADR-0015 §3; `plans/M0_FOUNDATION.md` §8 conditions 1–4 met: spec set merged, ED-07/08/09 decided, P1 in force with EXC-001 approved, Composer directed to `AGENTS.md` and `.cursor/rules/`) | 23 Oct 2026 | Owner's message, 23 Oct 2026 10:46 IST: "lets start with cursor implementation" |
+| **M0-T01 merged** (PR #6, `75a2fed`); EXC-001 log entry recorded (PR #7) | 23 Oct 2026 | EXC-001 log below |
+| **HC-6 approved**: M0-T03 may change the packaging, ruff and mypy sections of `backend/pyproject.toml`. **HC-7** (an owner for each of the 33 M0 Make targets) is proposed in the same PR and approved by merging it | 23 Oct 2026 | Owner's answer, 23 Oct 2026 13:04 IST; ROADMAP A-29 |
 
 ### CF-0 contract freeze (exact versions at `4515031`)
 
@@ -263,7 +265,7 @@ The full risk register is in `docs/reference/final-design-gate/08_OPEN_ISSUES_AN
 | Design canvas | v27 (+ OI-13 local fix in exported boards) |
 | Final Design Gate doc | 22 Oct 2026 outcome recorded (exported 8 tabs) |
 | Engineering Specification Plan | 22 Oct 2026 draft → **approved** as `plans/ROADMAP.md` v1.0 |
-| Specification set | **0.1.1** at `77c9c10` (PR #3); 0.1.0 at `4515031` (CF-0) |
+| Specification set | **0.1.2** in review (HC-6, HC-7); 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
 | Planning Assessment | v0.3 (G0) |
 | Dataset | `sd-2026.10.20-01` |
 | Detectors | detectors-1.1 |
@@ -283,4 +285,4 @@ The full risk register is in `docs/reference/final-design-gate/08_OPEN_ISSUES_AN
 - [x] Protection stage P1 applied and verified (ruleset `25699552`, 2026-10-23)
 - [x] Owner's M0 build authorization (2026-10-23, 10:46 IST)
 
-Last reviewed: **2026-10-23**. Next: the HC-6 decision, then M0-T03. `active_milestone` stays `M0` (ARCH-R103).
+Last reviewed: **2026-10-23**. Next: merge the HC-6/HC-7 PR, then M0-T03; M0-T07 may be drafted now. `active_milestone` stays `M0` (ARCH-R103).
