@@ -293,6 +293,7 @@ TARGETS: tuple[TargetMeta, ...] = (
         "full_validation",
         "M0",
         "Stable CI entry point. Runs the targets of one CI job (JOB=…) or of every job, as declared in specs/engineering/ci_checks.yaml.",
+        implemented=True,
     ),
 )
 
