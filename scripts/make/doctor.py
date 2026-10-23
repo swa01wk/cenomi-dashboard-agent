@@ -66,6 +66,40 @@ def _make_version() -> tuple[bool, str]:
     return int(match.group(1)) >= 4, first
 
 
+def _expected_gitleaks_version() -> str | None:
+    if not TOOLS_LOCK.is_file():
+        return None
+    for line in TOOLS_LOCK.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if line.startswith("gitleaks="):
+            return line.split("=", 1)[1].strip()
+    return None
+
+
+def _gitleaks_ok() -> tuple[bool, str]:
+    expected = _expected_gitleaks_version()
+    if shutil.which("gitleaks") is None:
+        return False, "missing (install gitleaks; see scripts/tools.lock)"
+    code, out = _run(["gitleaks", "version"])
+    if code != 0:
+        return False, "present but version check failed"
+    found = out.splitlines()[0] if out else "present"
+    if expected and expected not in out:
+        return False, found
+    return True, found
+
+
+def _uv_version_ok() -> tuple[bool, str]:
+    code, out = _run(["uv", "--version"])
+    if code != 0:
+        return False, "missing"
+    match = re.search(r"uv (\d+\.\d+\.\d+)", out)
+    found = match.group(1) if match else out
+    if found != "0.13.5":
+        return False, found
+    return True, found
+
+
 def _docker_ok() -> tuple[bool, str]:
     code, _ = _run(["docker", "version"])
     if code != 0:
@@ -89,10 +123,10 @@ def run_doctor() -> tuple[bool, list[str]]:
     mismatches: list[str] = []
     rows: list[tuple[str, str, str]] = []
 
-    code, uv_out = _run(["uv", "--version"])
-    rows.append(("uv", "installed", uv_out.splitlines()[0] if code == 0 else "missing"))
-    if code != 0:
-        mismatches.append("uv")
+    uv_ok, uv_label = _uv_version_ok()
+    rows.append(("uv", "0.13.5", uv_label))
+    if not uv_ok:
+        mismatches.append("uv 0.13.5")
 
     py = _python_version_via_uv()
     rows.append(("Python", "3.12.x via uv", py or "missing"))
@@ -119,6 +153,12 @@ def run_doctor() -> tuple[bool, list[str]]:
     rows.append(("Docker", "Engine + Compose v2", docker_label))
     if not docker_ok:
         mismatches.append("Docker")
+
+    gitleaks_ok, gitleaks_label = _gitleaks_ok()
+    expected_gitleaks = _expected_gitleaks_version() or "pinned in tools.lock"
+    rows.append(("gitleaks", expected_gitleaks, gitleaks_label))
+    if not gitleaks_ok:
+        mismatches.append("gitleaks")
 
     for name, path in (
         ("uv.lock", BACKEND / "uv.lock"),

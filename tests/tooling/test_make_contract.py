@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
 import re
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -129,6 +131,22 @@ def test_make_help_matches_yaml_order() -> None:
     help_names = re.findall(r"^\s{2}([a-z0-9-]+)\s", proc.stdout, re.MULTILINE)
     assert help_names == _yaml_targets()
 
+    targets_path = REPO_ROOT / "scripts" / "make" / "targets.py"
+    spec = importlib.util.spec_from_file_location("make_targets_module", targets_path)
+    assert spec and spec.loader
+    make_targets = importlib.util.module_from_spec(spec)
+    sys.modules["make_targets_module"] = make_targets
+    spec.loader.exec_module(make_targets)
+
+    yaml_data = yaml.safe_load(MAKE_TARGETS.read_text(encoding="utf-8"))
+    yaml_entries = yaml_data["targets"]
+    assert len(make_targets.TARGETS) == len(yaml_entries)
+    for meta, entry in zip(make_targets.TARGETS, yaml_entries, strict=True):
+        assert meta.name == entry["name"]
+        assert meta.group == entry["group"]
+        assert meta.active_from == entry["active_from"]
+        assert meta.summary == entry["summary"]
+
 
 @pytest.mark.trace("AT-M0-T01-04", reqs=["DEVENV-R013", "ARCH-R103"])
 def test_target_results_milestone_and_stubs() -> None:
@@ -204,7 +222,7 @@ def test_env_example_catalogue_and_gitleaks() -> None:
     assert "change-me-dev-only" in text
 
     if shutil.which("gitleaks") is None:
-        pytest.skip("gitleaks not installed locally")
+        pytest.fail("gitleaks required — run make doctor")
 
     proc = subprocess.run(
         ["gitleaks", "detect", "--no-git", "--source", str(ENV_EXAMPLE), "--redact"],
