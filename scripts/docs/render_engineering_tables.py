@@ -9,11 +9,6 @@ from typing import Any
 
 import yaml
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-MAKE_TARGETS = REPO_ROOT / "specs/engineering/make_targets.yaml"
-CI_CHECKS = REPO_ROOT / "specs/engineering/ci_checks.yaml"
-DEVENV = REPO_ROOT / "docs/architecture/DEVELOPMENT_ENVIRONMENT.md"
-
 GROUP_LABELS: dict[str, str] = {
     "environment": "Environment and development",
     "database": "Database",
@@ -176,10 +171,13 @@ def render_ci_jobs(data: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
-def render_all() -> tuple[str, str]:
-    make_data = yaml.safe_load(MAKE_TARGETS.read_text(encoding="utf-8"))
-    ci_data = yaml.safe_load(CI_CHECKS.read_text(encoding="utf-8"))
-    # Committed blocks include a leading newline after the GENERATED marker.
+def render_all(repo: Path) -> tuple[str, str]:
+    make_data = yaml.safe_load(
+        (repo / "specs/engineering/make_targets.yaml").read_text(encoding="utf-8")
+    )
+    ci_data = yaml.safe_load(
+        (repo / "specs/engineering/ci_checks.yaml").read_text(encoding="utf-8")
+    )
     return (
         "\n" + render_make_targets(make_data),
         "\n" + render_ci_jobs(ci_data),
@@ -193,21 +191,23 @@ def extract_generated_block(doc: str, marker: str) -> str:
     return doc[inner_start:end]
 
 
-def check_drift() -> list[str]:
-    doc = DEVENV.read_text(encoding="utf-8")
-    make_rendered, ci_rendered = render_all()
+def check_drift(repo: Path) -> list[str]:
+    devenv = repo / "docs/architecture/DEVELOPMENT_ENVIRONMENT.md"
+    doc = devenv.read_text(encoding="utf-8")
+    make_rendered, ci_rendered = render_all(repo)
     errors: list[str] = []
     for marker, rendered in (("make_targets", make_rendered), ("ci_jobs", ci_rendered)):
         committed = extract_generated_block(doc, marker)
         if committed != rendered:
             errors.append(
-                f"{DEVENV}: generated block {marker} drift "
+                f"{devenv}: generated block {marker} drift "
                 f"(committed {len(committed)} bytes, rendered {len(rendered)} bytes)"
             )
     return errors
 
 
 def main() -> int:
+    repo = Path(__file__).resolve().parents[2]
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--check",
@@ -221,11 +221,11 @@ def main() -> int:
     )
     args = parser.parse_args()
     if args.check:
-        errors = check_drift()
+        errors = check_drift(repo)
         for err in errors:
             print(err, file=sys.stderr)
         return 1 if errors else 0
-    make_out, ci_out = render_all()
+    make_out, ci_out = render_all(repo)
     print(make_out, end="")
     print("---")
     print(ci_out, end="")

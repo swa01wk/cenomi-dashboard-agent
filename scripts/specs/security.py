@@ -9,32 +9,56 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-
-REPO_ROOT = Path(__file__).resolve().parents[2]
-if str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
+from typing import Any
 
 # ADR-0003 §4: psycopg 3 LGPL-3.0 is accepted unmodified.
 ACCEPTED_LGPL = {"psycopg", "psycopg-binary", "psycopg2", "psycopg2-binary"}
 GPL_FAMILY = re.compile(r"(^GPL|[\s-]GPL|AGPL)", re.IGNORECASE)
+HIGH_SEVERITIES = frozenset({"HIGH", "CRITICAL"})
+
+
+def repo_root() -> Path:
+    return Path(__file__).resolve().parents[2]
 
 
 def _run(
     cmd: list[str], *, cwd: Path | None = None
 ) -> subprocess.CompletedProcess[str]:
+    root = repo_root()
     print(f"+ {' '.join(cmd)}", flush=True)
     return subprocess.run(
         cmd,
-        cwd=cwd or REPO_ROOT,
+        cwd=cwd or root,
         capture_output=True,
         text=True,
         check=False,
     )
 
 
+def pip_audit_violations(payload: Any) -> list[str]:
+    """Return package names that fail the pip-audit policy (high/critical + fix)."""
+    violations: list[str] = []
+    if not isinstance(payload, dict):
+        return violations
+    for dep in payload.get("dependencies") or []:
+        if not isinstance(dep, dict):
+            continue
+        name = str(dep.get("name", ""))
+        for vuln in dep.get("vulns") or []:
+            if not isinstance(vuln, dict):
+                continue
+            severity = str(vuln.get("severity", "")).upper()
+            fix_versions = vuln.get("fix_versions") or []
+            if severity in HIGH_SEVERITIES and fix_versions:
+                violations.append(name)
+                break
+    return sorted(set(violations))
+
+
 def run_gitleaks() -> int:
+    root = repo_root()
     in_ci = os.environ.get("GITHUB_ACTIONS", "").lower() == "true"
-    cmd = ["gitleaks", "detect", "--redact", "--source", str(REPO_ROOT)]
+    cmd = ["gitleaks", "detect", "--redact", "--source", str(root)]
     if not in_ci:
         cmd.append("--no-git")
     proc = _run(cmd)
@@ -46,12 +70,25 @@ def run_gitleaks() -> int:
 
 
 def run_pip_audit() -> int:
-    proc = _run(["uv", "run", "pip-audit"], cwd=REPO_ROOT / "backend")
+    proc = _run(
+        ["uv", "run", "pip-audit", "--format", "json"],
+        cwd=repo_root() / "backend",
+    )
     if proc.stdout:
         print(proc.stdout, end="")
     if proc.stderr:
         print(proc.stderr, end="", file=sys.stderr)
-    return proc.returncode
+    if proc.returncode != 0:
+        return proc.returncode
+    try:
+        payload = json.loads(proc.stdout or "{}")
+    except json.JSONDecodeError:
+        print("pip-audit: invalid JSON output", file=sys.stderr)
+        return 1
+    violations = pip_audit_violations(payload)
+    for name in violations:
+        print(f"PIP-AUDIT: {name} has high/critical fixable vulnerability", file=sys.stderr)
+    return 1 if violations else 0
 
 
 def run_pnpm_audit() -> int:
@@ -114,9 +151,10 @@ def _licence_violations(rows: list[tuple[str, str]]) -> list[str]:
 
 
 def run_licence_report() -> int:
+    root = repo_root()
     py_rows = _python_licences()
     node_rows = _node_licences()
-    report_path = REPO_ROOT / "tests/reports/security/licenses.txt"
+    report_path = root / "tests/reports/security/licenses.txt"
     report_path.parent.mkdir(parents=True, exist_ok=True)
     lines = ["# Python packages", ""]
     for name, licence in py_rows:
@@ -125,7 +163,7 @@ def run_licence_report() -> int:
     for name, licence in node_rows:
         lines.append(f"{name}\t{licence}")
     report_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    print(f"Licence report: {report_path.relative_to(REPO_ROOT)}")
+    print(f"Licence report: {report_path.relative_to(root)}")
 
     violations = _licence_violations(py_rows) + _licence_violations(node_rows)
     for item in violations:
@@ -134,6 +172,8 @@ def run_licence_report() -> int:
 
 
 def main() -> int:
+    if str(repo_root()) not in sys.path:
+        sys.path.insert(0, str(repo_root()))
     code = 0
     for step, fn in (
         ("gitleaks", run_gitleaks),

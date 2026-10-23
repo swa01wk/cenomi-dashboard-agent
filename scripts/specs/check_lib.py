@@ -19,16 +19,6 @@ from scripts.docs.render_engineering_tables import (
 from scripts.docs.render_register import check_drift as register_drift
 from scripts.specs.findings import Finding
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-ENGINEERING_SCHEMA = REPO_ROOT / "specs/engineering/engineering.schema.json"
-ID_CONVENTIONS = REPO_ROOT / "specs/traceability/id_conventions.yaml"
-SHA256SUMS = REPO_ROOT / "docs/handoff/SHA256SUMS"
-ADR_INDEX = REPO_ROOT / "docs/adr/README.md"
-ADR_DIR = REPO_ROOT / "docs/adr"
-MAKE_TARGETS = REPO_ROOT / "specs/engineering/make_targets.yaml"
-CI_CHECKS = REPO_ROOT / "specs/engineering/ci_checks.yaml"
-STATUS_JSONL = REPO_ROOT / "tests/reports/status.jsonl"
-
 ADR_REQUIRED_HEADINGS = (
     "## Context",
     "## Decision",
@@ -48,19 +38,26 @@ BANNED_TERM = re.compile(r"\boverdue\b", re.IGNORECASE)
 
 
 def _banned_scan_roots(repo: Path) -> tuple[Path, ...]:
-    return (
+    roots: list[Path] = [
         repo / "backend/src",
         repo / "apps/web/src",
         repo / "tests/fixtures",
-    )
+    ]
+    packages = repo / "packages"
+    if packages.is_dir():
+        for pkg in sorted(packages.iterdir()):
+            src = pkg / "src"
+            if src.is_dir():
+                roots.append(src)
+    return tuple(roots)
 
 
 CheckFn = Callable[[Path], list[Finding]]
 
 
-def _load_schema() -> dict[str, Any]:
-    data: dict[str, Any] = json.loads(ENGINEERING_SCHEMA.read_text(encoding="utf-8"))
-    return data
+def _load_schema(repo: Path) -> dict[str, Any]:
+    path = repo / "specs/engineering/engineering.schema.json"
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def _milestone_index(name: str) -> int:
@@ -79,7 +76,7 @@ _SCHEMA_BY_KEY = {
 
 
 def check_engineering_schema(repo: Path) -> list[Finding]:
-    schema = _load_schema()
+    schema = _load_schema(repo)
     findings: list[Finding] = []
     files = [
         repo / "specs/engineering/make_targets.yaml",
@@ -128,6 +125,7 @@ def check_sha256sums(repo: Path) -> list[Finding]:
     sums_path = repo / "docs/handoff/SHA256SUMS"
     if not sums_path.is_file():
         return [Finding(str(sums_path), 0, "SHA256SUMS_MISSING", "missing SHA256SUMS")]
+    listed: set[str] = set()
     for line_no, line in enumerate(
         sums_path.read_text(encoding="utf-8").splitlines(), start=1
     ):
@@ -141,6 +139,8 @@ def check_sha256sums(repo: Path) -> list[Finding]:
             )
             continue
         digest, rel = parts
+        if rel.startswith(("docs/reference/", "docs/design/baseline/")):
+            listed.add(rel)
         if not (rel.startswith(("docs/reference/", "docs/design/baseline/"))):
             continue
         path = repo / rel
@@ -154,6 +154,18 @@ def check_sha256sums(repo: Path) -> list[Finding]:
             findings.append(
                 Finding(rel, 0, "SHA256_MISMATCH", f"expected {digest}, got {actual}")
             )
+    for prefix in ("docs/reference", "docs/design/baseline"):
+        root = repo / prefix
+        if not root.is_dir():
+            continue
+        for path in sorted(root.rglob("*")):
+            if not path.is_file():
+                continue
+            rel = str(path.relative_to(repo))
+            if rel not in listed:
+                findings.append(
+                    Finding(rel, 0, "SHA256SUMS_UNLISTED", "file not in SHA256SUMS")
+                )
     return findings
 
 
@@ -232,8 +244,20 @@ def _known_id(token: str, patterns: list[tuple[str, re.Pattern[str]]]) -> bool:
     return any(p.fullmatch(token) for _, p in patterns)
 
 
+def _malformed_probes(
+    patterns: list[tuple[str, re.Pattern[str]]],
+) -> list[re.Pattern[str]]:
+    probes: list[re.Pattern[str]] = []
+    for _, pattern in patterns:
+        inner = pattern.pattern.lstrip("^").rstrip("$")
+        relaxed = re.sub(r"\[0-9\]\{(\d+)\}", r"[0-9]{1,\1}", inner)
+        probes.append(re.compile(rf"\b{relaxed}\b"))
+    return probes
+
+
 def check_id_families(repo: Path) -> list[Finding]:
     patterns = _family_patterns(repo)
+    malformed = _malformed_probes(patterns)
     id_token = re.compile(
         r"\b("
         r"AT-M[0-6]-T[0-9]{2}-[0-9]{2}|"
@@ -278,18 +302,42 @@ def check_id_families(repo: Path) -> list[Finding]:
                 continue
             if "docs/reference/" in str(path):
                 continue
-            for line_no, line in enumerate(
-                path.read_text(encoding="utf-8", errors="replace").splitlines(),
-                start=1,
-            ):
+            text = path.read_text(encoding="utf-8", errors="replace")
+            for line_no, line in enumerate(text.splitlines(), start=1):
+                seen_on_line: set[str] = set()
                 for token in id_token.findall(line):
-                    if not _known_id(token, patterns):
+                    seen_on_line.add(token)
+                    if _known_id(token, patterns):
+                        continue
+                    if any(p.fullmatch(token) for p in malformed):
+                        findings.append(
+                            Finding(
+                                str(path.relative_to(repo)),
+                                line_no,
+                                "ID_MALFORMED",
+                                f"malformed id {token}",
+                            )
+                        )
+                    else:
                         findings.append(
                             Finding(
                                 str(path.relative_to(repo)),
                                 line_no,
                                 "ID_UNKNOWN",
                                 f"unknown id {token}",
+                            )
+                        )
+                for probe in malformed:
+                    for match in probe.finditer(line):
+                        token = match.group(0)
+                        if token in seen_on_line or _known_id(token, patterns):
+                            continue
+                        findings.append(
+                            Finding(
+                                str(path.relative_to(repo)),
+                                line_no,
+                                "ID_MALFORMED",
+                                f"malformed id {token}",
                             )
                         )
     return findings
@@ -361,27 +409,29 @@ def check_markdown_links(repo: Path) -> list[Finding]:
     return findings
 
 
-def _help_target_names(repo: Path) -> list[str]:
-    proc = subprocess.run(
-        ["make", "help"],
-        cwd=repo,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+def _help_target_names(repo: Path, help_output: str | None = None) -> list[str]:
+    if help_output is None:
+        proc = subprocess.run(
+            ["make", "help"],
+            cwd=repo,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        help_output = proc.stdout
     names: list[str] = []
-    for ln in proc.stdout.splitlines():
+    for ln in help_output.splitlines():
         match = re.match(r"^  ([a-z0-9-]+)\s+", ln)
         if match:
             names.append(match.group(1))
     return names
 
 
-def check_make_help(repo: Path) -> list[Finding]:
+def check_make_help(repo: Path, *, help_output: str | None = None) -> list[Finding]:
     findings: list[Finding] = []
     data = yaml.safe_load((repo / "specs/engineering/make_targets.yaml").read_text())
     yaml_names = [t["name"] for t in data["targets"]]
-    help_names = _help_target_names(repo)
+    help_names = _help_target_names(repo, help_output)
     if help_names != yaml_names:
         findings.append(
             Finding(
@@ -501,7 +551,7 @@ def check_banned_terms(repo: Path) -> list[Finding]:
 
 def check_manual_results(repo: Path) -> list[Finding]:
     findings: list[Finding] = []
-    schema = _load_schema()
+    schema = _load_schema(repo)
     resolver = RefResolver.from_schema(schema)
     validator = Draft202012Validator(
         schema["$defs"]["manualResults"], resolver=resolver
@@ -525,13 +575,13 @@ def check_manual_results(repo: Path) -> list[Finding]:
 
 def check_renderer_drift(repo: Path) -> list[Finding]:
     findings: list[Finding] = []
-    for msg in engineering_table_drift():
+    for msg in engineering_table_drift(repo):
         findings.append(
             Finding(
                 "docs/architecture/DEVELOPMENT_ENVIRONMENT.md", 0, "RENDER_DRIFT", msg
             )
         )
-    for msg in register_drift():
+    for msg in register_drift(repo):
         findings.append(
             Finding("docs/design/DECISION_REGISTER.md", 0, "RENDER_DRIFT", msg)
         )
@@ -585,8 +635,17 @@ def check_gate_mode(repo: Path, gate: str) -> list[Finding]:
                 )
             )
     report_path = repo / "tests/reports/gate" / gate / "report.json"
+    if not report_path.is_file():
+        findings.append(
+            Finding(
+                str(report_path.relative_to(repo)),
+                0,
+                "GATE_REPORT_MISSING",
+                f"missing gate report for GATE={gate}",
+            )
+        )
     if report_path.is_file():
-        schema = _load_schema()
+        schema = _load_schema(repo)
         resolver = RefResolver.from_schema(schema)
         validator = Draft202012Validator(
             schema["$defs"]["gateReport"], resolver=resolver

@@ -28,7 +28,7 @@ body:
         - triage:flaky
     validations:
       required: true
-  - type: checkbox
+  - type: checkboxes
     id: blocking
     attributes:
       label: Blocking

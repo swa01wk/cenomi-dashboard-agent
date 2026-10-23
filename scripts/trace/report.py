@@ -12,29 +12,21 @@ from typing import Literal
 
 import yaml
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-REPORTS = REPO_ROOT / "tests/reports"
-TRACE_DIR = REPORTS / "trace"
-
 Result = Literal["PASSED", "FAILED", "NOT_IMPLEMENTED", "SKIPPED"]
 
 CARD_RE = re.compile(r"^M[0-6]-T[0-9]{2}$")
 GATE_RE = re.compile(r"^M[0-6]$")
 AT_RE = re.compile(r"\*\*(AT-M[0-6]-T[0-9]{2}-[0-9]{2})\*\*")
 CARD_HEADING = re.compile(r"^### (M[0-6]-T[0-9]{2}) —", re.MULTILINE)
+MANUAL_IN_AT = re.compile(r"\*manual [a-z]+\*")
 
-JUNIT_PATHS = [
-    REPORTS / "backend/junit-unit.xml",
-    REPORTS / "backend/junit-integration.xml",
-    REPORTS / "backend/junit-tooling.xml",
-    REPORTS / "frontend/junit-vitest.xml",
-    REPORTS / "e2e/junit-playwright.xml",
+DEFAULT_JUNIT_REL = [
+    "tests/reports/backend/junit-unit.xml",
+    "tests/reports/backend/junit-integration.xml",
+    "tests/reports/backend/junit-tooling.xml",
+    "tests/reports/frontend/junit-vitest.xml",
+    "tests/reports/e2e/junit-playwright.xml",
 ]
-
-if str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
-
-from scripts.ci.reports import parse_junit
 
 
 @dataclass(frozen=True)
@@ -52,9 +44,9 @@ def _card_milestone(card_id: str) -> str:
     return card_id.split("-", 1)[0]
 
 
-def _load_at_specs() -> dict[str, AtSpec]:
+def _load_at_specs(repo: Path) -> dict[str, AtSpec]:
     specs: dict[str, AtSpec] = {}
-    for plan in sorted(REPO_ROOT.glob("plans/M*_*.md")):
+    for plan in sorted(repo.glob("plans/M*_*.md")):
         text = plan.read_text(encoding="utf-8")
         for heading in CARD_HEADING.finditer(text):
             card_id = heading.group(1)
@@ -65,40 +57,58 @@ def _load_at_specs() -> dict[str, AtSpec]:
             if not field15:
                 continue
             content = field15.group(1)
-            for match in AT_RE.finditer(content):
+            at_matches = list(AT_RE.finditer(content))
+            for index, match in enumerate(at_matches):
                 at_id = match.group(1)
-                window = content[max(0, match.start() - 40) : match.end() + 40]
-                manual = "manual" in window.lower()
+                seg_end = (
+                    at_matches[index + 1].start()
+                    if index + 1 < len(at_matches)
+                    else len(content)
+                )
+                segment = content[match.start() : seg_end]
+                manual = bool(MANUAL_IN_AT.search(segment))
                 specs[at_id] = AtSpec(at_id=at_id, card_id=card_id, manual=manual)
     return specs
 
 
-def _collect_junit_results() -> dict[str, Result]:
+def _aggregate_result(outcomes: list[Result]) -> Result:
+    if any(r == "FAILED" for r in outcomes):
+        return "FAILED"
+    if any(r == "SKIPPED" for r in outcomes):
+        return "SKIPPED"
+    if outcomes:
+        return "PASSED"
+    return "NOT_IMPLEMENTED"
+
+
+def _collect_junit_results(
+    repo: Path, junit_paths: list[Path]
+) -> tuple[dict[str, Result], list[str], int]:
+    if str(repo) not in sys.path:
+        sys.path.insert(0, str(repo))
+
+    from scripts.ci.reports import parse_junit
+
     by_at: dict[str, list[Result]] = {}
-    for path in JUNIT_PATHS:
+    errors: list[str] = []
+    exit_code = 0
+
+    for path in junit_paths:
         if not path.is_file():
             continue
         try:
             _, cases = parse_junit(path)
-        except (OSError, ValueError):
+        except (OSError, ValueError) as exc:
+            errors.append(f"{path.name}: unreadable JUnit ({exc})")
+            exit_code = 1
             continue
         for case in cases:
             if not case.at_id:
                 continue
             by_at.setdefault(case.at_id, []).append(case.result)
 
-    results: dict[str, Result] = {}
-    for at_id, outcomes in by_at.items():
-        if any(r == "FAILED" for r in outcomes):
-            results[at_id] = "FAILED"
-        elif outcomes and (
-            all(r == "SKIPPED" for r in outcomes)
-            or any(r == "SKIPPED" for r in outcomes)
-        ):
-            results[at_id] = "SKIPPED"
-        else:
-            results[at_id] = "PASSED"
-    return results
+    results = {at_id: _aggregate_result(outcomes) for at_id, outcomes in by_at.items()}
+    return results, errors, exit_code
 
 
 def _validate_id(at_id: str, conventions: dict[str, str]) -> None:
@@ -107,11 +117,9 @@ def _validate_id(at_id: str, conventions: dict[str, str]) -> None:
         raise ValueError(f"unknown or malformed AT id {at_id!r}")
 
 
-def _load_conventions() -> dict[str, str]:
+def _load_conventions(repo: Path) -> dict[str, str]:
     data = yaml.safe_load(
-        (REPO_ROOT / "specs/traceability/id_conventions.yaml").read_text(
-            encoding="utf-8"
-        )
+        (repo / "specs/traceability/id_conventions.yaml").read_text(encoding="utf-8")
     )
     return {
         entry["id"]: entry["pattern"]
@@ -120,8 +128,8 @@ def _load_conventions() -> dict[str, str]:
     }
 
 
-def _manual_results(milestone: str) -> dict[str, Result]:
-    path = REPO_ROOT / "plans/gates" / f"{milestone}-manual-results.json"
+def _manual_results(repo: Path, milestone: str) -> dict[str, Result]:
+    path = repo / "plans/gates" / f"{milestone}-manual-results.json"
     if not path.is_file():
         return {}
     payload = json.loads(path.read_text(encoding="utf-8"))
@@ -132,20 +140,30 @@ def _manual_results(milestone: str) -> dict[str, Result]:
 
 
 def build_report(
+    repo: Path,
     *,
+    junit_paths: list[Path] | None = None,
+    output_dir: Path | None = None,
     card: str = "",
     gate: str = "",
 ) -> tuple[dict[str, object], list[str], int]:
-    conventions = _load_conventions()
-    at_specs = _load_at_specs()
-    junit = _collect_junit_results()
+    _ = output_dir  # main() writes artifacts; kept for tests and API stability
+    paths = junit_paths
+    if paths is None:
+        paths = [repo / rel for rel in DEFAULT_JUNIT_REL]
 
-    errors: list[str] = []
-    exit_code = 0
+    conventions = _load_conventions(repo)
+    at_specs = _load_at_specs(repo)
+    junit, junit_errors, exit_code = _collect_junit_results(repo, paths)
+    errors: list[str] = list(junit_errors)
 
-    for path in JUNIT_PATHS:
+    for path in paths:
         if not path.is_file():
             continue
+        if str(repo) not in sys.path:
+            sys.path.insert(0, str(repo))
+        from scripts.ci.reports import parse_junit
+
         try:
             _, cases = parse_junit(path)
         except (OSError, ValueError):
@@ -181,7 +199,7 @@ def build_report(
     for at_id, spec in sorted(scope.items()):
         if spec.manual:
             milestone = _card_milestone(spec.card_id)
-            manual_by_ms.setdefault(milestone, _manual_results(milestone))
+            manual_by_ms.setdefault(milestone, _manual_results(repo, milestone))
             manual_result = manual_by_ms[milestone].get(at_id)
             entry = {
                 "atId": at_id,
@@ -256,19 +274,23 @@ def _markdown(payload: dict[str, object]) -> str:
 
 
 def main() -> int:
+    repo = Path(__file__).resolve().parents[2]
     card = os.environ.get("CARD", "").strip()
     gate = os.environ.get("GATE", "").strip()
+    output_dir = repo / "tests/reports/trace"
     try:
-        payload, errors, exit_code = build_report(card=card, gate=gate)
+        payload, errors, exit_code = build_report(
+            repo, output_dir=output_dir, card=card, gate=gate
+        )
     except ValueError as exc:
         print(str(exc), file=sys.stderr)
         return 1
 
-    TRACE_DIR.mkdir(parents=True, exist_ok=True)
-    (TRACE_DIR / "trace.json").write_text(
+    output_dir.mkdir(parents=True, exist_ok=True)
+    (output_dir / "trace.json").write_text(
         json.dumps(payload, indent=2) + "\n", encoding="utf-8"
     )
-    (TRACE_DIR / "trace.md").write_text(_markdown(payload), encoding="utf-8")
+    (output_dir / "trace.md").write_text(_markdown(payload), encoding="utf-8")
 
     if errors:
         for err in errors:
