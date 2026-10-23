@@ -136,10 +136,15 @@ jobs:
       github.event_name != 'pull_request' ||
       needs.changes.outputs.applicable_ci_specs == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
+    env:
+      CENOMI_ENV: ci
+      SUITE: tooling
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
+      - name: Install Playwright browsers
+        run: make install BROWSERS=1
       - name: Reset job status log
         run: rm -f tests/reports/status.jsonl && mkdir -p tests/reports
       - run: make ci JOB=specs
@@ -205,6 +210,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
       - uses: ./.github/actions/setup
       - name: Reset job status log
         run: rm -f tests/reports/status.jsonl && mkdir -p tests/reports
@@ -233,9 +240,11 @@ jobs:
     needs: [changes, static]
     if: >-
       always() && !cancelled() &&
-      (needs.static.result == 'success' || needs.static.result == 'skipped') &&
       (github.event_name != 'pull_request' ||
-       needs.changes.outputs.applicable_ci_backend == 'true')
+       needs.changes.outputs.applicable_ci_backend == 'true') &&
+      (needs.static.result == 'success' ||
+       (needs.static.result == 'skipped' &&
+        needs.changes.outputs.applicable_ci_static != 'true'))
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     services:
@@ -284,9 +293,11 @@ jobs:
     needs: [changes, static]
     if: >-
       always() && !cancelled() &&
-      (needs.static.result == 'success' || needs.static.result == 'skipped') &&
       (github.event_name != 'pull_request' ||
-       needs.changes.outputs.applicable_ci_database == 'true')
+       needs.changes.outputs.applicable_ci_database == 'true') &&
+      (needs.static.result == 'success' ||
+       (needs.static.result == 'skipped' &&
+        needs.changes.outputs.applicable_ci_static != 'true'))
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     services:
@@ -336,9 +347,11 @@ jobs:
     needs: [changes, static]
     if: >-
       always() && !cancelled() &&
-      (needs.static.result == 'success' || needs.static.result == 'skipped') &&
       (github.event_name != 'pull_request' ||
-       needs.changes.outputs.applicable_ci_frontend == 'true')
+       needs.changes.outputs.applicable_ci_frontend == 'true') &&
+      (needs.static.result == 'success' ||
+       (needs.static.result == 'skipped' &&
+        needs.changes.outputs.applicable_ci_static != 'true'))
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
@@ -371,9 +384,11 @@ jobs:
     needs: [changes, static]
     if: >-
       always() && !cancelled() &&
-      (needs.static.result == 'success' || needs.static.result == 'skipped') &&
       (github.event_name != 'pull_request' ||
-       needs.changes.outputs.applicable_ci_agent == 'true')
+       needs.changes.outputs.applicable_ci_agent == 'true') &&
+      (needs.static.result == 'success' ||
+       (needs.static.result == 'skipped' &&
+        needs.changes.outputs.applicable_ci_static != 'true'))
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     services:
@@ -422,9 +437,11 @@ jobs:
     needs: [changes, backend]
     if: >-
       always() && !cancelled() &&
-      (needs.backend.result == 'success' || needs.backend.result == 'skipped') &&
       (github.event_name != 'pull_request' ||
-       needs.changes.outputs.applicable_ci_integration == 'true')
+       needs.changes.outputs.applicable_ci_integration == 'true') &&
+      (needs.backend.result == 'success' ||
+       (needs.backend.result == 'skipped' &&
+        needs.changes.outputs.applicable_ci_backend != 'true'))
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     services:
@@ -473,10 +490,14 @@ jobs:
     needs: [changes, backend, frontend]
     if: >-
       always() && !cancelled() &&
-      (needs.backend.result == 'success' || needs.backend.result == 'skipped') &&
-      (needs.frontend.result == 'success' || needs.frontend.result == 'skipped') &&
       (github.event_name != 'pull_request' ||
-       needs.changes.outputs.applicable_ci_e2e == 'true')
+       needs.changes.outputs.applicable_ci_e2e == 'true') &&
+      (needs.backend.result == 'success' ||
+       (needs.backend.result == 'skipped' &&
+        needs.changes.outputs.applicable_ci_backend != 'true')) &&
+      (needs.frontend.result == 'success' ||
+       (needs.frontend.result == 'skipped' &&
+        needs.changes.outputs.applicable_ci_frontend != 'true'))
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
@@ -512,9 +533,11 @@ jobs:
     needs: [changes, static]
     if: >-
       always() && !cancelled() &&
-      (needs.static.result == 'success' || needs.static.result == 'skipped') &&
       (github.event_name != 'pull_request' ||
-       needs.changes.outputs.applicable_ci_echarts_gate == 'true')
+       needs.changes.outputs.applicable_ci_echarts_gate == 'true') &&
+      (needs.static.result == 'success' ||
+       (needs.static.result == 'skipped' &&
+        needs.changes.outputs.applicable_ci_static != 'true'))
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -554,9 +577,11 @@ jobs:
     needs: [changes, static]
     if: >-
       always() && !cancelled() &&
-      (needs.static.result == 'success' || needs.static.result == 'skipped') &&
       (github.event_name != 'pull_request' ||
-       needs.changes.outputs.applicable_ci_images == 'true')
+       needs.changes.outputs.applicable_ci_images == 'true') &&
+      (needs.static.result == 'success' ||
+       (needs.static.result == 'skipped' &&
+        needs.changes.outputs.applicable_ci_static != 'true'))
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
@@ -634,12 +659,10 @@ jobs:
         with:
           pattern: status-*
           path: tests/reports/ci/status-artifacts
-          merge-multiple: true
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: junit-*
           path: tests/reports/ci/junit-artifacts
-          merge-multiple: true
         continue-on-error: true
       - name: Collect job conclusions
         run: |
@@ -687,6 +710,7 @@ jobs:
             --applicability tests/reports/ci/applicability.json \
             --jobs-json tests/reports/ci/job-conclusions.json \
             --status-artifacts-dir tests/reports/ci/status-artifacts \
+            --junit-artifacts-dir tests/reports/ci/junit-artifacts \
             --event "${{ github.event_name }}" \
             --head-branch "$HEAD_BRANCH" \
             --sha "${{ github.sha }}" \
@@ -695,5 +719,7 @@ jobs:
         if: always()
         with:
           name: ci-summary
-          path: tests/reports/ci-summary.md
+          path: |
+            tests/reports/ci-summary.md
+            tests/reports/ci/summary/**
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}

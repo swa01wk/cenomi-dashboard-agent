@@ -13,7 +13,13 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from scripts.ci.changes import compute_applicability, job_make_ci, load_ci_checks
-from scripts.ci.summary import evaluate, load_required_json
+from scripts.ci.summary import (
+    evaluate,
+    evaluate_card_rule,
+    evaluate_verdict,
+    load_required_json,
+    stage_junit_artifacts,
+)
 
 CI = load_ci_checks()
 
@@ -201,16 +207,28 @@ def test_not_implemented_before_active_milestone_fails(tmp_path: Path) -> None:
 def test_card_branch_trace_not_passed_fails(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    import subprocess
+    def fake_build_report(*args: Any, **kwargs: Any) -> tuple[dict, list[str], int]:
+        return {}, ["fixture failure"], 1
 
-    def fake_run(*args: Any, **kwargs: Any) -> subprocess.CompletedProcess[str]:
-        return subprocess.CompletedProcess(
-            args=args, returncode=1, stdout="", stderr=""
-        )
-
-    monkeypatch.setattr(subprocess, "run", fake_run)
+    monkeypatch.setattr(
+        "scripts.ci.summary.build_report",
+        fake_build_report,
+    )
     jobs = _all_jobs_success()
     apps = _applicability([".github/workflows/ci.yml"])
+    verdict = evaluate_verdict(
+        job_conclusions=jobs,
+        applicability=apps,
+        changed_files=[".github/workflows/ci.yml"],
+        event_mode="pull_request",
+        status_records=[],
+        job_status_files=_status_files_for_applicable(jobs, apps, tmp_path),
+        active_milestone="M0",
+        ci=CI,
+    )
+    assert verdict.success
+    card_out = evaluate_card_rule(card="M0-T07", junit_paths=[])
+    assert not card_out.success
     out = evaluate(
         job_conclusions=jobs,
         applicability=apps,
@@ -221,6 +239,7 @@ def test_card_branch_trace_not_passed_fails(
         job_status_files=_status_files_for_applicable(jobs, apps, tmp_path),
         active_milestone="M0",
         ci=CI,
+        junit_paths=[],
     )
     assert not out.success
 
@@ -337,3 +356,96 @@ def test_missing_status_artifact_for_applicable_job_fails(tmp_path: Path) -> Non
     )
     assert not out.success
     assert any("missing status report" in e for e in out.errors)
+
+
+@pytest.mark.trace("AT-M0-T07-04", reqs=["ARCH-R105"])
+def test_summary_order_verdict_before_card_rule(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    order: list[str] = []
+
+    def fake_verdict(**kwargs: Any) -> Any:
+        order.append("verdict")
+        from scripts.ci.summary import SummaryOutcome
+
+        return SummaryOutcome(success=True)
+
+    def fake_write_verdict(outcome: Any, path: Path | None = None) -> None:
+        order.append("write_verdict")
+        path = path or tmp_path / "verdict.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text('{"success": true, "errors": [], "warnings": []}', encoding="utf-8")
+
+    def fake_live() -> tuple[int, Path | None]:
+        order.append("live")
+        return 0, None
+
+    def fake_card(**kwargs: Any) -> Any:
+        order.append("card")
+        from scripts.ci.summary import SummaryOutcome
+
+        return SummaryOutcome(success=True)
+
+    monkeypatch.setattr("scripts.ci.summary.evaluate_verdict", fake_verdict)
+    monkeypatch.setattr("scripts.ci.summary.write_verdict_json", fake_write_verdict)
+    monkeypatch.setattr("scripts.ci.summary.run_live_summary_test", fake_live)
+    monkeypatch.setattr("scripts.ci.summary.evaluate_card_rule", fake_card)
+    monkeypatch.setattr("scripts.ci.summary.write_card_trace_artifacts", fake_card)
+    monkeypatch.setattr("scripts.ci.summary.stage_junit_artifacts", lambda _p: ([], []))
+    monkeypatch.setattr(
+        "scripts.ci.summary.parse_card_from_branch", lambda _b: "M0-T07"
+    )
+
+    from scripts.ci.summary import main
+
+    app_json = tmp_path / "app.json"
+    app_json.write_text(
+        '{"jobs": [{"job": "ci/static", "applicable": true}], "changed_files": []}',
+        encoding="utf-8",
+    )
+    jobs_json = tmp_path / "jobs.json"
+    jobs_json.write_text('{"ci/changes": "success", "ci/static": "success"}', encoding="utf-8")
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "summary.py",
+            "--applicability",
+            str(app_json),
+            "--jobs-json",
+            str(jobs_json),
+            "--head-branch",
+            "chore/m0-t07-ci-workflows",
+        ],
+    )
+    assert main() == 0
+    assert order.index("verdict") < order.index("live") < order.index("card")
+
+
+@pytest.mark.trace("AT-M0-T07-04", reqs=["DEVENV-R031"])
+def test_stage_junit_duplicate_dest_fails(tmp_path: Path) -> None:
+    root = tmp_path / "junit-artifacts"
+    a = root / "junit-ci-backend" / "tests/reports/backend/junit-unit.xml"
+    b = root / "junit-ci-specs" / "tests/reports/backend/junit-unit.xml"
+    a.parent.mkdir(parents=True)
+    b.parent.mkdir(parents=True)
+    a.write_text('<?xml version="1.0"?><testsuite></testsuite>', encoding="utf-8")
+    b.write_text('<?xml version="1.0"?><testsuite></testsuite>', encoding="utf-8")
+    paths, errors = stage_junit_artifacts(root)
+    assert not paths
+    assert any("duplicate" in e for e in errors)
+
+
+@pytest.mark.trace("AT-M0-T07-04", reqs=["DEVENV-R031"])
+def test_stage_junit_places_at_default_rel(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    import scripts.ci.summary as summary_mod
+
+    monkeypatch.setattr(summary_mod, "REPO_ROOT", tmp_path)
+    root = tmp_path / "junit-artifacts"
+    src = root / "junit-ci-specs" / "tests/reports/backend/junit-tooling.xml"
+    src.parent.mkdir(parents=True)
+    src.write_text('<?xml version="1.0"?><testsuite></testsuite>', encoding="utf-8")
+    paths, errors = stage_junit_artifacts(root)
+    assert not errors
+    dest = tmp_path / "tests/reports/backend/junit-tooling.xml"
+    assert dest.is_file()
+    assert dest in paths

@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 from dataclasses import dataclass, field
@@ -29,10 +30,19 @@ from scripts.make.report import (  # type: ignore[import-not-found]
     milestone_index,
     read_active_milestone,
 )
+from scripts.trace.report import (  # type: ignore[import-not-found]
+    DEFAULT_JUNIT_REL,
+    build_report,
+)
 
 SPEC_SET = REPO_ROOT / "specs/engineering/spec_set.yaml"
 SUMMARY_MD = REPO_ROOT / "tests/reports/ci-summary.md"
 STATUS_JSONL = REPO_ROOT / "tests/reports/status.jsonl"
+VERDICT_JSON = REPO_ROOT / "tests/reports/ci/summary-verdict.json"
+SUMMARY_REPORT_DIR = REPO_ROOT / "tests/reports/ci/summary"
+LIVE_JUNIT = SUMMARY_REPORT_DIR / "junit-live.xml"
+
+BOOTSTRAP_CARDS = ("M0-T01", "M0-T03", "M0-T11", "M0-T10")
 
 BLOCKING_CONCLUSIONS = frozenset({"success"})
 FAILING_CONCLUSIONS = frozenset(
@@ -103,6 +113,13 @@ def discover_job_status_files(status_root: Path) -> dict[str, Path]:
     found: dict[str, Path] = {}
     if not status_root.is_dir():
         return found
+    for child in status_root.rglob("status.jsonl"):
+        parent = child.parent
+        name = parent.name
+        if name.startswith("status-"):
+            slug = name.removeprefix("status-")
+            job = artifact_slug_to_job(slug)
+            found[job] = child
     for child in status_root.iterdir():
         if not child.is_dir():
             continue
@@ -124,10 +141,6 @@ def merge_status_records(paths: list[Path]) -> list[dict[str, Any]]:
     return merged
 
 
-def job_slug(name: str) -> str:
-    return name.removeprefix("ci/")
-
-
 def parse_card_from_branch(branch: str | None) -> str | None:
     if not branch:
         return None
@@ -141,18 +154,68 @@ def echarts_blocking(active_milestone: str) -> bool:
     return bool(milestone_index(active_milestone) >= milestone_index("M2"))
 
 
-def evaluate(
+def _canonical_junit_dest(source: Path) -> Path | None:
+    """Map a downloaded JUnit file to the repo-relative path trace-report reads."""
+    parts = source.parts
+    if "tests" in parts:
+        idx = parts.index("tests")
+        rel = Path(*parts[idx:])
+        if rel.as_posix().startswith("tests/reports/") and "junit" in source.name:
+            return rel
+    for rel in DEFAULT_JUNIT_REL:
+        if source.name == Path(rel).name:
+            return Path(rel)
+    return None
+
+
+def stage_junit_artifacts(junit_root: Path) -> tuple[list[Path], list[str]]:
+    """
+    Copy JUnit files from downloaded CI artefacts into DEFAULT_JUNIT_REL locations.
+    Returns canonical paths for build_report and any fatal errors.
+    """
+    if not junit_root.is_dir():
+        return [], []
+
+    sources = sorted(junit_root.rglob("junit*.xml"))
+    dest_to_source: dict[Path, Path] = {}
+    errors: list[str] = []
+
+    for source in sources:
+        rel = _canonical_junit_dest(source)
+        if rel is None:
+            continue
+        if rel in dest_to_source and dest_to_source[rel] != source:
+            errors.append(
+                f"duplicate JUnit destination {rel.as_posix()}: "
+                f"{dest_to_source[rel]} and {source}"
+            )
+            continue
+        dest_to_source[rel] = source
+
+    if errors:
+        return [], errors
+
+    canonical: list[Path] = []
+    for rel, source in sorted(dest_to_source.items()):
+        dest = REPO_ROOT / rel
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, dest)
+        canonical.append(dest)
+    return canonical, []
+
+
+def evaluate_verdict(
     *,
     job_conclusions: dict[str, str | None],
     applicability: dict[str, Any],
     changed_files: list[str] | None,
     event_mode: str,
-    head_branch: str | None,
     status_records: list[dict[str, Any]],
     job_status_files: dict[str, Path] | None = None,
     active_milestone: str | None = None,
     ci: dict[str, Any] | None = None,
 ) -> SummaryOutcome:
+    """Every summary rule except the card rule (ARCH-R105 card scope)."""
     ci = ci or load_ci_checks()
     active = active_milestone or read_active_milestone(SPEC_SET)
     outcome = SummaryOutcome(success=True)
@@ -258,23 +321,123 @@ def evaluate(
             outcome.success = False
             outcome.errors.append(f"SKIPPED without reason: {rec.get('item')}")
 
-    card = parse_card_from_branch(head_branch)
-    if card:
-        env = os.environ.copy()
-        env["CARD"] = card
-        proc = subprocess.run(
-            ["make", "trace-report"],
-            cwd=REPO_ROOT,
-            env=env,
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        if proc.returncode != 0:
-            outcome.success = False
-            outcome.errors.append(f"trace-report CARD={card} failed")
-
     return outcome
+
+
+def evaluate_card_rule(*, card: str, junit_paths: list[Path]) -> SummaryOutcome:
+    outcome = SummaryOutcome(success=True)
+    try:
+        _, errors, exit_code = build_report(
+            REPO_ROOT, junit_paths=junit_paths, card=card
+        )
+    except ValueError as exc:
+        outcome.success = False
+        outcome.errors.append(str(exc))
+        return outcome
+    if exit_code != 0:
+        outcome.success = False
+        for err in errors:
+            outcome.errors.append(f"trace CARD={card}: {err}")
+        if not errors:
+            outcome.errors.append(f"trace-report CARD={card} failed")
+    return outcome
+
+
+def write_verdict_json(outcome: SummaryOutcome, path: Path = VERDICT_JSON) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(
+            {
+                "success": outcome.success,
+                "errors": outcome.errors,
+                "warnings": outcome.warnings,
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
+def run_live_summary_test() -> tuple[int, Path | None]:
+    """AT-M0-T07-02 — runs only on GitHub Actions."""
+    if os.environ.get("GITHUB_ACTIONS", "").strip().lower() != "true":
+        return 0, None
+    LIVE_JUNIT.parent.mkdir(parents=True, exist_ok=True)
+    proc = subprocess.run(
+        [
+            "uv",
+            "run",
+            "--project",
+            "backend",
+            "pytest",
+            "tests/tooling/ci/test_live_run.py::test_at_m0_t07_02_live_summary",
+            f"--junitxml={LIVE_JUNIT}",
+            "-q",
+        ],
+        cwd=REPO_ROOT,
+        check=False,
+    )
+    return proc.returncode, LIVE_JUNIT if LIVE_JUNIT.is_file() else None
+
+
+def write_card_trace_artifacts(
+    *, card: str, junit_paths: list[Path], output_dir: Path = SUMMARY_REPORT_DIR
+) -> SummaryOutcome:
+    outcome = SummaryOutcome(success=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        payload, errors, exit_code = build_report(
+            REPO_ROOT, junit_paths=junit_paths, card=card, output_dir=output_dir
+        )
+    except ValueError as exc:
+        outcome.success = False
+        outcome.errors.append(str(exc))
+        return outcome
+
+    from scripts.trace.report import _markdown
+
+    (output_dir / "trace.json").write_text(
+        json.dumps(payload, indent=2) + "\n", encoding="utf-8"
+    )
+    (output_dir / "trace.md").write_text(_markdown(payload), encoding="utf-8")
+    if exit_code != 0:
+        outcome.success = False
+        outcome.errors.extend(errors)
+    return outcome
+
+
+def bootstrap_trace_lines(junit_paths: list[Path]) -> list[str]:
+    lines = ["", "## EXC-001 C5 (a) — bootstrap card trace", ""]
+    for card in BOOTSTRAP_CARDS:
+        try:
+            payload, errors, code = build_report(
+                REPO_ROOT, junit_paths=junit_paths, card=card
+            )
+        except ValueError as exc:
+            lines.append(f"- `{card}`: **FAILED** ({exc})")
+            continue
+        tests = payload.get("acceptanceTests")
+        if not isinstance(tests, list):
+            tests = []
+        failed = [t for t in tests if isinstance(t, dict) and t.get("result") != "PASSED"]
+        if code != 0 or failed:
+            lines.append(f"- `{card}`: **FAILED** ({len(failed)} non-PASSED AT(s))")
+            for err in errors[:5]:
+                lines.append(f"  - {err}")
+        else:
+            lines.append(f"- `{card}`: **PASSED** ({len(tests)} AT(s))")
+    return lines
+
+
+def security_evidence_line(job_conclusions: dict[str, str | None]) -> list[str]:
+    conclusion = job_conclusions.get("ci/security", "—")
+    return [
+        "",
+        "## EXC-002 C5 (a) — ci/security",
+        "",
+        f"- `ci/security` conclusion: **{conclusion}**",
+    ]
 
 
 def render_summary_markdown(
@@ -286,6 +449,7 @@ def render_summary_markdown(
     job_conclusions: dict[str, str | None],
     status_records: list[dict[str, Any]],
     outcome: SummaryOutcome,
+    junit_paths: list[Path] | None = None,
 ) -> str:
     reports = _load_reports_module()
     lines = [
@@ -315,8 +479,12 @@ def render_summary_markdown(
             f"- `{rec.get('item')}`: **{rec.get('result')}** — {rec.get('reason', '')}"
         )
 
+    if junit_paths:
+        lines.extend(bootstrap_trace_lines(junit_paths))
+    lines.extend(security_evidence_line(job_conclusions))
+
     if reports is not None and hasattr(reports, "append_ci_summary_sections"):
-        lines.extend(reports.append_ci_summary_sections())
+        lines.extend(reports.append_ci_summary_sections(REPO_ROOT / "tests/reports"))
 
     lines.extend(["", "## Outcome", ""])
     if outcome.success:
@@ -329,6 +497,46 @@ def render_summary_markdown(
         lines.append(f"- (warning) {warn}")
     lines.append("")
     return "\n".join(lines)
+
+
+def evaluate(
+    *,
+    job_conclusions: dict[str, str | None],
+    applicability: dict[str, Any],
+    changed_files: list[str] | None,
+    event_mode: str,
+    head_branch: str | None,
+    status_records: list[dict[str, Any]],
+    job_status_files: dict[str, Path] | None = None,
+    active_milestone: str | None = None,
+    ci: dict[str, Any] | None = None,
+    junit_paths: list[Path] | None = None,
+) -> SummaryOutcome:
+    """Full summary evaluation including card rule (for unit tests)."""
+    verdict = evaluate_verdict(
+        job_conclusions=job_conclusions,
+        applicability=applicability,
+        changed_files=changed_files,
+        event_mode=event_mode,
+        status_records=status_records,
+        job_status_files=job_status_files,
+        active_milestone=active_milestone,
+        ci=ci,
+    )
+    card = parse_card_from_branch(head_branch)
+    if not card:
+        return verdict
+    paths = junit_paths or []
+    card_out = evaluate_card_rule(card=card, junit_paths=paths)
+    return _merge_outcomes(verdict, card_out)
+
+
+def _merge_outcomes(a: SummaryOutcome, b: SummaryOutcome) -> SummaryOutcome:
+    return SummaryOutcome(
+        success=a.success and b.success,
+        errors=[*a.errors, *b.errors],
+        warnings=[*a.warnings, *b.warnings],
+    )
 
 
 def main() -> int:
@@ -348,6 +556,12 @@ def main() -> int:
         type=Path,
         default=REPO_ROOT / "tests/reports/ci/status-artifacts",
         help="Directory of downloaded status-* artifacts",
+    )
+    parser.add_argument(
+        "--junit-artifacts-dir",
+        type=Path,
+        default=REPO_ROOT / "tests/reports/ci/junit-artifacts",
+        help="Directory of downloaded junit-* artifacts",
     )
     args = parser.parse_args()
 
@@ -382,22 +596,49 @@ def main() -> int:
     spec_version = version_match.group(1) if version_match else "unknown"
     active = read_active_milestone(SPEC_SET)
 
+    junit_paths, junit_errors = stage_junit_artifacts(args.junit_artifacts_dir)
+    if junit_errors:
+        for err in junit_errors:
+            print(f"ci/summary: FAILED — {err}", file=sys.stderr)
+        return 1
+
     job_status_files = discover_job_status_files(args.status_artifacts_dir)
     status_paths = list(job_status_files.values())
     if STATUS_JSONL.is_file():
         status_paths.append(STATUS_JSONL)
     status_records = merge_status_records(status_paths)
 
-    outcome = evaluate(
+    verdict = evaluate_verdict(
         job_conclusions=job_conclusions,
         applicability=applicability,
         changed_files=changed_files,
         event_mode=event_mode,
-        head_branch=args.head_branch or None,
         status_records=status_records,
         job_status_files=job_status_files,
         active_milestone=active,
     )
+    write_verdict_json(verdict)
+
+    live_code, live_junit = run_live_summary_test()
+    if live_junit is not None and live_junit not in junit_paths:
+        junit_paths = [*junit_paths, live_junit]
+
+    outcome = verdict
+    if live_code != 0:
+        outcome = _merge_outcomes(
+            outcome,
+            SummaryOutcome(
+                success=False,
+                errors=["AT-M0-T07-02 live summary test failed"],
+            ),
+        )
+
+    card = parse_card_from_branch(args.head_branch or None)
+    if card:
+        card_out = evaluate_card_rule(card=card, junit_paths=junit_paths)
+        outcome = _merge_outcomes(outcome, card_out)
+        trace_out = write_card_trace_artifacts(card=card, junit_paths=junit_paths)
+        outcome = _merge_outcomes(outcome, trace_out)
 
     md = render_summary_markdown(
         sha=args.sha,
@@ -407,6 +648,7 @@ def main() -> int:
         job_conclusions=job_conclusions,
         status_records=status_records,
         outcome=outcome,
+        junit_paths=junit_paths,
     )
     SUMMARY_MD.parent.mkdir(parents=True, exist_ok=True)
     SUMMARY_MD.write_text(md, encoding="utf-8")
