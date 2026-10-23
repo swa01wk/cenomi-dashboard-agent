@@ -250,10 +250,62 @@ def run_target(name: str) -> None:
             if code != 0:
                 failed(name, "integration tests failed", run, exit_code=code)
                 return
+        if suite == "tooling":
+            code = _pytest(
+                f"../tests/tooling --junitxml={reports / 'junit-tooling.xml'}"
+            )
+            if code != 0:
+                failed(name, "tooling tests failed", run, exit_code=code)
+                return
+            passed(name, "backend tests passed (SUITE=tooling)", run)
+            return
         if suite not in ("unit", "integration", "all"):
             failed(name, f"unknown SUITE={suite!r}", run, exit_code=2)
             return
         passed(name, f"backend tests passed (SUITE={suite})", run)
+        return
+
+    if name == "specs-check":
+        _resolve(meta, run)
+        gate = os.environ.get("GATE", "").strip()
+        env_prefix = f"GATE={gate} " if gate else ""
+        code = _shell(
+            f"{env_prefix}uv run --directory backend python ../scripts/specs/check.py"
+        )
+        if code != 0:
+            failed(name, "specs-check reported findings", run, exit_code=code)
+            return
+        passed(name, "specifications and engineering metadata validated", run)
+        return
+
+    if name == "trace-report":
+        _resolve(meta, run)
+        card = os.environ.get("CARD", "").strip()
+        gate = os.environ.get("GATE", "").strip()
+        env_parts = []
+        if card:
+            env_parts.append(f"CARD={card}")
+        if gate:
+            env_parts.append(f"GATE={gate}")
+        env_prefix = " ".join(env_parts)
+        if env_prefix:
+            env_prefix += " "
+        code = _shell(
+            f"{env_prefix}uv run --directory backend python ../scripts/trace/report.py"
+        )
+        if code != 0:
+            failed(name, "trace-report failed", run, exit_code=code)
+            return
+        passed(name, "trace report generated", run)
+        return
+
+    if name == "security-check":
+        _resolve(meta, run)
+        code = _shell("uv run --directory backend python ../scripts/specs/security.py")
+        if code != 0:
+            failed(name, "security-check failed", run, exit_code=code)
+            return
+        passed(name, "security scan and audits passed", run)
         return
 
     if name == "check":

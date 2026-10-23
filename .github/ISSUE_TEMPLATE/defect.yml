@@ -1,0 +1,51 @@
+name: Defect
+description: Report a deterministic failure or blocking defect (DEVENV-R046)
+title: "DEF-0000: "
+labels: []
+body:
+  - type: input
+    id: defect_id
+    attributes:
+      label: Defect ID
+      description: Use the next DEF-nnnn identifier (specs/traceability/id_conventions.yaml).
+      placeholder: DEF-0007
+    validations:
+      required: true
+  - type: dropdown
+    id: triage_class
+    attributes:
+      label: Triage class
+      description: Exactly one class from DEVELOPMENT_ENVIRONMENT §9 (DEVENV-R046).
+      options:
+        - triage:test-failure
+        - triage:contract-mismatch
+        - triage:kpi-discrepancy
+        - triage:authorization
+        - triage:grounding
+        - triage:ui-rendering
+        - triage:ci-infrastructure
+        - triage:live-model-variability
+        - triage:flaky
+    validations:
+      required: true
+  - type: checkbox
+    id: blocking
+    attributes:
+      label: Blocking
+      description: Check when this defect blocks a milestone gate or required CI check.
+      options:
+        - label: This defect is blocking (add the `blocking` label)
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What failed, where, and how to reproduce.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Logs, requestRef, AT ID, CI run URL, or screenshot paths.
+    validations:
+      required: true
