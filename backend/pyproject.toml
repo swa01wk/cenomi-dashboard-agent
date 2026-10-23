@@ -1,5 +1,5 @@
 [build-system]
-requires = ["uv_build>=0.9.0,<0.10.0"]
+requires = ["uv_build>=0.13,<0.14"]
 build-backend = "uv_build"
 
 [project]
@@ -22,7 +22,6 @@ dependencies = [
 
 [project.scripts]
 cenomi = "cenomi.cli.main:main"
-lint-imports = "importlinter.cli:lint_imports_command"
 
 [dependency-groups]
 dev = [
@@ -39,7 +38,6 @@ dev = [
   "jsonschema>=4.23",
   "pyyaml>=6.0.2",
   "pip-audit>=2.7",
-  "types-pyyaml>=6.0",
 ]
 
 [tool.uv]
@@ -62,9 +60,6 @@ ignore = []
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "S607", "S603"]
-"backend/tests/**" = ["S101", "S607", "S603"]
-"scripts/lint/sql_safety.py" = ["EXE001"]
-"scripts/make/*.py" = ["PERF402", "RUF100", "EXE001", "F401"]
 
 [tool.mypy]
 python_version = "3.12"
@@ -75,17 +70,9 @@ mypy_path = "src"
 files = ["src", "../scripts"]
 
 [[tool.mypy.overrides]]
-module = ["importlinter.*", "opentelemetry.*"]
+module = ["importlinter.*", "opentelemetry.*", "yaml"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = ["doctor", "help_text", "report", "targets"]
 ignore_missing_imports = true
-
-[tool.pytest.ini_options]
-asyncio_mode = "auto"
-testpaths = ["tests"]
-pythonpath = ["src"]
-markers = [
-    "trace(at_id, reqs): traceability marker for acceptance tests",
-]

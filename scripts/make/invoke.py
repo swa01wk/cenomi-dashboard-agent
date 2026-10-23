@@ -189,7 +189,7 @@ def run_target(name: str) -> None:
         for cmd in (
             "uv run ruff check backend scripts",
             "uv run ruff format --check backend scripts",
-            "uv run --directory backend lint-imports",
+            "uv run --directory backend import-linter lint",
             "uv run python scripts/lint/sql_safety.py",
         ):
             code = _shell(cmd)

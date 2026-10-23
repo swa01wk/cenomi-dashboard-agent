@@ -93,8 +93,6 @@ class Settings(BaseSettings):
             raise ValueError("SESSION_SECRET must be at least 32 bytes")
         if self.llm_mode == "live" and not self.llm_api_key.get_secret_value().strip():
             raise ValueError("LLM_API_KEY is required when LLM_MODE=live")
-        if self.cenomi_tz != "Asia/Riyadh":
-            raise ValueError("CENOMI_TZ must be Asia/Riyadh")
         return self
 
 

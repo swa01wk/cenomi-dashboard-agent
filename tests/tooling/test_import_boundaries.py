@@ -14,7 +14,7 @@ ANALYTICS_INIT = BACKEND / "src/cenomi/analytics/__init__.py"
 
 def _run_lint_imports() -> subprocess.CompletedProcess[str]:
     return subprocess.run(
-        ["uv", "run", "--directory", str(BACKEND), "lint-imports"],
+        ["uv", "run", "--directory", str(BACKEND), "import-linter", "lint"],
         cwd=REPO_ROOT,
         capture_output=True,
         text=True,
