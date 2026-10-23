@@ -170,8 +170,10 @@ def run_pip_audit() -> int:
     stderr = proc.stderr or ""
     if stderr:
         print(stderr, end="", file=sys.stderr)
+    if not stdout.strip():
+        return 1
     try:
-        payload = json.loads(stdout) if stdout.strip() else {}
+        payload = json.loads(stdout)
     except json.JSONDecodeError:
         if stdout:
             print(stdout, end="")

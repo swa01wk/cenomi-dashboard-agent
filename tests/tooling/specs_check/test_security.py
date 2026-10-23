@@ -95,6 +95,27 @@ def test_run_pip_audit_non_json_returns_1(monkeypatch: pytest.MonkeyPatch) -> No
     assert run_pip_audit() == 1
 
 
+def test_run_pip_audit_exit1_empty_stdout_returns_1(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    def fake_run(*_a, **_k):
+        return CompletedProcess([], 1, stdout="", stderr="pip-audit crashed\n")
+
+    monkeypatch.setattr(sec, "_run", fake_run)
+    assert run_pip_audit() == 1
+    assert "pip-audit crashed" in capsys.readouterr().err
+
+
+def test_run_pip_audit_exit0_empty_stdout_returns_1(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def fake_run(*_a, **_k):
+        return CompletedProcess([], 0, stdout="   ", stderr="")
+
+    monkeypatch.setattr(sec, "_run", fake_run)
+    assert run_pip_audit() == 1
+
+
 def test_gpl_classifier_form() -> None:
     assert _is_gpl_family("GNU General Public License v3 (GPLv3)")
 
