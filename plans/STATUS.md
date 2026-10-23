@@ -1,12 +1,12 @@
 # STATUS — Cenomi Dashboard Intelligence Agent POC
 
-Updated: 2026-10-23. **M0 build in progress.** Merged: M0-T01 (`75a2fed`, PR #6) and M0-T03 (`0027aae`, PR #9), both under P1 + EXC-001. Spec set **0.1.2** at `ccdc276`. P1 in force (ruleset `25699552`).
+Updated: 2026-10-23. **M0 build in progress.** Merged: M0-T01 (`75a2fed`, PR #6), M0-T03 (`0027aae`, PR #9) and M0-T11 (`386f017`, PR #12), all under P1 + EXC-001. Spec set **0.1.3** at `3c182cf` (CR-001, PR #13). P1 in force (ruleset `25699552`).
 
 | | |
 |---|---|
 | Baseline | DX1–DX6 (canvas v27 + OI-13 local wording fix); Final Design Gate 2026-10-22 |
 | Dataset | `sd-2026.10.20-01` (`as_of` 2026-10-20; insight replay hash `82fde5250960761d`; runner reference_hash `c1e36ced42cebecc`) — **not yet seeded** |
-| Specification set | **0.1.2** at `ccdc276` (HC-6, HC-7); **0.1.3** (CR-001, ROADMAP A-30) in review. 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
+| Specification set | **0.1.3** at `3c182cf` (CR-001, ROADMAP A-30); 0.1.2 at `ccdc276` (HC-6, HC-7); 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
 
 > Status vocabulary:
 >
@@ -29,8 +29,8 @@ Updated: 2026-10-23. **M0 build in progress.** Merged: M0-T01 (`75a2fed`, PR #6)
 | Current milestone | **M0 Foundation**: specifications **approved and merged** (PR #2, squash `4515031`, 2026-10-22T15:59:58Z). Corrections HC-1 to HC-5 and the clarifications merged at `77c9c10` (PR #3, spec set 0.1.1). P1 in force. Build **authorized 2026-10-23**, not yet started (first card M0-T01) |
 | Migration | **Complete.** PR #1 merged into `main` on 2026-10-22 at `d5db7f3`; 214/214 handoff hashes verified |
 | Engineering Specification Plan | **Approved 2026-10-22**, subject to the owner's refinements. Recorded as `plans/ROADMAP.md` v1.0 with amendments A-01 to A-18, plus A-19 to A-24 from the owner's review of PR #2, A-25 and A-26 from the owner's approvals, and A-27 (corrections HC-1 to HC-5). The proposed draft is kept unchanged in `plans/proposed/` |
-| Next gate | M0-T11 (test harness, P1 + EXC-001), then M0-T10. M0-T07 is being drafted in parallel (EXC-001 C4); it merges after M0-T10, then P2 is applied |
-| Implementation | **M0 in progress.** Merged: M0-T01 (`75a2fed`) and M0-T03 (`0027aae`). In progress: M0-T07 (draft). Next: M0-T11 → M0-T10. Executor: Cursor Composer 2.5; the architect reviews each pushed branch and opens the PR; the owner merges |
+| Next gate | M0-T10 (governance automation, P1 + EXC-001; last bootstrap card). M0-T07 (draft PR #11, EXC-001 C4) is then rebased, adds the CR-001 `ci/specs` steps, and merges once `ci/summary` is green; then P2 is applied |
+| Implementation | **M0 in progress.** Merged: M0-T01 (`75a2fed`), M0-T03 (`0027aae`) and M0-T11 (`386f017`). In progress: M0-T07 (draft PR #11). Next: M0-T10. Executor: Cursor Composer 2.5; the architect reviews each pushed branch and opens the PR; the owner merges |
 
 ## Completed and approved work
 
@@ -59,6 +59,7 @@ Updated: 2026-10-23. **M0 build in progress.** Merged: M0-T01 (`75a2fed`, PR #6)
 | **M0-T01 merged** (PR #6, `75a2fed`); EXC-001 log entry recorded (PR #7) | 23 Oct 2026 | EXC-001 log below |
 | **HC-6 approved**: M0-T03 may change the packaging, ruff and mypy sections of `backend/pyproject.toml`. **HC-7** (an owner for each of the 33 M0 Make targets) is proposed in the same PR and approved by merging it | 23 Oct 2026 | Owner's answer, 23 Oct 2026 13:04 IST; ROADMAP A-29 |
 | **HC-8 and HC-9 approved** (tooling suite in `ci/specs`; manual-AT results file) and recorded as **CR-001** with the `import-linter` wording fix | 23 Oct 2026 | Owner's answers, 23 Oct 2026 23:20 IST; ROADMAP A-30 |
+| **M0-T11 merged** (PR #12, `386f017`) and **CR-001 merged** (PR #13, `3c182cf`; spec set 0.1.3); EXC-001 log entry and CR-001 hashes recorded | 23 Oct 2026 | EXC-001 log and CF-0 section below |
 
 ### CF-0 contract freeze (exact versions at `4515031`)
 
@@ -78,7 +79,16 @@ Specification set **0.1.0** (`specs/engineering/spec_set.yaml`). Hash = first 16
 | `specs/engineering/spec_set.yaml` | `cenomi.spec_set.v1`, version 0.1.0 | `874a00a336b2fc61` |
 | `specs/traceability/id_conventions.yaml` | `cenomi.id_conventions.v1` | `3656fda0f48e335b` |
 
-The M0 corrections PR changes none of the contract files. Its only change to a CF-0 file is in `spec_set.yaml`: the version (0.1.0 → 0.1.1, required by that file's own patch rule for corrections) and the document list (the handoff is added). Every other CF-0 file is byte-identical. **CR-001 (2026-10-23)** amends `make_targets.yaml` (`backend-test SUITE=tooling`, `backend-lint` command), `ci_checks.yaml` (`ci/specs`) and `engineering.schema.json` (`manualResults`); the hashes above are those of `4515031`, and new hashes are recorded when CR-001 merges.
+The M0 corrections PR changes none of the contract files. Its only change to a CF-0 file is in `spec_set.yaml`: the version (0.1.0 → 0.1.1, required by that file's own patch rule for corrections) and the document list (the handoff is added). Every other CF-0 file is byte-identical. **CR-001 (2026-10-23)** amends `make_targets.yaml` (`backend-test SUITE=tooling`, `backend-lint` command), `ci_checks.yaml` (`ci/specs`) and `engineering.schema.json` (`manualResults`); the hashes above are those of `4515031`.
+
+**CF-0 as amended by CR-001** (merged at `3c182cf`, PR #13, spec set 0.1.3). Files not listed are unchanged from `4515031`.
+
+| File | Change | Hash at `3c182cf` |
+|---|---|---|
+| `specs/engineering/make_targets.yaml` | `backend-test SUITE=tooling`; `backend-lint` runs `import-linter lint` | `6daa6a4cd01d2cda` |
+| `specs/engineering/ci_checks.yaml` | `ci/specs` installs browsers and runs `backend-test` with `SUITE=tooling` | `c1b270e160d701a9` |
+| `specs/engineering/engineering.schema.json` | `manualResults`; optional `gateReport.manualResults`; `SUITE` in job env | `679f81ed9f69075c` |
+| `specs/engineering/spec_set.yaml` | version 0.1.3 | `b9aadc55b002ec15` |
 
 ## Milestones
 
@@ -196,7 +206,7 @@ Any later change to the ruleset or merge settings must be recorded here with its
 |---|---|---|---|---|---|---|
 | M0-T01 | [#6](https://github.com/swa01wk/cenomi-dashboard-agent/pull/6) | `chore/m0-t01-repo-scaffold` | Partial at merge time: verbatim local output for `108f733` (`make install` clean, `doctor`, `help`, `check`, 7/7 ATs) and Cursor's reported green run for `5abf172`. The PR had an empty description when merged; the evidence was added afterwards (2026-10-23) | **`75a2fed`** (squash title "Chore/m0 t01 repo scaffold (#6)", not the DEVENV-R038 format; PR title corrected afterwards) | Architect review before merge, with 4 findings fixed in `5abf172` (pin policy, AT-07 no skip, no-op scripts removed, targets drift test); tree verified identical to the reviewed commit | Pending (C5) |
 | M0-T03 | [#9](https://github.com/swa01wk/cenomi-dashboard-agent/pull/9) | `feat/m0-t03-backend-skeleton` | Yes: owner's log at 2026-10-23T07:54:52Z on `d7a7020` (`make install` clean; doctor; backend-lint; backend-typecheck; backend-test unit 10/10 and integration 5/5; `make check`; 11 tooling tests), pasted in PR §8 | **`0027aae`** (squash title in DEVENV-R038 format) | Architect review with 7 findings fixed in `d7a7020`; independent ruff, format and SQL-safety re-run on the export; tree verified identical to the reviewed commit. Accepted: formatting-only edits to M0-T01's `scripts/make/**`, needed because `backend-lint` covers `scripts/` | Pending (C5) |
-| M0-T11 | — | — | — | — | — | — |
+| M0-T11 | [#12](https://github.com/swa01wk/cenomi-dashboard-agent/pull/12) | `test/m0-t11-test-harness` | Yes: owner's run on `6e78f7a`, clean tree before and after (`make install` clean; doctor; backend-lint; backend-typecheck; backend-test unit 10 and integration 5; `make check`; tooling suite 29 passed including AT-M0-T01-01; `quarantine_expiry.py` passed), pasted in PR §8. An earlier run made before the commit was discarded | **`386f017`** (squash title in DEVENV-R038 format) | Architect review before the PR was opened; tree of `386f017` verified identical to the reviewed head `6e78f7a`. Its bootstrap ATs run under `backend-test SUITE=tooling` once M0-T10 and M0-T07 implement CR-001 | Pending (C5) |
 | M0-T10 | — | — | — | — | — | — |
 | C5 (a): M0-T07 PR run, `trace-report CARD=…` for all four | — | — | — | — | — | — |
 | C5 (b): first `ci/summary` run on `main` after M0-T07 merges | — | — | — | — | — | — |
@@ -267,7 +277,7 @@ The full risk register is in `docs/reference/final-design-gate/08_OPEN_ISSUES_AN
 | Design canvas | v27 (+ OI-13 local fix in exported boards) |
 | Final Design Gate doc | 22 Oct 2026 outcome recorded (exported 8 tabs) |
 | Engineering Specification Plan | 22 Oct 2026 draft → **approved** as `plans/ROADMAP.md` v1.0 |
-| Specification set | **0.1.3** in review (CR-001); 0.1.2 at `ccdc276`; 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
+| Specification set | **0.1.3** at `3c182cf` (CR-001); 0.1.2 at `ccdc276`; 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
 | Planning Assessment | v0.3 (G0) |
 | Dataset | `sd-2026.10.20-01` |
 | Detectors | detectors-1.1 |
