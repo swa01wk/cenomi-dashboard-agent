@@ -1,0 +1,2 @@
+# Pinned auxiliary CLI tools (DEVENV §2). Install paths are platform-specific; doctor checks presence.
+gitleaks=8.21.2
