@@ -40,7 +40,7 @@ def _read_package_manager() -> str | None:
     pkg = json.loads((REPO_ROOT / "package.json").read_text(encoding="utf-8"))
     pm = pkg.get("packageManager", "")
     if pm.startswith("pnpm@"):
-        return pm.split("@", 1)[1]
+        return str(pm.split("@", 1)[1])
     return None
 
 
@@ -170,10 +170,18 @@ def run_doctor() -> tuple[bool, list[str]]:
             mismatches.append(name)
 
     env_path = REPO_ROOT / ".env"
-    rows.append((".env", "optional", "present" if env_path.is_file() else "absent (warn)"))
+    rows.append(
+        (".env", "optional", "present" if env_path.is_file() else "absent (warn)")
+    )
 
     port_issues = _ports_free()
-    rows.append(("ports 3000/8000/5432", "free or project", ", ".join(port_issues) if port_issues else "ok"))
+    rows.append(
+        (
+            "ports 3000/8000/5432",
+            "free or project",
+            ", ".join(port_issues) if port_issues else "ok",
+        )
+    )
 
     print(f"{'Component':<24} {'Expected':<22} Found")
     print("-" * 72)

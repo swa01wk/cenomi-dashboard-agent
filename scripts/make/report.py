@@ -89,7 +89,9 @@ def not_applicable(target: str, active_from: str, reason: str, run: TargetRun) -
     run.finish("NOT_APPLICABLE", "milestone", line_reason, 0)
 
 
-def not_implemented(target: str, reason: str, run: TargetRun, *, active_from: str) -> None:
+def not_implemented(
+    target: str, reason: str, run: TargetRun, *, active_from: str
+) -> None:
     active = read_active_milestone()
     gate = os.environ.get("GATE", "").strip()
     in_window = milestone_index(active_from) == milestone_index(active)
