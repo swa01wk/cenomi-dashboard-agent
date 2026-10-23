@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Version | 1.4 · 2026-10-23. Adds the M0-T10 kickoff prompt (§11) with CR-001 (HC-8 tooling suite, HC-9 manual ATs). 1.3 · 2026-10-23. Adds HC-6 and HC-7 (ROADMAP A-29), the M0-T03 and M0-T07 kickoff prompts (§9, §10) and the review-then-PR workflow. Version 1.2 added lockfile serialization, protection verification and the M0-T01 kickoff; 1.1 applied HC-1 to HC-5 (A-27); 1.0 (2026-10-22) was delivered outside the repository |
+| Version | 1.5 · 2026-10-23. Adds the DEF-0001 security-patch prompt (§12; CR-002, EXC-002) and the M0-T10 rebase step. 1.4 · 2026-10-23. Adds the M0-T10 kickoff prompt (§11) with CR-001 (HC-8 tooling suite, HC-9 manual ATs). 1.3 · 2026-10-23. Adds HC-6 and HC-7 (ROADMAP A-29), the M0-T03 and M0-T07 kickoff prompts (§9, §10) and the review-then-PR workflow. Version 1.2 added lockfile serialization, protection verification and the M0-T01 kickoff; 1.1 applied HC-1 to HC-5 (A-27); 1.0 (2026-10-22) was delivered outside the repository |
 | Nature | **Non-normative.** A sequencing and orientation guide. It restates no contract. If it disagrees with a specification, the specification wins (AGENTSMD-R003) |
 | Baseline | `main` from PR #3's squash commit onward: spec set **0.1.1** (CF-0 frozen at `4515031`, contract files unchanged) |
 | Build state | **Not authorized.** The owner authorizes Cursor separately, after protection stage P1 is applied and verified (ADR-0015 §3) |
@@ -251,4 +251,43 @@ M0-T07 may be **authored now**, in parallel with M0-T03, M0-T11 and M0-T10, on i
 >    - finally `git status --porcelain` (must be empty).
 > 6. Commit with messages starting `M0-T10:`. Do not push and do not open a PR.
 > 7. If anything is ambiguous, conflicts with a specification, or needs a path outside field 13 and the listed recipe branches: stop and report. Never weaken a test, never merge, never change repository settings.
+
+---
+
+## 12. DEF-0001 — security-patch prompt (CR-002, EXC-002)
+
+**Prerequisites:** the documentation PR recording CR-002 and EXC-002 merged (STATUS lists CR-002 as approved). Branch: `fix/def-0001-security-advisories` from the latest `main`. Merges under P1 + EXC-002, **before** M0-T10. Afterwards M0-T10 is rebased onto `main`, its verification log is re-run from a clean tree, and its branch is force-pushed with lease.
+
+> You are fixing defect **DEF-0001** (GitHub issue #15) for the Cenomi Dashboard Intelligence Agent POC: two dependency advisories already on `main`, `certifi` in `backend/uv.lock` and transitive `handlebars` (through `eslint-plugin-boundaries`) in `pnpm-lock.yaml`. If `plans/STATUS.md` does not list CR-002 and EXC-002 as approved, stop and report. Work in /Users/swa/dev/cenomi-dashboard-agent on branch `fix/def-0001-security-advisories` from the latest main.
+>
+> 1. Read: AGENTS.md; .cursor/rules/*.mdc; docs/adr/0003-technology-stack-and-version-pinning.md §2; docs/architecture/DEVELOPMENT_ENVIRONMENT.md DEVENV-R004, DEVENV-R052, §8.4 (EXC-002) and the §8.6 rows for `backend/pyproject.toml` and `pnpm-workspace.yaml` (CR-002); plans/STATUS.md CR-002.
+> 2. Before changing anything, run `uv run --project backend pip-audit` and `pnpm audit --audit-level high` and keep their full output. For each finding note the advisory ID, severity, affected range and fixed or patched version. (`make security-check` is not on main yet; it arrives with M0-T10.)
+> 3. **certifi.** Take the lowest fixed version from the pip-audit output (expected 2026.10.19) and its PyPI upload time. Under `[tool.uv]` in `backend/pyproject.toml` add `exclude-newer-package = { certifi = "<the day after the upload date>T00:00:00Z" }`, with a comment line above it: `# CR-002 / DEF-0001 security patch (ADR-0003 §2, <advisory ID>); remove when exclude-newer passes this date`. Do not change `exclude-newer`, `required-version` or anything else in the file. Then run `uv lock --project backend --upgrade-package certifi`. The `backend/uv.lock` diff may change only the `certifi` entry (version, source, hashes) and the lock's recorded resolver options for this override.
+> 4. **handlebars.** Take the lowest patched version from the `pnpm audit` output. Check with `pnpm why handlebars` that it satisfies the version range declared by the package that depends on it. If it does not, or if it is a new major version, stop and report. Add to `pnpm-workspace.yaml`, after `packages:`:
+>    ```yaml
+>    # CR-002 / DEF-0001 security patch (ADR-0003 §2, <advisory ID>)
+>    overrides:
+>      handlebars: "<exact patched version>"
+>    ```
+>    Then run `pnpm install` to regenerate `pnpm-lock.yaml`, and afterwards `pnpm install --frozen-lockfile`. The lockfile diff may change only the `overrides` record and the `handlebars` entries.
+> 5. Touch only `backend/pyproject.toml` (the one entry), `backend/uv.lock`, `pnpm-workspace.yaml` (the one block) and `pnpm-lock.yaml`. Never edit a lockfile by hand. No other dependency may be added, removed or upgraded (DEVENV-R052 (e)). If the package managers change anything else, stop and report with the diff.
+> 6. Run and save the full output to `tests/reports/def-0001-local-verification.log`, starting from a committed, clean tree:
+>    - `make install && git status --porcelain`; `make doctor`;
+>    - `uv lock --project backend --check`; `pnpm install --frozen-lockfile`;
+>    - `uv run --project backend pip-audit`; `pnpm audit --audit-level high` (both must report no remaining finding at high or above with a fix available);
+>    - `make backend-lint`; `make backend-typecheck`; `make backend-test SUITE=unit`; `make backend-test SUITE=integration`;
+>    - `uv run --project backend pytest tests/tooling -q`; `make check`;
+>    - `git diff --stat origin/main...HEAD` (exactly the four files);
+>    - finally `git status --porcelain` (must be empty).
+>    Also report the licence of each patched version (expected: certifi MPL-2.0, handlebars MIT).
+> 7. Commit with the message `DEF-0001: patch certifi and handlebars advisories (CR-002)`. Do not push and do not open a PR. Never weaken a test, never merge, never change repository settings.
+
+**After the patch merges, rebase M0-T10:**
+
+```bash
+git checkout chore/m0-t10-governance-automation
+git fetch origin && git rebase origin/main
+```
+
+Re-run the full M0-T10 verification list (§11 step 5) from a clean tree, overwriting `tests/reports/m0-t10-local-verification.log`. `make security-check` must now pass. Then run `git push --force-with-lease`.
 
