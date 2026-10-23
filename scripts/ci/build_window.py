@@ -9,13 +9,17 @@ from scripts.ci.target_owners import m0_cards_in_table, target_to_card
 from scripts.make.report import milestone_index, read_active_milestone
 from scripts.trace.report import build_report
 
-ARCH_RESULTS = frozenset({"PASSED", "FAILED", "SKIPPED", "NOT_APPLICABLE", "NOT_IMPLEMENTED"})
+ARCH_RESULTS = frozenset(
+    {"PASSED", "FAILED", "SKIPPED", "NOT_APPLICABLE", "NOT_IMPLEMENTED"}
+)
 
 PLAN = Path(__file__).resolve().parents[2] / "plans/M0_FOUNDATION.md"
 SPEC_SET = Path(__file__).resolve().parents[2] / "specs/engineering/spec_set.yaml"
 
 
-def card_non_manual_all_passed(repo: Path, junit_paths: list[Path], card_id: str) -> bool:
+def card_non_manual_all_passed(
+    repo: Path, junit_paths: list[Path], card_id: str
+) -> bool:
     payload, _errors, code = build_report(repo, junit_paths=junit_paths, card=card_id)
     if code != 0:
         return False
@@ -30,11 +34,15 @@ def card_non_manual_all_passed(repo: Path, junit_paths: list[Path], card_id: str
     return True
 
 
-def implemented_m0_cards(repo: Path, *, junit_paths: list[Path], pr_card: str | None) -> set[str]:
+def implemented_m0_cards(
+    repo: Path, *, junit_paths: list[Path], pr_card: str | None
+) -> set[str]:
     table_cards = m0_cards_in_table(PLAN)
     out: set[str] = set()
     for card in table_cards:
-        if (pr_card and card == pr_card) or card_non_manual_all_passed(repo, junit_paths, card):
+        if (pr_card and card == pr_card) or card_non_manual_all_passed(
+            repo, junit_paths, card
+        ):
             out.add(card)
     return out
 
@@ -91,7 +99,9 @@ def assert_build_window_targets(
         if active_from.startswith("M0"):
             if owner in implemented:
                 if result == "NOT_IMPLEMENTED":
-                    errors.append(f"{name}: owner {owner} implemented but result NOT_IMPLEMENTED")
+                    errors.append(
+                        f"{name}: owner {owner} implemented but result NOT_IMPLEMENTED"
+                    )
             elif owner in m0_cards and result != "NOT_IMPLEMENTED":
                 errors.append(
                     f"{name}: owner {owner} not implemented; expected NOT_IMPLEMENTED, got {result}"
