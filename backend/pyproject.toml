@@ -1,0 +1,39 @@
+[project]
+name = "cenomi-backend"
+version = "0.0.0"
+description = "Cenomi Dashboard Intelligence Agent — backend workspace (package skeleton in M0-T03)"
+requires-python = "==3.12.*"
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.32",
+  "pydantic>=2.10",
+  "pydantic-settings>=2.6",
+  "sqlalchemy>=2.0.36,<2.1",
+  "psycopg[binary]>=3.2",
+  "alembic>=1.14",
+  "opentelemetry-sdk>=1.28",
+  "opentelemetry-instrumentation-fastapi>=0.49b0",
+  "opentelemetry-instrumentation-sqlalchemy>=0.49b0",
+]
+
+[dependency-groups]
+dev = [
+  "ruff>=0.8",
+  "mypy>=1.13",
+  "import-linter>=2.1",
+  "pytest>=8.3",
+  "pytest-asyncio>=0.24",
+  "pytest-xdist>=3.6",
+  "pytest-cov>=6.0",
+  "pytest-socket>=0.7",
+  "hypothesis>=6.122",
+  "httpx>=0.28",
+  "jsonschema>=4.23",
+  "pyyaml>=6.0.2",
+  "pip-audit>=2.7",
+]
+
+[tool.uv]
+required-version = "==0.13.5"
+package = false
+exclude-newer = "2026-10-09T00:00:00Z"
