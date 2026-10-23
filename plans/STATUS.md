@@ -1,12 +1,12 @@
 # STATUS — Cenomi Dashboard Intelligence Agent POC
 
-Updated: 2026-10-23. **M0 build in progress.** Merged: M0-T01 (`75a2fed`, PR #6), M0-T03 (`0027aae`, PR #9) and M0-T11 (`386f017`, PR #12), all under P1 + EXC-001. Spec set **0.1.3** at `3c182cf` (CR-001, PR #13). P1 in force (ruleset `25699552`).
+Updated: 2026-10-23. **M0 build in progress.** Merged: M0-T01 (`75a2fed`, PR #6), M0-T03 (`0027aae`, PR #9) and M0-T11 (`386f017`, PR #12), all under P1 + EXC-001. Spec set **0.1.3** at `3c182cf` (CR-001, PR #13); **0.1.4** (CR-002) in this PR. **Next:** the DEF-0001 security patch (EXC-002), then M0-T10. P1 in force (ruleset `25699552`).
 
 | | |
 |---|---|
 | Baseline | DX1–DX6 (canvas v27 + OI-13 local wording fix); Final Design Gate 2026-10-22 |
 | Dataset | `sd-2026.10.20-01` (`as_of` 2026-10-20; insight replay hash `82fde5250960761d`; runner reference_hash `c1e36ced42cebecc`) — **not yet seeded** |
-| Specification set | **0.1.3** at `3c182cf` (CR-001, ROADMAP A-30); 0.1.2 at `ccdc276` (HC-6, HC-7); 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
+| Specification set | **0.1.4** (CR-002/EXC-002, ROADMAP A-31) in review; **0.1.3** at `3c182cf` (CR-001, ROADMAP A-30); 0.1.2 at `ccdc276` (HC-6, HC-7); 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
 
 > Status vocabulary:
 >
@@ -29,8 +29,8 @@ Updated: 2026-10-23. **M0 build in progress.** Merged: M0-T01 (`75a2fed`, PR #6)
 | Current milestone | **M0 Foundation**: specifications **approved and merged** (PR #2, squash `4515031`, 2026-10-22T15:59:58Z). Corrections HC-1 to HC-5 and the clarifications merged at `77c9c10` (PR #3, spec set 0.1.1). P1 in force. Build **authorized 2026-10-23**, not yet started (first card M0-T01) |
 | Migration | **Complete.** PR #1 merged into `main` on 2026-10-22 at `d5db7f3`; 214/214 handoff hashes verified |
 | Engineering Specification Plan | **Approved 2026-10-22**, subject to the owner's refinements. Recorded as `plans/ROADMAP.md` v1.0 with amendments A-01 to A-18, plus A-19 to A-24 from the owner's review of PR #2, A-25 and A-26 from the owner's approvals, and A-27 (corrections HC-1 to HC-5). The proposed draft is kept unchanged in `plans/proposed/` |
-| Next gate | M0-T10 (governance automation, P1 + EXC-001; last bootstrap card). M0-T07 (draft PR #11, EXC-001 C4) is then rebased, adds the CR-001 `ci/specs` steps, and merges once `ci/summary` is green; then P2 is applied |
-| Implementation | **M0 in progress.** Merged: M0-T01 (`75a2fed`), M0-T03 (`0027aae`) and M0-T11 (`386f017`). In progress: M0-T07 (draft PR #11). Next: M0-T10. Executor: Cursor Composer 2.5; the architect reviews each pushed branch and opens the PR; the owner merges |
+| Next gate | DEF-0001 security patch (`fix/def-0001-security-advisories`, P1 + EXC-002), then M0-T10 (governance automation, P1 + EXC-001; last bootstrap card; implemented, branch rebased after the patch). M0-T07 (draft PR #11, EXC-001 C4) is then rebased, adds the CR-001 `ci/specs` steps, and merges once `ci/summary` is green; then P2 is applied |
+| Implementation | **M0 in progress.** Merged: M0-T01 (`75a2fed`), M0-T03 (`0027aae`) and M0-T11 (`386f017`). In progress: M0-T10 (implemented, awaiting push and review; `security-check` blocked by DEF-0001), M0-T07 (draft PR #11). Next: DEF-0001 patch → M0-T10. Executor: Cursor Composer 2.5; the architect reviews each pushed branch and opens the PR; the owner merges |
 
 ## Completed and approved work
 
@@ -60,6 +60,7 @@ Updated: 2026-10-23. **M0 build in progress.** Merged: M0-T01 (`75a2fed`, PR #6)
 | **HC-6 approved**: M0-T03 may change the packaging, ruff and mypy sections of `backend/pyproject.toml`. **HC-7** (an owner for each of the 33 M0 Make targets) is proposed in the same PR and approved by merging it | 23 Oct 2026 | Owner's answer, 23 Oct 2026 13:04 IST; ROADMAP A-29 |
 | **HC-8 and HC-9 approved** (tooling suite in `ci/specs`; manual-AT results file) and recorded as **CR-001** with the `import-linter` wording fix | 23 Oct 2026 | Owner's answers, 23 Oct 2026 23:20 IST; ROADMAP A-30 |
 | **M0-T11 merged** (PR #12, `386f017`) and **CR-001 merged** (PR #13, `3c182cf`; spec set 0.1.3); EXC-001 log entry and CR-001 hashes recorded | 23 Oct 2026 | EXC-001 log and CF-0 section below |
+| **CR-002 and EXC-002 approved**: one security-patch PR for DEF-0001 (`certifi`, `handlebars`; pre-existing on `main`, found by M0-T10's `security-check`) merges under P1 before M0-T10 | 23 Oct 2026 | Owner's answer, 23 Oct 2026 23:55 IST ("Separate patch PR first"); ROADMAP A-31; [DEF-0001](https://github.com/swa01wk/cenomi-dashboard-agent/issues/15) |
 
 ### CF-0 contract freeze (exact versions at `4515031`)
 
@@ -88,7 +89,7 @@ The M0 corrections PR changes none of the contract files. Its only change to a C
 | `specs/engineering/make_targets.yaml` | `backend-test SUITE=tooling`; `backend-lint` runs `import-linter lint` | `6daa6a4cd01d2cda` |
 | `specs/engineering/ci_checks.yaml` | `ci/specs` installs browsers and runs `backend-test` with `SUITE=tooling` | `c1b270e160d701a9` |
 | `specs/engineering/engineering.schema.json` | `manualResults`; optional `gateReport.manualResults`; `SUITE` in job env | `679f81ed9f69075c` |
-| `specs/engineering/spec_set.yaml` | version 0.1.3 | `b9aadc55b002ec15` |
+| `specs/engineering/spec_set.yaml` | version 0.1.3 (0.1.4 after CR-002; hash recorded when it merges) | `b9aadc55b002ec15` |
 
 ## Milestones
 
@@ -199,6 +200,7 @@ Any later change to the ruleset or merge settings must be recorded here with its
 | ID | Scope | Reason | Compensating controls | Expires | State |
 |---|---|---|---|---|---|
 | EXC-001 | Merges of exactly the M0-T01, M0-T03, M0-T11 and M0-T10 PRs under protection stage P1, before `ci/summary` exists | These cards build the tooling CI runs; GitHub cannot require a check that has never reported | Conditions C1–C7 (DEVENV §8.4): PRs documented; every available local validation before merge; merge SHA and controls recorded; M0-T07 authored early as a draft PR (C4, `plans/M0_FOUNDATION.md` §3); retroactive GitHub Actions verification once CI exists; that verification required before GATE-M0; no expansion without approval | When stage P2 is in force | **Approved conditionally, 2026-10-22** |
+| EXC-002 | Merge of exactly one security-patch PR, `fix/def-0001-security-advisories` (DEF-0001, CR-002), under P1 before `ci/summary` exists | ADR-0003 §2 requires a CI run for a security patch, but CI arrives with M0-T07, whose `ci/security` cannot pass while the advisories are open | EXC-001 C1–C3 and C6 unchanged (EXC-002 log below); C5 = M0-T07 PR run with `ci/security` `success`, then the first `ci/summary` on `main` (DEVENV §8.4) | On merge of that PR, or when P2 is in force | **Approved, 2026-10-23** |
 
 **EXC-001 log (conditions C1, C3 and C5).** Filled in as each PR opens and merges. GATE-M0-10 checks that it is complete. From 2026-10-23 on, the architect reviews each pushed card branch and opens its PR with the full description, including the C2 evidence, before the owner merges. Squash titles keep the PR title `M<n>-T<nn>: …` (DEVENV-R038).
 
@@ -210,6 +212,12 @@ Any later change to the ruleset or merge settings must be recorded here with its
 | M0-T10 | — | — | — | — | — | — |
 | C5 (a): M0-T07 PR run, `trace-report CARD=…` for all four | — | — | — | — | — | — |
 | C5 (b): first `ci/summary` run on `main` after M0-T07 merges | — | — | — | — | — | — |
+
+**EXC-002 log (conditions C1, C3 and C5).**
+
+| PR | Branch | Local validations pasted (C2) | Merge SHA (C3) | Compensating controls applied (C3) | Retroactive CI verification (C5) |
+|---|---|---|---|---|---|
+| — | `fix/def-0001-security-advisories` | — | — | — | Pending: (a) M0-T07 PR run `ci/security`; (b) first `ci/summary` on `main` |
 
 ## Open questions (non-blocking)
 
@@ -235,6 +243,7 @@ Any later change to the ruleset or merge settings must be recorded here with its
 
 | CR | Date | Summary | Cites | Decision |
 |---|---|---|---|---|
+| CR-002 | 2026-10-23 | Security patch before CI (DEF-0001, ADR-0003 §2): a security-patch PR may add one `exclude-newer-package` entry under `[tool.uv]` for the package it patches (`certifi`, fix newer than `exclude-newer`), and one exact-version `overrides` entry in `pnpm-workspace.yaml` for a transitive package (`handlebars`); both lockfiles regenerated per DEVENV-R052. Each entry cites the CR and advisory; the `certifi` entry is removed when `exclude-newer` next moves past it. Changes no CF-0 contract (`spec_set.yaml` version only) | ROADMAP A-31; DEVENV §8.4 (EXC-002), §8.6 | **Approved** by the owner 2026-10-23 |
 | CR-001 | 2026-10-23 | Amends CF-0 (`make_targets.yaml`, `ci_checks.yaml`, `engineering.schema.json`): (1) `backend-test SUITE=tooling` runs `tests/tooling` in `ci/specs` with browsers (HC-8); (2) manual-AT results go in `plans/gates/M<n>-manual-results.json` (`manualResults`), excluded from `CARD`, required in `GATE` (HC-9); (3) `backend-lint` runs `import-linter lint` (OQ-DEVENV-01) | ROADMAP A-30; ARCH-R083; M0-T07, M0-T10 | **Approved** by the owner 2026-10-23 (HC-8, HC-9) |
 
 ## Blockers and risks
@@ -277,7 +286,7 @@ The full risk register is in `docs/reference/final-design-gate/08_OPEN_ISSUES_AN
 | Design canvas | v27 (+ OI-13 local fix in exported boards) |
 | Final Design Gate doc | 22 Oct 2026 outcome recorded (exported 8 tabs) |
 | Engineering Specification Plan | 22 Oct 2026 draft → **approved** as `plans/ROADMAP.md` v1.0 |
-| Specification set | **0.1.3** at `3c182cf` (CR-001); 0.1.2 at `ccdc276`; 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
+| Specification set | **0.1.4** in review (CR-002); **0.1.3** at `3c182cf` (CR-001); 0.1.2 at `ccdc276`; 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
 | Planning Assessment | v0.3 (G0) |
 | Dataset | `sd-2026.10.20-01` |
 | Detectors | detectors-1.1 |
