@@ -1,0 +1,177 @@
+=== make check ===
++ make backend-lint
+make[1]: Entering directory '/Users/swa/dev/cenomi-dashboard-agent'
++ uv run ruff check backend scripts
+[1;32mAll checks passed![0m
++ uv run ruff format --check backend scripts
+86 files already formatted
++ uv run --directory backend import-linter lint
+
+╔══╗─────────▶╔╗ ╔╗      ╔╗◀───┐
+╚╣╠╝◀─────┐  ╔╝╚╗║║────▶╔╝╚╗   │
+ ║║   ╔══╦══╦╩╗╔╝║║  ╔╦═╩╗╔╝╔═╦══╗
+ ║║╔══╣╔╗║╔╗║╔╣║ ║║ ╔╬╣╔╗║║ ║│║╔═╝
+╔╣╠╣║║║╚╝║╚╝║║║╚╗║╚═╝║║║║║╚╗║═╣║
+╚══╩╩╩╣╔═╩══╩╝╚═╝╚═══╩╩╝╚╩═╩╩═╩╝
+  └──▶║║                    ▲ 
+      ╚╝────────────────────┘
+
+
+---------
+Contracts
+---------
+
+Analyzed 27 files, 19 dependencies.
+-----------------------------------
+
+core does not import other cenomi modules KEPT
+analytics must not import higher-layer modules (ARCH-R007) KEPT
+no module imports api (ARCH-R006) KEPT
+no module imports seed (ARCH-R006) KEPT
+seed must not import api or auth layers KEPT
+
+Contracts: 5 kept, 0 broken.
++ uv run python scripts/lint/sql_safety.py
+sql_safety: ok
+PASSED: backend-lint — backend static checks passed
+make[1]: Leaving directory '/Users/swa/dev/cenomi-dashboard-agent'
++ make backend-typecheck
+make[1]: Entering directory '/Users/swa/dev/cenomi-dashboard-agent'
++ uv run --directory backend mypy --strict --explicit-package-bases src ../scripts
+Success: no issues found in 69 source files
+PASSED: backend-typecheck — backend typecheck passed
+make[1]: Leaving directory '/Users/swa/dev/cenomi-dashboard-agent'
++ make frontend-lint
+make[1]: Entering directory '/Users/swa/dev/cenomi-dashboard-agent'
+NOT_IMPLEMENTED: frontend-lint — implemented in a later M0 task card
+make[1]: Leaving directory '/Users/swa/dev/cenomi-dashboard-agent'
++ make frontend-typecheck
+make[1]: Entering directory '/Users/swa/dev/cenomi-dashboard-agent'
+NOT_IMPLEMENTED: frontend-typecheck — implemented in a later M0 task card
+make[1]: Leaving directory '/Users/swa/dev/cenomi-dashboard-agent'
++ make contracts-check
+make[1]: Entering directory '/Users/swa/dev/cenomi-dashboard-agent'
+NOT_IMPLEMENTED: contracts-check — implemented in a later M0 task card
+make[1]: Leaving directory '/Users/swa/dev/cenomi-dashboard-agent'
++ make specs-check
+make[1]: Entering directory '/Users/swa/dev/cenomi-dashboard-agent'
++ uv run --directory backend python ../scripts/specs/check.py
+PASSED: specs-check — all sub-checks passed
+PASSED: specs-check — specifications and engineering metadata validated
+make[1]: Leaving directory '/Users/swa/dev/cenomi-dashboard-agent'
++ make backend-test SUITE=unit
+make[1]: Entering directory '/Users/swa/dev/cenomi-dashboard-agent'
++ uv run --directory backend pytest tests/unit --junitxml=/Users/swa/dev/cenomi-dashboard-agent/tests/reports/backend/junit-unit.xml --cov=cenomi --cov-report=xml:/Users/swa/dev/cenomi-dashboard-agent/tests/reports/backend/coverage.xml
+============================= test session starts ==============================
+platform darwin -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/swa/dev/cenomi-dashboard-agent/backend
+configfile: pyproject.toml
+plugins: platformdirs-4.12.4, hypothesis-6.168.5, cov-7.1.0, socket-0.8.1, xdist-3.8.0, asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 10 items
+
+tests/unit/api/test_errors.py ..                                         [ 20%]
+tests/unit/core/test_logging.py ..                                       [ 40%]
+tests/unit/core/test_settings.py ......                                  [100%]
+
+- generated xml file: /Users/swa/dev/cenomi-dashboard-agent/tests/reports/backend/junit-unit.xml -
+================================ tests coverage ================================
+______________ coverage: platform darwin, python 3.12.14-final-0 _______________
+
+Coverage XML written to file /Users/swa/dev/cenomi-dashboard-agent/tests/reports/backend/coverage.xml
+============================== 10 passed in 0.97s ==============================
+PASSED: backend-test — backend tests passed (SUITE=unit)
+make[1]: Leaving directory '/Users/swa/dev/cenomi-dashboard-agent'
++ make frontend-test
+make[1]: Entering directory '/Users/swa/dev/cenomi-dashboard-agent'
+NOT_IMPLEMENTED: frontend-test — implemented in a later M0 task card
+make[1]: Leaving directory '/Users/swa/dev/cenomi-dashboard-agent'
+PASSED: check — all in-check targets completed
+=== make backend-test SUITE=tooling ===
++ uv run --directory backend pytest -c pyproject.toml --rootdir=.. --confcutdir=.. ../tests/tooling --junitxml=/Users/swa/dev/cenomi-dashboard-agent/tests/reports/backend/junit-tooling.xml
+============================= test session starts ==============================
+platform darwin -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/swa/dev/cenomi-dashboard-agent
+configfile: backend/pyproject.toml
+plugins: platformdirs-4.12.4, hypothesis-6.168.5, cov-7.1.0, socket-0.8.1, xdist-3.8.0, asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 159 items / 1 deselected / 158 selected
+
+../tests/tooling/ci/test_build_images.py ...                             [  1%]
+../tests/tooling/ci/test_build_window.py .                               [  2%]
+../tests/tooling/ci/test_changes.py .....                                [  5%]
+../tests/tooling/ci/test_live_run_collection.py ..                       [  6%]
+../tests/tooling/ci/test_make_ci.py ......                               [ 10%]
+../tests/tooling/ci/test_summary.py .........................            [ 26%]
+../tests/tooling/ci/test_target_owners.py ...                            [ 28%]
+../tests/tooling/ci/test_workflow_policy.py .......                      [ 32%]
+../tests/tooling/harness/test_junit_tooling.py .                         [ 33%]
+../tests/tooling/harness/test_network_block.py ...                       [ 35%]
+../tests/tooling/harness/test_playwright_artifacts.py .                  [ 36%]
+../tests/tooling/harness/test_quarantine.py ..                           [ 37%]
+../tests/tooling/harness/test_reports.py .........                       [ 43%]
+../tests/tooling/harness/test_trace_marker.py ..                         [ 44%]
+../tests/tooling/specs_check/test_security.py ...............            [ 53%]
+../tests/tooling/specs_check/test_subchecks.py ......................... [ 69%]
+............                                                             [ 77%]
+../tests/tooling/specs_check/test_templates.py ..                        [ 78%]
+../tests/tooling/test_import_boundaries.py ..                            [ 79%]
+../tests/tooling/test_make_contract.py .......                           [ 84%]
+../tests/tooling/test_renderers.py .......                               [ 88%]
+../tests/tooling/test_sql_safety_lint.py ..                              [ 89%]
+../tests/tooling/trace/test_report.py ................                   [100%]
+
+=============================== warnings summary ===============================
+../scripts/specs/check_lib.py:14
+../scripts/specs/check_lib.py:14
+  /Users/swa/dev/cenomi-dashboard-agent/scripts/specs/check_lib.py:14: DeprecationWarning: jsonschema.RefResolver is deprecated as of v4.18.0, in favor of the https://github.com/python-jsonschema/referencing library, which provides more compliant referencing behavior as well as more flexible APIs for customization. A future release will remove RefResolver. Please file a feature request (on referencing) if you are missing an API for the kind of customization you need.
+    from jsonschema import Draft202012Validator, RefResolver  # type: ignore[import-untyped]
+
+tests/tooling/harness/test_network_block.py::test_unit_outbound_socket_blocked
+  /Users/swa/dev/cenomi-dashboard-agent/backend/.venv/lib/python3.12/site-packages/pytest_socket/__init__.py:365: UserWarning: A test tried to use socket.socket.connect() with host "1.0.0.1" (allowed: "127.0.0.1,::1,localhost (127.0.0.1,::1)").
+    raise SocketConnectBlockedError(allowed_list, host)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/swa/dev/cenomi-dashboard-agent/tests/reports/backend/junit-tooling.xml -
+================ 158 passed, 1 deselected, 3 warnings in 9.56s =================
+PASSED: backend-test — backend tests passed (SUITE=tooling)
+=== make specs-check ===
++ uv run --directory backend python ../scripts/specs/check.py
+PASSED: specs-check — all sub-checks passed
+PASSED: specs-check — specifications and engineering metadata validated
+=== make security-check ===
++ uv run --directory backend python ../scripts/specs/security.py
++ gitleaks detect --redact --source /Users/swa/dev/cenomi-dashboard-agent --no-git
+
+    ○
+    │╲
+    │ ○
+    ○ ░
+    ░    gitleaks
+
+1:30AM INF scanned ~5301745 bytes (5.30 MB) in 477ms
+1:30AM INF no leaks found
++ uv run pip-audit --format json
+No known vulnerabilities found
+Note: PyPI advisory data from pip-audit carries no severity; every vulnerability with a published fix version blocks this step.
++ pnpm audit --audit-level high
+No known vulnerabilities found
++ pnpm licenses list --json
+Licence report: tests/reports/security/licenses.txt
+PASSED: security-check — scan, audit and licences clean
+PASSED: security-check — security scan and audits passed
+=== make trace-report CARD=M0-T07 ===
++ CARD=M0-T07 uv run --directory backend python ../scripts/trace/report.py
+AT-M0-T07-02: NOT_IMPLEMENTED
+FAILED: trace-report — one or more ATs not PASSED
+FAILED: trace-report — trace-report failed
+make: *** [Makefile:140: trace-report] Error 1
+=== trace CARD=M0-T07 AT summary ===
+| `AT-M0-T07-01` | `M0-T07` | no | **PASSED** |
+| `AT-M0-T07-02` | `M0-T07` | no | **NOT_IMPLEMENTED** |
+| `AT-M0-T07-03` | `M0-T07` | no | **PASSED** |
+| `AT-M0-T07-04` | `M0-T07` | no | **PASSED** |
+| `AT-M0-T07-05` | `M0-T07` | no | **PASSED** |
+| `AT-M0-T07-06` | `M0-T07` | no | **PASSED** |
+| `AT-M0-T07-08` | `M0-T07` | no | **PASSED** |
+- AT-M0-T07-02: NOT_IMPLEMENTED
