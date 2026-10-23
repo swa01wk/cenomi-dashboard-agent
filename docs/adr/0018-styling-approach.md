@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | Proposed. **ED-09 Option A** was approved by the project owner on 2026-10-22. This ADR becomes Accepted when PR-M0 merges |
+| Status | **Accepted** — PR-M0 merged 2026-10-22 at `4515031` (recorded 2026-10-23). **ED-09 Option A** was approved by the project owner on 2026-10-22. |
 | Date | 2026-10-22 |
 | Decision IDs | ED-09 (approved), DXD-01 (Ink & Violet), DR-007, DXD-61 |
 | Decision text | `docs/design/DECISION_REGISTER.md` §5.1 "ED-09" (single source) |

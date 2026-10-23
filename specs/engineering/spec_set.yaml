@@ -5,7 +5,7 @@
 # Progress and approval state are NOT recorded here; they live only in plans/STATUS.md.
 
 schema: cenomi.spec_set.v1
-version: "0.1.0"
+version: "0.1.1"          # 0.1.0 merged in PR-M0 (4515031); 0.1.1 = M0 corrections (ROADMAP A-27)
 introduced_by: PR-M0 (docs/m0-foundation-specs)
 active_milestone: M0          # the milestone whose build rules apply (used by ci/summary for ci/echarts-gate)
 contract_freezes_in_this_set: [CF-0]
@@ -36,6 +36,7 @@ documents:
   - docs/design/DECISION_REGISTER.md
   - plans/ROADMAP.md
   - plans/M0_FOUNDATION.md
+  - plans/M0_IMPLEMENTATION_HANDOFF.md
 contracts:
   - specs/contracts/error_envelope.v1.schema.json
   - specs/contracts/error_codes.v1.yaml

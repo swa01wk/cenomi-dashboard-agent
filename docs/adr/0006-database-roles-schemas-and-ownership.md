@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | Proposed. **D-01 Option A** (dedicated `snap` schema) was approved by the project owner on 2026-10-22; the role and schema separation rests on approved DR-013, DR-021 and DR-029. This ADR becomes Accepted when PR-M0 merges |
+| Status | **Accepted** — PR-M0 merged 2026-10-22 at `4515031` (recorded 2026-10-23). **D-01 Option A** (dedicated `snap` schema) was approved by the project owner on 2026-10-22; the role and schema separation rests on approved DR-013, DR-021 and DR-029. |
 | Date | 2026-10-22 |
 | Decision IDs | D-01 (approved), DR-013, DR-021, DR-029, DR-003, DR-033, GDQ-03, DXD-80, DXD-81, DXD-88 |
 | Closes | Restoration gaps G-1 (snapshot schema) and G-4 (agent and insight schema ownership) |

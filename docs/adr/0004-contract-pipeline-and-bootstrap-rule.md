@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | Proposed (becomes Accepted when PR-M0 merges) |
+| Status | **Accepted** — PR-M0 merged 2026-10-22 at `4515031` (recorded 2026-10-23). |
 | Date | 2026-10-22 |
 | Decision IDs | DR-028 (approved, GDQ-10), DR-016, DXD-40, DXD-41 |
 

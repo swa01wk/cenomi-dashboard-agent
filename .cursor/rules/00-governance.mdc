@@ -9,7 +9,7 @@ Source: `AGENTS.md`; ADR-0001, ADR-0015; `plans/ROADMAP.md`.
 
 - Implement only an approved task card `M<n>-T<nn>` from `plans/M<n>_*.md`, and only when `plans/STATUS.md` shows the owner authorized that milestone's build. Otherwise stop and report.
 - Read the card's 20 fields, then every spec section and contract it cites, before writing code.
-- Touch only the paths in the card's field 13 (file ownership). If the work needs any other path, stop and report — never widen the card. (Checked: PR template section 5, review.)
+- Touch only the paths in the card's field 13 (file ownership). The most specific path wins: a broad glob never covers a file another card names (DEVENV-R053). Exceptions: lockfiles and manifests regenerated for dependencies the card introduces (DEVENV-R052), and the listed changes to shared files and composition points (DEVENV-R054); list every shared file touched in the PR, and never change one in parallel with another open PR (DEVENV-R055). If the work needs any other path, stop and report — never widen the card. (Checked: PR template section 5, review.)
 - The baseline is frozen (DX1–DX6, Final Design Gate 22 Oct 2026). Never add a feature, screen, metric, agent capability or dependency the card does not name.
 - Precedence: owner's instruction > DECISION_REGISTER and ADRs > PRD > TA > API Reference > specs > code. On any conflict, stop and report; do not resolve it.
 - Never edit `docs/reference/**`, `docs/design/baseline/**`, `docs/handoff/**` or `plans/proposed/**`. (Checked: `make specs-check` SHA-256 verification.)

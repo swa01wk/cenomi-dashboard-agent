@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | Proposed. **ED-03 Option A** (approved 2026-10-22, scope unchanged) and **ED-04 Option A** (approved 2026-10-22) are already decided; this ADR becomes Accepted when PR-M0 merges |
+| Status | **Accepted** — PR-M0 merged 2026-10-22 at `4515031` (recorded 2026-10-23). **ED-03 Option A** (approved 2026-10-22, scope unchanged) and **ED-04 Option A** (approved 2026-10-22) are already decided. |
 | Date | 2026-10-22 |
 | Decision IDs | DR-034 (docs part superseded), ED-03, ED-04, DR-030 |
 
