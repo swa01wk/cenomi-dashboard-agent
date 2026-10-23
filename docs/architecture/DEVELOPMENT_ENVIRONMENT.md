@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Document code | DEVENV (requirement IDs `DEVENV-Rnnn`) |
-| Version | 1.1 · 2026-10-23 · M0 corrections PR (HC-3 Compose note; HC-4 DEVENV-R052; HC-5 §8.6, DEVENV-R053–R055; DEVENV-R055 lockfile serialization and DEVENV-R056 protection verification, owner clarifications of 2026-10-23). 1.0 merged in PR-M0 (`4515031`) |
+| Version | 1.1 · 2026-10-23 · M0 corrections PR (HC-3 Compose note; HC-4 DEVENV-R052; HC-5 §8.6, DEVENV-R053–R055; DEVENV-R055 lockfile serialization and DEVENV-R056 protection verification, owner clarifications of 2026-10-23); 1.2 · HC-6 (DEVENV-R054 `pyproject` sections for M0-T03), HC-7 (Makefile row) and DEVENV-R001 wording. 1.0 merged in PR-M0 (`4515031`) |
 | Status | Normative since PR-M0 merged (`4515031`); version 1.1 amendments in review |
 | Rests on | DR-027, DR-037, ED-01, ED-05, ED-06 (approved); ED-07, ED-08, ED-09 (approved 2026-10-22; ADR-0016, ADR-0017, ADR-0018); ADR-0003, ADR-0004, ADR-0006, ADR-0015 |
 | Machine-readable sources | `specs/engineering/make_targets.yaml`, `specs/engineering/ci_checks.yaml`, `specs/engineering/spec_set.yaml` — the YAML wins on any conflict with this prose |
@@ -49,7 +49,7 @@ It does not cover:
 | pnpm | Exact version in root `package.json` `packageManager`, activated by Corepack | DR-027 |
 | gitleaks | Pinned version documented in `scripts/tools.lock` | Secret scan (`security-check`) |
 
-**DEVENV-R001** `make doctor` checks every row above and exits 3 on any mismatch (`specs/engineering/make_targets.yaml`, target `doctor`).
+**DEVENV-R001** `make doctor` checks the toolchain and exits 3 on any mismatch. The checks are those of `specs/engineering/make_targets.yaml`, target `doctor`, which wins on any difference. The M0-T01 implementation also verifies the gitleaks version pinned in `scripts/tools.lock` and the exact uv version.
 
 ---
 
@@ -509,8 +509,8 @@ Broad directory ownership (for example M0-T03's `/backend/src/cenomi/**` or M0-T
 
 | Shared file or composition point | Primary owner (M0) | Permitted changes by other cards |
 |---|---|---|
-| `Makefile` | M0-T01 | Replace the stub recipe of a target the card implements (named in its fields 12 or 14) with a call into its own scripts or CLI. Target names, order, arguments, help text and the result helper never change (`make_targets.yaml` is CF-0) |
-| `backend/pyproject.toml` | M0-T01 | Dependency entries (DEVENV-R052, any card). The `[tool.pytest.ini_options]` section (M0-T11) |
+| `Makefile` | M0-T01 | Replace the stub recipe of a target the card implements (the M0 target-owner table in `plans/M0_FOUNDATION.md` §3, HC-7; also named in the card's field 12) with a call into its own scripts or CLI. Target names, order, arguments, help text and the result helper never change (`make_targets.yaml` is CF-0) |
+| `backend/pyproject.toml` | M0-T01 | Dependency entries (DEVENV-R052, any card). The `[tool.pytest.ini_options]` section (M0-T11). **M0-T03 (HC-6):** `[build-system]` (`uv_build` within the pinned uv minor line), `[tool.uv] package = true`, `[tool.uv.build-backend]` (module `cenomi` under `src/`), `[project.scripts] cenomi = "cenomi.cli.main:main"` (ARCH-R034), `[tool.ruff]` with its sub-tables, and `[tool.mypy]`. `required-version` and `exclude-newer` stay with M0-T01 and change only through a change request |
 | `backend/uv.lock`, `pnpm-lock.yaml` | M0-T01 | Regenerated per DEVENV-R052 |
 | `apps/web/package.json`, `packages/contracts-ts/package.json` | M0-T01 | Dependencies and scripts of the delivering card (M0-T04, M0-T05) per DEVENV-R052 |
 | `packages/viz/package.json` | M0-T08 (exact path) | — |
