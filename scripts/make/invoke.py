@@ -276,7 +276,7 @@ def run_target(name: str) -> None:
 
     if name == "up":
         _resolve(meta, run)
-        for step in ("docker compose build db api",):
+        for step in ("docker compose build db api migrate",):
             if _shell(step) != 0:
                 failed(name, "docker compose build failed", run, exit_code=1)
                 return
