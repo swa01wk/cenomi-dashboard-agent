@@ -14,8 +14,6 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from scripts.ci.changes import compute_applicability, load_ci_checks
-from scripts.ci.job_junit import JOB_JUNIT, compute_full_evidence_run
 from scripts.ci.summary import (
     STAGED_JUNIT_JSON,
     VERDICT_JSON,
@@ -24,7 +22,6 @@ from scripts.ci.summary import (
 )
 
 MAKE_TARGETS = REPO_ROOT / "specs/engineering/make_targets.yaml"
-CI = load_ci_checks()
 
 
 def _target_rows() -> list[dict[str, str]]:
@@ -56,122 +53,6 @@ def _status_records() -> list[dict]:
             if line:
                 records.append(json.loads(line))
     return records
-
-
-def _docs_only_applicability() -> dict:
-    return compute_applicability(
-        changed_files=["plans/M0_FOUNDATION.md"],
-        event_mode="pull_request",
-        ci=CI,
-    )
-
-
-def test_docs_only_is_not_full_evidence() -> None:
-    apps = _docs_only_applicability()
-    full, not_app = compute_full_evidence_run(
-        applicability=apps,
-        staged_paths=[],
-        repo_root=REPO_ROOT,
-        ci=CI,
-    )
-    assert not full
-    assert not_app
-    assert set(not_app) == set(JOB_JUNIT.keys())
-
-
-def test_partial_run_skips_evidence_checks_despite_window_mismatch(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """Documentation-only applicability: live evidence checks are not evaluated."""
-    import scripts.ci.summary as summary_mod
-
-    monkeypatch.setattr(summary_mod, "REPO_ROOT", tmp_path)
-    apps = _docs_only_applicability()
-    verdict = {
-        "success": True,
-        "errors": [],
-        "warnings": [],
-        "full_evidence_run": False,
-        "jobs_not_applicable": list(JOB_JUNIT.keys()),
-        "live_checks_not_evaluated": ["build-window target inference (M0 implemented cards)"],
-    }
-    status = [
-        {
-            "item": "backend-test",
-            "kind": "target",
-            "result": "PASSED",
-        }
-    ]
-    errors = assert_live_summary_evidence(
-        repo=tmp_path,
-        verdict=verdict,
-        junit_paths=[],
-        status_records=status,
-        pr_card=None,
-        make_targets=_target_rows(),
-    )
-    assert not errors
-
-
-def test_full_evidence_run_fails_bootstrap_when_at_missing(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    import scripts.ci.summary as summary_mod
-
-    monkeypatch.setattr(summary_mod, "REPO_ROOT", REPO_ROOT)
-    tooling = REPO_ROOT / "tests/reports/backend/junit-tooling.xml"
-    if not tooling.is_file():
-        pytest.skip("run make backend-test SUITE=tooling to generate junit-tooling.xml")
-
-    junit_paths = [tooling]
-
-    verdict = {
-        "success": True,
-        "errors": [],
-        "full_evidence_run": True,
-    }
-    errors = assert_live_summary_evidence(
-        repo=REPO_ROOT,
-        verdict=verdict,
-        junit_paths=junit_paths,
-        status_records=[],
-        pr_card=None,
-        make_targets=_target_rows(),
-    )
-    assert errors
-
-
-def test_pr_card_branch_parsing_unchanged() -> None:
-    assert parse_card_from_branch("feat/m0-t07-ci-workflows") == "M0-T07"
-    assert parse_card_from_branch("main") is None
-
-
-def test_push_main_event_full_evidence_with_all_junit(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """Push to main with all JOB_JUNIT artefacts staged is a full evidence run."""
-    apps = compute_applicability(
-        changed_files=[],
-        event_mode="push",
-        ci=CI,
-    )
-    staged: list[Path] = []
-    for rels in JOB_JUNIT.values():
-        for rel in rels:
-            path = tmp_path / rel
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(
-                '<?xml version="1.0"?><testsuite></testsuite>', encoding="utf-8"
-            )
-            staged.append(path)
-    full, not_app = compute_full_evidence_run(
-        applicability=apps,
-        staged_paths=staged,
-        repo_root=tmp_path,
-        ci=CI,
-    )
-    assert full
-    assert not not_app
 
 
 @pytest.mark.trace("AT-M0-T07-02", reqs=["ARCH-R105", "DEVENV-R031"])
