@@ -20,11 +20,13 @@ if str(REPO_ROOT) not in sys.path:
 
 import yaml
 
+from scripts.ci.build_window import assert_build_window_targets
 from scripts.ci.changes import compute_applicability, job_make_ci, load_ci_checks
 from scripts.ci.job_junit import (
     BASENAME_TO_REL,
     JOB_JUNIT,
     JUNIT_PRODUCER_TARGET,
+    compute_full_evidence_run,
 )
 from scripts.ci.job_slug import artifact_slug_to_job
 from scripts.make.report import milestone_index, read_active_milestone
@@ -41,6 +43,11 @@ LIVE_JUNIT = SUMMARY_REPORT_DIR / "junit-live.xml"
 JOBS_REQUIRING_STATUS = frozenset({"ci/images"})
 
 BOOTSTRAP_CARDS = ("M0-T01", "M0-T03", "M0-T11", "M0-T10")
+
+LIVE_EVIDENCE_CHECK_LABELS = {
+    "build_window": "build-window target inference (M0 implemented cards)",
+    "bootstrap_cards": "bootstrap card PASSED checks (EXC-001 C5)",
+}
 
 BLOCKING_CONCLUSIONS = frozenset({"success"})
 FAILING_CONCLUSIONS = frozenset(
@@ -410,20 +417,73 @@ def evaluate_card_rule(*, card: str, junit_paths: list[Path]) -> SummaryOutcome:
     return outcome
 
 
-def write_verdict_json(outcome: SummaryOutcome, path: Path = VERDICT_JSON) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(
-            {
-                "success": outcome.success,
-                "errors": outcome.errors,
-                "warnings": outcome.warnings,
-            },
-            indent=2,
+def live_checks_not_evaluated(*, full_evidence_run: bool) -> list[str]:
+    if full_evidence_run:
+        return []
+    return [LIVE_EVIDENCE_CHECK_LABELS[k] for k in LIVE_EVIDENCE_CHECK_LABELS]
+
+
+def assert_live_summary_evidence(
+    *,
+    repo: Path,
+    verdict: dict[str, Any],
+    junit_paths: list[Path],
+    status_records: list[dict[str, Any]],
+    pr_card: str | None,
+    make_targets: list[dict[str, str]],
+) -> list[str]:
+    """Evidence-dependent live AT checks (skipped on partial evidence runs)."""
+    errors: list[str] = []
+    if verdict.get("full_evidence_run") is False:
+        return errors
+
+    errors.extend(
+        assert_build_window_targets(
+            repo=repo,
+            status_records=status_records,
+            junit_paths=junit_paths,
+            pr_card=pr_card,
+            make_targets=make_targets,
         )
-        + "\n",
-        encoding="utf-8",
     )
+
+    for card in BOOTSTRAP_CARDS:
+        payload, report_errors, code = build_report(
+            repo, junit_paths=junit_paths, card=card
+        )
+        if code != 0:
+            errors.append(f"{card}: build_report failed: {report_errors}")
+            continue
+        tests = payload.get("acceptanceTests")
+        if not isinstance(tests, list):
+            continue
+        for row in tests:
+            if not isinstance(row, dict) or row.get("manual"):
+                continue
+            if row.get("result") != "PASSED":
+                errors.append(f"{card} {row.get('atId')}: {row.get('result')}")
+    return errors
+
+
+def write_verdict_json(
+    outcome: SummaryOutcome,
+    path: Path = VERDICT_JSON,
+    *,
+    full_evidence_run: bool | None = None,
+    jobs_not_applicable: list[str] | None = None,
+    live_checks_not_evaluated: list[str] | None = None,
+) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload: dict[str, Any] = {
+        "success": outcome.success,
+        "errors": outcome.errors,
+        "warnings": outcome.warnings,
+    }
+    if full_evidence_run is not None:
+        payload["full_evidence_run"] = full_evidence_run
+        payload["jobs_not_applicable"] = jobs_not_applicable or []
+        payload["live_checks_not_evaluated"] = live_checks_not_evaluated or []
+    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
 
 def write_staged_junit_manifest(junit_paths: list[Path]) -> Path:
@@ -523,6 +583,24 @@ def security_evidence_line(job_conclusions: dict[str, str | None]) -> list[str]:
     ]
 
 
+def render_live_evidence_section(
+    *,
+    full_evidence_run: bool,
+    jobs_not_applicable: list[str],
+    live_checks_not_evaluated: list[str],
+) -> list[str]:
+    lines = ["", "## AT-M0-T07-02 live summary", ""]
+    lines.append(f"- Full evidence run: **{'yes' if full_evidence_run else 'no'}**")
+    if jobs_not_applicable:
+        jobs = ", ".join(f"`{j}`" for j in jobs_not_applicable)
+        lines.append(f"- Jobs not applicable: {jobs}")
+    if live_checks_not_evaluated:
+        lines.append("- Live checks not evaluated:")
+        for label in live_checks_not_evaluated:
+            lines.append(f"  - {label}")
+    return lines
+
+
 def render_summary_markdown(
     *,
     sha: str,
@@ -533,6 +611,9 @@ def render_summary_markdown(
     status_records: list[dict[str, Any]],
     outcome: SummaryOutcome,
     junit_paths: list[Path] | None = None,
+    full_evidence_run: bool | None = None,
+    jobs_not_applicable: list[str] | None = None,
+    live_checks_not_evaluated: list[str] | None = None,
 ) -> str:
     reports = _load_reports_module()
     lines = [
@@ -562,7 +643,16 @@ def render_summary_markdown(
             f"- `{rec.get('item')}`: **{rec.get('result')}** — {rec.get('reason', '')}"
         )
 
-    if junit_paths:
+    if full_evidence_run is not None:
+        lines.extend(
+            render_live_evidence_section(
+                full_evidence_run=full_evidence_run,
+                jobs_not_applicable=jobs_not_applicable or [],
+                live_checks_not_evaluated=live_checks_not_evaluated or [],
+            )
+        )
+
+    if junit_paths and full_evidence_run:
         lines.extend(bootstrap_trace_lines(junit_paths))
     lines.extend(security_evidence_line(job_conclusions))
 
@@ -712,7 +802,19 @@ def main() -> int:
         job_status_files=job_status_files,
         active_milestone=active,
     )
-    write_verdict_json(verdict)
+
+    full_evidence_run, jobs_not_applicable = compute_full_evidence_run(
+        applicability=applicability,
+        staged_paths=junit_paths,
+        repo_root=REPO_ROOT,
+    )
+    skipped_live = live_checks_not_evaluated(full_evidence_run=full_evidence_run)
+    write_verdict_json(
+        verdict,
+        full_evidence_run=full_evidence_run,
+        jobs_not_applicable=jobs_not_applicable,
+        live_checks_not_evaluated=skipped_live,
+    )
 
     live_code, live_junit = run_live_summary_test(staged_junit_json=staged_junit_json)
     if live_junit is not None and live_junit not in junit_paths:
@@ -745,6 +847,9 @@ def main() -> int:
         status_records=status_records,
         outcome=outcome,
         junit_paths=junit_paths,
+        full_evidence_run=full_evidence_run,
+        jobs_not_applicable=jobs_not_applicable,
+        live_checks_not_evaluated=skipped_live,
     )
     SUMMARY_MD.parent.mkdir(parents=True, exist_ok=True)
     SUMMARY_MD.write_text(md, encoding="utf-8")

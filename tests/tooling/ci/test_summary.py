@@ -15,11 +15,13 @@ if str(REPO_ROOT) not in sys.path:
 
 from scripts.ci.changes import compute_applicability, job_make_ci, load_ci_checks
 from scripts.ci.summary import (
+    SummaryOutcome,
     check_job_junit_requirements,
     evaluate,
     evaluate_card_rule,
     evaluate_verdict,
     load_required_json,
+    render_summary_markdown,
     stage_junit_artifacts,
 )
 
@@ -388,6 +390,27 @@ def test_not_implemented_in_build_window_passes(tmp_path: Path) -> None:
 
 
 @pytest.mark.trace("AT-M0-T07-04", reqs=["DEVENV-R031"])
+def test_summary_markdown_lists_skipped_live_checks_on_partial_run() -> None:
+    apps = _applicability(["plans/M0_FOUNDATION.md"])
+    md = render_summary_markdown(
+        sha="abc",
+        spec_version="1",
+        active_milestone="M0",
+        applicability=apps,
+        job_conclusions={"ci/specs": "success"},
+        status_records=[],
+        outcome=SummaryOutcome(success=True),
+        full_evidence_run=False,
+        jobs_not_applicable=["ci/backend", "ci/frontend"],
+        live_checks_not_evaluated=["build-window target inference (M0 implemented cards)"],
+    )
+    assert "Full evidence run: **no**" in md
+    assert "`ci/backend`" in md
+    assert "Live checks not evaluated" in md
+    assert "build-window target inference" in md
+
+
+@pytest.mark.trace("AT-M0-T07-04", reqs=["DEVENV-R031"])
 def test_echarts_gate_non_blocking_before_m2(tmp_path: Path) -> None:
     jobs = _all_jobs_success()
     jobs["ci/echarts-gate"] = "failure"
@@ -478,7 +501,9 @@ def test_summary_order_verdict_before_card_rule(
 
         return SummaryOutcome(success=True)
 
-    def fake_write_verdict(outcome: Any, path: Path | None = None) -> None:
+    def fake_write_verdict(
+        outcome: Any, path: Path | None = None, **kwargs: Any
+    ) -> None:
         order.append("write_verdict")
         path = path or tmp_path / "verdict.json"
         path.parent.mkdir(parents=True, exist_ok=True)

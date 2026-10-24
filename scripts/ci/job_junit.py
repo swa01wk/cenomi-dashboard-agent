@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 from scripts.trace.report import DEFAULT_JUNIT_REL
 
@@ -48,3 +49,38 @@ def assert_job_junit_covers_default() -> None:
         )
     if len(covered) != len(DEFAULT_JUNIT_REL):
         raise AssertionError("JOB_JUNIT must assign each DEFAULT_JUNIT_REL path once")
+
+
+def compute_full_evidence_run(
+    *,
+    applicability: dict[str, Any],
+    staged_paths: list[Path],
+    repo_root: Path,
+    ci: dict[str, Any] | None = None,
+) -> tuple[bool, list[str]]:
+    """
+    True when every JOB_JUNIT job was applicable and all of its JUnit paths were staged.
+    """
+    from scripts.ci.changes import job_make_ci, load_ci_checks
+
+    ci = ci or load_ci_checks()
+    published = {r["job"]: r for r in applicability.get("jobs", [])}
+    staged_rels: set[str] = set()
+    for path in staged_paths:
+        try:
+            staged_rels.add(path.relative_to(repo_root).as_posix())
+        except ValueError:
+            staged_rels.add(path.as_posix())
+
+    not_applicable: list[str] = []
+    for job_name, rel_paths in sorted(JOB_JUNIT.items()):
+        if not job_make_ci(job_name, ci):
+            continue
+        applicable = published.get(job_name, {}).get("applicable", True)
+        if not applicable:
+            not_applicable.append(job_name)
+            continue
+        for rel in rel_paths:
+            if rel not in staged_rels:
+                return False, not_applicable
+    return (len(not_applicable) == 0), not_applicable
