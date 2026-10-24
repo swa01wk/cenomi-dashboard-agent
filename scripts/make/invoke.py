@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 import os
+import re
+import secrets
 import shutil
 import subprocess
 import sys
@@ -35,6 +37,40 @@ from targets import TARGET_BY_NAME, TargetMeta
 STUB_REASON = "implemented in a later M0 task card"
 HEAD_REVISION = "0001_m0_schemas_and_grants"
 COMPOSE_HEALTH_TIMEOUT_S = 120
+_SESSION_SECRET_LINE = re.compile(r"^SESSION_SECRET=(.*)$")
+
+
+def ensure_session_secret_in_dotenv(env_path: Path) -> None:
+    """Fill SESSION_SECRET when empty or missing (DEVENV §4, DEF-0007)."""
+    if not env_path.is_file():
+        return
+    raw = env_path.read_text(encoding="utf-8")
+    lines = raw.splitlines(keepends=True)
+    found_key = False
+    updated = False
+    out: list[str] = []
+    for line in lines:
+        body = line.rstrip("\r\n")
+        match = _SESSION_SECRET_LINE.match(body)
+        if match is None:
+            out.append(line)
+            continue
+        found_key = True
+        value = match.group(1).strip()
+        if value:
+            out.append(line)
+            continue
+        suffix = "\n" if line.endswith("\n") else ""
+        if line.endswith("\r\n"):
+            suffix = "\r\n"
+        out.append(f"SESSION_SECRET={secrets.token_urlsafe(48)}{suffix}")
+        updated = True
+    if not found_key:
+        newline = "\n" if raw.endswith("\n") or not raw else ""
+        out.append(f"SESSION_SECRET={secrets.token_urlsafe(48)}{newline}")
+        updated = True
+    if updated:
+        env_path.write_text("".join(out), encoding="utf-8")
 
 
 def _shell(cmd: str, *, cwd: Path | None = None) -> int:
@@ -237,6 +273,8 @@ def run_target(name: str) -> None:
         if not env.is_file() and example.is_file():
             print(f"+ cp {example} {env}", flush=True)
             shutil.copyfile(example, env)
+        if env.is_file():
+            ensure_session_secret_in_dotenv(env)
         code = _shell("make install")
         if code != 0:
             failed(name, "install failed", run, exit_code=code)
