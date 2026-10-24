@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from typing import Any
 
@@ -19,6 +20,17 @@ SPEC_SET = Path(__file__).resolve().parents[2] / "specs/engineering/spec_set.yam
 
 M0_T07_LIVE_AT = "AT-M0-T07-02"
 
+AT_RESULT_LINE = re.compile(
+    r"^AT-M[0-6]-T\d{2}-\d{2}: (?:PASSED|FAILED|SKIPPED|NOT_APPLICABLE|NOT_IMPLEMENTED)$"
+)
+
+
+def _card_report_has_blocking_errors(errors: list[str]) -> bool:
+    for err in errors:
+        if not AT_RESULT_LINE.match(err.strip()):
+            return True
+    return False
+
 
 def card_non_manual_all_passed(
     repo: Path,
@@ -27,8 +39,8 @@ def card_non_manual_all_passed(
     *,
     skip_at_ids: frozenset[str] = frozenset(),
 ) -> bool:
-    payload, _errors, code = build_report(repo, junit_paths=junit_paths, card=card_id)
-    if code != 0:
+    payload, errors, _code = build_report(repo, junit_paths=junit_paths, card=card_id)
+    if _card_report_has_blocking_errors(errors):
         return False
     tests = payload.get("acceptanceTests")
     if not isinstance(tests, list):
