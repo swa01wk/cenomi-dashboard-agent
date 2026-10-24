@@ -1,0 +1,74 @@
+name: eval-live
+
+on:
+  workflow_dispatch:
+    inputs:
+      set:
+        description: slice or benchmark
+        required: true
+        type: choice
+        options:
+          - slice
+          - benchmark
+      max_cases:
+        description: Maximum evaluation cases
+        required: true
+        type: string
+      max_tokens:
+        description: Maximum tokens
+        required: true
+        type: string
+      max_cost_usd:
+        description: Maximum estimated cost (USD)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    name: eval-live-guard
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - name: Validate inputs and repository
+        run: |
+          uv run --project backend python scripts/ci/eval_live_guard.py \
+            --repository "${{ github.repository }}" \
+            --ref-type "${{ github.ref_type }}" \
+            --set "${{ inputs.set }}" \
+            --max-cases "${{ inputs.max_cases }}" \
+            --max-tokens "${{ inputs.max_tokens }}" \
+            --max-cost-usd "${{ inputs.max_cost_usd }}"
+
+  agent-test-live:
+    name: agent-test-live
+    needs: [guard]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: live-eval
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - name: Validate protected environment
+        run: |
+          uv run --project backend python scripts/ci/eval_live_guard.py \
+            --require-environment \
+            --repository "${{ github.repository }}" \
+            --ref-type "${{ github.ref_type }}" \
+            --environment "live-eval" \
+            --set "${{ inputs.set }}" \
+            --max-cases "${{ inputs.max_cases }}" \
+            --max-tokens "${{ inputs.max_tokens }}" \
+            --max-cost-usd "${{ inputs.max_cost_usd }}"
+      - name: Live evaluation
+        run: make agent-test-live SET=${{ inputs.set }}
+        env:
+          LLM_MODE: live
+          LIVE_EVAL_MAX_CASES: ${{ inputs.max_cases }}
+          LIVE_EVAL_MAX_TOKENS: ${{ inputs.max_tokens }}
+          LIVE_EVAL_MAX_COST_USD: ${{ inputs.max_cost_usd }}
+          LIVE_EVAL_LLM_API_KEY: ${{ secrets.LIVE_EVAL_LLM_API_KEY }}

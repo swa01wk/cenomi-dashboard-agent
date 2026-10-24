@@ -1,0 +1,37 @@
+name: Cenomi toolchain setup
+description: uv, Node, pnpm caches, and make install (DEVENV-R024). Checkout is a separate workflow step.
+
+runs:
+  using: composite
+  steps:
+    - name: Install uv
+      uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      with:
+        enable-cache: true
+        cache-dependency-glob: backend/uv.lock
+
+    - name: Setup Node.js
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version-file: .nvmrc
+        package-manager-cache: false
+
+    - name: Enable Corepack pnpm
+      shell: bash
+      run: corepack enable
+
+    - name: Cache pnpm store
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/.local/share/pnpm/store
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+
+    - name: Install gitleaks
+      shell: bash
+      run: bash scripts/ci/install_gitleaks.sh
+
+    - name: Install dependencies
+      shell: bash
+      run: make install BROWSERS=0
