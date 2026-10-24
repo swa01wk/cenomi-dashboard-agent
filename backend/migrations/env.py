@@ -8,8 +8,8 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
-from cenomi.core.settings import load_settings
 from cenomi.db.guards import DbOperation, GuardContext, GuardFailure, enforce_guards, refuse_guard
+from cenomi.db.settings import load_db_settings
 from cenomi.db.tables import metadata
 from cenomi.db.urls import database_name_for, replace_database
 
@@ -35,7 +35,7 @@ def include_object(
 
 def _owner_url() -> str:
     db = os.environ.get("DB", "dev").strip().lower()
-    settings = load_settings()
+    settings = load_db_settings()
     name = database_name_for(db)
     url = replace_database(settings.database_url_owner.get_secret_value(), name)
     ctx = GuardContext(url=url, operation=DbOperation.MIGRATE)

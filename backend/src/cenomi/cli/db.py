@@ -12,8 +12,8 @@ import psycopg
 from psycopg import sql
 
 from cenomi.core.logging import configure_logging
-from cenomi.core.settings import load_settings
 from cenomi.db.guards import DbOperation, GuardContext, GuardFailure, enforce_guards, refuse_guard
+from cenomi.db.settings import load_db_settings
 from cenomi.db.urls import database_name_for, replace_database
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
@@ -33,8 +33,8 @@ def _connect(url: str) -> psycopg.Connection:
 
 
 def cmd_init(_args: argparse.Namespace) -> int:
-    settings = load_settings()
-    configure_logging(service="cli", env=settings.cenomi_env, level=settings.log_level)
+    settings = load_db_settings()
+    configure_logging(service="cli", env=settings.cenomi_env, level="INFO")
     admin_url = settings.database_url_admin.get_secret_value()
     ctx = GuardContext(url=admin_url, operation=DbOperation.INIT)
     try:
@@ -101,8 +101,8 @@ def _bool_priv(conn: psycopg.Connection, query: str, *args: object) -> bool:
 
 
 def cmd_verify_roles(args: argparse.Namespace) -> int:
-    settings = load_settings()
-    configure_logging(service="cli", env=settings.cenomi_env, level=settings.log_level)
+    settings = load_db_settings()
+    configure_logging(service="cli", env=settings.cenomi_env, level="INFO")
     db_name = database_name_for(args.db)
     owner_url = replace_database(
         settings.database_url_owner.get_secret_value(),

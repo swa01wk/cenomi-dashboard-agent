@@ -21,6 +21,21 @@ def _docker_available() -> bool:
     return shutil.which("docker") is not None
 
 
+def _ensure_repo_env_file() -> None:
+    env_path = REPO_ROOT / ".env"
+    if env_path.is_file():
+        return
+    setup = subprocess.run(
+        ["make", "setup"],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert setup.returncode == 0, setup.stdout + setup.stderr
+    assert env_path.is_file(), "make setup did not create .env"
+
+
 def _run_make(*args: str, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
     merged = os.environ.copy()
     if env:
@@ -36,6 +51,7 @@ def _run_make(*args: str, env: dict[str, str] | None = None) -> subprocess.Compl
 
 
 def _compose_config() -> dict:
+    _ensure_repo_env_file()
     completed = subprocess.run(
         ["docker", "compose", "config", "--format", "json"],
         cwd=REPO_ROOT,
@@ -66,6 +82,7 @@ def test_compose_published_ports_bind_localhost_only() -> None:
 @pytest.mark.trace("AT-M0-T02-10", reqs=["ARCH-R002"])
 @pytest.mark.skipif(not _docker_available(), reason="Docker not available")
 def test_api_container_runs_as_non_root() -> None:
+    _ensure_repo_env_file()
     running = subprocess.run(
         ["docker", "compose", "ps", "--format", "json", "api"],
         cwd=REPO_ROOT,
@@ -93,8 +110,7 @@ def test_api_container_runs_as_non_root() -> None:
 @pytest.mark.trace("AT-M0-T02-01", reqs=["DEVENV-R005", "ARCH-R057"])
 @pytest.mark.skipif(not _docker_available(), reason="Docker not available")
 def test_make_up_on_clean_volume() -> None:
-    if not (REPO_ROOT / ".env").is_file():
-        pytest.skip(".env required (run make setup)")
+    _ensure_repo_env_file()
     down = _run_make("down", "VOLUMES=1", "CONFIRM=yes")
     assert down.returncode == 0, down.stderr
     up = _run_make("up")

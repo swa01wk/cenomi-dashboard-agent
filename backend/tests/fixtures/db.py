@@ -15,6 +15,7 @@ from psycopg import sql
 from cenomi.core.settings import get_settings, load_settings
 from cenomi.db.engines import clear_engine_caches
 from cenomi.db.guards import DbOperation, GuardContext, enforce_guards
+from cenomi.db.settings import get_db_settings, load_db_settings
 from cenomi.db.urls import replace_database
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -24,6 +25,8 @@ _WORKER_DB = re.compile(r"^cenomi_test_gw\d+$")
 def _load_repo_dotenv() -> None:
     dotenv = REPO_ROOT / ".env"
     if not dotenv.is_file():
+        dotenv = REPO_ROOT / ".env.example"
+    if not dotenv.is_file():
         return
     for raw in dotenv.read_text(encoding="utf-8").splitlines():
         line = raw.strip()
@@ -32,7 +35,9 @@ def _load_repo_dotenv() -> None:
         key, value = line.split("=", 1)
         name = key.strip()
         val = value.strip()
-        if val or name not in os.environ:
+        if name in os.environ:
+            continue
+        if val:
             os.environ[name] = val
     secret = os.environ.get("SESSION_SECRET", "")
     if len(secret.encode("utf-8")) < 32:
@@ -43,6 +48,7 @@ def pytest_configure(config: pytest.Config) -> None:
     del config
     _load_repo_dotenv()
     get_settings.cache_clear()
+    get_db_settings.cache_clear()
 
 
 def _worker_database_name(config: pytest.Config) -> str:
@@ -54,11 +60,11 @@ def _worker_database_name(config: pytest.Config) -> str:
 
 
 def _admin_url() -> str:
-    return load_settings().database_url_admin.get_secret_value()
+    return load_db_settings().database_url_admin.get_secret_value()
 
 
 def _owner_url(database: str) -> str:
-    settings = load_settings()
+    settings = load_db_settings()
     url = replace_database(settings.database_url_owner.get_secret_value(), database)
     ctx = GuardContext(url=url, operation=DbOperation.MIGRATE)
     enforce_guards(ctx)
@@ -114,6 +120,7 @@ def _set_test_database_env(database: str) -> None:
     ):
         os.environ[key] = replace_database(url, database)
     get_settings.cache_clear()
+    get_db_settings.cache_clear()
     clear_engine_caches()
 
 
