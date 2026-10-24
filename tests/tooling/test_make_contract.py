@@ -94,6 +94,51 @@ def _clear_status() -> None:
         path.unlink()
 
 
+def _load_make_targets_module():
+    targets_path = REPO_ROOT / "scripts" / "make" / "targets.py"
+    spec = importlib.util.spec_from_file_location("make_targets_stub_pick", targets_path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["make_targets_stub_pick"] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def _active_milestone() -> str:
+    data = yaml.safe_load(SPEC_SET.read_text(encoding="utf-8"))
+    return str(data["active_milestone"])
+
+
+def _stub_target_name() -> str:
+    """First M0-window target still reporting NOT_IMPLEMENTED, else a known stub."""
+    active = _active_milestone()
+    make_targets = _load_make_targets_module()
+    for meta in make_targets.TARGETS:
+        if meta.active_from != active or meta.implemented:
+            continue
+        probe = subprocess.run(
+            ["python3", "scripts/make/invoke.py", meta.name],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        lines = [ln for ln in probe.stdout.splitlines() if ln.strip()]
+        if lines and lines[-1].startswith(f"NOT_IMPLEMENTED: {meta.name} —"):
+            return meta.name
+    synthetic = "e2e"
+    probe = subprocess.run(
+        ["python3", "scripts/make/invoke.py", synthetic],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    lines = [ln for ln in probe.stdout.splitlines() if ln.strip()]
+    assert lines and lines[-1].startswith(f"NOT_IMPLEMENTED: {synthetic} —")
+    return synthetic
+
+
 @pytest.mark.trace("AT-M0-T01-01", reqs=["DEVENV-R002", "DEVENV-R003", "DEVENV-R052"])
 def test_make_install_clean_git_status() -> None:
     proc = _run_make("install")
@@ -160,7 +205,7 @@ def test_target_results_milestone_and_stubs() -> None:
     assert record["result"] == "NOT_APPLICABLE"
     assert record["rule"] == "milestone"
 
-    stub = "up"
+    stub = _stub_target_name()
     _clear_status()
     stub_proc = _run_make(stub)
     assert stub_proc.returncode == 0

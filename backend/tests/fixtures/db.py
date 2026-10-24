@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import re
+import secrets
 from collections.abc import AsyncIterator, Iterator
 from pathlib import Path
 
@@ -35,7 +36,7 @@ def _load_repo_dotenv() -> None:
             os.environ[name] = val
     secret = os.environ.get("SESSION_SECRET", "")
     if len(secret.encode("utf-8")) < 32:
-        os.environ["SESSION_SECRET"] = "change-me-dev-only-session-secret-32b"
+        os.environ["SESSION_SECRET"] = secrets.token_urlsafe(32)
 
 
 def pytest_configure(config: pytest.Config) -> None:
