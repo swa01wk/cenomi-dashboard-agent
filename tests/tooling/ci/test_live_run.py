@@ -14,14 +14,12 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from scripts.ci.build_window import assert_build_window_targets
 from scripts.ci.summary import (
-    BOOTSTRAP_CARDS,
     STAGED_JUNIT_JSON,
     VERDICT_JSON,
+    assert_live_summary_evidence,
     parse_card_from_branch,
 )
-from scripts.trace.report import DEFAULT_JUNIT_REL, build_report
 
 MAKE_TARGETS = REPO_ROOT / "specs/engineering/make_targets.yaml"
 
@@ -42,6 +40,8 @@ def _junit_paths() -> list[Path]:
     if STAGED_JUNIT_JSON.is_file():
         rels = json.loads(STAGED_JUNIT_JSON.read_text(encoding="utf-8"))
         return [REPO_ROOT / rel for rel in rels if (REPO_ROOT / rel).is_file()]
+    from scripts.trace.report import DEFAULT_JUNIT_REL
+
     return [REPO_ROOT / rel for rel in DEFAULT_JUNIT_REL if (REPO_ROOT / rel).is_file()]
 
 
@@ -66,25 +66,12 @@ def test_at_m0_t07_02_live_summary() -> None:
     junit_paths = _junit_paths()
     status_records = _status_records()
 
-    window_errors = assert_build_window_targets(
+    evidence_errors = assert_live_summary_evidence(
         repo=REPO_ROOT,
-        status_records=status_records,
+        verdict=verdict,
         junit_paths=junit_paths,
+        status_records=status_records,
         pr_card=pr_card,
         make_targets=_target_rows(),
     )
-    assert not window_errors, window_errors
-
-    for card in BOOTSTRAP_CARDS:
-        payload, errors, code = build_report(
-            REPO_ROOT, junit_paths=junit_paths, card=card
-        )
-        assert code == 0, f"{card}: build_report failed: {errors}"
-        tests = payload.get("acceptanceTests")
-        assert isinstance(tests, list)
-        for row in tests:
-            if not isinstance(row, dict) or row.get("manual"):
-                continue
-            assert row.get("result") == "PASSED", (
-                f"{card} {row.get('atId')}: {row.get('result')}"
-            )
+    assert not evidence_errors, evidence_errors
