@@ -1,3 +1,13 @@
+# In-container database URLs use host `db` and the same fake role passwords as `.env.example`
+# (DEVENV §4). They are declared literally here — never ${DATABASE_URL_*} from the host shell.
+
+x-cenomi-in-container-db-urls: &in-container-db-urls
+  DATABASE_URL_ADMIN: postgresql://postgres:change-me-dev-only-admin@db:5432/postgres
+  DATABASE_URL_OWNER: postgresql://cenomi_owner:change-me-dev-only-owner@db:5432/cenomi_dev
+  DATABASE_URL_SEED: postgresql://cenomi_seed:change-me-dev-only-seed@db:5432/cenomi_dev
+  DATABASE_URL_READER: postgresql://cenomi_reader:change-me-dev-only-reader@db:5432/cenomi_dev
+  DATABASE_URL_APP: postgresql://cenomi_app:change-me-dev-only-app@db:5432/cenomi_dev
+
 services:
   db:
     image: postgres:16.15@sha256:9e2cf6287f25c3151f4c9421ccce2b17f3e60061c111a29165e0d2cdd9ff0a97
@@ -24,17 +34,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    env_file: .env
     volumes:
       - ./backend/migrations:/app/backend/migrations:ro
       - ./backend/alembic.ini:/app/backend/alembic.ini:ro
     environment:
+      <<: *in-container-db-urls
       CENOMI_ENV: dev
-      DATABASE_URL_OWNER: postgresql://cenomi_owner:change-me-dev-only-owner@db:5432/cenomi_dev
-      DATABASE_URL_ADMIN: postgresql://postgres:change-me-dev-only-admin@db:5432/postgres
-      DATABASE_URL_SEED: postgresql://cenomi_seed:change-me-dev-only-seed@db:5432/cenomi_dev
-      DATABASE_URL_READER: postgresql://cenomi_reader:change-me-dev-only-reader@db:5432/cenomi_dev
-      DATABASE_URL_APP: postgresql://cenomi_app:change-me-dev-only-app@db:5432/cenomi_dev
       DB: dev
     command: ["alembic", "upgrade", "head"]
     restart: "no"
@@ -47,7 +52,6 @@ services:
     depends_on:
       migrate:
         condition: service_completed_successfully
-    env_file: .env
     environment:
       DATABASE_URL_SEED: postgresql://cenomi_seed:change-me-dev-only-seed@db:5432/cenomi_dev
     command:
@@ -68,12 +72,13 @@ services:
     env_file: .env
     environment:
       CENOMI_ENV: dev
+      SESSION_SECRET: change-me-dev-only-session-secret-thirtytwo
       DATABASE_URL_ADMIN: ""
       DATABASE_URL_OWNER: ""
       DATABASE_URL_SEED: ""
       DATABASE_URL_READER: postgresql://cenomi_reader:change-me-dev-only-reader@db:5432/cenomi_dev
       DATABASE_URL_APP: postgresql://cenomi_app:change-me-dev-only-app@db:5432/cenomi_dev
-      API_INTERNAL_URL: http://localhost:8000
+      API_INTERNAL_URL: http://127.0.0.1:8000
     ports:
       - "127.0.0.1:8000:8000"
     healthcheck:

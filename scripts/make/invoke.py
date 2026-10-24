@@ -157,11 +157,23 @@ def _wait_compose_healthy(
 
 
 def _print_compose_logs(service: str, *, tail: int = 50) -> None:
+    print(f"--- docker compose logs --tail {tail} {service} ---", flush=True)
     subprocess.run(
         ["docker", "compose", "logs", "--tail", str(tail), service],
         cwd=REPO_ROOT,
         check=False,
     )
+
+
+def _print_compose_ps() -> None:
+    print("--- docker compose ps ---", flush=True)
+    subprocess.run(["docker", "compose", "ps"], cwd=REPO_ROOT, check=False)
+
+
+def _print_compose_failure_diagnostics() -> None:
+    _print_compose_logs("api")
+    _print_compose_logs("db")
+    _print_compose_ps()
 
 
 def _wait_api_health_ok(timeout_s: int = COMPOSE_HEALTH_TIMEOUT_S) -> bool:
@@ -285,6 +297,7 @@ def run_target(name: str) -> None:
             return
         if not _wait_compose_healthy("db"):
             _print_compose_logs("db")
+            _print_compose_ps()
             failed(name, "db did not become healthy within 120s", run, exit_code=1)
             return
         if _shell("make db-init") != 0:
@@ -298,7 +311,7 @@ def run_target(name: str) -> None:
             failed(name, "failed to start api", run, exit_code=1)
             return
         if not _wait_compose_healthy("api") or not _wait_api_health_ok():
-            _print_compose_logs("api")
+            _print_compose_failure_diagnostics()
             failed(name, "api did not become healthy within 120s", run, exit_code=1)
             return
         passed(name, "db and api healthy with migrations at head", run)

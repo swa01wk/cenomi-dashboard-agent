@@ -50,17 +50,68 @@ def _run_make(*args: str, env: dict[str, str] | None = None) -> subprocess.Compl
     )
 
 
-def _compose_config() -> dict:
+def _compose_config(
+    env: dict[str, str] | None = None, *, profiles: tuple[str, ...] = ()
+) -> dict:
     _ensure_repo_env_file()
+    merged = os.environ.copy()
+    if env:
+        merged.update(env)
+    cmd = ["docker", "compose"]
+    for profile in profiles:
+        cmd.extend(["--profile", profile])
+    cmd.extend(["config", "--format", "json"])
     completed = subprocess.run(
-        ["docker", "compose", "config", "--format", "json"],
+        cmd,
         cwd=REPO_ROOT,
+        env=merged,
         capture_output=True,
         text=True,
         check=False,
     )
     assert completed.returncode == 0, completed.stderr
     return json.loads(completed.stdout)
+
+
+def _service_environment(config: dict, service: str) -> dict[str, str]:
+    raw = config.get("services", {}).get(service, {}).get("environment") or {}
+    if isinstance(raw, dict):
+        return {str(k): str(v) for k, v in raw.items()}
+    parsed: dict[str, str] = {}
+    for entry in raw:
+        if isinstance(entry, str) and "=" in entry:
+            key, value = entry.split("=", 1)
+            parsed[key] = value
+    return parsed
+
+
+@pytest.mark.trace("AT-M0-T02-10", reqs=["DEVENV-R005", "ARCH-R002"])
+def test_compose_in_container_database_urls_ignore_host_shell() -> None:
+    bogus = {
+        "CENOMI_ENV": "ci",
+        "DATABASE_URL_READER": "postgresql://x:y@localhost:1/z",
+        "DATABASE_URL_APP": "postgresql://x:y@localhost:1/z",
+        "DATABASE_URL_OWNER": "postgresql://x:y@localhost:1/z",
+    }
+    api_env = _service_environment(_compose_config(bogus), "api")
+    migrate_env = _service_environment(
+        _compose_config(bogus, profiles=("setup",)),
+        "migrate",
+    )
+    assert api_env.get("CENOMI_ENV") == "dev"
+    for key in ("DATABASE_URL_READER", "DATABASE_URL_APP"):
+        url = api_env.get(key, "")
+        assert "@db:5432/" in url, f"{key} must target compose db service: {url!r}"
+        assert "localhost" not in url
+    for key in (
+        "DATABASE_URL_ADMIN",
+        "DATABASE_URL_OWNER",
+        "DATABASE_URL_READER",
+        "DATABASE_URL_APP",
+    ):
+        url = migrate_env.get(key, "")
+        assert "@db:5432/" in url, f"migrate {key} must target compose db service: {url!r}"
+        assert "localhost" not in url
 
 
 @pytest.mark.trace("AT-M0-T02-10", reqs=["DEVENV-R005", "ARCH-R002"])
