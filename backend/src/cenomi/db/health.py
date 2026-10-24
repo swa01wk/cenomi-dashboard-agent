@@ -88,9 +88,7 @@ async def _check_schemas(engine: AsyncEngine) -> str | None:
             row = (
                 await conn.execute(
                     text(
-                        "SELECT EXISTS("
-                        "SELECT 1 FROM pg_catalog.pg_namespace "
-                        "WHERE nspname = :name)"
+                        "SELECT EXISTS(SELECT 1 FROM pg_catalog.pg_namespace WHERE nspname = :name)"
                     ),
                     {"name": schema},
                 )
