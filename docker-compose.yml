@@ -72,7 +72,6 @@ services:
     env_file: .env
     environment:
       CENOMI_ENV: dev
-      SESSION_SECRET: change-me-dev-only-session-secret-thirtytwo
       DATABASE_URL_ADMIN: ""
       DATABASE_URL_OWNER: ""
       DATABASE_URL_SEED: ""
