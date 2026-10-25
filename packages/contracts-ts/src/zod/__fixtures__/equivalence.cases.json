@@ -1,0 +1,2165 @@
+{
+  "schemas": {
+    "dataset_descriptor": [
+      {
+        "id": "dataset_descriptor:example:0",
+        "jsonschemaValid": true,
+        "payload": {
+          "asOf": "2026-10-20",
+          "datasetId": "sd-2026.10.20-01",
+          "source": "config",
+          "state": "declared",
+          "synthetic": true,
+          "timezone": "Asia/Riyadh"
+        }
+      },
+      {
+        "id": "dataset_descriptor:mut:$:unknown_field",
+        "jsonschemaValid": false,
+        "payload": {
+          "__bad": true,
+          "asOf": "2026-10-20",
+          "datasetId": "sd-2026.10.20-01",
+          "source": "config",
+          "state": "declared",
+          "synthetic": true,
+          "timezone": "Asia/Riyadh"
+        }
+      },
+      {
+        "id": "dataset_descriptor:mut:$:drop_asOf",
+        "jsonschemaValid": false,
+        "payload": {
+          "datasetId": "sd-2026.10.20-01",
+          "source": "config",
+          "state": "declared",
+          "synthetic": true,
+          "timezone": "Asia/Riyadh"
+        }
+      },
+      {
+        "id": "dataset_descriptor:mut:$:asOf_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "asOf": 1,
+          "datasetId": "sd-2026.10.20-01",
+          "source": "config",
+          "state": "declared",
+          "synthetic": true,
+          "timezone": "Asia/Riyadh"
+        }
+      },
+      {
+        "id": "dataset_descriptor:mut:$:drop_datasetId",
+        "jsonschemaValid": false,
+        "payload": {
+          "asOf": "2026-10-20",
+          "source": "config",
+          "state": "declared",
+          "synthetic": true,
+          "timezone": "Asia/Riyadh"
+        }
+      },
+      {
+        "id": "dataset_descriptor:mut:$:datasetId_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "asOf": "2026-10-20",
+          "datasetId": 1,
+          "source": "config",
+          "state": "declared",
+          "synthetic": true,
+          "timezone": "Asia/Riyadh"
+        }
+      },
+      {
+        "id": "dataset_descriptor:mut:$:drop_source",
+        "jsonschemaValid": false,
+        "payload": {
+          "asOf": "2026-10-20",
+          "datasetId": "sd-2026.10.20-01",
+          "state": "declared",
+          "synthetic": true,
+          "timezone": "Asia/Riyadh"
+        }
+      },
+      {
+        "id": "dataset_descriptor:mut:$:source_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "asOf": "2026-10-20",
+          "datasetId": "sd-2026.10.20-01",
+          "source": 1,
+          "state": "declared",
+          "synthetic": true,
+          "timezone": "Asia/Riyadh"
+        }
+      },
+      {
+        "id": "dataset_descriptor:mut:$:drop_state",
+        "jsonschemaValid": false,
+        "payload": {
+          "asOf": "2026-10-20",
+          "datasetId": "sd-2026.10.20-01",
+          "source": "config",
+          "synthetic": true,
+          "timezone": "Asia/Riyadh"
+        }
+      },
+      {
+        "id": "dataset_descriptor:mut:$:state_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "asOf": "2026-10-20",
+          "datasetId": "sd-2026.10.20-01",
+          "source": "config",
+          "state": 1,
+          "synthetic": true,
+          "timezone": "Asia/Riyadh"
+        }
+      },
+      {
+        "id": "dataset_descriptor:mut:$:drop_synthetic",
+        "jsonschemaValid": false,
+        "payload": {
+          "asOf": "2026-10-20",
+          "datasetId": "sd-2026.10.20-01",
+          "source": "config",
+          "state": "declared",
+          "timezone": "Asia/Riyadh"
+        }
+      },
+      {
+        "id": "dataset_descriptor:mut:$:synthetic_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "asOf": "2026-10-20",
+          "datasetId": "sd-2026.10.20-01",
+          "source": "config",
+          "state": "declared",
+          "synthetic": "x",
+          "timezone": "Asia/Riyadh"
+        }
+      },
+      {
+        "id": "dataset_descriptor:mut:$:drop_timezone",
+        "jsonschemaValid": false,
+        "payload": {
+          "asOf": "2026-10-20",
+          "datasetId": "sd-2026.10.20-01",
+          "source": "config",
+          "state": "declared",
+          "synthetic": true
+        }
+      },
+      {
+        "id": "dataset_descriptor:mut:$:timezone_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "asOf": "2026-10-20",
+          "datasetId": "sd-2026.10.20-01",
+          "source": "config",
+          "state": "declared",
+          "synthetic": true,
+          "timezone": 1
+        }
+      },
+      {
+        "id": "dataset_descriptor:mut:null_root",
+        "jsonschemaValid": false,
+        "payload": null
+      }
+    ],
+    "error_envelope": [
+      {
+        "id": "error_envelope:example:0",
+        "jsonschemaValid": true,
+        "payload": {
+          "error": {
+            "code": "NOT_AVAILABLE",
+            "message": "This isn't available.",
+            "requestRef": "req_8f21c4a09b7e3d15",
+            "retryable": false
+          }
+        }
+      },
+      {
+        "id": "error_envelope:example:1",
+        "jsonschemaValid": true,
+        "payload": {
+          "error": {
+            "code": "VALIDATION_ERROR",
+            "details": [
+              {
+                "path": "query.region",
+                "rule": "unknown_field"
+              }
+            ],
+            "message": "The request is not valid.",
+            "requestRef": "req_00a1b2c3d4e5f607",
+            "retryable": false
+          }
+        }
+      },
+      {
+        "id": "error_envelope:example:2",
+        "jsonschemaValid": true,
+        "payload": {
+          "error": {
+            "code": "DEPENDENCY_UNAVAILABLE",
+            "message": "The service is temporarily unavailable. Try again.",
+            "requestRef": "req_1234567890abcdef",
+            "retryable": true
+          }
+        }
+      },
+      {
+        "id": "error_envelope:mut:$:unknown_field",
+        "jsonschemaValid": false,
+        "payload": {
+          "__bad": true,
+          "error": {
+            "code": "NOT_AVAILABLE",
+            "message": "This isn't available.",
+            "requestRef": "req_8f21c4a09b7e3d15",
+            "retryable": false
+          }
+        }
+      },
+      {
+        "id": "error_envelope:mut:$:drop_error",
+        "jsonschemaValid": false,
+        "payload": {}
+      },
+      {
+        "id": "error_envelope:mut:$.error:unknown_field",
+        "jsonschemaValid": false,
+        "payload": {
+          "__bad": true,
+          "code": "NOT_AVAILABLE",
+          "message": "This isn't available.",
+          "requestRef": "req_8f21c4a09b7e3d15",
+          "retryable": false
+        }
+      },
+      {
+        "id": "error_envelope:mut:$.error:drop_code",
+        "jsonschemaValid": false,
+        "payload": {
+          "message": "This isn't available.",
+          "requestRef": "req_8f21c4a09b7e3d15",
+          "retryable": false
+        }
+      },
+      {
+        "id": "error_envelope:mut:$.error:code_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "code": 1,
+          "message": "This isn't available.",
+          "requestRef": "req_8f21c4a09b7e3d15",
+          "retryable": false
+        }
+      },
+      {
+        "id": "error_envelope:mut:$.error:drop_message",
+        "jsonschemaValid": false,
+        "payload": {
+          "code": "NOT_AVAILABLE",
+          "requestRef": "req_8f21c4a09b7e3d15",
+          "retryable": false
+        }
+      },
+      {
+        "id": "error_envelope:mut:$.error:message_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "code": "NOT_AVAILABLE",
+          "message": 1,
+          "requestRef": "req_8f21c4a09b7e3d15",
+          "retryable": false
+        }
+      },
+      {
+        "id": "error_envelope:mut:$.error:drop_requestRef",
+        "jsonschemaValid": false,
+        "payload": {
+          "code": "NOT_AVAILABLE",
+          "message": "This isn't available.",
+          "retryable": false
+        }
+      },
+      {
+        "id": "error_envelope:mut:$.error:requestRef_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "code": "NOT_AVAILABLE",
+          "message": "This isn't available.",
+          "requestRef": 1,
+          "retryable": false
+        }
+      },
+      {
+        "id": "error_envelope:mut:$.error:drop_retryable",
+        "jsonschemaValid": false,
+        "payload": {
+          "code": "NOT_AVAILABLE",
+          "message": "This isn't available.",
+          "requestRef": "req_8f21c4a09b7e3d15"
+        }
+      },
+      {
+        "id": "error_envelope:mut:$.error:retryable_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "code": "NOT_AVAILABLE",
+          "message": "This isn't available.",
+          "requestRef": "req_8f21c4a09b7e3d15",
+          "retryable": "x"
+        }
+      },
+      {
+        "id": "error_envelope:mut:null_root",
+        "jsonschemaValid": false,
+        "payload": null
+      }
+    ],
+    "health_report": [
+      {
+        "id": "health_report:example:0",
+        "jsonschemaValid": true,
+        "payload": {
+          "app": {
+            "migrationHead": "0001_m0_schemas_and_grants",
+            "specSet": "0.1.0",
+            "version": "0.1.0+d5db7f3"
+          },
+          "checkedAt": "2026-10-22T14:30:00Z",
+          "checks": [
+            {
+              "durationMs": 0,
+              "name": "process",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 4,
+              "name": "db_reader",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 3,
+              "name": "db_app",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 2,
+              "name": "schemas_present",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 6,
+              "name": "role_isolation",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 1,
+              "name": "migrations_at_head",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "detail": "dataset not seeded until M1",
+              "durationMs": 0,
+              "name": "dataset",
+              "required": false,
+              "status": "skipped"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      {
+        "id": "health_report:example:1",
+        "jsonschemaValid": true,
+        "payload": {
+          "app": {
+            "specSet": "0.1.0",
+            "version": "0.1.0+d5db7f3"
+          },
+          "checkedAt": "2026-10-22T14:31:00Z",
+          "checks": [
+            {
+              "durationMs": 0,
+              "name": "process",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "detail": "connection refused",
+              "durationMs": 2000,
+              "name": "db_reader",
+              "required": true,
+              "status": "fail"
+            }
+          ],
+          "status": "fail"
+        }
+      },
+      {
+        "id": "health_report:mut:$:unknown_field",
+        "jsonschemaValid": false,
+        "payload": {
+          "__bad": true,
+          "app": {
+            "migrationHead": "0001_m0_schemas_and_grants",
+            "specSet": "0.1.0",
+            "version": "0.1.0+d5db7f3"
+          },
+          "checkedAt": "2026-10-22T14:30:00Z",
+          "checks": [
+            {
+              "durationMs": 0,
+              "name": "process",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 4,
+              "name": "db_reader",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 3,
+              "name": "db_app",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 2,
+              "name": "schemas_present",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 6,
+              "name": "role_isolation",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 1,
+              "name": "migrations_at_head",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "detail": "dataset not seeded until M1",
+              "durationMs": 0,
+              "name": "dataset",
+              "required": false,
+              "status": "skipped"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      {
+        "id": "health_report:mut:$:drop_app",
+        "jsonschemaValid": false,
+        "payload": {
+          "checkedAt": "2026-10-22T14:30:00Z",
+          "checks": [
+            {
+              "durationMs": 0,
+              "name": "process",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 4,
+              "name": "db_reader",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 3,
+              "name": "db_app",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 2,
+              "name": "schemas_present",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 6,
+              "name": "role_isolation",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 1,
+              "name": "migrations_at_head",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "detail": "dataset not seeded until M1",
+              "durationMs": 0,
+              "name": "dataset",
+              "required": false,
+              "status": "skipped"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      {
+        "id": "health_report:mut:$.app:unknown_field",
+        "jsonschemaValid": false,
+        "payload": {
+          "__bad": true,
+          "migrationHead": "0001_m0_schemas_and_grants",
+          "specSet": "0.1.0",
+          "version": "0.1.0+d5db7f3"
+        }
+      },
+      {
+        "id": "health_report:mut:$.app:drop_migrationHead",
+        "jsonschemaValid": false,
+        "payload": {
+          "specSet": "0.1.0",
+          "version": "0.1.0+d5db7f3"
+        }
+      },
+      {
+        "id": "health_report:mut:$.app:migrationHead_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "migrationHead": 1,
+          "specSet": "0.1.0",
+          "version": "0.1.0+d5db7f3"
+        }
+      },
+      {
+        "id": "health_report:mut:$.app:drop_specSet",
+        "jsonschemaValid": false,
+        "payload": {
+          "migrationHead": "0001_m0_schemas_and_grants",
+          "version": "0.1.0+d5db7f3"
+        }
+      },
+      {
+        "id": "health_report:mut:$.app:specSet_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "migrationHead": "0001_m0_schemas_and_grants",
+          "specSet": 1,
+          "version": "0.1.0+d5db7f3"
+        }
+      },
+      {
+        "id": "health_report:mut:$.app:drop_version",
+        "jsonschemaValid": false,
+        "payload": {
+          "migrationHead": "0001_m0_schemas_and_grants",
+          "specSet": "0.1.0"
+        }
+      },
+      {
+        "id": "health_report:mut:$.app:version_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "migrationHead": "0001_m0_schemas_and_grants",
+          "specSet": "0.1.0",
+          "version": 1
+        }
+      },
+      {
+        "id": "health_report:mut:$:drop_checkedAt",
+        "jsonschemaValid": false,
+        "payload": {
+          "app": {
+            "migrationHead": "0001_m0_schemas_and_grants",
+            "specSet": "0.1.0",
+            "version": "0.1.0+d5db7f3"
+          },
+          "checks": [
+            {
+              "durationMs": 0,
+              "name": "process",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 4,
+              "name": "db_reader",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 3,
+              "name": "db_app",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 2,
+              "name": "schemas_present",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 6,
+              "name": "role_isolation",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 1,
+              "name": "migrations_at_head",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "detail": "dataset not seeded until M1",
+              "durationMs": 0,
+              "name": "dataset",
+              "required": false,
+              "status": "skipped"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      {
+        "id": "health_report:mut:$:checkedAt_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "app": {
+            "migrationHead": "0001_m0_schemas_and_grants",
+            "specSet": "0.1.0",
+            "version": "0.1.0+d5db7f3"
+          },
+          "checkedAt": 1,
+          "checks": [
+            {
+              "durationMs": 0,
+              "name": "process",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 4,
+              "name": "db_reader",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 3,
+              "name": "db_app",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 2,
+              "name": "schemas_present",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 6,
+              "name": "role_isolation",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 1,
+              "name": "migrations_at_head",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "detail": "dataset not seeded until M1",
+              "durationMs": 0,
+              "name": "dataset",
+              "required": false,
+              "status": "skipped"
+            }
+          ],
+          "status": "ok"
+        }
+      },
+      {
+        "id": "health_report:mut:$:drop_checks",
+        "jsonschemaValid": false,
+        "payload": {
+          "app": {
+            "migrationHead": "0001_m0_schemas_and_grants",
+            "specSet": "0.1.0",
+            "version": "0.1.0+d5db7f3"
+          },
+          "checkedAt": "2026-10-22T14:30:00Z",
+          "status": "ok"
+        }
+      },
+      {
+        "id": "health_report:mut:$:checks_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "app": {
+            "migrationHead": "0001_m0_schemas_and_grants",
+            "specSet": "0.1.0",
+            "version": "0.1.0+d5db7f3"
+          },
+          "checkedAt": "2026-10-22T14:30:00Z",
+          "checks": {},
+          "status": "ok"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[0]:unknown_field",
+        "jsonschemaValid": false,
+        "payload": {
+          "__bad": true,
+          "durationMs": 0,
+          "name": "process",
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[0]:drop_durationMs",
+        "jsonschemaValid": false,
+        "payload": {
+          "name": "process",
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[0]:durationMs_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": "x",
+          "name": "process",
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[0]:drop_name",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 0,
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[0]:name_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 0,
+          "name": 1,
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[0]:drop_required",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 0,
+          "name": "process",
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[0]:required_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 0,
+          "name": "process",
+          "required": "x",
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[0]:drop_status",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 0,
+          "name": "process",
+          "required": true
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[0]:status_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 0,
+          "name": "process",
+          "required": true,
+          "status": 1
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[1]:unknown_field",
+        "jsonschemaValid": false,
+        "payload": {
+          "__bad": true,
+          "durationMs": 4,
+          "name": "db_reader",
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[1]:drop_durationMs",
+        "jsonschemaValid": false,
+        "payload": {
+          "name": "db_reader",
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[1]:durationMs_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": "x",
+          "name": "db_reader",
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[1]:drop_name",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 4,
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[1]:name_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 4,
+          "name": 1,
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[1]:drop_required",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 4,
+          "name": "db_reader",
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[1]:required_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 4,
+          "name": "db_reader",
+          "required": "x",
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[1]:drop_status",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 4,
+          "name": "db_reader",
+          "required": true
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[1]:status_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 4,
+          "name": "db_reader",
+          "required": true,
+          "status": 1
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[2]:unknown_field",
+        "jsonschemaValid": false,
+        "payload": {
+          "__bad": true,
+          "durationMs": 3,
+          "name": "db_app",
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[2]:drop_durationMs",
+        "jsonschemaValid": false,
+        "payload": {
+          "name": "db_app",
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[2]:durationMs_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": "x",
+          "name": "db_app",
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[2]:drop_name",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 3,
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[2]:name_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 3,
+          "name": 1,
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[2]:drop_required",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 3,
+          "name": "db_app",
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[2]:required_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 3,
+          "name": "db_app",
+          "required": "x",
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[2]:drop_status",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 3,
+          "name": "db_app",
+          "required": true
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[2]:status_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 3,
+          "name": "db_app",
+          "required": true,
+          "status": 1
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[3]:unknown_field",
+        "jsonschemaValid": false,
+        "payload": {
+          "__bad": true,
+          "durationMs": 2,
+          "name": "schemas_present",
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[3]:drop_durationMs",
+        "jsonschemaValid": false,
+        "payload": {
+          "name": "schemas_present",
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[3]:durationMs_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": "x",
+          "name": "schemas_present",
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[3]:drop_name",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 2,
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[3]:name_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 2,
+          "name": 1,
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[3]:drop_required",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 2,
+          "name": "schemas_present",
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[3]:required_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 2,
+          "name": "schemas_present",
+          "required": "x",
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[3]:drop_status",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 2,
+          "name": "schemas_present",
+          "required": true
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[3]:status_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 2,
+          "name": "schemas_present",
+          "required": true,
+          "status": 1
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[4]:unknown_field",
+        "jsonschemaValid": false,
+        "payload": {
+          "__bad": true,
+          "durationMs": 6,
+          "name": "role_isolation",
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[4]:drop_durationMs",
+        "jsonschemaValid": false,
+        "payload": {
+          "name": "role_isolation",
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[4]:durationMs_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": "x",
+          "name": "role_isolation",
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[4]:drop_name",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 6,
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[4]:name_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 6,
+          "name": 1,
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[4]:drop_required",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 6,
+          "name": "role_isolation",
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[4]:required_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 6,
+          "name": "role_isolation",
+          "required": "x",
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[4]:drop_status",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 6,
+          "name": "role_isolation",
+          "required": true
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[4]:status_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 6,
+          "name": "role_isolation",
+          "required": true,
+          "status": 1
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[5]:unknown_field",
+        "jsonschemaValid": false,
+        "payload": {
+          "__bad": true,
+          "durationMs": 1,
+          "name": "migrations_at_head",
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[5]:drop_durationMs",
+        "jsonschemaValid": false,
+        "payload": {
+          "name": "migrations_at_head",
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[5]:durationMs_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": "x",
+          "name": "migrations_at_head",
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[5]:drop_name",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 1,
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[5]:name_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 1,
+          "name": 1,
+          "required": true,
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[5]:drop_required",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 1,
+          "name": "migrations_at_head",
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[5]:required_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 1,
+          "name": "migrations_at_head",
+          "required": "x",
+          "status": "pass"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[5]:drop_status",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 1,
+          "name": "migrations_at_head",
+          "required": true
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[5]:status_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 1,
+          "name": "migrations_at_head",
+          "required": true,
+          "status": 1
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[6]:unknown_field",
+        "jsonschemaValid": false,
+        "payload": {
+          "__bad": true,
+          "detail": "dataset not seeded until M1",
+          "durationMs": 0,
+          "name": "dataset",
+          "required": false,
+          "status": "skipped"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[6]:drop_detail",
+        "jsonschemaValid": false,
+        "payload": {
+          "durationMs": 0,
+          "name": "dataset",
+          "required": false,
+          "status": "skipped"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[6]:detail_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "detail": 1,
+          "durationMs": 0,
+          "name": "dataset",
+          "required": false,
+          "status": "skipped"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[6]:drop_durationMs",
+        "jsonschemaValid": false,
+        "payload": {
+          "detail": "dataset not seeded until M1",
+          "name": "dataset",
+          "required": false,
+          "status": "skipped"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[6]:durationMs_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "detail": "dataset not seeded until M1",
+          "durationMs": "x",
+          "name": "dataset",
+          "required": false,
+          "status": "skipped"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[6]:drop_name",
+        "jsonschemaValid": false,
+        "payload": {
+          "detail": "dataset not seeded until M1",
+          "durationMs": 0,
+          "required": false,
+          "status": "skipped"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[6]:name_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "detail": "dataset not seeded until M1",
+          "durationMs": 0,
+          "name": 1,
+          "required": false,
+          "status": "skipped"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[6]:drop_required",
+        "jsonschemaValid": false,
+        "payload": {
+          "detail": "dataset not seeded until M1",
+          "durationMs": 0,
+          "name": "dataset",
+          "status": "skipped"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[6]:required_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "detail": "dataset not seeded until M1",
+          "durationMs": 0,
+          "name": "dataset",
+          "required": "x",
+          "status": "skipped"
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[6]:drop_status",
+        "jsonschemaValid": false,
+        "payload": {
+          "detail": "dataset not seeded until M1",
+          "durationMs": 0,
+          "name": "dataset",
+          "required": false
+        }
+      },
+      {
+        "id": "health_report:mut:$.checks[6]:status_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "detail": "dataset not seeded until M1",
+          "durationMs": 0,
+          "name": "dataset",
+          "required": false,
+          "status": 1
+        }
+      },
+      {
+        "id": "health_report:mut:$:drop_status",
+        "jsonschemaValid": false,
+        "payload": {
+          "app": {
+            "migrationHead": "0001_m0_schemas_and_grants",
+            "specSet": "0.1.0",
+            "version": "0.1.0+d5db7f3"
+          },
+          "checkedAt": "2026-10-22T14:30:00Z",
+          "checks": [
+            {
+              "durationMs": 0,
+              "name": "process",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 4,
+              "name": "db_reader",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 3,
+              "name": "db_app",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 2,
+              "name": "schemas_present",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 6,
+              "name": "role_isolation",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 1,
+              "name": "migrations_at_head",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "detail": "dataset not seeded until M1",
+              "durationMs": 0,
+              "name": "dataset",
+              "required": false,
+              "status": "skipped"
+            }
+          ]
+        }
+      },
+      {
+        "id": "health_report:mut:$:status_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "app": {
+            "migrationHead": "0001_m0_schemas_and_grants",
+            "specSet": "0.1.0",
+            "version": "0.1.0+d5db7f3"
+          },
+          "checkedAt": "2026-10-22T14:30:00Z",
+          "checks": [
+            {
+              "durationMs": 0,
+              "name": "process",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 4,
+              "name": "db_reader",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 3,
+              "name": "db_app",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 2,
+              "name": "schemas_present",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 6,
+              "name": "role_isolation",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "durationMs": 1,
+              "name": "migrations_at_head",
+              "required": true,
+              "status": "pass"
+            },
+            {
+              "detail": "dataset not seeded until M1",
+              "durationMs": 0,
+              "name": "dataset",
+              "required": false,
+              "status": "skipped"
+            }
+          ],
+          "status": 1
+        }
+      },
+      {
+        "id": "health_report:mut:null_root",
+        "jsonschemaValid": false,
+        "payload": null
+      }
+    ],
+    "principal": [
+      {
+        "id": "principal:example:0",
+        "jsonschemaValid": true,
+        "payload": {
+          "displayName": "Central regional manager",
+          "grants": [
+            {
+              "kind": "REGIONS",
+              "regionKeys": [
+                "central"
+              ]
+            }
+          ],
+          "permissions": [],
+          "persona": "admin",
+          "principalId": "p_central_manager",
+          "role": "REGIONAL_ADMIN",
+          "sessionExpiresAt": "2026-10-22T22:00:00Z"
+        }
+      },
+      {
+        "id": "principal:example:1",
+        "jsonschemaValid": true,
+        "payload": {
+          "displayName": "Lumen Home (lease T-31206)",
+          "grants": [
+            {
+              "kind": "TENANT_LEASES",
+              "leaseKeys": [
+                "T-31206"
+              ]
+            }
+          ],
+          "permissions": [],
+          "persona": "tenant",
+          "principalId": "p_tenant_t31206",
+          "role": "TENANT_LEASE_CONTACT",
+          "sessionExpiresAt": "2026-10-22T22:00:00Z"
+        }
+      },
+      {
+        "id": "principal:example:2",
+        "jsonschemaValid": true,
+        "payload": {
+          "displayName": "No-access test principal",
+          "grants": [],
+          "permissions": [],
+          "persona": "admin",
+          "principalId": "p_no_grants",
+          "role": "REGIONAL_ADMIN",
+          "sessionExpiresAt": "2026-10-22T22:00:00Z"
+        }
+      },
+      {
+        "id": "principal:mut:$:unknown_field",
+        "jsonschemaValid": false,
+        "payload": {
+          "__bad": true,
+          "displayName": "Central regional manager",
+          "grants": [
+            {
+              "kind": "REGIONS",
+              "regionKeys": [
+                "central"
+              ]
+            }
+          ],
+          "permissions": [],
+          "persona": "admin",
+          "principalId": "p_central_manager",
+          "role": "REGIONAL_ADMIN",
+          "sessionExpiresAt": "2026-10-22T22:00:00Z"
+        }
+      },
+      {
+        "id": "principal:mut:$:drop_displayName",
+        "jsonschemaValid": false,
+        "payload": {
+          "grants": [
+            {
+              "kind": "REGIONS",
+              "regionKeys": [
+                "central"
+              ]
+            }
+          ],
+          "permissions": [],
+          "persona": "admin",
+          "principalId": "p_central_manager",
+          "role": "REGIONAL_ADMIN",
+          "sessionExpiresAt": "2026-10-22T22:00:00Z"
+        }
+      },
+      {
+        "id": "principal:mut:$:displayName_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "displayName": 1,
+          "grants": [
+            {
+              "kind": "REGIONS",
+              "regionKeys": [
+                "central"
+              ]
+            }
+          ],
+          "permissions": [],
+          "persona": "admin",
+          "principalId": "p_central_manager",
+          "role": "REGIONAL_ADMIN",
+          "sessionExpiresAt": "2026-10-22T22:00:00Z"
+        }
+      },
+      {
+        "id": "principal:mut:$:drop_grants",
+        "jsonschemaValid": false,
+        "payload": {
+          "displayName": "Central regional manager",
+          "permissions": [],
+          "persona": "admin",
+          "principalId": "p_central_manager",
+          "role": "REGIONAL_ADMIN",
+          "sessionExpiresAt": "2026-10-22T22:00:00Z"
+        }
+      },
+      {
+        "id": "principal:mut:$:grants_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "displayName": "Central regional manager",
+          "grants": {},
+          "permissions": [],
+          "persona": "admin",
+          "principalId": "p_central_manager",
+          "role": "REGIONAL_ADMIN",
+          "sessionExpiresAt": "2026-10-22T22:00:00Z"
+        }
+      },
+      {
+        "id": "principal:mut:$.grants[0]:unknown_field",
+        "jsonschemaValid": false,
+        "payload": {
+          "__bad": true,
+          "kind": "REGIONS",
+          "regionKeys": [
+            "central"
+          ]
+        }
+      },
+      {
+        "id": "principal:mut:$.grants[0]:drop_kind",
+        "jsonschemaValid": false,
+        "payload": {
+          "regionKeys": [
+            "central"
+          ]
+        }
+      },
+      {
+        "id": "principal:mut:$.grants[0]:kind_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "kind": 1,
+          "regionKeys": [
+            "central"
+          ]
+        }
+      },
+      {
+        "id": "principal:mut:$.grants[0]:drop_regionKeys",
+        "jsonschemaValid": false,
+        "payload": {
+          "kind": "REGIONS"
+        }
+      },
+      {
+        "id": "principal:mut:$.grants[0]:regionKeys_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "kind": "REGIONS",
+          "regionKeys": {}
+        }
+      },
+      {
+        "id": "principal:mut:$:drop_permissions",
+        "jsonschemaValid": false,
+        "payload": {
+          "displayName": "Central regional manager",
+          "grants": [
+            {
+              "kind": "REGIONS",
+              "regionKeys": [
+                "central"
+              ]
+            }
+          ],
+          "persona": "admin",
+          "principalId": "p_central_manager",
+          "role": "REGIONAL_ADMIN",
+          "sessionExpiresAt": "2026-10-22T22:00:00Z"
+        }
+      },
+      {
+        "id": "principal:mut:$:permissions_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "displayName": "Central regional manager",
+          "grants": [
+            {
+              "kind": "REGIONS",
+              "regionKeys": [
+                "central"
+              ]
+            }
+          ],
+          "permissions": {},
+          "persona": "admin",
+          "principalId": "p_central_manager",
+          "role": "REGIONAL_ADMIN",
+          "sessionExpiresAt": "2026-10-22T22:00:00Z"
+        }
+      },
+      {
+        "id": "principal:mut:$:drop_persona",
+        "jsonschemaValid": false,
+        "payload": {
+          "displayName": "Central regional manager",
+          "grants": [
+            {
+              "kind": "REGIONS",
+              "regionKeys": [
+                "central"
+              ]
+            }
+          ],
+          "permissions": [],
+          "principalId": "p_central_manager",
+          "role": "REGIONAL_ADMIN",
+          "sessionExpiresAt": "2026-10-22T22:00:00Z"
+        }
+      },
+      {
+        "id": "principal:mut:$:persona_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "displayName": "Central regional manager",
+          "grants": [
+            {
+              "kind": "REGIONS",
+              "regionKeys": [
+                "central"
+              ]
+            }
+          ],
+          "permissions": [],
+          "persona": 1,
+          "principalId": "p_central_manager",
+          "role": "REGIONAL_ADMIN",
+          "sessionExpiresAt": "2026-10-22T22:00:00Z"
+        }
+      },
+      {
+        "id": "principal:mut:$:drop_principalId",
+        "jsonschemaValid": false,
+        "payload": {
+          "displayName": "Central regional manager",
+          "grants": [
+            {
+              "kind": "REGIONS",
+              "regionKeys": [
+                "central"
+              ]
+            }
+          ],
+          "permissions": [],
+          "persona": "admin",
+          "role": "REGIONAL_ADMIN",
+          "sessionExpiresAt": "2026-10-22T22:00:00Z"
+        }
+      },
+      {
+        "id": "principal:mut:$:principalId_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "displayName": "Central regional manager",
+          "grants": [
+            {
+              "kind": "REGIONS",
+              "regionKeys": [
+                "central"
+              ]
+            }
+          ],
+          "permissions": [],
+          "persona": "admin",
+          "principalId": 1,
+          "role": "REGIONAL_ADMIN",
+          "sessionExpiresAt": "2026-10-22T22:00:00Z"
+        }
+      },
+      {
+        "id": "principal:mut:$:drop_role",
+        "jsonschemaValid": false,
+        "payload": {
+          "displayName": "Central regional manager",
+          "grants": [
+            {
+              "kind": "REGIONS",
+              "regionKeys": [
+                "central"
+              ]
+            }
+          ],
+          "permissions": [],
+          "persona": "admin",
+          "principalId": "p_central_manager",
+          "sessionExpiresAt": "2026-10-22T22:00:00Z"
+        }
+      },
+      {
+        "id": "principal:mut:$:role_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "displayName": "Central regional manager",
+          "grants": [
+            {
+              "kind": "REGIONS",
+              "regionKeys": [
+                "central"
+              ]
+            }
+          ],
+          "permissions": [],
+          "persona": "admin",
+          "principalId": "p_central_manager",
+          "role": 1,
+          "sessionExpiresAt": "2026-10-22T22:00:00Z"
+        }
+      },
+      {
+        "id": "principal:mut:$:drop_sessionExpiresAt",
+        "jsonschemaValid": false,
+        "payload": {
+          "displayName": "Central regional manager",
+          "grants": [
+            {
+              "kind": "REGIONS",
+              "regionKeys": [
+                "central"
+              ]
+            }
+          ],
+          "permissions": [],
+          "persona": "admin",
+          "principalId": "p_central_manager",
+          "role": "REGIONAL_ADMIN"
+        }
+      },
+      {
+        "id": "principal:mut:$:sessionExpiresAt_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "displayName": "Central regional manager",
+          "grants": [
+            {
+              "kind": "REGIONS",
+              "regionKeys": [
+                "central"
+              ]
+            }
+          ],
+          "permissions": [],
+          "persona": "admin",
+          "principalId": "p_central_manager",
+          "role": "REGIONAL_ADMIN",
+          "sessionExpiresAt": 1
+        }
+      },
+      {
+        "id": "principal:mut:null_root",
+        "jsonschemaValid": false,
+        "payload": null
+      }
+    ],
+    "scope_decision": [
+      {
+        "id": "scope_decision:example:0",
+        "jsonschemaValid": true,
+        "payload": {
+          "effective": {
+            "kind": "REGIONS",
+            "regionKeys": [
+              "central"
+            ]
+          },
+          "fingerprint": "sfp_0f3a9c1d2b4e5f60718293a4b5c6d7e8",
+          "outcome": "allow",
+          "principalId": "p_central_manager",
+          "reasons": [
+            "no_request_full_grant"
+          ]
+        }
+      },
+      {
+        "id": "scope_decision:example:1",
+        "jsonschemaValid": true,
+        "payload": {
+          "fingerprint": "sfp_9d1e2f3a4b5c6d7e8f90a1b2c3d4e5f6",
+          "outcome": "empty",
+          "principalId": "p_central_manager",
+          "reasons": [
+            "requested_outside_grant"
+          ],
+          "requested": {
+            "kind": "REGIONS",
+            "regionKeys": [
+              "eastern"
+            ]
+          }
+        }
+      },
+      {
+        "id": "scope_decision:example:2",
+        "jsonschemaValid": true,
+        "payload": {
+          "fingerprint": "sfp_9d1e2f3a4b5c6d7e8f90a1b2c3d4e5f6",
+          "outcome": "empty",
+          "principalId": "p_no_grants",
+          "reasons": [
+            "no_grants"
+          ]
+        }
+      },
+      {
+        "id": "scope_decision:example:3",
+        "jsonschemaValid": true,
+        "payload": {
+          "effective": {
+            "kind": "REGIONS",
+            "regionKeys": [
+              "central"
+            ]
+          },
+          "fingerprint": "sfp_0f3a9c1d2b4e5f60718293a4b5c6d7e8",
+          "outcome": "allow",
+          "principalId": "p_portfolio_admin",
+          "reasons": [
+            "requested_within_grant"
+          ],
+          "requested": {
+            "kind": "REGIONS",
+            "regionKeys": [
+              "central"
+            ]
+          }
+        }
+      },
+      {
+        "id": "scope_decision:mut:$:unknown_field",
+        "jsonschemaValid": false,
+        "payload": {
+          "__bad": true,
+          "effective": {
+            "kind": "REGIONS",
+            "regionKeys": [
+              "central"
+            ]
+          },
+          "fingerprint": "sfp_0f3a9c1d2b4e5f60718293a4b5c6d7e8",
+          "outcome": "allow",
+          "principalId": "p_central_manager",
+          "reasons": [
+            "no_request_full_grant"
+          ]
+        }
+      },
+      {
+        "id": "scope_decision:mut:$:drop_effective",
+        "jsonschemaValid": true,
+        "payload": {
+          "fingerprint": "sfp_0f3a9c1d2b4e5f60718293a4b5c6d7e8",
+          "outcome": "allow",
+          "principalId": "p_central_manager",
+          "reasons": [
+            "no_request_full_grant"
+          ]
+        }
+      },
+      {
+        "id": "scope_decision:mut:$.effective:unknown_field",
+        "jsonschemaValid": false,
+        "payload": {
+          "__bad": true,
+          "kind": "REGIONS",
+          "regionKeys": [
+            "central"
+          ]
+        }
+      },
+      {
+        "id": "scope_decision:mut:$.effective:drop_kind",
+        "jsonschemaValid": false,
+        "payload": {
+          "regionKeys": [
+            "central"
+          ]
+        }
+      },
+      {
+        "id": "scope_decision:mut:$.effective:kind_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "kind": 1,
+          "regionKeys": [
+            "central"
+          ]
+        }
+      },
+      {
+        "id": "scope_decision:mut:$.effective:drop_regionKeys",
+        "jsonschemaValid": false,
+        "payload": {
+          "kind": "REGIONS"
+        }
+      },
+      {
+        "id": "scope_decision:mut:$.effective:regionKeys_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "kind": "REGIONS",
+          "regionKeys": {}
+        }
+      },
+      {
+        "id": "scope_decision:mut:$:drop_fingerprint",
+        "jsonschemaValid": false,
+        "payload": {
+          "effective": {
+            "kind": "REGIONS",
+            "regionKeys": [
+              "central"
+            ]
+          },
+          "outcome": "allow",
+          "principalId": "p_central_manager",
+          "reasons": [
+            "no_request_full_grant"
+          ]
+        }
+      },
+      {
+        "id": "scope_decision:mut:$:fingerprint_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "effective": {
+            "kind": "REGIONS",
+            "regionKeys": [
+              "central"
+            ]
+          },
+          "fingerprint": 1,
+          "outcome": "allow",
+          "principalId": "p_central_manager",
+          "reasons": [
+            "no_request_full_grant"
+          ]
+        }
+      },
+      {
+        "id": "scope_decision:mut:$:drop_outcome",
+        "jsonschemaValid": false,
+        "payload": {
+          "effective": {
+            "kind": "REGIONS",
+            "regionKeys": [
+              "central"
+            ]
+          },
+          "fingerprint": "sfp_0f3a9c1d2b4e5f60718293a4b5c6d7e8",
+          "principalId": "p_central_manager",
+          "reasons": [
+            "no_request_full_grant"
+          ]
+        }
+      },
+      {
+        "id": "scope_decision:mut:$:outcome_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "effective": {
+            "kind": "REGIONS",
+            "regionKeys": [
+              "central"
+            ]
+          },
+          "fingerprint": "sfp_0f3a9c1d2b4e5f60718293a4b5c6d7e8",
+          "outcome": 1,
+          "principalId": "p_central_manager",
+          "reasons": [
+            "no_request_full_grant"
+          ]
+        }
+      },
+      {
+        "id": "scope_decision:mut:$:drop_principalId",
+        "jsonschemaValid": false,
+        "payload": {
+          "effective": {
+            "kind": "REGIONS",
+            "regionKeys": [
+              "central"
+            ]
+          },
+          "fingerprint": "sfp_0f3a9c1d2b4e5f60718293a4b5c6d7e8",
+          "outcome": "allow",
+          "reasons": [
+            "no_request_full_grant"
+          ]
+        }
+      },
+      {
+        "id": "scope_decision:mut:$:principalId_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "effective": {
+            "kind": "REGIONS",
+            "regionKeys": [
+              "central"
+            ]
+          },
+          "fingerprint": "sfp_0f3a9c1d2b4e5f60718293a4b5c6d7e8",
+          "outcome": "allow",
+          "principalId": 1,
+          "reasons": [
+            "no_request_full_grant"
+          ]
+        }
+      },
+      {
+        "id": "scope_decision:mut:$:drop_reasons",
+        "jsonschemaValid": false,
+        "payload": {
+          "effective": {
+            "kind": "REGIONS",
+            "regionKeys": [
+              "central"
+            ]
+          },
+          "fingerprint": "sfp_0f3a9c1d2b4e5f60718293a4b5c6d7e8",
+          "outcome": "allow",
+          "principalId": "p_central_manager"
+        }
+      },
+      {
+        "id": "scope_decision:mut:$:reasons_wrong_type",
+        "jsonschemaValid": false,
+        "payload": {
+          "effective": {
+            "kind": "REGIONS",
+            "regionKeys": [
+              "central"
+            ]
+          },
+          "fingerprint": "sfp_0f3a9c1d2b4e5f60718293a4b5c6d7e8",
+          "outcome": "allow",
+          "principalId": "p_central_manager",
+          "reasons": {}
+        }
+      },
+      {
+        "id": "scope_decision:mut:null_root",
+        "jsonschemaValid": false,
+        "payload": null
+      }
+    ]
+  }
+}

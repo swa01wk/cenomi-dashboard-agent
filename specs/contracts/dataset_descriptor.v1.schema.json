@@ -1,22 +1,74 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cenomi.local/contracts/dataset_descriptor.v1.schema.json",
-  "title": "DatasetDescriptor v1",
-  "description": "Response of GET /api/v1/dataset (public). Drives the synthetic-data banner and the 'As of … · synthetic data' footers (DXD-09, DATA-07). In M0 the source is configuration and state is declared; from M1 the source is the meta schema and state is seeded (ARCH-R028). Bootstrap contract, frozen by CF-0.",
-  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
-  "required": ["datasetId", "asOf", "timezone", "synthetic", "source", "state"],
-  "properties": {
-    "datasetId": {"type": "string", "pattern": "^sd-[0-9]{4}\\.[0-9]{2}\\.[0-9]{2}-[0-9]{2}$"},
-    "asOf": {"type": "string", "format": "date", "description": "Frozen reference date, an Asia/Riyadh calendar day (DR-003, DR-004)."},
-    "timezone": {"const": "Asia/Riyadh"},
-    "synthetic": {"const": true},
-    "source": {"type": "string", "enum": ["config", "database"]},
-    "state": {"type": "string", "enum": ["declared", "seeded"]},
-    "seedHash": {"type": "string", "pattern": "^[0-9a-f]{16,64}$", "description": "Present when state is seeded."},
-    "transactionalStart": {"type": "string", "format": "date", "description": "First day of transactional history (2024-01-01, DR-004). Present when state is seeded."}
-  },
+  "description": "Response of GET /api/v1/dataset (public). Drives the synthetic-data banner and the 'As of … · synthetic data' footers (DXD-09, DATA-07). In M0 the source is configuration and state is declared; from M1 the source is the meta schema and state is seeded (ARCH-R028). Bootstrap contract, frozen by CF-0.",
   "examples": [
-    {"datasetId": "sd-2026.10.20-01", "asOf": "2026-10-20", "timezone": "Asia/Riyadh", "synthetic": true, "source": "config", "state": "declared"}
-  ]
+    {
+      "asOf": "2026-10-20",
+      "datasetId": "sd-2026.10.20-01",
+      "source": "config",
+      "state": "declared",
+      "synthetic": true,
+      "timezone": "Asia/Riyadh"
+    }
+  ],
+  "properties": {
+    "asOf": {
+      "description": "Frozen reference date, an Asia/Riyadh calendar day (DR-003, DR-004).",
+      "format": "date",
+      "title": "Asof",
+      "type": "string"
+    },
+    "datasetId": {
+      "pattern": "^sd-[0-9]{4}\\.[0-9]{2}\\.[0-9]{2}-[0-9]{2}$",
+      "title": "Datasetid",
+      "type": "string"
+    },
+    "seedHash": {
+      "description": "Present when state is seeded.",
+      "pattern": "^[0-9a-f]{16,64}$",
+      "title": "Seedhash",
+      "type": "string"
+    },
+    "source": {
+      "enum": [
+        "config",
+        "database"
+      ],
+      "title": "Source",
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "declared",
+        "seeded"
+      ],
+      "title": "State",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true
+    },
+    "timezone": {
+      "const": "Asia/Riyadh"
+    },
+    "transactionalStart": {
+      "description": "First day of transactional history (2024-01-01, DR-004). Present when state is seeded.",
+      "format": "date",
+      "title": "Transactionalstart",
+      "type": "string"
+    }
+  },
+  "required": [
+    "datasetId",
+    "asOf",
+    "timezone",
+    "synthetic",
+    "source",
+    "state"
+  ],
+  "title": "DatasetDescriptor v1",
+  "type": "object",
+  "x-generated-from": "cenomi.contracts.dataset_descriptor.DatasetDescriptor"
 }

@@ -1,65 +1,195 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cenomi.local/contracts/health_report.v1.schema.json",
-  "title": "HealthReport v1",
-  "description": "Response of GET /api/v1/health and GET /api/v1/health/live (ARCH-R031). status ok when all required checks pass; degraded when only non-required checks fail; fail (HTTP 503) when a required check fails. /health/live returns only the process check. Details never contain credentials or connection strings. Bootstrap contract, frozen by CF-0.",
-  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
-  "required": ["status", "checks", "app", "checkedAt"],
-  "properties": {
-    "status": {"type": "string", "enum": ["ok", "degraded", "fail"]},
-    "checks": {
-      "type": "array",
-      "minItems": 1,
-      "maxItems": 20,
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["name", "required", "status", "durationMs"],
-        "properties": {
-          "name": {"type": "string", "enum": ["process", "db_reader", "db_app", "schemas_present", "role_isolation", "migrations_at_head", "dataset"]},
-          "required": {"type": "boolean"},
-          "status": {"type": "string", "enum": ["pass", "fail", "skipped"]},
-          "detail": {"type": "string", "maxLength": 200},
-          "durationMs": {"type": "integer", "minimum": 0, "maximum": 60000}
-        }
-      }
-    },
-    "app": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["version", "specSet"],
-      "properties": {
-        "version": {"type": "string", "maxLength": 40, "description": "Backend package version or git short SHA baked in at build."},
-        "specSet": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$", "description": "specs/engineering/spec_set.yaml version the build was made from."},
-        "migrationHead": {"type": "string", "maxLength": 80, "description": "Head Alembic revision bundled with the build."}
-      }
-    },
-    "checkedAt": {"type": "string", "format": "date-time"}
-  },
+  "description": "Response of GET /api/v1/health and GET /api/v1/health/live (ARCH-R031). status ok when all required checks pass; degraded when only non-required checks fail; fail (HTTP 503) when a required check fails. /health/live returns only the process check. Details never contain credentials or connection strings. Bootstrap contract, frozen by CF-0.",
   "examples": [
     {
-      "status": "ok",
+      "app": {
+        "migrationHead": "0001_m0_schemas_and_grants",
+        "specSet": "0.1.0",
+        "version": "0.1.0+d5db7f3"
+      },
+      "checkedAt": "2026-10-22T14:30:00Z",
       "checks": [
-        {"name": "process", "required": true, "status": "pass", "durationMs": 0},
-        {"name": "db_reader", "required": true, "status": "pass", "durationMs": 4},
-        {"name": "db_app", "required": true, "status": "pass", "durationMs": 3},
-        {"name": "schemas_present", "required": true, "status": "pass", "durationMs": 2},
-        {"name": "role_isolation", "required": true, "status": "pass", "durationMs": 6},
-        {"name": "migrations_at_head", "required": true, "status": "pass", "durationMs": 1},
-        {"name": "dataset", "required": false, "status": "skipped", "detail": "dataset not seeded until M1", "durationMs": 0}
+        {
+          "durationMs": 0,
+          "name": "process",
+          "required": true,
+          "status": "pass"
+        },
+        {
+          "durationMs": 4,
+          "name": "db_reader",
+          "required": true,
+          "status": "pass"
+        },
+        {
+          "durationMs": 3,
+          "name": "db_app",
+          "required": true,
+          "status": "pass"
+        },
+        {
+          "durationMs": 2,
+          "name": "schemas_present",
+          "required": true,
+          "status": "pass"
+        },
+        {
+          "durationMs": 6,
+          "name": "role_isolation",
+          "required": true,
+          "status": "pass"
+        },
+        {
+          "durationMs": 1,
+          "name": "migrations_at_head",
+          "required": true,
+          "status": "pass"
+        },
+        {
+          "detail": "dataset not seeded until M1",
+          "durationMs": 0,
+          "name": "dataset",
+          "required": false,
+          "status": "skipped"
+        }
       ],
-      "app": {"version": "0.1.0+d5db7f3", "specSet": "0.1.0", "migrationHead": "0001_m0_schemas_and_grants"},
-      "checkedAt": "2026-10-22T14:30:00Z"
+      "status": "ok"
     },
     {
-      "status": "fail",
+      "app": {
+        "specSet": "0.1.0",
+        "version": "0.1.0+d5db7f3"
+      },
+      "checkedAt": "2026-10-22T14:31:00Z",
       "checks": [
-        {"name": "process", "required": true, "status": "pass", "durationMs": 0},
-        {"name": "db_reader", "required": true, "status": "fail", "detail": "connection refused", "durationMs": 2000}
+        {
+          "durationMs": 0,
+          "name": "process",
+          "required": true,
+          "status": "pass"
+        },
+        {
+          "detail": "connection refused",
+          "durationMs": 2000,
+          "name": "db_reader",
+          "required": true,
+          "status": "fail"
+        }
       ],
-      "app": {"version": "0.1.0+d5db7f3", "specSet": "0.1.0"},
-      "checkedAt": "2026-10-22T14:31:00Z"
+      "status": "fail"
     }
-  ]
+  ],
+  "properties": {
+    "app": {
+      "additionalProperties": false,
+      "properties": {
+        "migrationHead": {
+          "description": "Head Alembic revision bundled with the build.",
+          "maxLength": 80,
+          "title": "Migrationhead",
+          "type": "string"
+        },
+        "specSet": {
+          "description": "specs/engineering/spec_set.yaml version the build was made from.",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "title": "Specset",
+          "type": "string"
+        },
+        "version": {
+          "description": "Backend package version or git short SHA baked in at build.",
+          "maxLength": 40,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "version",
+        "specSet"
+      ],
+      "title": "HealthApp",
+      "type": "object"
+    },
+    "checkedAt": {
+      "format": "date-time",
+      "title": "Checkedat",
+      "type": "string"
+    },
+    "checks": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "detail": {
+            "maxLength": 200,
+            "title": "Detail",
+            "type": "string"
+          },
+          "durationMs": {
+            "maximum": 60000,
+            "minimum": 0,
+            "title": "Durationms",
+            "type": "integer"
+          },
+          "name": {
+            "enum": [
+              "process",
+              "db_reader",
+              "db_app",
+              "schemas_present",
+              "role_isolation",
+              "migrations_at_head",
+              "dataset"
+            ],
+            "title": "Name",
+            "type": "string"
+          },
+          "required": {
+            "title": "Required",
+            "type": "boolean"
+          },
+          "status": {
+            "enum": [
+              "pass",
+              "fail",
+              "skipped"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "required",
+          "status",
+          "durationMs"
+        ],
+        "title": "HealthCheck",
+        "type": "object"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "title": "Checks",
+      "type": "array"
+    },
+    "status": {
+      "enum": [
+        "ok",
+        "degraded",
+        "fail"
+      ],
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "status",
+    "checks",
+    "app",
+    "checkedAt"
+  ],
+  "title": "HealthReport v1",
+  "type": "object",
+  "x-generated-from": "cenomi.contracts.health_report.HealthReport"
 }
