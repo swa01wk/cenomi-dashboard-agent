@@ -421,7 +421,7 @@ targets:
     args:
       - {name: FILTER, default: "", description: "vitest name filter"}
     behaviour:
-      - pnpm -r test (vitest run); JUnit to tests/reports/frontend/junit.xml; coverage report.
+      - pnpm -r test (vitest run); JUnit to tests/reports/frontend/junit-vitest.xml (CR-005; the path M0-T11's Vitest configuration already writes); coverage report.
     failure: Exit 1 on any failed test.
     in_check: true
     ci_jobs: [ci/frontend]
@@ -569,7 +569,8 @@ targets:
       - {name: KEEP_UP, default: "0", description: "1 leaves the stack running after the run"}
     behaviour:
       - Starts the stack with CENOMI_ENV=test against cenomi_test (seed-reset DB=test from M1), waits for health.
-      - pnpm exec playwright test; artefacts (trace, screenshots, video on failure, network log) to tests/reports/e2e/.
+      - pnpm exec playwright test --grep-invert @echarts-gate (CR-005); artefacts (trace, screenshots, video on failure, network log) to tests/reports/e2e/; JUnit to tests/reports/e2e/junit-playwright.xml.
+      - Runs make setup first when .env is absent (CR-005), so a fresh CI runner can start the stack.
       - Collects `make logs FOLLOW=0 SERVICE=api` into tests/reports/e2e/api-logs.jsonl.
       - Stops the stack unless KEEP_UP=1.
     failure: Exit 1 on any failed journey or serious/critical axe violation.
@@ -620,6 +621,7 @@ targets:
       - Serves docs/design/baseline/boards/ read-only with a static server.
       - Playwright routes the board's cdnjs ECharts 5.6.0 URL to the locked node_modules/echarts@5.6.0/dist/echarts.min.js and verifies the served file's version string is 5.6.0.
       - Clicks "Run self-test", waits for the result, writes tests/reports/echarts/result.json (rows, pass/fail/na counts, treemap metrics) and result.txt.
+      - 'JUnit (CR-005): runs only tests/e2e/echarts-gate on the desktop project; Playwright JUnit to tests/reports/echarts/junit-echarts-gate.xml. The spec carries the tag @echarts-gate, and the e2e target excludes it (--grep-invert @echarts-gate).'
     failure: "M0–M1: exit 0 and record the result (informational). From M2: exit 1 if any ECharts row fails and the DXD-23 fallback is not recorded for that chart (GDQ-06, DXD-21)."
     in_check: false
     ci_jobs: [ci/echarts-gate]

@@ -1,12 +1,12 @@
 # STATUS — Cenomi Dashboard Intelligence Agent POC
 
-Updated: 2026-10-25. **M0 build in progress; CI live and P2 in force.** Merged: M0-T01 (`75a2fed`, PR #6), M0-T03 (`0027aae`, PR #9), M0-T11 (`386f017`, PR #12) and M0-T10 (`5dae0a5`, PR #18) under P1 + EXC-001; DEF-0001 (`6e813b3`, PR #16) under P1 + EXC-002; M0-T07 (`fbaaca7`, PR #11); DEF-0003/0004 (`2d3c804`, PR #24); DEF-0005 (`7affcd3`, PR #28); **M0-T02** (`6d6ef24`, PR #30, with DEF-0007). P2 in force since 2026-10-24T20:08:01Z; EXC-001 expired. Spec set **0.1.7** at `64e0b96`; **0.1.8** (CR-003, CR-004) in review. **Next:** M0-T05 (contract pipeline).
+Updated: 2026-10-25. **M0 build in progress; CI live and P2 in force.** Merged: M0-T01 (`75a2fed`, PR #6), M0-T03 (`0027aae`, PR #9), M0-T11 (`386f017`, PR #12) and M0-T10 (`5dae0a5`, PR #18) under P1 + EXC-001; DEF-0001 (`6e813b3`, PR #16) under P1 + EXC-002; M0-T07 (`fbaaca7`, PR #11); DEF-0003/0004 (`2d3c804`, PR #24); DEF-0005 (`7affcd3`, PR #28); **M0-T02** (`6d6ef24`, PR #30, with DEF-0007); CR-003 and CR-004 (`e1db045`, PR #32). P2 in force since 2026-10-24T20:08:01Z; EXC-001 expired. Spec set **0.1.8** at `e1db045`; **0.1.9** (CR-005) in review. **Next:** M0-T05 (contract pipeline); prompts for every remaining M0 card are in `plans/M0_IMPLEMENTATION_HANDOFF.md` §13–§17.
 
 | | |
 |---|---|
 | Baseline | DX1–DX6 (canvas v27 + OI-13 local wording fix); Final Design Gate 2026-10-22 |
 | Dataset | `sd-2026.10.20-01` (`as_of` 2026-10-20; insight replay hash `82fde5250960761d`; runner reference_hash `c1e36ced42cebecc`) — **not yet seeded** |
-| Specification set | **0.1.8** (CR-003, CR-004; ROADMAP A-35, A-36) in review; **0.1.7** at `64e0b96` (HC-12, ROADMAP A-34); **0.1.6** at `795695e` (HC-11, ROADMAP A-33); **0.1.5** at `7544885` (HC-10, ROADMAP A-32); **0.1.4** at `c582535` (CR-002/EXC-002, ROADMAP A-31); **0.1.3** at `3c182cf` (CR-001, ROADMAP A-30); 0.1.2 at `ccdc276` (HC-6, HC-7); 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
+| Specification set | **0.1.9** (CR-005, ROADMAP A-37) in review; **0.1.8** at `e1db045` (CR-003, CR-004; ROADMAP A-35, A-36); **0.1.7** at `64e0b96` (HC-12, ROADMAP A-34); **0.1.6** at `795695e` (HC-11, ROADMAP A-33); **0.1.5** at `7544885` (HC-10, ROADMAP A-32); **0.1.4** at `c582535` (CR-002/EXC-002, ROADMAP A-31); **0.1.3** at `3c182cf` (CR-001, ROADMAP A-30); 0.1.2 at `ccdc276` (HC-6, HC-7); 0.1.1 at `77c9c10`; 0.1.0 at `4515031` (CF-0) |
 
 > Status vocabulary:
 >
@@ -25,11 +25,11 @@ Updated: 2026-10-25. **M0 build in progress; CI live and P2 in force.** Merged: 
 
 | | |
 |---|---|
-| Phase | **M0 build** (authorized 2026-10-23); spec set 0.1.7 (0.1.8 in review) |
-| Current milestone | **M0 Foundation**: specifications approved and merged (PR #2, `4515031`; corrections PR #3, `77c9c10`; amendments HC-6 to HC-12, CR-001 to CR-004). Build authorized 2026-10-23 and **in progress**: 6 of 11 cards merged (T01, T03, T11, T10, T07, T02). CI live; P2 in force |
+| Phase | **M0 build** (authorized 2026-10-23); spec set 0.1.8 (0.1.9 in review) |
+| Current milestone | **M0 Foundation**: specifications approved and merged (PR #2, `4515031`; corrections PR #3, `77c9c10`; amendments HC-6 to HC-12, CR-001 to CR-005). Build authorized 2026-10-23 and **in progress**: 6 of 11 cards merged (T01, T03, T11, T10, T07, T02). CI live; P2 in force |
 | Migration | **Complete.** PR #1 merged into `main` on 2026-10-22 at `d5db7f3`; 214/214 handoff hashes verified |
 | Engineering Specification Plan | **Approved 2026-10-22**, subject to the owner's refinements. Recorded as `plans/ROADMAP.md` v1.0 with amendments A-01 to A-18, plus A-19 to A-24 from the owner's review of PR #2, A-25 and A-26 from the owner's approvals, and A-27 (corrections HC-1 to HC-5). The proposed draft is kept unchanged in `plans/proposed/` |
-| Next gate | M0-T05 (contract pipeline; needs CR-003 and CR-004), then M0-T08, M0-T06, M0-T04, and the M0-T09 spike, each under P2 with a green `ci/summary` and `trace-report CARD=…` all `PASSED`. Then GATE-M0 |
+| Next gate | M0-T05 (contract pipeline; CR-003 and CR-004 merged), then M0-T08, M0-T06, M0-T04, and the M0-T09 spike, each under P2 with a green `ci/summary` and `trace-report CARD=…` all `PASSED`. Then GATE-M0 |
 | Implementation | **M0 in progress.** Merged: M0-T01 (`75a2fed`), M0-T03 (`0027aae`), M0-T11 (`386f017`), M0-T10 (`5dae0a5`), M0-T07 (`fbaaca7`), M0-T02 (`6d6ef24`). Defect fixes merged: DEF-0001, DEF-0003, DEF-0004, DEF-0005, DEF-0007. Open defects (non-blocking): DEF-0002 (#21, nested status records; workaround in `make ci JOB=specs`) and DEF-0006 (#29, AT-M0-T01-04 stub fallback; fix by the last M0 card). Remaining: M0-T05, T08, T06, T04, T09 spike |
 
 ## Completed and approved work
@@ -64,6 +64,7 @@ Updated: 2026-10-25. **M0 build in progress; CI live and P2 in force.** Merged: 
 | **DEF-0001 patch merged** (PR #16, `6e813b3`), **HC-10 merged** (PR #17, `7544885`, spec set 0.1.5) and **M0-T10 merged** (PR #18, `5dae0a5`): all four EXC-001 bootstrap cards are in; EXC-001 and EXC-002 log entries recorded | 23–24 Oct 2026 | EXC-001 and EXC-002 logs below |
 | **M0-T07 merged** (PR #11, `fbaaca7`) after its own green run; **DEF-0003 and DEF-0004** found by the first `main` run and fixed through CI (PR #24, `2d3c804`); first green `main` run; **P2 applied and verified**; EXC-001 expired; C5 recorded for EXC-001 and EXC-002 | 24 Oct 2026 | Repository protection and EXC logs below |
 | **DEF-0005 merged** (PR #28, `7affcd3`: live check on partial runs); **M0-T02 merged** (PR #30, `6d6ef24`, 11/11 ATs in CI run [40180534363](https://github.com/swa01wk/cenomi-dashboard-agent/actions/runs/40180534363); owner-approved deviations: AT-M0-T01-04 test and DEF-0007 `make setup` secret); first `main` run after it green ([40180881297](https://github.com/swa01wk/cenomi-dashboard-agent/actions/runs/40180881297)); C5 (b) deviation accepted under delegation; **CR-003 approved** (report paths for contract and integration tests); **CR-004 approved** (error registry and GENERATED schemas before M0-T05) | 25 Oct 2026 | PRs #28, #30; EXC-001 log; CR-003; CR-004 |
+| **CR-003 and CR-004 merged** (PR #32, `e1db045`; spec set 0.1.8); `main` run green ([40182165131](https://github.com/swa01wk/cenomi-dashboard-agent/actions/runs/40182165131)). **CR-005 proposed** (report paths and ownership for the remaining M0 cards); implementation handoff 1.7 with the prompts for M0-T05, T08, T06, T04 and T09 | 25 Oct 2026 | PR #32; CR-005; `plans/M0_IMPLEMENTATION_HANDOFF.md` |
 
 ### CF-0 contract freeze (exact versions at `4515031`)
 
@@ -94,13 +95,21 @@ The M0 corrections PR changes none of the contract files. Its only change to a C
 | `specs/engineering/engineering.schema.json` | `manualResults`; optional `gateReport.manualResults`; `SUITE` in job env | `679f81ed9f69075c` |
 | `specs/engineering/spec_set.yaml` | version 0.1.3 (later versions: 0.1.4 at `c582535`, CR-002; 0.1.5 at `7544885`, HC-10) | `b9aadc55b002ec15` |
 
-**CF-0 amended by CR-003 and CR-004** (spec set 0.1.8, in review; hashes recorded after merge): `specs/engineering/make_targets.yaml` (CR-003 report paths; CR-004 `codegen` writes GENERATED schemas, `contracts-check` compares with the retained bootstrap copies) and `specs/contracts/error_codes.v1.yaml` (CR-004: `QUERY_TIMEOUT` active in M0; `PAYLOAD_TOO_LARGE` and `UNSUPPORTED_MEDIA_TYPE` reserved until M0-T06). M0-T05 then rewrites the five schema files as GENERATED; its completion gate marks CF-0 frozen with the resulting hashes.
+**CF-0 as amended by CR-003 and CR-004** (merged at `e1db045`, PR #32, spec set 0.1.8). Files not listed are unchanged from the tables above.
+
+| File | Change | Hash at `e1db045` |
+|---|---|---|
+| `specs/engineering/make_targets.yaml` | CR-003 report paths for `contracts-check` and `integration-test`; CR-004 `codegen` writes GENERATED schemas and `contracts-check` compares with the retained bootstrap copies | `69de13f40ca350f3` |
+| `specs/contracts/error_codes.v1.yaml` | CR-004: `QUERY_TIMEOUT` active in M0; `PAYLOAD_TOO_LARGE` and `UNSUPPORTED_MEDIA_TYPE` reserved until M0-T06 | `6ca3542a3227be8b` |
+| `specs/engineering/spec_set.yaml` | version 0.1.8 | `dd8c582615413477` |
+
+CR-005 (spec set 0.1.9, in review) amends `make_targets.yaml` again (`frontend-test`, `e2e` and `echarts-gate` report paths); its hashes are recorded after merge. M0-T05 then rewrites the five schema files as GENERATED; its completion gate marks CF-0 frozen with the resulting hashes.
 
 ## Milestones
 
 | Milestone | Specs PR | Spec state | Build state | Slice cards | Gate | Blocked by |
 |---|---|---|---|---|---|---|
-| M0 Foundation | PR-M0 (items 1–12), merged `4515031`; PR #3 (corrections) | **Approved** (0.1.7) | **In progress**: 6/11 cards merged (T01, T03, T11, T10, T07, T02); CI live; P2 in force | All M0 cards except M0-T09 (built before slice day 1, ED-06 A) | GATE-M0 | PR-M0 merged (CF-0) |
+| M0 Foundation | PR-M0 (items 1–12), merged `4515031`; PR #3 (corrections) | **Approved** (0.1.8) | **In progress**: 6/11 cards merged (T01, T03, T11, T10, T07, T02); CI live; P2 in force | All M0 cards except M0-T09 (built before slice day 1, ED-06 A) | GATE-M0 | PR-M0 merged (CF-0) |
 | M1 Data | PR-M1 (13–21) | Not started | Not started | Days 1–2 | Seed hash reproducible; GI 51/51; canonical figures; snapshots = parity | PR-M0 merged (CF-0) |
 | M2 Metrics and dashboards | PR-M2 (22–26) | Not started | Not started | Days 2–3 | Golden tests; card = records totals; ECharts gate | PR-M1 (CF-1) |
 | M3 Agent runtime | PR-M3 (27–31) | Not started | Not started | Day 3 | Verifier; J1–J10 on replay; budgets | PR-M2 (CF-2); GDQ-12 configuration |
@@ -266,8 +275,9 @@ Any later change to the ruleset or merge settings must be recorded here with its
 
 | CR | Date | Summary | Cites | Decision |
 |---|---|---|---|---|
-| CR-004 | 2026-10-25 | Error registry and GENERATED schemas before M0-T05: `QUERY_TIMEOUT` active in M0 (M0-T02 raises it, CA-06); `PAYLOAD_TOO_LARGE` and `UNSUPPORTED_MEDIA_TYPE` reserved until M0-T06 adds the request-body guard (`API_MAX_BODY_BYTES`, AT-M0-T06-08/-09) and reactivates them; M0-T05 converts the five bootstrap schemas to GENERATED, keeping the originals under `tests/contract/fixtures/bootstrap/`; ADR-0004 amended (`x-generated-from` allowed at the root; subset and example checks in `make contracts-check`). CF-0 amended: `error_codes.v1.yaml`, `make_targets.yaml` | ROADMAP A-36; ADR-0004; DEVELOPMENT_ENVIRONMENT 1.5; M0-T05; M0-T06 | **Approved** by the owner 2026-10-25 |
-| CR-003 | 2026-10-25 | Report paths (CF-0 `make_targets.yaml`): `contracts-check` writes `tests/reports/contracts/junit-contracts.xml` (database-free pytest) and `junit-contracts-vitest.xml` (zod equivalence); `integration-test` writes `tests/reports/integration/junit-integration-test.xml`. All three join `DEFAULT_JUNIT_REL` (M0-T10) and the CI job map and upload lists (M0-T07); M0-T05 makes those edits as an approved deviation | ROADMAP A-35; M0-T05 | **Approved** by the owner 2026-10-25 |
+| CR-005 | 2026-10-25 | Report paths and ownership for the remaining M0 cards: `echarts-gate` JUnit at `tests/reports/echarts/junit-echarts-gate.xml` (tag `@echarts-gate`, desktop project; `e2e` excludes it), with browser install and JUnit upload steps in `ci/echarts-gate` (M0-T08); `frontend-test` JUnit named `junit-vitest.xml` as already implemented; `e2e` runs `make setup` when `.env` is absent; DEF-0006 fixed in M0-T04; M0-T04 completion gate names `ci/specs` for its tooling-suite ATs; `tests/tooling/test_no_agui_dependency.py` lands with the spike report (M0-T09); DEVENV-R054 lists the `ci.yml` exceptions of M0-T05 and M0-T08. CF-0 amended: `make_targets.yaml` | ROADMAP A-37; DEVELOPMENT_ENVIRONMENT 1.6; M0-T08; M0-T04; M0-T09 | **Proposed** by the architect; accepted when the owner merges its PR (ADR-0001) |
+| CR-004 | 2026-10-25 | Error registry and GENERATED schemas before M0-T05: `QUERY_TIMEOUT` active in M0 (M0-T02 raises it, CA-06); `PAYLOAD_TOO_LARGE` and `UNSUPPORTED_MEDIA_TYPE` reserved until M0-T06 adds the request-body guard (`API_MAX_BODY_BYTES`, AT-M0-T06-08/-09) and reactivates them; M0-T05 converts the five bootstrap schemas to GENERATED, keeping the originals under `tests/contract/fixtures/bootstrap/`; ADR-0004 amended (`x-generated-from` allowed at the root; subset and example checks in `make contracts-check`). CF-0 amended: `error_codes.v1.yaml`, `make_targets.yaml` | ROADMAP A-36; ADR-0004; DEVELOPMENT_ENVIRONMENT 1.5; M0-T05; M0-T06 | **Approved** by the owner 2026-10-25; merged `e1db045` (PR #32) |
+| CR-003 | 2026-10-25 | Report paths (CF-0 `make_targets.yaml`): `contracts-check` writes `tests/reports/contracts/junit-contracts.xml` (database-free pytest) and `junit-contracts-vitest.xml` (zod equivalence); `integration-test` writes `tests/reports/integration/junit-integration-test.xml`. All three join `DEFAULT_JUNIT_REL` (M0-T10) and the CI job map and upload lists (M0-T07); M0-T05 makes those edits as an approved deviation | ROADMAP A-35; M0-T05 | **Approved** by the owner 2026-10-25; merged `e1db045` (PR #32) |
 | CR-002 | 2026-10-23 | Security patch before CI (DEF-0001, ADR-0003 §2): a security-patch PR may add one `exclude-newer-package` entry under `[tool.uv]` for the package it patches (`certifi`, fix newer than `exclude-newer`), and one exact-version `overrides` entry in `pnpm-workspace.yaml` for a transitive package (`handlebars`); both lockfiles regenerated per DEVENV-R052. Each entry cites the CR and advisory; the `certifi` entry is removed when `exclude-newer` next moves past it. Changes no CF-0 contract (`spec_set.yaml` version only) | ROADMAP A-31; DEVENV §8.4 (EXC-002), §8.6 | **Approved** by the owner 2026-10-23 |
 | CR-001 | 2026-10-23 | Amends CF-0 (`make_targets.yaml`, `ci_checks.yaml`, `engineering.schema.json`): (1) `backend-test SUITE=tooling` runs `tests/tooling` in `ci/specs` with browsers (HC-8); (2) manual-AT results go in `plans/gates/M<n>-manual-results.json` (`manualResults`), excluded from `CARD`, required in `GATE` (HC-9); (3) `backend-lint` runs `import-linter lint` (OQ-DEVENV-01) | ROADMAP A-30; ARCH-R083; M0-T07, M0-T10 | **Approved** by the owner 2026-10-23 (HC-8, HC-9) |
 
