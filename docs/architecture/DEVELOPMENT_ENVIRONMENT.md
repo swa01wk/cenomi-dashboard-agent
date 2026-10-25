@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Document code | DEVENV (requirement IDs `DEVENV-Rnnn`) |
-| Version | 1.1 · 2026-10-23 · M0 corrections PR (HC-3 Compose note; HC-4 DEVENV-R052; HC-5 §8.6, DEVENV-R053–R055; DEVENV-R055 lockfile serialization and DEVENV-R056 protection verification, owner clarifications of 2026-10-23); 1.2 · HC-6 (DEVENV-R054 `pyproject` sections for M0-T03), HC-7 (Makefile row) and DEVENV-R001 wording; 1.3 · CR-001 (`backend-test SUITE=tooling` in `ci/specs`; `import-linter lint`), tables re-rendered; 1.4 · CR-002 (security-patch exceptions for `certifi` and `handlebars`, ADR-0003 §2) and EXC-002 (§8.4); 1.5 · 2026-10-25 · CR-004 (`API_MAX_BODY_BYTES` in §4; M0-T06 `.env.example` line in DEVENV-R054). 1.0 merged in PR-M0 (`4515031`) |
+| Version | 1.1 · 2026-10-23 · M0 corrections PR (HC-3 Compose note; HC-4 DEVENV-R052; HC-5 §8.6, DEVENV-R053–R055; DEVENV-R055 lockfile serialization and DEVENV-R056 protection verification, owner clarifications of 2026-10-23); 1.2 · HC-6 (DEVENV-R054 `pyproject` sections for M0-T03), HC-7 (Makefile row) and DEVENV-R001 wording; 1.3 · CR-001 (`backend-test SUITE=tooling` in `ci/specs`; `import-linter lint`), tables re-rendered; 1.4 · CR-002 (security-patch exceptions for `certifi` and `handlebars`, ADR-0003 §2) and EXC-002 (§8.4); 1.5 · 2026-10-25 · CR-004 (`API_MAX_BODY_BYTES` in §4; M0-T06 `.env.example` line in DEVENV-R054); 1.6 · 2026-10-25 · CR-005 (DEVENV-R054 `ci.yml` exceptions for M0-T05 and M0-T08). 1.0 merged in PR-M0 (`4515031`) |
 | Status | Normative since PR-M0 merged (`4515031`); version 1.1 amendments in review |
 | Rests on | DR-027, DR-037, ED-01, ED-05, ED-06 (approved); ED-07, ED-08, ED-09 (approved 2026-10-22; ADR-0016, ADR-0017, ADR-0018); ADR-0003, ADR-0004, ADR-0006, ADR-0015 |
 | Machine-readable sources | `specs/engineering/make_targets.yaml`, `specs/engineering/ci_checks.yaml`, `specs/engineering/spec_set.yaml` — the YAML wins on any conflict with this prose |
@@ -523,7 +523,7 @@ Broad directory ownership (for example M0-T03's `/backend/src/cenomi/**` or M0-T
 | Health wiring (the `check_database` provider used by the health router) | M0-T03 | M0-T02 binds the real `cenomi.db.health.check_database()` |
 | `cenomi` CLI entry point | M0-T03 | M0-T02 registers the `db` sub-command |
 | `backend/tests/conftest.py` | M0-T11 | M0-T02 adds the `pytest_plugins` entry for `backend/tests/fixtures/db.py` |
-| `.github/workflows/**`, `.github/actions/**` | M0-T07 | None in M0. Every job of `ci_checks.yaml` already calls its Make targets. A card whose target is not run stops and reports |
+| `.github/workflows/**`, `.github/actions/**` | M0-T07 | None in M0, except in `ci.yml`: **M0-T05 (CR-003)** adds the JUnit staging and upload steps of `ci/contracts` and `ci/integration`; **M0-T08 (CR-005)** adds the Playwright browser install step and the JUnit staging and upload steps of `ci/echarts-gate`, each copying the existing pattern of the other jobs. Every job of `ci_checks.yaml` already calls its Make targets. A card whose target is not run stops and reports |
 
 **DEVENV-R055** **Shared files in parallel work** (clarified by the owner on 2026-10-23). Parallel implementation *branches* are allowed. Pull requests that touch the same shared file are coordinated as follows:
 
