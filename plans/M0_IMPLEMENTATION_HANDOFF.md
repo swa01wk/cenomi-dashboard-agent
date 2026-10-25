@@ -755,7 +755,7 @@ You are implementing **one task card: M0-T04**, the last M0 build card. The appr
   ```
   git branch --show-current                         # feat/m0-t04-web-shell
   grep '^version' specs/engineering/spec_set.yaml   # version: "0.1.9" or later (CR-005)
-  git log --oneline -40 | grep -E 'M0-T0(5|6|8):'   # all three present
+  git log --oneline -40 | grep -E 'M0-T05:|M0-T06:|M0-T08:'   # all three present
   ls packages/contracts-ts/src/zod/                 # generated zod from M0-T05
   ```
   If any check fails, stop.
