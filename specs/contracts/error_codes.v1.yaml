@@ -9,25 +9,26 @@
 #          tool_result     — carried inside a tool result (never an HTTP error); http is null
 #          agui_run_error  — the `code` of an AG-UI RUN_ERROR event; http is null
 # status: active   — may be raised now
-#         reserved — named by an approved design or the TA; becomes active in its milestone's PR
+#         reserved — named by an approved design or the TA; becomes active in its milestone's PR, or in the
+#                    card PR its entry names (CR-004)
 
 schema: cenomi.error_codes.v1
 codes:
-  # ------------------------------------------------------------ M0 (active)
+  # ------------------------------------------------------------ M0 (active, except the two reserved for M0-T06 by CR-004)
   - {code: VALIDATION_ERROR,       channel: http, http: 400, retryable: false, status: active,   milestone: M0, meaning: "Body or query failed validation, including unknown fields or parameters (ARCH-R014)."}
   - {code: UNAUTHENTICATED,        channel: http, http: 401, retryable: false, status: active,   milestone: M0, meaning: "No valid session."}
   - {code: NOT_AVAILABLE,          channel: http, http: 404, retryable: false, status: active,   milestone: M0, meaning: "Uniform refusal: the resource does not exist or the principal may not see it; also a route whose permission the principal lacks (ARCH-R016, DXD-85)."}
   - {code: CONFLICT,               channel: http, http: 409, retryable: false, status: active,   milestone: M0, meaning: "The request conflicts with current state (for example a requestId reused with a different body)."}
-  - {code: PAYLOAD_TOO_LARGE,      channel: http, http: 413, retryable: false, status: active,   milestone: M0, meaning: "Request body above the configured limit."}
-  - {code: UNSUPPORTED_MEDIA_TYPE, channel: http, http: 415, retryable: false, status: active,   milestone: M0, meaning: "Content-Type other than application/json on a JSON route."}
+  - {code: PAYLOAD_TOO_LARGE,      channel: http, http: 413, retryable: false, status: reserved, milestone: M0, meaning: "Request body above the configured limit (API_MAX_BODY_BYTES). Reserved until M0-T06 enforces it and sets status active (CR-004)."}
+  - {code: UNSUPPORTED_MEDIA_TYPE, channel: http, http: 415, retryable: false, status: reserved, milestone: M0, meaning: "Content-Type other than application/json on a JSON route. Reserved until M0-T06 enforces it and sets status active (CR-004)."}
   - {code: INTERNAL,               channel: http, http: 500, retryable: false, status: active,   milestone: M0, meaning: "Unexpected server error; details only in logs under the requestRef (ARCH-R023)."}
   - {code: DEPENDENCY_UNAVAILABLE, channel: http, http: 503, retryable: true,  status: active,   milestone: M0, meaning: "Database (or, from M3, model provider) unreachable (ARCH-R024)."}
+  - {code: QUERY_TIMEOUT,          channel: http, http: 504, retryable: true,  status: active,   milestone: M0, meaning: "A reader-pool query exceeded the statement timeout (CA-06, M0-T02); metric queries from M2 (TA §7.2). Activated in M0 by CR-004."}
 
   # ------------------------------------------------------------ M2 analytics (reserved)
   - {code: UNSUPPORTED_METRIC,     channel: http, http: 400, retryable: false, status: reserved, milestone: M2, meaning: "Metric id not in the registry (TA §7.2)."}
   - {code: INVALID_FILTER,         channel: http, http: 400, retryable: false, status: reserved, milestone: M2, meaning: "Filter not valid for the metric (TA §7.2)."}
   - {code: INCOMPATIBLE_GRAINS,    channel: http, http: 400, retryable: false, status: reserved, milestone: M2, meaning: "Comparison across incompatible grains or windows (TA §7.2)."}
-  - {code: QUERY_TIMEOUT,          channel: http, http: 504, retryable: true,  status: reserved, milestone: M2, meaning: "Metric query exceeded the statement timeout (TA §7.2)."}
   - {code: STALE_REFERENCE,        channel: http, http: 409, retryable: false, status: reserved, milestone: M2, meaning: "Cursor, dataset or result reference bound to another dataset version or scope fingerprint (DR-020)."}
 
   # ------------------------------------------------------------ M3 agent and tools (reserved)
