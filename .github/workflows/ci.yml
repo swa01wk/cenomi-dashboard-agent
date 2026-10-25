@@ -175,6 +175,16 @@ jobs:
           name: status-ci-contracts
           path: tests/reports/status.jsonl
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+      - name: Stage job JUnit artefacts
+        if: always()
+        run: uv run --project backend python scripts/ci/stage_job_junit_upload.py ci/contracts
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: junit-ci-contracts
+          path: tests/reports/ci/junit-upload/ci-contracts
+          if-no-files-found: ignore
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
   security:
     name: ci/security
     needs: [changes]
@@ -427,6 +437,16 @@ jobs:
         with:
           name: status-ci-integration
           path: tests/reports/status.jsonl
+          retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
+      - name: Stage job JUnit artefacts
+        if: always()
+        run: uv run --project backend python scripts/ci/stage_job_junit_upload.py ci/integration
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: junit-ci-integration
+          path: tests/reports/ci/junit-upload/ci-integration
+          if-no-files-found: ignore
           retention-days: ${{ github.event_name == 'push' && 30 || 14 }}
   e2e:
     name: ci/e2e

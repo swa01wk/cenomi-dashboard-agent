@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cenomi.local/contracts/negative_anyof.v1.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {"value": {"anyOf": [{"type": "string"}, {"type": "integer"}]}},
+  "examples": [{}]
+}

@@ -1,5 +1,21 @@
 {
   "name": "@cenomi/contracts-ts",
   "version": "0.0.0",
-  "private": true
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./types/*": "./src/types/*",
+    "./zod": "./src/zod/index.ts",
+    "./zod/*": "./src/zod/*"
+  },
+  "scripts": {
+    "test": "vitest run --config vitest.config.ts"
+  },
+  "dependencies": {
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "json-schema-to-typescript": "16.0.0",
+    "vitest": "5.0.3"
+  }
 }

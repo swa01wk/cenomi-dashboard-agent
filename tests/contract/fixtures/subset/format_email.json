@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cenomi.local/contracts/negative_format.v1.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {"email": {"type": "string", "format": "email"}},
+  "examples": [{}]
+}

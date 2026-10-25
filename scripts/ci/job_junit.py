@@ -16,6 +16,11 @@ JOB_JUNIT: dict[str, list[str]] = {
     "ci/specs": ["tests/reports/backend/junit-tooling.xml"],
     "ci/frontend": ["tests/reports/frontend/junit-vitest.xml"],
     "ci/e2e": ["tests/reports/e2e/junit-playwright.xml"],
+    "ci/contracts": [
+        "tests/reports/contracts/junit-contracts.xml",
+        "tests/reports/contracts/junit-contracts-vitest.xml",
+    ],
+    "ci/integration": ["tests/reports/integration/junit-integration-test.xml"],
 }
 
 JUNIT_PRODUCER_TARGET: dict[str, str] = {
@@ -24,6 +29,9 @@ JUNIT_PRODUCER_TARGET: dict[str, str] = {
     "junit-tooling.xml": "backend-test",
     "junit-vitest.xml": "frontend-test",
     "junit-playwright.xml": "e2e",
+    "junit-contracts.xml": "contracts-check",
+    "junit-contracts-vitest.xml": "contracts-check",
+    "junit-integration-test.xml": "integration-test",
 }
 
 BASENAME_TO_REL: dict[str, Path] = {

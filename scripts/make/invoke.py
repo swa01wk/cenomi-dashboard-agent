@@ -586,6 +586,70 @@ def run_target(name: str) -> None:
         passed(name, f"backend tests passed (SUITE={suite})", run)
         return
 
+    if name == "codegen":
+        _resolve(meta, run)
+        code = subprocess.run(
+            [
+                "uv",
+                "run",
+                "--directory",
+                str(BACKEND),
+                "python",
+                str(REPO_ROOT / "scripts" / "codegen" / "run_codegen.py"),
+            ],
+            cwd=REPO_ROOT,
+            check=False,
+        ).returncode
+        if code != 0:
+            failed(name, "codegen failed", run, exit_code=code)
+            return
+        passed(name, "GENERATED artefacts regenerated", run)
+        return
+
+    if name == "contracts-check":
+        _resolve(meta, run)
+        code = subprocess.run(
+            [
+                "uv",
+                "run",
+                "--directory",
+                str(BACKEND),
+                "python",
+                str(REPO_ROOT / "scripts" / "codegen" / "contracts_check.py"),
+            ],
+            cwd=REPO_ROOT,
+            check=False,
+        ).returncode
+        if code != 0:
+            failed(name, "contracts-check failed", run, exit_code=code)
+            return
+        passed(name, "contracts and generated artefacts verified", run)
+        return
+
+    if name == "integration-test":
+        _resolve(meta, run)
+        code = _shell("make db-upgrade DB=test")
+        if code != 0:
+            failed(name, "db-upgrade DB=test failed", run, exit_code=code)
+            return
+        reports = REPO_ROOT / "tests" / "reports" / "integration"
+        reports.mkdir(parents=True, exist_ok=True)
+        test_path_parts: list[str] = ["../tests/contract"]
+        security = REPO_ROOT / "tests" / "security"
+        if security.is_dir():
+            test_path_parts.append("../tests/security")
+        test_paths = " ".join(test_path_parts)
+        code = _shell(
+            "uv run --directory backend pytest -c pyproject.toml --rootdir=.. --confcutdir=.. "
+            f"{test_paths} -m 'not agent_live' "
+            f"--junitxml={reports / 'junit-integration-test.xml'}"
+        )
+        if code != 0:
+            failed(name, "integration tests failed", run, exit_code=code)
+            return
+        passed(name, "integration tests passed", run)
+        return
+
     if name == "specs-check":
         _resolve(meta, run)
         gate = os.environ.get("GATE", "").strip()

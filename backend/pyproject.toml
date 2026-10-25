@@ -37,6 +37,8 @@ dev = [
   "httpx>=0.28",
   "jsonschema>=4.23",
   "pyyaml>=6.0.2",
+  "rfc3339-validator>=0.1.4",
+  "referencing>=0.36",
   "pip-audit>=2.7",
 ]
 
@@ -63,6 +65,7 @@ ignore = []
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "S607", "S603"]
+"scripts/codegen/**" = ["S101", "S602", "S603", "S607", "S311", "E402", "BLE001", "I001", "SIM101", "SIM102"]
 
 [tool.mypy]
 python_version = "3.12"
@@ -79,6 +82,11 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = ["doctor", "help_text", "report", "targets"]
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["codegen.*"]
+ignore_missing_imports = true
+disallow_untyped_decorators = false
 
 [tool.pytest.ini_options]
 minversion = "8.0"

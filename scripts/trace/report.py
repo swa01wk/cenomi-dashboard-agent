@@ -26,6 +26,9 @@ DEFAULT_JUNIT_REL = [
     "tests/reports/backend/junit-tooling.xml",
     "tests/reports/frontend/junit-vitest.xml",
     "tests/reports/e2e/junit-playwright.xml",
+    "tests/reports/contracts/junit-contracts.xml",
+    "tests/reports/contracts/junit-contracts-vitest.xml",
+    "tests/reports/integration/junit-integration-test.xml",
 ]
 
 
