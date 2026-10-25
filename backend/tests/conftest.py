@@ -16,6 +16,7 @@ if str(REPO_ROOT) not in sys.path:
 
 pytest_plugins = [
     "scripts.testing.pytest_trace",
+    "fixtures.db",
 ]
 
 settings.register_profile("ci", derandomize=True, deadline=None)

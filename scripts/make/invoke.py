@@ -2,10 +2,16 @@
 
 from __future__ import annotations
 
+import json
 import os
+import re
+import secrets
 import shutil
 import subprocess
 import sys
+import time
+import urllib.error
+import urllib.request
 from pathlib import Path
 
 MAKE_DIR = Path(__file__).resolve().parent
@@ -29,11 +35,60 @@ from report import (
 from targets import TARGET_BY_NAME, TargetMeta
 
 STUB_REASON = "implemented in a later M0 task card"
+HEAD_REVISION = "0001_m0_schemas_and_grants"
+COMPOSE_HEALTH_TIMEOUT_S = 120
+_SESSION_SECRET_LINE = re.compile(r"^SESSION_SECRET=(.*)$")
+
+
+def ensure_session_secret_in_dotenv(env_path: Path) -> None:
+    """Fill SESSION_SECRET when empty or missing (DEVENV §4, DEF-0007)."""
+    if not env_path.is_file():
+        return
+    raw = env_path.read_text(encoding="utf-8")
+    lines = raw.splitlines(keepends=True)
+    found_key = False
+    updated = False
+    out: list[str] = []
+    for line in lines:
+        body = line.rstrip("\r\n")
+        match = _SESSION_SECRET_LINE.match(body)
+        if match is None:
+            out.append(line)
+            continue
+        found_key = True
+        value = match.group(1).strip()
+        if value:
+            out.append(line)
+            continue
+        suffix = "\n" if line.endswith("\n") else ""
+        if line.endswith("\r\n"):
+            suffix = "\r\n"
+        out.append(f"SESSION_SECRET={secrets.token_urlsafe(48)}{suffix}")
+        updated = True
+    if not found_key:
+        newline = "\n" if raw.endswith("\n") or not raw else ""
+        out.append(f"SESSION_SECRET={secrets.token_urlsafe(48)}{newline}")
+        updated = True
+    if updated:
+        env_path.write_text("".join(out), encoding="utf-8")
 
 
 def _shell(cmd: str, *, cwd: Path | None = None) -> int:
     print(f"+ {cmd}", flush=True)
     return subprocess.run(cmd, shell=True, cwd=cwd or REPO_ROOT, check=False).returncode
+
+
+def _shell_with_repo_env(cmd: str, *, cwd: Path | None = None) -> int:
+    """Load the repo-root `.env` before running database CLI commands."""
+    wrapped = f"set -a; [ -f .env ] && . ./.env; set +a; {cmd}"
+    print(f"+ {wrapped}", flush=True)
+    return subprocess.run(
+        wrapped,
+        shell=True,
+        executable="/bin/bash",
+        cwd=cwd or REPO_ROOT,
+        check=False,
+    ).returncode
 
 
 def _resolve(meta: TargetMeta, run: TargetRun) -> None:
@@ -61,6 +116,116 @@ def _guard_down(run: TargetRun) -> bool:
         )
         return False
     return True
+
+
+def _db_selector() -> str:
+    db = os.environ.get("DB", "dev").strip().lower()
+    if db not in ("dev", "test"):
+        return db
+    return db
+
+
+def _alembic_env() -> dict[str, str]:
+    env = os.environ.copy()
+    env.setdefault("DB", _db_selector())
+    return env
+
+
+def _run_alembic(subcmd: str, run: TargetRun, *, name: str) -> int:
+    inner = f"uv run alembic {subcmd}"
+    cmd = f"set -a; [ -f ../.env ] && . ../.env; set +a; {inner}"
+    print(f"+ {cmd}", flush=True)
+    completed = subprocess.run(
+        cmd,
+        shell=True,
+        executable="/bin/bash",
+        cwd=BACKEND,
+        env=_alembic_env(),
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if completed.stdout:
+        print(completed.stdout, end="", flush=True)
+    if completed.stderr:
+        print(completed.stderr, end="", file=sys.stderr, flush=True)
+    if completed.returncode != 0:
+        failed(name, f"alembic {subcmd} failed", run, exit_code=completed.returncode)
+        return completed.returncode
+    return 0
+
+
+def _compose(*args: str) -> int:
+    quoted = " ".join(args)
+    return _shell(f"docker compose {quoted}")
+
+
+def _compose_service_health(service: str) -> str | None:
+    completed = subprocess.run(
+        ["docker", "compose", "ps", "--format", "json", service],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if completed.returncode != 0 or not completed.stdout.strip():
+        return None
+    try:
+        payload = json.loads(completed.stdout.strip().splitlines()[-1])
+    except json.JSONDecodeError:
+        return None
+    health = payload.get("Health")
+    if isinstance(health, str):
+        return health
+    return None
+
+
+def _wait_compose_healthy(
+    service: str, timeout_s: int = COMPOSE_HEALTH_TIMEOUT_S
+) -> bool:
+    deadline = time.monotonic() + timeout_s
+    while time.monotonic() < deadline:
+        status = _compose_service_health(service)
+        if status == "healthy":
+            return True
+        time.sleep(2)
+    return False
+
+
+def _print_compose_logs(service: str, *, tail: int = 50) -> None:
+    print(f"--- docker compose logs --tail {tail} {service} ---", flush=True)
+    subprocess.run(
+        ["docker", "compose", "logs", "--tail", str(tail), service],
+        cwd=REPO_ROOT,
+        check=False,
+    )
+
+
+def _print_compose_ps() -> None:
+    print("--- docker compose ps ---", flush=True)
+    subprocess.run(["docker", "compose", "ps"], cwd=REPO_ROOT, check=False)
+
+
+def _print_compose_failure_diagnostics() -> None:
+    _print_compose_logs("api")
+    _print_compose_logs("db")
+    _print_compose_ps()
+
+
+def _wait_api_health_ok(timeout_s: int = COMPOSE_HEALTH_TIMEOUT_S) -> bool:
+    deadline = time.monotonic() + timeout_s
+    url = "http://127.0.0.1:8000/api/v1/health"
+    while time.monotonic() < deadline:
+        try:
+            with urllib.request.urlopen(url, timeout=3) as response:
+                if response.status == 200:
+                    body = json.loads(response.read().decode("utf-8"))
+                    if body.get("status") == "ok":
+                        return True
+        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError):
+            pass
+        time.sleep(2)
+    return False
 
 
 def _guard_db_downgrade(run: TargetRun) -> bool:
@@ -108,6 +273,8 @@ def run_target(name: str) -> None:
         if not env.is_file() and example.is_file():
             print(f"+ cp {example} {env}", flush=True)
             shutil.copyfile(example, env)
+        if env.is_file():
+            ensure_session_secret_in_dotenv(env)
         code = _shell("make install")
         if code != 0:
             failed(name, "install failed", run, exit_code=code)
@@ -157,18 +324,160 @@ def run_target(name: str) -> None:
         passed(name, "removed build outputs and caches", run)
         return
 
+    if name == "up":
+        _resolve(meta, run)
+        for step in ("docker compose build db api migrate",):
+            if _shell(step) != 0:
+                failed(name, "docker compose build failed", run, exit_code=1)
+                return
+        if _compose("up", "-d", "db") != 0:
+            failed(name, "failed to start db", run, exit_code=1)
+            return
+        if not _wait_compose_healthy("db"):
+            _print_compose_logs("db")
+            _print_compose_ps()
+            failed(name, "db did not become healthy within 120s", run, exit_code=1)
+            return
+        if _shell("make db-init") != 0:
+            failed(name, "db-init failed", run, exit_code=1)
+            return
+        if _compose("--profile", "setup", "run", "--rm", "migrate") != 0:
+            _print_compose_logs("migrate")
+            failed(name, "migrate service failed", run, exit_code=1)
+            return
+        if _compose("up", "-d", "api") != 0:
+            failed(name, "failed to start api", run, exit_code=1)
+            return
+        if not _wait_compose_healthy("api") or not _wait_api_health_ok():
+            _print_compose_failure_diagnostics()
+            failed(name, "api did not become healthy within 120s", run, exit_code=1)
+            return
+        passed(name, "db and api healthy with migrations at head", run)
+        return
+
     if name == "down":
         _resolve(meta, run)
         if not _guard_down(run):
             return
-        _stub(meta, run)
+        volumes = os.environ.get("VOLUMES", "0").strip()
+        if volumes == "1":
+            code = _compose("down", "--volumes")
+        else:
+            code = _compose("down")
+        if code != 0:
+            failed(name, "docker compose down failed", run, exit_code=code)
+            return
+        passed(name, "stack stopped", run)
+        return
+
+    if name == "logs":
+        _resolve(meta, run)
+        service = os.environ.get("SERVICE", "").strip()
+        follow = os.environ.get("FOLLOW", "1").strip()
+        args = ["logs"]
+        if follow == "1":
+            args.append("-f")
+        else:
+            args.append("--no-log-prefix")
+        if service:
+            args.append(service)
+        code = _compose(*args)
+        if code != 0:
+            failed(
+                name,
+                "docker compose logs failed (is the stack running?)",
+                run,
+                exit_code=3,
+            )
+            return
+        passed(name, "container logs collected", run)
+        return
+
+    if name == "db-init":
+        _resolve(meta, run)
+        code = _shell_with_repo_env("uv run --project backend cenomi db init")
+        if code == 2:
+            failed(name, "refused by database guard", run, exit_code=2)
+            return
+        if code == 3:
+            failed(name, "database unreachable", run, exit_code=3)
+            return
+        if code != 0:
+            failed(name, "cenomi db init failed", run, exit_code=code)
+            return
+        passed(name, "roles and databases ensured", run)
+        return
+
+    if name == "db-upgrade":
+        _resolve(meta, run)
+        if _run_alembic("upgrade head", run, name=name) != 0:
+            return
+        passed(name, f"alembic upgrade head (DB={_db_selector()})", run)
+        return
+
+    if name == "db-current":
+        _resolve(meta, run)
+        inner = "uv run alembic current --verbose"
+        cmd = f"set -a; [ -f ../.env ] && . ../.env; set +a; {inner}"
+        print(f"+ {cmd}", flush=True)
+        completed = subprocess.run(
+            cmd,
+            shell=True,
+            executable="/bin/bash",
+            cwd=BACKEND,
+            env=_alembic_env(),
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if completed.stdout:
+            print(completed.stdout, end="", flush=True)
+        if completed.stderr:
+            print(completed.stderr, end="", file=sys.stderr, flush=True)
+        if completed.returncode != 0:
+            failed(name, "alembic current failed", run, exit_code=1)
+            return
+        at_head = HEAD_REVISION in completed.stdout and "(head)" in completed.stdout
+        if not at_head:
+            failed(
+                name,
+                f"database is not at head ({HEAD_REVISION})",
+                run,
+                exit_code=1,
+            )
+            return
+        passed(name, f"at head revision {HEAD_REVISION}", run)
+        return
+
+    if name == "db-check":
+        _resolve(meta, run)
+        if _run_alembic("check", run, name=name) != 0:
+            return
+        db = _db_selector()
+        verify = _shell_with_repo_env(
+            f"uv run --project backend cenomi db verify-roles --db {db}"
+        )
+        if verify != 0:
+            failed(name, "verify-roles failed", run, exit_code=verify)
+            return
+        passed(name, "no drift and roles verified", run)
+        return
+
+    if name == "db-history":
+        _resolve(meta, run)
+        if _run_alembic("history --verbose", run, name=name) != 0:
+            return
+        passed(name, "migration history printed", run)
         return
 
     if name == "db-downgrade":
         _resolve(meta, run)
         if not _guard_db_downgrade(run):
             return
-        _stub(meta, run)
+        rev = os.environ.get("REV", "").strip()
+        if _run_alembic(f'downgrade "{rev}"', run, name=name) != 0:
+            return
+        passed(name, f"downgraded to {rev}", run)
         return
 
     if name == "backend-format":
