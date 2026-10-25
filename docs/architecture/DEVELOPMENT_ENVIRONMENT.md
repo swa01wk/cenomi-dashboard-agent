@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Document code | DEVENV (requirement IDs `DEVENV-Rnnn`) |
-| Version | 1.1 · 2026-10-23 · M0 corrections PR (HC-3 Compose note; HC-4 DEVENV-R052; HC-5 §8.6, DEVENV-R053–R055; DEVENV-R055 lockfile serialization and DEVENV-R056 protection verification, owner clarifications of 2026-10-23); 1.2 · HC-6 (DEVENV-R054 `pyproject` sections for M0-T03), HC-7 (Makefile row) and DEVENV-R001 wording; 1.3 · CR-001 (`backend-test SUITE=tooling` in `ci/specs`; `import-linter lint`), tables re-rendered; 1.4 · CR-002 (security-patch exceptions for `certifi` and `handlebars`, ADR-0003 §2) and EXC-002 (§8.4). 1.0 merged in PR-M0 (`4515031`) |
+| Version | 1.1 · 2026-10-23 · M0 corrections PR (HC-3 Compose note; HC-4 DEVENV-R052; HC-5 §8.6, DEVENV-R053–R055; DEVENV-R055 lockfile serialization and DEVENV-R056 protection verification, owner clarifications of 2026-10-23); 1.2 · HC-6 (DEVENV-R054 `pyproject` sections for M0-T03), HC-7 (Makefile row) and DEVENV-R001 wording; 1.3 · CR-001 (`backend-test SUITE=tooling` in `ci/specs`; `import-linter lint`), tables re-rendered; 1.4 · CR-002 (security-patch exceptions for `certifi` and `handlebars`, ADR-0003 §2) and EXC-002 (§8.4); 1.5 · 2026-10-25 · CR-004 (`API_MAX_BODY_BYTES` in §4; M0-T06 `.env.example` line in DEVENV-R054). 1.0 merged in PR-M0 (`4515031`) |
 | Status | Normative since PR-M0 merged (`4515031`); version 1.1 amendments in review |
 | Rests on | DR-027, DR-037, ED-01, ED-05, ED-06 (approved); ED-07, ED-08, ED-09 (approved 2026-10-22; ADR-0016, ADR-0017, ADR-0018); ADR-0003, ADR-0004, ADR-0006, ADR-0015 |
 | Machine-readable sources | `specs/engineering/make_targets.yaml`, `specs/engineering/ci_checks.yaml`, `specs/engineering/spec_set.yaml` — the YAML wins on any conflict with this prose |
@@ -89,6 +89,7 @@ It does not cover:
 | Auth | `AUTH_MODE` | `dev_fixture` (ED-07 A, approved; ADR-0016) | Always | no | api | M0 |
 | Auth | `SESSION_SECRET` | Empty (`make setup` generates 48 random bytes into `.env`) | Always; ≥ 32 bytes | yes | api | M0 |
 | Auth | `SESSION_TTL_MINUTES` | `480` | — | no | api | M0 |
+| API | `API_MAX_BODY_BYTES` | `1048576` (1 MiB; minimum 1024) | — | no | api | M0 (M0-T06, CR-004) |
 | Model | `LLM_MODE` | `off` (M0–M2), then `replay` | Always; `off`, `replay` or `live` | no | api, harness | M0 (`off`), M3 |
 | Model | `LLM_PROVIDER`, `LLM_PRIMARY_MODEL`, `LLM_FALLBACK_MODEL` | Empty (GDQ-12) | `LLM_MODE=live` | no | api, harness | M3 |
 | Model | `LLM_API_KEY` | Empty | `LLM_MODE=live` | yes | api | M3 |
@@ -516,7 +517,7 @@ Broad directory ownership (for example M0-T03's `/backend/src/cenomi/**` or M0-T
 | `backend/uv.lock`, `pnpm-lock.yaml` | M0-T01 | Regenerated per DEVENV-R052 |
 | `apps/web/package.json`, `packages/contracts-ts/package.json` | M0-T01 | Dependencies and scripts of the delivering card (M0-T04, M0-T05) per DEVENV-R052 |
 | `packages/viz/package.json` | M0-T08 (exact path) | — |
-| `package.json` (root), `.env.example`, `pnpm-workspace.yaml` | M0-T01 | None in M0, except that a security-patch PR (ADR-0003 §2, **CR-002**) may add an exact-version entry under `overrides:` in `pnpm-workspace.yaml` for a transitive package it patches, with a comment citing the CR and the advisory. `.env.example` already lists every DEVENV §4 variable; a missing variable is a specification defect, so stop and report |
+| `package.json` (root), `.env.example`, `pnpm-workspace.yaml` | M0-T01 | None in M0, except that a security-patch PR (ADR-0003 §2, **CR-002**) may add an exact-version entry under `overrides:` in `pnpm-workspace.yaml` for a transitive package it patches, with a comment citing the CR and the advisory. **M0-T06 (CR-004):** adds the single line `API_MAX_BODY_BYTES=1048576` to `.env.example`. `.env.example` otherwise already lists every DEVENV §4 variable; a missing variable is a specification defect, so stop and report |
 | `docker-compose.yml` | M0-T02 | M0-T04 adds the `web` service block (HC-3) |
 | `cenomi.api.app.create_app()` (router registration) | M0-T03 | M0-T06 registers the `session` router |
 | Health wiring (the `check_database` provider used by the health router) | M0-T03 | M0-T02 binds the real `cenomi.db.health.check_database()` |

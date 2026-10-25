@@ -5,6 +5,7 @@
 | Status | **Accepted** — PR-M0 merged 2026-10-22 at `4515031` (recorded 2026-10-23). |
 | Date | 2026-10-22 |
 | Decision IDs | DR-028 (approved, GDQ-10), DR-016, DXD-40, DXD-41 |
+| Amended | 2026-10-25 · CR-004 (owner-approved): §1 item 3 (GENERATED marker and retained bootstrap files), §2 (marker annotation; the subset and example checks run in `make contracts-check`, matching `make_targets.yaml`) |
 
 ## Context
 
@@ -16,7 +17,7 @@ DR-028 makes Pydantic the source of every contract. JSON Schema 2020-12 is expor
 
 1. Each contract is first written by hand as `specs/contracts/<name>.v<major>.schema.json` in the specification PR that freezes it.
 2. When its milestone is built, the Pydantic model in `backend/src/cenomi/contracts/` must export exactly that schema. A normalized comparison runs in CI: keys sorted, `description` and `title` ignored, and `$id` compared.
-3. From then on the Pydantic model is the only place to edit. The schema file becomes GENERATED (header key `x-generated-from`), and `make contracts-check` regenerates it and fails on any diff.
+3. From then on the Pydantic model is the only place to edit. The schema file becomes GENERATED (root key `x-generated-from`, whose value is the model's dotted path), and `make contracts-check` regenerates it and fails on any diff. The card that builds the model makes the conversion. It keeps the hand-written file verbatim as `tests/contract/fixtures/bootstrap/<name>.v<major>.schema.json`, and the comparison in item 2 runs against that copy, so it stays meaningful after the conversion (CR-004). The normalized comparison also ignores `x-generated-from`.
 
 ### 2. Allowed JSON Schema subset
 
@@ -28,13 +29,13 @@ The subset exists so that TypeScript and zod generation is deterministic and los
 | Object keywords | `properties`, `required`, `additionalProperties: false` (mandatory on every object) |
 | Value keywords | `enum`, `const`, `pattern`, `format` (date, date-time, uuid only), `minLength`, `maxLength`, `minimum`, `maximum`, `minItems`, `maxItems`, `items` |
 | Composition | `oneOf` with a `const` discriminator property, `$ref` to `#/$defs/...` or to another file in `specs/contracts/` by relative path, `$defs` |
-| Annotation | `description`, `title`, `examples` |
+| Annotation | `description`, `title`, `examples`; `x-generated-from` (string, schema root only; CR-004) |
 
 Further rules:
-- Anything outside the subset is rejected by `make specs-check`.
+- Anything outside the subset is rejected by `make contracts-check` (CR-004).
 - `anyOf`, `allOf`, `if/then/else`, `patternProperties`, `dependentSchemas` and open objects are not allowed.
 - Every schema file declares `$schema: https://json-schema.org/draft/2020-12/schema` and a stable `$id` of the form `https://cenomi.local/contracts/<name>.v<major>.schema.json`.
-- Every schema carries at least one `examples` entry. `make specs-check` validates each example against its schema.
+- Every schema carries at least one `examples` entry. `make contracts-check` validates each example against its schema (CR-004).
 
 ### 3. Generators
 

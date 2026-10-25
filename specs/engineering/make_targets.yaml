@@ -497,7 +497,7 @@ targets:
     prerequisites: [install]
     args: []
     behaviour:
-      - Export JSON Schemas from cenomi.contracts for contracts already built (ADR-0004 §1).
+      - Export JSON Schemas from cenomi.contracts for contracts already built (ADR-0004 §1), writing each specs/contracts/<name>.v<major>.schema.json with the root key x-generated-from (CR-004).
       - Generate packages/contracts-ts types and zod.
       - "From M1/M2: KPI_CATALOG tables, schema reference, token CSS. From M0-T10: decision register render."
     failure: Exit 1 if a generator fails; never edits non-generated files.
@@ -514,8 +514,9 @@ targets:
     behaviour:
       - Runs codegen into a temporary directory and diffs against the committed files.
       - Validates every specs/contracts schema against the ADR-0004 subset and every example against its schema.
-      - Normalized comparison of each built Pydantic model with its schema file.
+      - Normalized comparison of each built Pydantic model with its bootstrap schema, kept verbatim under tests/contract/fixtures/bootstrap/ (CR-004).
       - Runs the TS/zod equivalence tests (CA-05).
+      - "JUnit (CR-003): the database-free contract tests (uv run pytest tests/contract -m 'not db') to tests/reports/contracts/junit-contracts.xml; the zod equivalence tests (Vitest) to tests/reports/contracts/junit-contracts-vitest.xml."
     failure: Exit 1 listing each stale or invalid file.
     in_check: true
     ci_jobs: [ci/contracts]
@@ -551,7 +552,7 @@ targets:
     behaviour:
       - uv run pytest tests/contract tests/security -m 'not agent_live' against cenomi_test with the app in-process (ASGI).
       - "From M4: pnpm --filter web test:contract (event fixtures validated by the TS SDK)."
-      - JUnit to tests/reports/integration/.
+      - "JUnit to tests/reports/integration/junit-integration-test.xml (CR-003; tests marked db, against cenomi_test)."
     failure: Exit 1 on any failed test.
     in_check: false
     ci_jobs: [ci/integration]
